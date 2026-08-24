@@ -1,1 +1,10 @@
+User-agent: *
+Allow: /
 
+# O portal de parceiros é uma aplicação, não conteúdo.
+Disallow: /success
+Disallow: /myaccount
+Disallow: /support
+Disallow: /resetpassword
+
+Sitemap: https://www.airportlink.app/sitemap.xml
