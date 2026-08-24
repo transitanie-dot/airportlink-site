@@ -96,6 +96,8 @@ html[data-theme="dark"] .ok{background:#052e22;color:#34d399;border-color:#14532
 .agent-redirect{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--link);
   border-radius:18px;padding:18px 20px;margin-bottom:18px;line-height:1.6;font-size:14px}
 .agent-redirect strong{display:block;font-size:15.5px;margin-bottom:5px}
+.agent-redirect.active{border-width:2px;box-shadow:0 10px 26px rgba(20,26,40,.10)}
+html[data-theme="dark"] .agent-redirect.active{box-shadow:0 10px 26px rgba(0,0,0,.4)}
 .agent-redirect.pending{border-color:var(--warning);background:var(--warning-bg);color:var(--warning)}
 .agent-redirect.rejected{border-color:#fda29b;background:#fff1f2;color:var(--danger)}
 html[data-theme="dark"] .agent-redirect.rejected{background:#2b1114;border-color:#7f1d1d}
@@ -900,7 +902,7 @@ async function checkAgentAccount() {
     if (!res.ok || !info.status || info.status === 'none') return;
 
     var box = $('agentRedirect');
-    box.classList.remove('pending', 'rejected');
+    box.classList.remove('pending', 'rejected', 'active');
 
     if (info.status === 'pending') {
       box.classList.add('pending');
@@ -918,14 +920,22 @@ async function checkAgentAccount() {
         'or your circumstances have changed, contact support.';
       $('agentRedirectBtn').textContent = 'See details';
     } else {
+      // Aprovado. Esta página passa a ser a secundária: as reservas
+      // da agência estão ligadas ao booked_by e não ao email do
+      // viajante, por isso nunca apareceriam aqui.
+      box.classList.add('active');
+
       $('agentRedirectTitle').textContent = info.agency_name
-        ? (info.agency_name + ' \u00b7 partner account active')
-        : 'Partner account active';
+        ? (info.agency_name + ' \u00b7 partner account')
+        : 'Partner account';
       $('agentRedirectText').textContent =
-        'Bookings you make for your travellers live in the partner dashboard, with the statement, ' +
-        'the vouchers and the ' + (info.cancellation_hours || 12) +
-        '-hour cancellation window. This page shows only trips booked under your own email.';
-      $('agentRedirectBtn').textContent = 'Open partner dashboard';
+        'Your agency bookings, the monthly statement and the vouchers are in the partner ' +
+        'dashboard, along with the ' + (info.cancellation_hours || 12) +
+        '-hour cancellation window. This page only shows trips you booked for yourself.';
+      $('agentRedirectBtn').textContent = 'Go to partner dashboard';
+
+      // O cabeçalho passa a apontar lá também.
+      try { localStorage.setItem('airportlink-role-hint', 'agent'); } catch (e) {}
     }
 
     box.classList.remove('hidden');
@@ -943,6 +953,9 @@ $('newBookingBtn').addEventListener('click', function () { navigateTo('/'); });
 $('logoutBtn').addEventListener('click', async function () {
   $('logoutBtn').disabled = true;
   try { await supabaseClient.auth.signOut(); } catch (e) {}
+  // Sem isto, o cabeçalho continuaria a dizer "Partner dashboard"
+  // ao próximo visitante deste browser.
+  try { localStorage.removeItem('airportlink-role-hint'); } catch (e) {}
   window.location.href = '/login';
 });
 
