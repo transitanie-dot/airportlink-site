@@ -86,24 +86,28 @@
 .hero .lead{max-width:76ch;margin-bottom:16px}
 .hero .kicker{margin-bottom:12px}
 
-/* A faixa do pagar depois. Largura toda, logo abaixo do texto, com
-   contorno a cor para se destacar sem gritar. */
-.promo{display:flex;gap:16px;align-items:center;background:var(--surface);
-  border:1px solid var(--teal);border-radius:18px;padding:14px 18px;
-  margin-top:16px;flex-wrap:wrap}
-html[data-theme="dark"] .promo{border-color:var(--amber)}
-.promo .mk{width:40px;height:40px;border-radius:999px;background:var(--teal-soft);
-  display:flex;align-items:center;justify-content:center;flex:0 0 auto;
-  font-family:var(--mono);font-size:12px;font-weight:600;color:var(--teal)}
-html[data-theme="dark"] .promo .mk{color:var(--amber)}
-.promo .txt{flex:1 1 320px;min-width:0}
-.promo strong{display:block;font-family:var(--display);font-weight:700;font-size:16px;
-  letter-spacing:-.01em;margin-bottom:2px}
-.promo span{color:var(--muted);font-size:13.5px;line-height:1.55}
-.promo .chip{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;
-  text-transform:uppercase;background:var(--teal);color:#fff;border-radius:999px;
-  padding:6px 11px;flex:0 0 auto}
-html[data-theme="dark"] .promo .chip{background:var(--amber);color:#141A28}
+/* ---------- o veículo ----------
+   Ilustrado, não fotografado. Os carros são dos parceiros: uma foto
+   de uma marca concreta prometia um veículo que não controlamos, e
+   quem chegasse e encontrasse outro tinha razão em reclamar. */
+.vehicle{display:grid;grid-template-columns:112px 1fr;gap:16px;align-items:center;
+  background:var(--surface);border:1px solid var(--rule);border-radius:20px;
+  padding:16px 18px;margin-top:16px}
+.vehicle-art{width:112px}
+.vehicle-art svg{width:100%;height:auto;display:block}
+.vehicle-text .tag{display:block;color:var(--muted);margin-bottom:6px}
+.vehicle-text strong{display:block;font-family:var(--display);font-weight:700;font-size:17px;
+  letter-spacing:-.02em;margin-bottom:4px}
+.vehicle-text span{color:var(--muted);font-size:13px;line-height:1.55}
+.veh-body{fill:var(--ink)}
+html[data-theme="dark"] .veh-body{fill:#E9EDF3}
+.veh-glass{fill:var(--teal-soft);stroke:var(--rule-strong);stroke-width:1}
+.veh-wheel{fill:var(--surface);stroke:var(--ink);stroke-width:3.4}
+html[data-theme="dark"] .veh-wheel{stroke:#E9EDF3}
+.veh-accent{fill:var(--amber)}
+@media (max-width:420px){
+  .vehicle{grid-template-columns:1fr;text-align:center;justify-items:center}
+}
 
 /* ---------- os três passos, agora em faixa ---------- */
 .steps-band{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
@@ -355,13 +359,9 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
       <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Free cancellation, 24h</span>
       <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/><path d="M22 20v-2a4 4 0 0 0-3-3.8"/></svg>Up to 16 people</span>
       <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Stripe checkout</span>
+      <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M8 15h4"/></svg>Book now, pay later</span>
     </div>
 
-    <div class="promo rise d4">
-      <span class="mk">0&euro;</span>
-      <span class="txt"><strong>Book now, pay later</strong>
-      <span>On most transfers nothing is charged until 48 hours before pick-up.</span></span>
-    </div>
   </div>
 </section>
 
@@ -424,6 +424,15 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
           <div class="two-col">
             <div class="field"><div class="label-row"><label for="travelDate">Date</label></div><input id="travelDate" type="date" /></div>
             <div class="field"><div class="label-row"><label for="travelTime">Pick-up time</label></div><input id="travelTime" type="time" /></div>
+          </div>
+
+          <div class="vehicle" id="vehicleCard">
+            <div class="vehicle-art" id="vehicleArt"></div>
+            <div class="vehicle-text">
+              <span class="tag">Vehicle</span>
+              <strong id="vehicleName">Sedan</strong>
+              <span id="vehicleNote">Up to 4 passengers with hand luggage.</span>
+            </div>
           </div>
 
           <div class="mini-grid">
