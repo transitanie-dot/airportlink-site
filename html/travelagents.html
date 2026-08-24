@@ -25,6 +25,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/layout.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -210,6 +214,22 @@ td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowra
 .qa-item h3{font-family:var(--display);font-weight:700;font-size:16.5px;margin:0 0 8px;letter-spacing:-.015em}
 .qa-item p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.68}
 
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:22px;padding:24px}
+.trav{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;
+  border:1px solid var(--rule);border-radius:18px;padding:16px 18px;margin-bottom:10px;
+  background:var(--surface)}
+.trav h4{font-family:var(--display);font-weight:700;font-size:15.5px;letter-spacing:-.01em;margin:0 0 4px}
+.trav .meta{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.7}
+.trav .note{margin:7px 0 0;font-size:13px;color:var(--muted);line-height:1.55}
+.trav .count{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;background:var(--teal-soft);color:var(--teal);
+  border:1px solid var(--teal);border-radius:999px;padding:5px 11px;white-space:nowrap}
+html[data-theme="dark"] .trav .count{color:var(--amber);border-color:var(--amber)}
+.trav-actions{display:flex;gap:8px;flex-wrap:wrap}
+.trav-del{border:1px solid var(--err-rule);background:transparent;color:var(--err-text);
+  border-radius:11px;padding:8px 13px;font-family:var(--mono);font-size:10.5px;font-weight:600;
+  letter-spacing:.07em;text-transform:uppercase;cursor:pointer}
+@media (max-width:620px){.trav{grid-template-columns:1fr}}
 .subtabs{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--rule)}
 .subtab{height:40px;padding:0 18px;border:1px solid var(--rule-strong);background:transparent;border-radius:999px;
   font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);cursor:pointer}
@@ -576,8 +596,40 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
         <div class="subtabs">
           <button class="subtab active" data-pane="paneBookings" type="button">Bookings</button>
           <button class="subtab" data-pane="paneStatement" type="button">Statement</button>
+          <button class="subtab" data-pane="paneTravellers" type="button">Travellers</button>
           <button class="subtab" data-pane="paneProfile" type="button">Agency details</button>
           <button class="btn teal subtab-cta" id="newBookingBtn" type="button">New booking</button>
+        </div>
+
+        <!-- ---------- viajantes guardados ---------- -->
+        <div class="pane" id="paneTravellers">
+          <div class="toolbar">
+            <div class="field" style="flex:1;min-width:220px">
+              <label for="travSearch">Search</label>
+              <input id="travSearch" type="text" placeholder="Name, phone or email">
+            </div>
+          </div>
+
+          <p style="margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.65;max-width:64ch">
+            People you book for regularly. Pick one when making a booking and the details fill in.
+            These are yours alone &mdash; nobody else at Airportlink can see this list.
+          </p>
+
+          <div id="travList"></div>
+
+          <div class="card" style="margin-top:20px">
+            <h3 style="font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.02em;margin:0 0 6px">Add a traveller</h3>
+            <p style="margin:0 0 18px;color:var(--muted);font-size:13.5px;line-height:1.6">Only the name is required. Everything else saves you typing later.</p>
+            <div class="grid2">
+              <div class="field"><label for="travName">Full name</label><input id="travName" type="text" placeholder="Who is travelling"></div>
+              <div class="field"><label for="travPhone">Phone</label><input id="travPhone" type="tel" placeholder="+351 912 345 678"></div>
+              <div class="field"><label for="travEmail">Email</label><input id="travEmail" type="email" placeholder="Optional"></div>
+              <div class="field"><label for="travNotes">Notes</label><input id="travNotes" type="text" placeholder="Child seat, wheelchair, speaks Spanish only"></div>
+            </div>
+            <button class="btn teal" id="travAdd" type="button">Save traveller</button>
+            <div id="travMsg" class="msg err"></div>
+            <div id="travOk" class="msg ok"></div>
+          </div>
         </div>
 
         <!-- ---------- reservas ---------- -->
@@ -712,6 +764,126 @@ var currentUser = null, authMode = 'signin', agentInfo = null, lastStatement = n
 var agentBookings = [], bookingScope = 'future', pendingCancel = null;
 
 // ============================================================
+// VIAJANTES GUARDADOS
+//
+// A lista é da agência e mais ninguém a vê — nem nós. A política da
+// tabela não abre exceção para administradores de propósito: o que
+// não se consegue ver não se pode vazar.
+// ============================================================
+var travellers = [];
+
+async function loadTravellers() {
+  var res = await db.from('agency_travellers')
+    .select('*')
+    .eq('archived', false)
+    .order('times_booked', { ascending: false })
+    .order('full_name');
+
+  if (res.error) {
+    $('travList').innerHTML = '<div class="empty">' + esc(res.error.message) + '</div>';
+    return;
+  }
+
+  travellers = res.data || [];
+  renderTravellers();
+}
+
+function renderTravellers() {
+  var q = ($('travSearch').value || '').toLowerCase().trim();
+
+  var shown = travellers.filter(function (t) {
+    if (!q) return true;
+    return [t.full_name, t.phone, t.email, t.notes]
+      .join(' ').toLowerCase().indexOf(q) !== -1;
+  });
+
+  if (!shown.length) {
+    $('travList').innerHTML = '<div class="empty">' +
+      (travellers.length
+        ? 'Nobody matches that.'
+        : 'No saved travellers yet. Add the first one below, or tick “save this traveller” when you book.') +
+      '</div>';
+    return;
+  }
+
+  $('travList').innerHTML = shown.map(function (t) {
+    return '<div class="trav"><div>' +
+      '<h4>' + esc(t.full_name) + '</h4>' +
+      '<div class="meta">' + esc(t.phone || 'no phone') +
+      (t.email ? ' &middot; ' + esc(t.email) : '') +
+      (t.last_booked_at ? ' &middot; last ' + esc(String(t.last_booked_at).slice(0, 10)) : '') +
+      '</div>' +
+      (t.notes ? '<p class="note">' + esc(t.notes) + '</p>' : '') +
+      '</div><div class="trav-actions">' +
+      (t.times_booked
+        ? '<span class="count">' + esc(t.times_booked) + ' trip' + (t.times_booked === 1 ? '' : 's') + '</span>'
+        : '') +
+      '<button class="trav-del" data-del="' + esc(t.id) + '" type="button">Remove</button>' +
+      '</div></div>';
+  }).join('');
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-del]'), function (b) {
+    b.addEventListener('click', function () { removeTraveller(b.getAttribute('data-del')); });
+  });
+}
+
+async function removeTraveller(id) {
+  var t = travellers.find(function (x) { return x.id === id; });
+  if (!t) return;
+
+  if (!window.confirm('Remove ' + t.full_name + ' from your saved travellers?\n\n' +
+      'Bookings already made are not affected.')) return;
+
+  // Arquivar em vez de apagar: as reservas passadas continuam a
+  // referir esta pessoa, e apagar de vez perderia o histórico de
+  // quantas vezes viajou.
+  var res = await db.from('agency_travellers')
+    .update({ archived: true, updated_at: new Date().toISOString() })
+    .eq('id', id);
+
+  if (res.error) return window.alert(res.error.message);
+
+  travellers = travellers.filter(function (x) { return x.id !== id; });
+  renderTravellers();
+}
+
+$('travSearch').addEventListener('input', renderTravellers);
+
+$('travAdd').addEventListener('click', async function () {
+  hideMsgs();
+
+  var name = $('travName').value.trim();
+  if (!name) {
+    return show($('travMsg'), $('travOk'), 'A name is required.');
+  }
+
+  $('travAdd').disabled = true;
+  try {
+    var res = await db.from('agency_travellers').upsert({
+      agent_id: currentUser.id,
+      full_name: name,
+      phone: $('travPhone').value.trim() || null,
+      email: $('travEmail').value.trim() || null,
+      notes: $('travNotes').value.trim() || null,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'agent_id,full_name,phone' });
+
+    if (res.error) throw new Error(res.error.message);
+
+    ['travName', 'travPhone', 'travEmail', 'travNotes'].forEach(function (id) {
+      $(id).value = '';
+    });
+
+    await loadTravellers();
+    show($('travOk'), $('travMsg'), name + ' saved.');
+  } catch (e) {
+    show($('travMsg'), $('travOk'), e.message);
+  } finally {
+    $('travAdd').disabled = false;
+  }
+});
+
+// ============================================================
 // NAVEGAÇÃO
 // Página normal: sem ponte para iframe, sem reporte de altura.
 // ============================================================
@@ -835,6 +1007,9 @@ $('forgotBtn').addEventListener('click', async function () {
 
 async function signOut() {
   try { await supabaseClient.auth.signOut(); } catch (e) {}
+  // Sem isto, o cabeçalho continuaria a dizer "Partner dashboard"
+  // ao próximo visitante deste browser.
+  try { localStorage.removeItem('airportlink-role-hint'); } catch (e) {}
   currentUser = null; agentInfo = null;
   setAuthMode('signin');
   showView('authView');
@@ -915,6 +1090,7 @@ async function refreshAgentState() {
     fillProfileForm();
     loadAgentBookings();
     loadStatement();
+    loadTravellers();
     return;
   }
 
