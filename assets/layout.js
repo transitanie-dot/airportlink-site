@@ -15,6 +15,29 @@
 
   var THEME_KEY = 'airportlink-theme';
 
+  /**
+   * O cabeçalho adapta-se ao perfil: um agente vê "Partner
+   * dashboard" e não "My account".
+   *
+   * A pista fica no localStorage e é PURAMENTE COSMÉTICA — decide o
+   * texto de um botão e mais nada. Quem pode ver o quê continua a
+   * ser decidido pela RLS e pelo servidor, que validam o JWT. Mudar
+   * isto na consola muda uma etiqueta, não dá acesso a nada.
+   */
+  var ROLE_KEY = 'airportlink-role-hint';
+
+  function roleHint() {
+    try { return localStorage.getItem(ROLE_KEY) || 'customer'; } catch (e) { return 'customer'; }
+  }
+
+  var ACCOUNT_LINK = {
+    agent: { href: '/travelagents', label: 'Partner dashboard' },
+    admin: { href: '/admin', label: 'Operations' },
+    customer: { href: '/myaccount', label: 'My account' }
+  };
+
+  var account = ACCOUNT_LINK[roleHint()] || ACCOUNT_LINK.customer;
+
   // ---------- o menu vive aqui ----------
   var NAV = [
     { href: '/',             label: 'Book a transfer' },
@@ -43,29 +66,6 @@
   ];
 
   var LOGO = 'AIRPORT<b>LINK</b><span class="dot"></span>';
-
-  /**
-   * O cabeçalho adapta-se ao perfil: um agente vê "Partner
-   * dashboard" e não "My account".
-   *
-   * A pista fica no localStorage e é PURAMENTE COSMÉTICA — decide o
-   * texto de um botão e mais nada. Quem pode ver o quê continua a
-   * ser decidido pela RLS e pelo servidor, que validam o JWT. Mudar
-   * isto na consola muda uma etiqueta, não dá acesso a nada.
-   */
-  var ROLE_KEY = 'airportlink-role-hint';
-
-  function roleHint() {
-    try { return localStorage.getItem(ROLE_KEY) || 'customer'; } catch (e) { return 'customer'; }
-  }
-
-  var ACCOUNT_LINK = {
-    agent: { href: '/travelagents', label: 'Partner dashboard' },
-    admin: { href: '/admin', label: 'Operations' },
-    customer: { href: '/myaccount', label: 'My account' }
-  };
-
-  var account = ACCOUNT_LINK[roleHint()] || ACCOUNT_LINK.customer;
 
   var MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
     'stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
