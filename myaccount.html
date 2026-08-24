@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>My trips | Airportlink</title>
+<meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('airportlink-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/layout.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<style>
+/* As variáveis antigas desta página passam a apontar para os tokens
+   partilhados em /assets/site.css. Alinha as cores e a tipografia com
+   o resto do site sem reescrever uma única regra abaixo. */
+:root{
+  --card:var(--surface);
+  --primary:var(--ink);
+  --primary-soft:var(--surface-2);
+  --border:var(--rule);
+  --shadow:0 14px 34px rgba(20,26,40,.07);
+  --success:var(--ok-text);--success-bg:var(--ok-bg);
+  --warning:var(--warn-text);--warning-bg:var(--warn-bg);
+  --neutral-bg:var(--surface-2);
+  --link:var(--teal);--danger:var(--err-text);
+}
+html[data-theme="dark"]{
+  --primary:#E9EDF3;
+  --shadow:0 14px 34px rgba(0,0,0,.34);
+  --link:var(--amber);
+}
+html,body{font-family:var(--body)}
+.wrapper{max-width:1180px;margin:0 auto}
+h2{font-family:var(--display);font-weight:700;letter-spacing:-.02em}
+.brand{font-family:var(--display)}
+.sidebar{background:var(--ink)}
+html[data-theme="dark"] .sidebar{background:var(--surface);border:1px solid var(--rule)}
+.nav-btn.active{background:rgba(255,255,255,.12)}
+html[data-theme="dark"] .nav-btn.active{background:var(--surface-2)}
+.btn-primary{background:#fff;color:var(--ink)}
+.btn-secondary{background:rgba(255,255,255,.14);color:#fff}
+html[data-theme="dark"] .btn-primary{background:#E9EDF3;color:#141A28}
+html[data-theme="dark"] .btn-secondary{background:var(--surface-2);color:var(--text)}
+input{font-family:var(--body)}
+.trip-label{font-family:var(--mono);font-weight:600;letter-spacing:.08em}
+.trip-status{font-family:var(--mono);font-weight:600;letter-spacing:.06em}
+.route-caption,.trip-meta-label,.receipt-label{font-family:var(--mono)}
+.trip-meta-value,.receipt-value{font-family:var(--body)}
+.route-value{font-family:var(--body)}
+.modal-head{background:var(--ink)}
+html[data-theme="dark"] .modal-head{background:#0B1118}
+
+.wrapper{display:flex;padding:20px;gap:20px;align-items:flex-start}
+.sidebar{width:240px;flex:0 0 240px;background:#333B50;color:#fff;padding:22px;display:flex;flex-direction:column;gap:8px;border-radius:22px}
+html[data-theme="dark"] .sidebar{background:#151922}
+.brand{font-weight:800;letter-spacing:.04em;font-size:19px;margin-bottom:10px}
+.nav-btn{background:transparent;border:0;color:#fff;padding:11px 13px;border-radius:11px;cursor:pointer;font-weight:700;text-align:left;font-size:14px;width:100%}
+.nav-btn.active{background:#44506a}
+html[data-theme="dark"] .nav-btn.active{background:#2a3343}
+.sidebar-actions{margin-top:18px;display:flex;flex-direction:column;gap:9px}
+.btn{border:0;border-radius:13px;padding:12px 16px;font-weight:800;cursor:pointer;font-size:14px}
+.btn-primary{background:#fff;color:#333B50}
+.btn-secondary{background:#44506a;color:#fff}
+html[data-theme="dark"] .btn-primary{background:#e7ebf2;color:#11161D}
+html[data-theme="dark"] .btn-secondary{background:#222936;color:#e7ebf2}
+.btn:disabled{opacity:.6;cursor:default}
+.main{flex:1;min-width:0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:22px;color:var(--text)}
+.card.full{grid-column:1 / -1}
+h2{margin:0 0 6px;font-size:22px;color:var(--text)}
+.sub{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.5}
+.field{margin-bottom:14px}
+label{display:block;margin:0 0 7px;font-size:13px;font-weight:700;color:var(--text)}
+input{width:100%;padding:13px 15px;border:1px solid var(--border);border-radius:13px;background:var(--card);color:var(--text);font-size:15px;outline:none}
+html[data-theme="dark"] input{background:#0f141c}
+input:disabled{opacity:.65}
+.field-error{display:none;margin-top:6px;color:var(--danger);font-size:13px}
+.msg{display:none;margin-top:14px;padding:12px 14px;border-radius:12px;font-size:14px;line-height:1.45}
+.err{background:#fff1f2;color:#b42318;border:1px solid #fda29b}
+.ok{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}
+html[data-theme="dark"] .err{background:#2b1114;color:#fda4af;border-color:#7f1d1d}
+html[data-theme="dark"] .ok{background:#052e22;color:#34d399;border-color:#14532d}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.hidden{display:none!important}
+.boot{display:flex;align-items:center;justify-content:center;min-height:340px;color:var(--muted);font-size:15px;font-weight:700;padding:24px;text-align:center}
+.agent-redirect{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--link);
+  border-radius:18px;padding:18px 20px;margin-bottom:18px;line-height:1.6;font-size:14px}
+.agent-redirect strong{display:block;font-size:15.5px;margin-bottom:5px}
+.agent-redirect.pending{border-color:var(--warning);background:var(--warning-bg);color:var(--warning)}
+.agent-redirect.rejected{border-color:#fda29b;background:#fff1f2;color:var(--danger)}
+html[data-theme="dark"] .agent-redirect.rejected{background:#2b1114;border-color:#7f1d1d}
+.agent-redirect .go{border:0;border-radius:13px;padding:11px 18px;background:#333B50;color:#fff;
+  font-weight:800;font-size:13.5px;cursor:pointer;white-space:nowrap;flex:0 0 auto;align-self:center}
+html[data-theme="dark"] .agent-redirect .go{background:#e7ebf2;color:#11161D}
+@media (max-width:640px){.agent-redirect{flex-direction:column}.agent-redirect .go{width:100%}}
+.policy-note{display:flex;gap:10px;align-items:flex-start;background:var(--success-bg);border:1px solid #a7f3d0;color:#065f46;border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.55;font-weight:600;margin-bottom:16px}
+html[data-theme="dark"] .policy-note{border-color:#14532d;color:#6ee7b7}
+.trip-list{display:grid;gap:14px}
+.trip-card{border:1px solid var(--border);border-radius:20px;background:var(--card);padding:18px}
+.trip-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap}
+.trip-top-right{display:flex;align-items:center;gap:10px}
+.icon-btn{width:30px;height:30px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.icon-btn svg{width:15px;height:15px;pointer-events:none}
+.trip-label{display:inline-flex;padding:7px 11px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.trip-status{display:inline-flex;padding:7px 10px;border-radius:999px;font-size:12px;font-weight:800;text-transform:capitalize;border:1px solid var(--border);background:var(--neutral-bg);color:var(--muted)}
+.trip-status.upcoming,.trip-status.confirmed,.trip-status.pending{background:var(--warning-bg);color:var(--warning);border-color:#fed7aa}
+.trip-status.completed,.trip-status.paid{background:var(--success-bg);color:var(--success);border-color:#bbf7d0}
+.trip-status.cancelled,.trip-status.refunded{background:#fff1f2;color:#b42318;border-color:#fda29b}
+html[data-theme="dark"] .trip-status.cancelled,html[data-theme="dark"] .trip-status.refunded{background:#2b1114;color:#fda4af;border-color:#7f1d1d}
+.trip-route{display:grid;gap:10px;margin-bottom:14px}
+.route-stop{display:grid;grid-template-columns:18px 1fr;gap:12px;align-items:start}
+.route-marker{width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;margin-top:2px}
+.route-marker.pickup{background:#0f766e}
+.route-marker.dropoff{background:#111827}
+html[data-theme="dark"] .route-marker.dropoff{background:#e7ebf2;color:#11161D}
+.route-caption{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.route-value{font-size:15px;font-weight:700;line-height:1.45;color:var(--text)}
+.trip-meta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding-top:14px;border-top:1px solid var(--border)}
+.trip-meta-item{background:var(--neutral-bg);border:1px solid var(--border);border-radius:13px;padding:11px 12px}
+.trip-meta-label{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.trip-meta-value{font-size:14px;font-weight:700;color:var(--text);word-break:break-word}
+.trip-actions{display:flex;gap:10px;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);flex-wrap:wrap}
+.cancel-btn{border:1px solid #fda29b;background:transparent;color:#b42318;border-radius:12px;padding:10px 16px;font-weight:800;font-size:13px;cursor:pointer}
+.cancel-btn:hover{background:#fff1f2}
+html[data-theme="dark"] .cancel-btn{border-color:#7f1d1d;color:#fda4af}
+html[data-theme="dark"] .cancel-btn:hover{background:#2b1114}
+.cancel-btn:disabled{opacity:.5;cursor:not-allowed}
+.cancel-info{font-size:12.5px;color:var(--muted);line-height:1.5}
+.trip-empty{display:flex;align-items:center;justify-content:center;min-height:130px;border:1px dashed var(--border);border-radius:18px;background:var(--neutral-bg);color:var(--muted);font-size:14px;padding:24px;text-align:center}
+.help-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:16px}
+.help-card h3{margin:0 0 8px;font-size:17px;color:var(--text)}
+.help-card p{margin:0 0 12px;color:var(--muted);font-size:14px;line-height:1.5}
+.support-cta{display:inline-flex;align-items:center;background:#333B50;color:#fff;border:0;border-radius:13px;padding:13px 20px;font-weight:800;font-size:15px;cursor:pointer}
+html[data-theme="dark"] .support-cta{background:#e7ebf2;color:#11161D}
+.faq-item{border-bottom:1px solid var(--border);padding:13px 0}
+.faq-item:last-child{border-bottom:0}
+.faq-question{font-weight:700;color:var(--text);font-size:15px;margin:0 0 6px}
+.faq-answer{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+/* Fora do iframe o viewport é o ecrã, por isso position:fixed volta
+   a centrar onde deve. Era o iframe alto que punha o modal a meio do
+   documento, muito abaixo do que o cliente via. */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;
+  align-items:center;justify-content:center;z-index:9999;padding:16px}
+.overlay.show{display:flex}
+.modal{width:min(100%,560px);max-height:86vh;background:var(--card);border-radius:22px;border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column}
+.modal-head{padding:20px 22px;background:linear-gradient(180deg,#333B50,#252c3d);color:#fff;display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+html[data-theme="dark"] .modal-head{background:linear-gradient(180deg,#11161D,#0b1118)}
+.modal-head h3{margin:0;font-size:19px}
+.modal-head p{margin:6px 0 0;opacity:.82;font-size:13px}
+.modal-close{border:0;background:rgba(255,255,255,.12);color:#fff;width:32px;height:32px;border-radius:11px;cursor:pointer;font-size:19px}
+.modal-body{padding:20px 22px;overflow-y:auto}
+.receipt-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.receipt-item{background:var(--neutral-bg);border:1px solid var(--border);border-radius:14px;padding:11px 13px}
+.receipt-label{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.receipt-value{font-size:14px;font-weight:700;color:var(--text);word-break:break-word}
+.modal-actions{display:flex;gap:10px;padding:16px 22px;border-top:1px solid var(--border);flex-wrap:wrap}
+.modal-actions .btn{flex:1;min-width:140px}
+.btn-danger{background:#b42318;color:#fff}
+@media (max-width:860px){
+  .wrapper{flex-direction:column;padding:14px;gap:14px}
+  .sidebar{width:100%;flex:0 0 auto;border-radius:18px}
+  .grid{grid-template-columns:1fr}
+  .trip-meta-grid{grid-template-columns:1fr}
+  .receipt-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body data-cta-href="/" data-cta-label="Book a transfer">
+
+<main id="main">
+
+<div id="bootView" class="boot">Loading your account...</div>
+
+<div id="accountApp" class="hidden"><div class="wrapper">
+  <div class="sidebar">
+    <div class="brand">My account</div>
+    <button class="nav-btn active" id="profileTabBtn" type="button">Profile</button>
+    <button class="nav-btn" id="tripsTabBtn" type="button">My trips</button>
+    <button class="nav-btn" id="helpTabBtn" type="button">Help</button>
+    <div class="sidebar-actions">
+      <button id="supportSideBtn" class="btn btn-primary" type="button">Contact support</button>
+      <button id="newBookingBtn" class="btn btn-secondary" type="button">New booking</button>
+      <button id="logoutBtn" class="btn btn-secondary" type="button">Log out</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="agent-redirect hidden" id="agentRedirect">
+      <span>&#9733;</span>
+      <div><strong id="agentRedirectTitle">Partner account</strong>
+      <span id="agentRedirectText"></span></div>
+      <button class="go" id="agentRedirectBtn" type="button">Open partner dashboard</button>
+    </div>
+
+    <div class="tab-content active" id="profileTab">
+      <div class="grid">
+        <div class="card">
+          <h2>Profile</h2>
+          <p class="sub">Edit your personal information.</p>
+          <div class="field"><label for="fullName">Full name</label><input id="fullName" type="text" placeholder="Your name"><div id="fullNameError" class="field-error">Full name must be at least 2 characters.</div></div>
+          <div class="field"><label for="phoneNumber">Phone number</label><input id="phoneNumber" type="tel" placeholder="+351 912 345 678"><div id="phoneNumberError" class="field-error">Please enter a valid phone number.</div></div>
+          <div class="field"><label for="email">Email</label><input id="email" type="email" disabled></div>
+          <button id="saveProfileBtn" class="btn btn-secondary" type="button" style="width:100%;">Save profile</button>
+          <div id="profileError" class="msg err"></div>
+          <div id="profileSuccess" class="msg ok"></div>
+        </div>
+        <div class="card">
+          <h2>Cancellation policy</h2>
+          <div class="policy-note">
+            <span>&#10004;</span>
+            <span>Free cancellation until 24 hours before pick-up. Cancel from "My trips" and we refund you in full, automatically.</span>
+          </div>
+          <p class="sub">Within 24 hours of the pick-up time the button is no longer available, because the driver is already assigned. Contact support and we will see what we can do.</p>
+          <div class="field"><label for="lastBookingRef">Latest booking</label><input id="lastBookingRef" type="text" disabled></div>
+          <div class="field"><label for="lastBookingWhen">Date and time</label><input id="lastBookingWhen" type="text" disabled></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tripsTab">
+      <div class="card full">
+        <h2>Future trips</h2>
+        <div class="policy-note">
+          <span>&#10004;</span>
+          <span>Free cancellation until 24 hours before pick-up, refunded in full.</span>
+        </div>
+        <div id="futureTripList" class="trip-list"></div>
+      </div>
+      <div class="card full" style="margin-top:18px;">
+        <h2>Past trips</h2>
+        <p class="sub">Your completed bookings.</p>
+        <div id="pastTripList" class="trip-list"></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="helpTab">
+      <div class="card full" style="margin-bottom:16px;"><h2>Help center</h2><p class="sub" style="margin:0;">Find answers or talk to our support team.</p></div>
+      <div class="help-card">
+        <h3>Contact support</h3>
+        <p>Need help with a booking? Open a conversation and our team replies as soon as possible.</p>
+        <button class="support-cta" id="supportLink" type="button">Open a support chat</button>
+      </div>
+      <div class="help-card">
+        <h3>Frequently asked questions</h3>
+        <div class="faq-item"><h4 class="faq-question">How do I cancel a booking?</h4><p class="faq-answer">Go to "My trips" and press Cancel on the booking. It is free until 24 hours before pick-up and the refund is automatic. After that, contact support.</p></div>
+        <div class="faq-item"><h4 class="faq-question">When do I get my money back?</h4><p class="faq-answer">The refund is issued immediately on our side. Your bank usually takes 5 to 10 working days to show it.</p></div>
+        <div class="faq-item"><h4 class="faq-question">What if my flight is delayed?</h4><p class="faq-answer">If you gave us your flight number we track the arrival and adjust the pick-up. Otherwise, message support as soon as you know.</p></div>
+        <div class="faq-item"><h4 class="faq-question">Can I change the pick-up address?</h4><p class="faq-answer">Contact support with your booking reference and we will update it if the driver has not started.</p></div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+</main>
+
+<div id="receiptOverlay" class="overlay"><div class="modal">
+  <div class="modal-head"><div><h3>Receipt</h3><p id="receiptSubtitle">Booking confirmation details</p></div>
+  <button id="receiptCloseBtn" class="modal-close" type="button" aria-label="Close">&times;</button></div>
+  <div class="modal-body">
+    <div class="receipt-grid">
+      <div class="receipt-item"><div class="receipt-label">Reference</div><div class="receipt-value" id="receiptBookingId">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label">Status</div><div class="receipt-value" id="receiptStatus">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label">Date</div><div class="receipt-value" id="receiptDate">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label">Pick-up time</div><div class="receipt-value" id="receiptTime">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label">Passenger</div><div class="receipt-value" id="receiptName">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label">Flight</div><div class="receipt-value" id="receiptFlight">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label">Passengers</div><div class="receipt-value" id="receiptPassengers">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label">Price</div><div class="receipt-value" id="receiptPrice">&mdash;</div></div>
+    </div>
+    <div class="receipt-item" style="margin-bottom:10px"><div class="receipt-label">Pick-up</div><div class="receipt-value" id="receiptPickup">&mdash;</div></div>
+    <div class="receipt-item"><div class="receipt-label">Drop-off</div><div class="receipt-value" id="receiptDropoff">&mdash;</div></div>
+  </div>
+  <div class="modal-actions"><button id="receiptDownloadBtn" class="btn btn-secondary">Download PDF</button></div>
+</div></div>
+
+<div id="cancelOverlay" class="overlay"><div class="modal">
+  <div class="modal-head"><div><h3>Cancel this booking?</h3><p>Free cancellation, refunded in full.</p></div>
+  <button id="cancelCloseBtn" class="modal-close" type="button" aria-label="Close">&times;</button></div>
+  <div class="modal-body">
+    <p class="sub" id="cancelSummary" style="margin-bottom:14px;"></p>
+    <p class="sub" style="margin:0;">We will refund the full amount to the card you paid with. Your bank usually takes 5 to 10 working days to show it. This cannot be undone &mdash; you would have to book again.</p>
+    <div id="cancelError" class="msg err"></div>
+  </div>
+  <div class="modal-actions">
+    <button id="cancelDismissBtn" class="btn btn-secondary">Keep booking</button>
+    <button id="cancelConfirmBtn" class="btn btn-danger">Yes, cancel and refund</button>
+  </div>
+</div></div>
+
+<script>
+(function () {
+'use strict';
+
+var SUPABASE_URL = 'https://ujpagsccfiledbtfeyuq.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ';
+var RENDER_URL = 'https://airportlink.onrender.com';
+var SITE_ORIGIN = 'https://www.airportlink.app';
+var THEME_KEY = 'airportlink-theme';
+var FREE_CANCELLATION_HOURS = 24;
+
+var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+});
+
+var $ = function (id) { return document.getElementById(id); };
+var currentUser = null, currentReceipt = null, pendingCancel = null;
+var tripsByKey = Object.create(null);
+
+// ============================================================
+// NAVEGAÇÃO
+// Página normal: sem ponte, sem reporte de altura, sem window.top.
+// ============================================================
+function navigateTo(path) { window.location.href = path; }
+
+var bouncing = false;
+function bounceToLogin() {
+  if (bouncing) return;
+  bouncing = true;
+  window.location.href = '/login';
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function esc(v) {
+  return String(v === null || v === undefined ? '' : v)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function sameEmail(a, b) {
+  return String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase();
+}
+function formatTripDate(v) {
+  if (!v) return '\u2014';
+  var d = new Date(v);
+  return isNaN(d.getTime()) ? String(v) : d.toLocaleDateString();
+}
+// booking_time é uma coluna 'time' ("14:30:00"), separada da data.
+function formatTripTime(t) {
+  return (t && t.booking_time) ? String(t.booking_time).slice(0, 5) : '\u2014';
+}
+function tripReference(t) {
+  if (!t) return '\u2014';
+  return t.booking_reference || t.booking_id || (t.id ? String(t.id).slice(0, 8).toUpperCase() : '\u2014');
+}
+function formatPrice(price, currency) {
+  if (price === null || price === undefined || price === '') return '\u2014';
+  var amount = Number(String(price).replace(',', '.'));
+  if (isNaN(amount)) return String(price);
+  if (!currency) return amount.toFixed(2);
+  try {
+    return new Intl.NumberFormat('en-GB', { style: 'currency', currency: String(currency).toUpperCase() }).format(amount);
+  } catch (e) { return amount.toFixed(2) + ' ' + currency; }
+}
+function normalizeStatus(s) {
+  return String(s || 'pending').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+}
+
+/** Horas até à recolha. A janela de cancelamento conta a partir da
+ *  HORA DE RECOLHA, não da data em que a reserva foi feita. */
+function hoursUntilPickup(trip) {
+  if (!trip || !trip.booking_date) return NaN;
+  var pickup = new Date(trip.booking_date + 'T' + (trip.booking_time || '00:00'));
+  if (isNaN(pickup.getTime())) return NaN;
+  return (pickup.getTime() - Date.now()) / 36e5;
+}
+
+function canCancel(trip) {
+  if (!trip) return false;
+  if (normalizeStatus(trip.status) === 'cancelled') return false;
+  var h = hoursUntilPickup(trip);
+  return isFinite(h) && h >= FREE_CANCELLATION_HOURS;
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function activateTab(btn, tab) {
+  [$('profileTabBtn'), $('tripsTabBtn'), $('helpTabBtn')].forEach(function (b) { b.classList.remove('active'); });
+  [$('profileTab'), $('tripsTab'), $('helpTab')].forEach(function (t) { t.classList.remove('active'); });
+  btn.classList.add('active'); tab.classList.add('active');
+}
+$('profileTabBtn').addEventListener('click', function () { activateTab($('profileTabBtn'), $('profileTab')); });
+$('tripsTabBtn').addEventListener('click', function () { activateTab($('tripsTabBtn'), $('tripsTab')); });
+$('helpTabBtn').addEventListener('click', function () { activateTab($('helpTabBtn'), $('helpTab')); });
+
+// ============================================================
+// RECIBO
+// ============================================================
+function openReceipt(trip) {
+  currentReceipt = trip;
+  $('receiptBookingId').textContent = tripReference(trip);
+  $('receiptStatus').textContent = trip.status || 'Pending';
+  $('receiptDate').textContent = formatTripDate(trip.booking_date);
+  $('receiptTime').textContent = formatTripTime(trip);
+  $('receiptName').textContent = trip.full_name || (currentUser && currentUser.email) || '\u2014';
+  $('receiptFlight').textContent = trip.flight_number || '\u2014';
+  $('receiptPassengers').textContent = trip.passengers ? String(trip.passengers) : '\u2014';
+  $('receiptPrice').textContent = formatPrice(trip.price, trip.currency);
+  $('receiptPickup').textContent = trip.pickup || '\u2014';
+  $('receiptDropoff').textContent = trip.dropoff || '\u2014';
+  $('receiptOverlay').classList.add('show');
+}
+$('receiptCloseBtn').addEventListener('click', function () { $('receiptOverlay').classList.remove('show'); });
+$('receiptOverlay').addEventListener('click', function (e) {
+  if (e.target === $('receiptOverlay')) $('receiptOverlay').classList.remove('show');
+});
+
+$('receiptDownloadBtn').addEventListener('click', function () {
+  if (!currentReceipt || !window.jspdf || !window.jspdf.jsPDF) return;
+  var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.getWidth(), m = 18, cw = W - m * 2;
+
+  doc.setFillColor(51, 59, 80); doc.rect(0, 0, W, 28, 'F');
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(14);
+  doc.text('Airportlink', m, 15);
+  doc.setFontSize(11); doc.setFont('helvetica', 'normal');
+  doc.text('Booking receipt', m, 22);
+
+  var y = 40;
+  function line(label, value) {
+    doc.setTextColor(107, 114, 128); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+    doc.text(String(label).toUpperCase(), m, y);
+    doc.setTextColor(17, 24, 39); doc.setFontSize(11); doc.setFont('helvetica', 'normal');
+    var lines = doc.splitTextToSize(String(value || '-'), cw);
+    doc.text(lines, m, y + 5);
+    y += 6 + lines.length * 5 + 4;
+  }
+
+  line('Reference', tripReference(currentReceipt));
+  line('Status', currentReceipt.status || 'Pending');
+  line('Date and pick-up time', formatTripDate(currentReceipt.booking_date) + '  ' + formatTripTime(currentReceipt));
+  line('Passenger', currentReceipt.full_name || (currentUser && currentUser.email));
+  line('Email', currentReceipt.email || (currentUser && currentUser.email));
+  line('Flight number', currentReceipt.flight_number || '-');
+  line('Passengers', currentReceipt.passengers || '-');
+  line('Pick-up', currentReceipt.pickup || '-');
+  line('Drop-off', currentReceipt.dropoff || '-');
+
+  doc.setFillColor(51, 59, 80);
+  doc.roundedRect(m, y, cw, 16, 3, 3, 'F');
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(13);
+  doc.text('Total: ' + formatPrice(currentReceipt.price, currentReceipt.currency), m + 4, y + 11);
+  y += 26;
+
+  doc.setTextColor(107, 114, 128); doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  doc.text(doc.splitTextToSize(
+    'Free cancellation until 24 hours before pick-up, refunded in full. Cancel from your account at airportlink.app/myaccount.',
+    cw), m, y);
+
+  doc.save('airportlink-' + tripReference(currentReceipt) + '.pdf');
+});
+
+// ============================================================
+// CANCELAMENTO
+// A validação a sério é feita no servidor: verifica o JWT, confirma
+// que a reserva é do cliente, revalida a janela de 24 horas e emite
+// o reembolso pelo Stripe. O browser não escreve em bookings.
+// ============================================================
+function openCancelModal(trip, trigger) {
+  pendingCancel = trip;
+  $('cancelError').style.display = 'none';
+  $('cancelSummary').textContent =
+    tripReference(trip) + ' \u00b7 ' + formatTripDate(trip.booking_date) + ' at ' +
+    formatTripTime(trip) + ' \u00b7 ' + (trip.pickup || '?') + ' to ' + (trip.dropoff || '?');
+  $('cancelConfirmBtn').disabled = false;
+  $('cancelConfirmBtn').textContent = 'Yes, cancel and refund';
+  $('cancelOverlay').classList.add('show');
+}
+
+function closeCancelModal() {
+  $('cancelOverlay').classList.remove('show');
+  pendingCancel = null;
+}
+
+$('cancelCloseBtn').addEventListener('click', closeCancelModal);
+$('cancelDismissBtn').addEventListener('click', closeCancelModal);
+$('cancelOverlay').addEventListener('click', function (e) {
+  if (e.target === $('cancelOverlay')) closeCancelModal();
+});
+
+$('cancelConfirmBtn').addEventListener('click', async function () {
+  if (!pendingCancel) return;
+  var btn = $('cancelConfirmBtn');
+  btn.disabled = true;
+  btn.textContent = 'Cancelling...';
+  $('cancelError').style.display = 'none';
+
+  try {
+    var sessionRes = await supabaseClient.auth.getSession();
+    var token = sessionRes.data && sessionRes.data.session && sessionRes.data.session.access_token;
+    if (!token) throw new Error('Your session expired. Please sign in again.');
+
+    var res = await fetch(RENDER_URL + '/api/cancel-booking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ booking_id: pendingCancel.id })
+    });
+    var result = await res.json();
+
+    if (!res.ok || result.error) throw new Error(result.error || ('HTTP ' + res.status));
+
+    closeCancelModal();
+    await loadTrips();
+  } catch (e) {
+    console.error('cancel error:', e);
+    $('cancelError').textContent = e.message;
+    $('cancelError').style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Yes, cancel and refund';
+  }
+});
+
+// ============================================================
+// VIAGENS
+// ============================================================
+function renderTripCard(trip, key, type) {
+  var status = normalizeStatus(trip.status);
+  var statusText = trip.status || (type === 'future' ? 'pending' : 'completed');
+  var badge = type === 'future' ? 'Upcoming trip' : 'Past trip';
+
+  var actions = '';
+  if (type === 'future') {
+    var h = hoursUntilPickup(trip);
+    if (status === 'cancelled') {
+      actions = '<div class="cancel-info">This booking was cancelled and refunded.</div>';
+    } else if (canCancel(trip)) {
+      // Sem contagem decrescente: um relógio a correr ao lado do botão
+      // convida a cancelar. A política está explicada no separador Help.
+      actions = '<button class="cancel-btn" data-cancel-key="' + esc(key) + '" type="button">Cancel booking</button>';
+    } else {
+      actions = '<div class="cancel-info">This trip can no longer be cancelled online. Contact support if you need help.</div>';
+    }
+  }
+
+  // O recibo só existe para viagens passadas: antes da viagem o
+  // serviço ainda não foi prestado, e um documento chamado "recibo"
+  // criaria confusão contabilística se depois a reserva for cancelada
+  // e reembolsada.
+  var receiptButton = (type === 'past')
+    ? '<button class="icon-btn" type="button" data-trip-key="' + esc(key) + '" title="View receipt" aria-label="View receipt">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M6 2h9l5 5v15l-2-1-2 1-2-1-2 1-2-1-2 1V2z"></path><path d="M14 2v6h6"></path>' +
+      '<path d="M8 13h8"></path><path d="M8 17h8"></path></svg></button>'
+    : '';
+
+  return '<article class="trip-card">' +
+    '<div class="trip-top"><span class="trip-label">' + esc(badge) + '</span>' +
+    '<div class="trip-top-right"><span class="trip-status ' + esc(status) + '">' + esc(statusText) + '</span>' +
+    receiptButton + '</div></div>' +
+    '<div class="trip-route">' +
+    '<div class="route-stop"><span class="route-marker pickup">P</span><div>' +
+    '<div class="route-caption">Pick-up</div><div class="route-value">' + esc(trip.pickup || '\u2014') + '</div></div></div>' +
+    '<div class="route-stop"><span class="route-marker dropoff">D</span><div>' +
+    '<div class="route-caption">Drop-off</div><div class="route-value">' + esc(trip.dropoff || '\u2014') + '</div></div></div></div>' +
+    '<div class="trip-meta-grid">' +
+    '<div class="trip-meta-item"><div class="trip-meta-label">Date</div><div class="trip-meta-value">' + esc(formatTripDate(trip.booking_date)) + '</div></div>' +
+    '<div class="trip-meta-item"><div class="trip-meta-label">Pick-up time</div><div class="trip-meta-value">' + esc(formatTripTime(trip)) + '</div></div>' +
+    '<div class="trip-meta-item"><div class="trip-meta-label">Price</div><div class="trip-meta-value">' + esc(formatPrice(trip.price, trip.currency)) + '</div></div>' +
+    '</div>' +
+    (actions ? '<div class="trip-actions">' + actions + '</div>' : '') +
+    '</article>';
+}
+
+document.addEventListener('click', function (e) {
+  if (!e.target || !e.target.closest) return;
+
+  var receiptBtn = e.target.closest('[data-trip-key]');
+  if (receiptBtn) {
+    var t = tripsByKey[receiptBtn.getAttribute('data-trip-key')];
+    if (t) openReceipt(t);
+    return;
+  }
+
+  var cancelBtn = e.target.closest('[data-cancel-key]');
+  if (cancelBtn) {
+    var c = tripsByKey[cancelBtn.getAttribute('data-cancel-key')];
+    if (c) openCancelModal(c, cancelBtn);
+  }
+});
+
+function renderList(container, trips, type, emptyText) {
+  if (!trips || !trips.length) {
+    container.innerHTML = '<div class="trip-empty">' + esc(emptyText) + '</div>';
+    return;
+  }
+  container.innerHTML = trips.map(function (trip, i) {
+    var key = type + '-' + (trip.id !== undefined && trip.id !== null ? trip.id : i);
+    tripsByKey[key] = trip;
+    return renderTripCard(trip, key, type);
+  }).join('');
+}
+
+function ownedOnly(rows, email) {
+  if (!rows) return [];
+  var mine = rows.filter(function (r) { return sameEmail(r.email, email); });
+  if (mine.length !== rows.length) {
+    console.error('[SEGURANCA] A query devolveu ' + (rows.length - mine.length) +
+      ' reserva(s) de outros utilizadores. A RLS NAO esta ativa.');
+  }
+  return mine;
+}
+
+/**
+ * Lemos diretamente da bookings em vez das views. As views podem não
+ * expor booking_time nem flight_number, e precisamos dos dois para
+ * decidir se o cancelamento ainda está aberto.
+ */
+async function loadTrips() {
+  $('futureTripList').innerHTML = '<div class="trip-empty">Loading...</div>';
+  $('pastTripList').innerHTML = '<div class="trip-empty">Loading...</div>';
+  tripsByKey = Object.create(null);
+
+  var res = await supabaseClient.from('bookings')
+    .select('id, booking_id, booking_reference, pickup, dropoff, booking_date, booking_time, passengers, price, currency, status, flight_number, full_name, email, receipt_url')
+    .eq('email', currentUser.email)
+    .order('booking_date', { ascending: false });
+
+  if (res.error) {
+    console.error('trips error:', res.error);
+    $('futureTripList').innerHTML = '<div class="trip-empty">Could not load your trips.</div>';
+    $('pastTripList').innerHTML = '<div class="trip-empty">Could not load your trips.</div>';
+    return;
+  }
+
+  var rows = ownedOnly(res.data, currentUser.email);
+  var now = new Date();
+
+  var future = rows.filter(function (t) {
+    var d = new Date(t.booking_date + 'T' + (t.booking_time || '23:59'));
+    return !isNaN(d.getTime()) && d >= now;
+  }).sort(function (a, b) { return new Date(a.booking_date) - new Date(b.booking_date); });
+
+  var past = rows.filter(function (t) {
+    var d = new Date(t.booking_date + 'T' + (t.booking_time || '23:59'));
+    return isNaN(d.getTime()) || d < now;
+  });
+
+  renderList($('futureTripList'), future, 'future', 'No upcoming trips yet.');
+  renderList($('pastTripList'), past, 'past', 'No past trips yet.');
+}
+
+// ============================================================
+// CONTA
+// ============================================================
+async function loadAccount() {
+  var sessionRes = await supabaseClient.auth.getSession();
+  if (!sessionRes.data || !sessionRes.data.session) return false;
+
+  var userRes = await supabaseClient.auth.getUser();
+  if (userRes.error || !userRes.data || !userRes.data.user) return false;
+
+  currentUser = userRes.data.user;
+  $('email').value = currentUser.email || '';
+
+  // contacts não tem primary key em id; a única coluna UNIQUE é email.
+  var contactRes = await supabaseClient.from('contacts')
+    .select('id, email, full_name, phone_number')
+    .eq('email', currentUser.email).maybeSingle();
+
+  if (contactRes.error) console.error('contacts select error:', contactRes.error);
+
+  var contact = contactRes.data || {};
+  $('fullName').value = contact.full_name ||
+    (currentUser.user_metadata && currentUser.user_metadata.full_name) || '';
+  $('phoneNumber').value = contact.phone_number || '';
+
+  try { await loadTrips(); } catch (e) { console.error('loadTrips:', e); }
+
+  var last = await supabaseClient.from('bookings')
+    .select('id, booking_id, booking_reference, booking_date, booking_time, email')
+    .eq('email', currentUser.email).order('created_at', { ascending: false }).limit(1);
+
+  if (!last.error && last.data && last.data.length && sameEmail(last.data[0].email, currentUser.email)) {
+    $('lastBookingRef').value = tripReference(last.data[0]);
+    $('lastBookingWhen').value = formatTripDate(last.data[0].booking_date) + ' \u00b7 ' + formatTripTime(last.data[0]);
+  }
+
+  return true;
+}
+
+$('saveProfileBtn').addEventListener('click', async function () {
+  $('profileError').style.display = 'none';
+  $('profileSuccess').style.display = 'none';
+  $('fullNameError').style.display = 'none';
+  $('phoneNumberError').style.display = 'none';
+
+  if (!currentUser) return;
+
+  var fullName = $('fullName').value.trim();
+  var phone = $('phoneNumber').value.trim();
+  var bad = false;
+
+  if (fullName.length < 2) { $('fullNameError').style.display = 'block'; bad = true; }
+  if (phone && !/^[+()0-9\s-]{7,20}$/.test(phone)) { $('phoneNumberError').style.display = 'block'; bad = true; }
+  if (bad) {
+    $('profileError').textContent = 'Please fix the highlighted fields.';
+    $('profileError').style.display = 'block';
+    return  }
+
+  $('saveProfileBtn').disabled = true;
+  try {
+    var res = await supabaseClient.from('contacts').upsert({
+      id: currentUser.id, email: currentUser.email,
+      full_name: fullName, phone_number: phone || null
+    }, { onConflict: 'email' });
+
+    if (res.error) {
+      console.error('save profile error:', res.error);
+      $('profileError').textContent = res.error.message;
+      $('profileError').style.display = 'block';
+    } else {
+      $('profileSuccess').textContent = 'Profile updated successfully.';
+      $('profileSuccess').style.display = 'block';
+    }
+  } finally {
+    $('saveProfileBtn').disabled = false;
+  }
+});
+
+/**
+ * Um agente aprovado também pode viajar como cliente particular, por
+ * isso não bloqueamos o acesso a esta página. Apenas indicamos onde
+ * estão as reservas feitas em nome da agência, que não aparecem aqui
+ * porque ficam associadas ao booked_by e não ao email do viajante.
+ */
+async function checkAgentAccount() {
+  try {
+    var s = await supabaseClient.auth.getSession();
+    var token = s.data && s.data.session && s.data.session.access_token;
+    if (!token) return;
+
+    var res = await fetch(RENDER_URL + '/api/agent/me', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    var info = await res.json();
+    if (!res.ok || !info.status || info.status === 'none') return;
+
+    var box = $('agentRedirect');
+    box.classList.remove('pending', 'rejected');
+
+    if (info.status === 'pending') {
+      box.classList.add('pending');
+      $('agentRedirectTitle').textContent = 'Partner application under review';
+      $('agentRedirectText').textContent =
+        'We are still reviewing ' + (info.agency_name || 'your agency') +
+        '. Until it is approved this is a normal customer account: you can book at the public price, ' +
+        'but the partner rate is not applied yet. We will email you as soon as it is decided.';
+      $('agentRedirectBtn').textContent = 'View application';
+    } else if (info.status === 'rejected') {
+      box.classList.add('rejected');
+      $('agentRedirectTitle').textContent = 'Partner application not approved';
+      $('agentRedirectText').textContent =
+        'Your account works normally as a customer. If you think the decision was a mistake, ' +
+        'or your circumstances have changed, contact support.';
+      $('agentRedirectBtn').textContent = 'See details';
+    } else {
+      $('agentRedirectTitle').textContent = info.agency_name
+        ? (info.agency_name + ' \u00b7 partner account active')
+        : 'Partner account active';
+      $('agentRedirectText').textContent =
+        'Bookings you make for your travellers live in the partner dashboard, with the statement, ' +
+        'the vouchers and the ' + (info.cancellation_hours || 12) +
+        '-hour cancellation window. This page shows only trips booked under your own email.';
+      $('agentRedirectBtn').textContent = 'Open partner dashboard';
+    }
+
+    box.classList.remove('hidden');
+  } catch (e) {
+    console.log('agent check skipped:', e.message);
+  }
+}
+
+$('agentRedirectBtn').addEventListener('click', function () { navigateTo('/travelagents'); });
+
+$('supportLink').addEventListener('click', function () { navigateTo('/support'); });
+$('supportSideBtn').addEventListener('click', function () { navigateTo('/support'); });
+$('newBookingBtn').addEventListener('click', function () { navigateTo('/'); });
+
+$('logoutBtn').addEventListener('click', async function () {
+  $('logoutBtn').disabled = true;
+  try { await supabaseClient.auth.signOut(); } catch (e) {}
+  window.location.href = '/login';
+});
+
+supabaseClient.auth.onAuthStateChange(function (event) {
+  if (event === 'SIGNED_OUT') bounceToLogin();
+});
+
+(async function boot() {
+  var ok = false;
+  try { ok = await loadAccount(); } catch (e) { console.error('boot error:', e); }
+
+  if (!ok) {
+    $('bootView').textContent = 'Session expired. Redirecting to login...';
+    return bounceToLogin();
+  }
+
+  $('bootView').classList.add('hidden');
+  $('accountApp').classList.remove('hidden');
+  checkAgentAccount();
+  console.log('[myaccount] carregado:', currentUser.email);
+})();
+})();
+</script>
+</body>
+</html>
