@@ -18,6 +18,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/layout.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -126,8 +130,11 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
   var SUPABASE_ANON_KEY = 'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ';
 
   var ACCOUNT_PATH = '/myaccount';
+  var AGENT_PATH = '/travelagents';
+  var ADMIN_PATH = '/admin';
   var CREATE_ACCOUNT_PATH = '/createaccount';
   var RESET_PATH = '/resetpassword';
+  var API = 'https://airportlink.onrender.com';
 
   var supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
@@ -168,6 +175,50 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
   // Página normal: sem ponte para iframe, sem window.top.
   // =========================================================
   function navigateTo(path) { window.location.href = path; }
+
+  /**
+   * Para onde levar a pessoa depois de entrar.
+   *
+   * Um agente aprovado aterrava no painel de cliente e tinha de
+   * reparar numa faixa a dizer que o painel dele era noutro sítio.
+   * Todos os dias. Agora vai direto ao que lhe interessa.
+   *
+   * Isto é só encaminhamento. Quem pode ver o quê continua a ser
+   * decidido no servidor e na RLS — mudar o destino no browser não
+   * dá acesso a nada.
+   */
+  async function homeForUser() {
+    try {
+      var s = await supabaseClient.auth.getSession();
+      var token = s.data && s.data.session && s.data.session.access_token;
+      if (!token) return ACCOUNT_PATH;
+
+      var user = s.data.session.user;
+
+      var contact = await supabaseClient.from('contacts')
+        .select('is_admin').eq('id', user.id).maybeSingle();
+
+      if (!contact.error && contact.data && contact.data.is_admin === true) {
+        return ADMIN_PATH;
+      }
+
+      var res = await fetch(API + '/api/agent/me', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+
+      if (res.ok) {
+        var info = await res.json();
+        // Só aprovados. Uma candidatura pendente ainda é uma conta
+        // de cliente normal, e mandá-la para o painel de agente
+        // prometia um acesso que ainda não existe.
+        if (info && info.status === 'approved') return AGENT_PATH;
+      }
+    } catch (e) {
+      console.log('role lookup skipped:', e.message);
+    }
+
+    return ACCOUNT_PATH;
+  }
 
   // Se viemos de uma página que pediu autenticação, voltamos lá.
   function nextPath() {
@@ -271,7 +322,19 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
       }
 
       showSuccess(loginErrorEl, loginSuccessEl, 'Signed in. Taking you to your account...');
-      navigateTo(nextPath());
+
+      // Um next= explícito ganha ao destino por perfil: quem foi
+      // mandado para aqui a partir de uma página quer voltar lá.
+      var explicit = /[?&]next=/.test(window.location.search);
+      var home = await homeForUser();
+
+      // Pista cosmética para o cabeçalho. Não autoriza nada.
+      try {
+        localStorage.setItem('airportlink-role-hint',
+          home === '/travelagents' ? 'agent' : (home === '/admin' ? 'admin' : 'customer'));
+      } catch (e) {}
+
+      navigateTo(explicit ? nextPath() : home);
     } catch (e) {
       console.error('login error:', e);
       showError(loginErrorEl, loginSuccessEl, 'An unexpected error occurred. Please try again.');
@@ -344,7 +407,8 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
       var res = await supabaseClient.auth.getSession();
       if (res.data && res.data.session) {
         bootView.textContent = 'Already signed in. Taking you to your account...';
-        navigateTo(nextPath());
+        var explicit = /[?&]next=/.test(window.location.search);
+        navigateTo(explicit ? nextPath() : await homeForUser());
         return;
       }
     } catch (e) {
