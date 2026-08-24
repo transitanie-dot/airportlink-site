@@ -24,6 +24,7 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/layout.js" defer></script>
+<script src="/assets/phone.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
@@ -80,7 +81,9 @@ h2{margin:0 0 6px;font-size:22px;color:var(--text)}
 .sub{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.5}
 .field{margin-bottom:14px}
 label{display:block;margin:0 0 7px;font-size:13px;font-weight:700;color:var(--text)}
-input{width:100%;padding:13px 15px;border:1px solid var(--border);border-radius:13px;background:var(--card);color:var(--text);font-size:15px;outline:none}
+/* O select do prefixo não é um input: sem o incluir aqui, ficava
+   quadrado ao lado de um campo arredondado. */
+input,select{width:100%;padding:13px 15px;border:1px solid var(--border);border-radius:13px;background:var(--card);color:var(--text);font-size:15px;outline:none}
 html[data-theme="dark"] input{background:#0f141c}
 input:disabled{opacity:.65}
 .field-error{display:none;margin-top:6px;color:var(--danger);font-size:13px}
@@ -131,17 +134,7 @@ html[data-theme="dark"] .route-marker.dropoff{background:#e7ebf2;color:#11161D}
 .trip-meta-item{background:var(--neutral-bg);border:1px solid var(--border);border-radius:13px;padding:11px 12px}
 .trip-meta-label{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
 .trip-meta-value{font-size:14px;font-weight:700;color:var(--text);word-break:break-word}
-/* Um seletor com o país escrito por extenso vale mais do que uma
-   caixa onde é preciso saber o indicativo de cabeça. */
-.phone-row{display:grid;grid-template-columns:minmax(0,196px) minmax(0,1fr);gap:10px}
-.phone-row select,.phone-row input{width:100%}
-.phone-row select{text-overflow:ellipsis;padding-right:34px;appearance:none;-webkit-appearance:none;
-  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
-    linear-gradient(135deg,var(--muted) 50%,transparent 50%);
-  background-position:calc(100% - 19px) calc(50% + 2px),calc(100% - 14px) calc(50% + 2px);
-  background-size:5px 5px,5px 5px;background-repeat:no-repeat}
 .field-note{margin:7px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5}
-@media (max-width:560px){.phone-row{grid-template-columns:1fr}}
 .pay-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;
   padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted);line-height:1.5}
 .pay-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;
@@ -229,7 +222,7 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
           <p class="sub">Edit your personal information.</p>
           <div class="field"><label for="fullName">Full name</label><input id="fullName" type="text" placeholder="Your name"><div id="fullNameError" class="field-error">Full name must be at least 2 characters.</div></div>
           <div class="field"><label for="phoneNumber">Phone number</label>
-            <div class="phone-row">
+            <div data-phone-mount>
               <select id="phoneCode" aria-label="Country dialling code">
               <option value="351">Portugal +351</option>
               <option value="34">Spain +34</option>
@@ -399,6 +392,7 @@ var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KE
 
 var $ = function (id) { return document.getElementById(id); };
 var currentUser = null, currentReceipt = null, pendingCancel = null;
+var phoneField = null;
 var tripsByKey = Object.create(null);
 
 // ============================================================
@@ -806,28 +800,15 @@ async function loadAccount() {
   var contact = contactRes.data || {};
   $('fullName').value = contact.full_name ||
     (currentUser.user_metadata && currentUser.user_metadata.full_name) || '';
-  // O número está guardado inteiro. Separamos o indicativo para o
-  // seletor, tentando os mais longos primeiro: +351 tem de ganhar
-  // ao +35, senão a Croácia vira Chipre.
-  var stored = String(contact.phone_number || '').trim();
-  var codes = Array.prototype.map.call($('phoneCode').options, function (o) { return o.value; })
-    .sort(function (a, b) { return b.length - a.length; });
-
-  var matched = null;
-  if (stored.charAt(0) === '+') {
-    var digits = stored.slice(1).replace(/[^\d]/g, '');
-    for (var i = 0; i < codes.length; i++) {
-      if (digits.indexOf(codes[i]) === 0) { matched = codes[i]; break; }
-    }
+  // O componente separa o prefixo do número, tentando os prefixos
+  // mais longos primeiro — +351 tem de ganhar ao +35, senão Portugal
+  // vira Chipre.
+  if (!phoneField && window.AirportlinkPhone) {
+    phoneField = window.AirportlinkPhone.mount({ select: 'phoneCode', input: 'phoneNumber' });
   }
 
-  if (matched) {
-    $('phoneCode').value = matched;
-    $('phoneNumber').value = stored.slice(1).replace(/[^\d\s-]/g, '')
-      .replace(new RegExp('^\\s*' + matched + '\\s*'), '').trim();
-  } else {
-    $('phoneNumber').value = stored;
-  }
+  if (phoneField) phoneField.setValue(contact.phone_number || '');
+  else $('phoneNumber').value = contact.phone_number || '';
 
   try { await loadTrips(); } catch (e) { console.error('loadTrips:', e); }
 
@@ -853,11 +834,18 @@ $('saveProfileBtn').addEventListener('click', async function () {
 
   var fullName = $('fullName').value.trim();
   var national = $('phoneNumber').value.trim();
-  var phone = national ? ('+' + $('phoneCode').value + ' ' + national) : '';
+  var phone = phoneField
+    ? phoneField.full()
+    : (national ? '+' + $('phoneCode').value + ' ' + national : '');
   var bad = false;
 
   if (fullName.length < 2) { $('fullNameError').style.display = 'block'; bad = true; }
-  if (national && !/^[()0-9\s-]{6,18}$/.test(national)) { $('phoneNumberError').style.display = 'block'; bad = true; }
+  // O comprimento é verificado pelo componente, que avisa em vez de
+  // bloquear. Aqui só recusamos o que não é de todo um número.
+  if (national && !/^[()0-9\s-]{5,20}$/.test(national)) {
+    $('phoneNumberError').style.display = 'block';
+    bad = true;
+  }
   if (bad) {
     $('profileError').textContent = 'Please fix the highlighted fields.';
     $('profileError').style.display = 'block';
