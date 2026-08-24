@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Sign in | Airportlink</title>
+<meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('airportlink-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/layout.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* Só o que é específico das páginas de conta. O resto vive em
+   /assets/site.css e é partilhado por todas. */
+.auth-page{display:flex;align-items:center;justify-content:center;
+  min-height:calc(100vh - var(--header-h) - 220px);padding:40px 20px}
+.auth-card{width:100%;max-width:440px;background:var(--surface);
+  border:1px solid var(--rule);border-radius:26px;padding:34px;
+  box-shadow:0 18px 44px rgba(20,26,40,.08)}
+html[data-theme="dark"] .auth-card{box-shadow:0 18px 44px rgba(0,0,0,.4)}
+.auth-card h1{font-family:var(--display);font-weight:700;font-size:28px;
+  letter-spacing:-.03em;margin:0 0 8px}
+.auth-card .sub{margin:0 0 26px;color:var(--muted);font-size:14.5px;line-height:1.6}
+.field{margin-bottom:16px}
+.field label{display:block;font-family:var(--mono);font-size:10.5px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.field input{width:100%;height:50px;padding:0 15px;border:1px solid var(--rule-strong);
+  border-radius:14px;background:var(--field);outline:none;font-size:15px;font-family:var(--body)}
+.field input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,118,110,.16)}
+.field .help{margin-top:7px;font-size:12.5px;color:var(--muted);line-height:1.5}
+.btn{display:inline-flex;align-items:center;justify-content:center;width:100%;height:50px;
+  padding:0 22px;border:0;border-radius:14px;background:var(--ink);color:#fff;
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;cursor:pointer;transition:transform .12s ease}
+.btn:hover:not(:disabled){transform:translateY(-1px)}
+.btn:disabled,.btn.loading{opacity:.55;cursor:not-allowed;pointer-events:none}
+.btn.teal{background:var(--teal);color:#fff}
+.btn.line{background:transparent;color:var(--text);border:1px solid var(--rule-strong);margin-top:10px}
+html[data-theme="dark"] .btn{background:#E9EDF3;color:#141A28}
+html[data-theme="dark"] .btn.teal{background:var(--teal);color:#fff}
+html[data-theme="dark"] .btn.line{background:transparent;color:var(--text)}
+.msg{display:none;margin-top:16px;padding:13px 16px;border-radius:14px;font-size:14px;line-height:1.55}
+.err{background:var(--err-bg);color:var(--err-text);border:1px solid var(--err-rule)}
+.ok{background:var(--ok-bg);color:var(--ok-text);border:1px solid var(--ok-rule)}
+.links{display:flex;justify-content:space-between;gap:12px;margin-top:18px;flex-wrap:wrap}
+.linkish{background:none;border:0;padding:0;color:var(--teal);font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-family:var(--body)}
+html[data-theme="dark"] .linkish{color:var(--amber)}
+.boot{display:flex;align-items:center;justify-content:center;min-height:180px;
+  color:var(--muted);font-size:14px;text-align:center}
+.hidden{display:none!important}
+</style>
+</head>
+<body data-cta-href="/" data-cta-label="Book a transfer">
+
+<main id="main">
+<div class="auth-page">
+  <div class="auth-card">
+    <div id="bootView" class="boot">Checking your session...</div>
+
+    <div id="loginView" class="hidden">
+      <h1>Sign in</h1>
+      <p class="sub">Your trips, receipts and support conversations are inside.</p>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="you@email.com" autocomplete="email">
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Your password" autocomplete="current-password">
+      </div>
+
+      <button id="loginBtn" class="btn" type="button">Sign in</button>
+
+      <div id="loginError" class="msg err"></div>
+      <div id="loginSuccess" class="msg ok"></div>
+
+      <div class="links">
+        <button class="linkish" id="signupLink" type="button">Create an account</button>
+        <button class="linkish" id="forgotLink" type="button">Forgot your password?</button>
+      </div>
+    </div>
+
+    <div id="forgotView" class="hidden">
+      <h1>Forgot password</h1>
+      <p class="sub">Enter your email and we will send you a reset link.</p>
+
+      <div class="field">
+        <label for="resetEmail">Email</label>
+        <input id="resetEmail" type="email" placeholder="you@email.com" autocomplete="email">
+      </div>
+
+      <button id="sendVerificationBtn" class="btn teal" type="button">Send reset link</button>
+
+      <div id="resetError" class="msg err"></div>
+      <div id="resetSuccess" class="msg ok"></div>
+
+      <div class="links"><button class="linkish" id="backToLoginLink" type="button">Back to sign in</button></div>
+    </div>
+  </div>
+</div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  // =========================================================
+  // CONFIG
+  // =========================================================
+  var SUPABASE_URL = 'https://ujpagsccfiledbtfeyuq.supabase.co';
+  var SUPABASE_ANON_KEY = 'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ';
+
+  var ACCOUNT_PATH = '/myaccount';
+  var CREATE_ACCOUNT_PATH = '/createaccount';
+  var RESET_PATH = '/resetpassword';
+
+  var supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY,
+    {
+      auth: {
+        persistSession: true,     // a sessão vive aqui, não numa flag manual
+        autoRefreshToken: true,
+        detectSessionInUrl: false
+      }
+    }
+  );
+
+  // =========================================================
+  // DOM
+  // =========================================================
+  var bootView = document.getElementById('bootView');
+  var loginView = document.getElementById('loginView');
+  var forgotView = document.getElementById('forgotView');
+
+  var emailEl = document.getElementById('email');
+  var passwordEl = document.getElementById('password');
+  var loginBtn = document.getElementById('loginBtn');
+  var loginErrorEl = document.getElementById('loginError');
+  var loginSuccessEl = document.getElementById('loginSuccess');
+
+  var resetEmailEl = document.getElementById('resetEmail');
+  var sendVerificationBtn = document.getElementById('sendVerificationBtn');
+  var resetErrorEl = document.getElementById('resetError');
+  var resetSuccessEl = document.getElementById('resetSuccess');
+
+  var signupLink = document.getElementById('signupLink');
+  var forgotLink = document.getElementById('forgotLink');
+  var backToLoginLink = document.getElementById('backToLoginLink');
+
+  // =========================================================
+  // NAVEGAÇÃO
+  // Página normal: sem ponte para iframe, sem window.top.
+  // =========================================================
+  function navigateTo(path) { window.location.href = path; }
+
+  // Se viemos de uma página que pediu autenticação, voltamos lá.
+  function nextPath() {
+    var m = /[?&]next=([^&]+)/.exec(window.location.search);
+    if (!m) return ACCOUNT_PATH;
+    var p = decodeURIComponent(m[1]);
+    // Só caminhos internos: um "next" externo seria um vector de
+    // phishing — o utilizador confia no nosso domínio e sai para outro.
+    return /^\/[A-Za-z0-9/_-]*$/.test(p) ? p : ACCOUNT_PATH;
+  }
+
+  // =========================================================
+  // UI HELPERS
+  // =========================================================
+  function showError(errorEl, successEl, text) {
+    errorEl.textContent = text;
+    errorEl.style.display = 'block';
+    successEl.style.display = 'none';
+  }
+
+  function showSuccess(errorEl, successEl, text) {
+    successEl.textContent = text;
+    successEl.style.display = 'block';
+    errorEl.style.display = 'none';
+  }
+
+  function show(view) {
+    bootView.classList.add('hidden');
+    loginView.classList.toggle('hidden', view !== 'login');
+    forgotView.classList.toggle('hidden', view !== 'forgot');
+  }
+
+  function showLogin() {
+    show('login');
+    loginErrorEl.style.display = 'none';
+    loginSuccessEl.style.display = 'none';
+  }
+
+  function showForgot() {
+    show('forgot');
+    resetErrorEl.style.display = 'none';
+    resetSuccessEl.style.display = 'none';
+    resetEmailEl.value = emailEl.value.trim();
+    resetEmailEl.focus();
+  }
+
+  function setBusy(button, busy) {
+    button.classList.toggle('loading', busy);
+    button.disabled = busy;
+  }
+
+  // =========================================================
+  // LINKS
+  // =========================================================
+  signupLink.addEventListener('click', function (e) {
+    e.preventDefault();
+    navigateTo(CREATE_ACCOUNT_PATH);
+  });
+
+  forgotLink.addEventListener('click', function (e) {
+    e.preventDefault();
+    showForgot();
+  });
+
+  backToLoginLink.addEventListener('click', function (e) {
+    e.preventDefault();
+    showLogin();
+  });
+
+  // =========================================================
+  // LOGIN
+  // =========================================================
+  loginBtn.addEventListener('click', async function () {
+    loginErrorEl.style.display = 'none';
+    loginSuccessEl.style.display = 'none';
+
+    var email = emailEl.value.trim();
+    var password = passwordEl.value;
+
+    if (!email || !password) {
+      showError(loginErrorEl, loginSuccessEl, 'Please fill in both fields.');
+      return;
+    }
+
+    setBusy(loginBtn, true);
+
+    try {
+      var result = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (result.error) {
+        showError(loginErrorEl, loginSuccessEl, result.error.message || 'Sign in failed.');
+        return;
+      }
+
+      if (!result.data || !result.data.session) {
+        showError(loginErrorEl, loginSuccessEl, 'Sign in failed: no session returned.');
+        return;
+      }
+
+      showSuccess(loginErrorEl, loginSuccessEl, 'Signed in. Taking you to your account...');
+      navigateTo(nextPath());
+    } catch (e) {
+      console.error('login error:', e);
+      showError(loginErrorEl, loginSuccessEl, 'An unexpected error occurred. Please try again.');
+    } finally {
+      setBusy(loginBtn, false);
+    }
+  });
+
+  // =========================================================
+  // RESET DE PASSWORD (a sério — envia mesmo email)
+  // =========================================================
+  sendVerificationBtn.addEventListener('click', async function () {
+    resetErrorEl.style.display = 'none';
+    resetSuccessEl.style.display = 'none';
+
+    var email = resetEmailEl.value.trim();
+
+    if (!email) {
+      showError(resetErrorEl, resetSuccessEl, 'Please enter your email.');
+      return;
+    }
+
+    setBusy(sendVerificationBtn, true);
+
+    try {
+      var res = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + RESET_PATH
+      });
+
+      if (res.error) {
+        console.error('reset error:', res.error);
+      }
+
+      // Resposta genérica de propósito: não revelamos se o email existe.
+      showSuccess(
+        resetErrorEl,
+        resetSuccessEl,
+        'If an account exists for that email, a reset link has been sent.'
+      );
+    } catch (e) {
+      console.error('reset error:', e);
+      showSuccess(
+        resetErrorEl,
+        resetSuccessEl,
+        'If an account exists for that email, a reset link has been sent.'
+      );
+    } finally {
+      setBusy(sendVerificationBtn, false);
+    }
+  });
+
+  // =========================================================
+  // TECLADO
+  // =========================================================
+  passwordEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') loginBtn.click();
+  });
+  emailEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') passwordEl.focus();
+  });
+  resetEmailEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') sendVerificationBtn.click();
+  });
+
+  // =========================================================
+  // ARRANQUE — se já houver JWT válido, salta o formulário
+  // =========================================================
+  (async function boot() {
+    try {
+      var res = await supabaseClient.auth.getSession();
+      if (res.data && res.data.session) {
+        bootView.textContent = 'Already signed in. Taking you to your account...';
+        navigateTo(nextPath());
+        return;
+      }
+    } catch (e) {
+      console.error('boot error:', e);
+    }
+
+    showLogin();
+    emailEl.focus();
+  })();
+})();
+</script>
+</body>
+</html>
