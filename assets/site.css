@@ -159,6 +159,11 @@ html[data-theme="dark"] .hero::after{background:
   radial-gradient(720px 360px at 84% 6%, rgba(232,163,61,.10), transparent 64%),
   radial-gradient(520px 320px at 2% 88%, rgba(15,118,110,.16), transparent 62%)}
 .hero-inner{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 20px}
+/* O ::after do hero é uma camada de cor por cima. Sem isto, qualquer
+   página que use .wrap em vez de .hero-inner fica com o conteúdo
+   por baixo do gradiente e parece desbotada. */
+.hero > .wrap{position:relative;z-index:1}
+.hero-grid{position:relative;z-index:1}
 .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
 .kicker{display:inline-flex;align-items:center;gap:9px;color:var(--amber-ink);margin-bottom:14px}
 .kicker .bar{width:26px;height:2px;background:var(--amber)}
@@ -224,4 +229,46 @@ html[data-theme="dark"] .proof svg{color:var(--amber)}
   .wrap,.hero-inner{padding:0 14px}
   .hero{padding:36px 0 20px}
   .band{padding:44px 0}
+}
+
+
+/* ============================================================
+   BARRA LATERAL DAS PÁGINAS DE CONTA
+   Usada pelo /myaccount e pelo /support. Era um bloco azul-escuro
+   que agora choca com o cabeçalho e o rodapé; passa a ser um cartão
+   do sistema, com as mesmas etiquetas em monoespaçado.
+   ============================================================ */
+.side{width:250px;flex:0 0 250px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:24px;padding:20px 16px;display:flex;flex-direction:column;gap:4px;
+  position:sticky;top:calc(var(--header-h) + 20px)}
+.side-title{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);padding:4px 12px 12px}
+.side-item{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  padding:11px 13px;border:0;border-radius:13px;background:transparent;color:var(--text);
+  font-size:14.5px;font-weight:500;cursor:pointer;transition:background .15s ease,color .15s ease}
+.side-item:hover{background:var(--surface-2)}
+.side-item.active{background:var(--teal-soft);color:var(--teal);font-weight:700}
+html[data-theme="dark"] .side-item.active{color:var(--amber)}
+.side-item svg{width:17px;height:17px;flex:0 0 auto;opacity:.9}
+.side-actions{margin-top:18px;padding-top:18px;border-top:1px solid var(--rule);
+  display:flex;flex-direction:column;gap:9px}
+.side-btn{display:inline-flex;align-items:center;justify-content:center;height:46px;
+  border:0;border-radius:14px;background:var(--ink);color:#fff;font-family:var(--mono);
+  font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  cursor:pointer;transition:transform .12s ease}
+.side-btn:hover:not(:disabled){transform:translateY(-1px)}
+.side-btn:disabled{opacity:.55;cursor:not-allowed}
+.side-btn.teal{background:var(--teal);color:#fff}
+.side-btn.line{background:transparent;color:var(--text);border:1px solid var(--rule-strong)}
+html[data-theme="dark"] .side-btn{background:#E9EDF3;color:#141A28}
+html[data-theme="dark"] .side-btn.teal{background:var(--teal);color:#fff}
+html[data-theme="dark"] .side-btn.line{background:transparent;color:var(--text)}
+@media (max-width:860px){
+  .side{width:100%;flex:0 0 auto;position:static;flex-direction:row;flex-wrap:wrap;
+    align-items:center;gap:8px;padding:14px}
+  .side-title{display:none}
+  .side-item{width:auto;flex:1 1 auto;justify-content:center;min-width:120px}
+  .side-actions{width:100%;margin-top:10px;padding-top:14px;
+    flex-direction:row;flex-wrap:wrap}
+  .side-actions .side-btn{flex:1 1 140px}
 }
