@@ -1,10 +1,15 @@
 User-agent: *
 Allow: /
 
-# O portal de parceiros é uma aplicação, não conteúdo.
-Disallow: /success
+# Páginas de conta e de fluxo de pagamento: não são conteúdo.
 Disallow: /myaccount
-Disallow: /support
-Disallow: /resetpassword
+Disallow: /login
+Disallow: /createaccount
+Disallow: /forgotpassword
+Disallow: /success
+Disallow: /thankyou
+Disallow: /cancel
+Disallow: /failedpayment
+Disallow: /admin
 
 Sitemap: https://www.airportlink.app/sitemap.xml
