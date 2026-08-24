@@ -36,7 +36,35 @@
     customer: { href: '/myaccount', label: 'My account' }
   };
 
-  var account = ACCOUNT_LINK[roleHint()] || ACCOUNT_LINK.customer;
+  /**
+   * Há sessão?
+   *
+   * O supabase-js guarda o token no localStorage numa chave que
+   * começa por 'sb-' e acaba em '-auth-token'. Procuramos por ela em
+   * vez de carregar o supabase-js só para isto — o cabeçalho tem de
+   * aparecer antes do primeiro paint e não pode esperar por rede.
+   *
+   * Cosmético: decide o texto de um botão. Quem entra numa página de
+   * conta sem sessão é reencaminhado por essa página, não por aqui.
+   */
+  function hasSession() {
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key && key.indexOf('sb-') === 0 && key.indexOf('-auth-token') !== -1) {
+          var raw = localStorage.getItem(key);
+          if (raw && raw.length > 20) return true;
+        }
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  var signedIn = hasSession();
+
+  var account = signedIn
+    ? (ACCOUNT_LINK[roleHint()] || ACCOUNT_LINK.customer)
+    : { href: '/login', label: 'Sign in' };
 
   // ---------- o menu vive aqui ----------
   var NAV = [
@@ -47,12 +75,17 @@
   ];
 
   var FOOTER = [
-    { title: 'Book', links: [
-      { href: '/#book',         label: 'Get a price' },
-      { href: account.href,     label: account.label },
-      { href: '/login',         label: 'Sign in' },
-      { href: '/createaccount', label: 'Create account' }
-    ]},
+    { title: 'Book', links: signedIn
+      ? [
+          { href: '/#book',     label: 'Get a price' },
+          { href: account.href, label: account.label }
+        ]
+      : [
+          { href: '/#book',         label: 'Get a price' },
+          { href: '/login',         label: 'Sign in' },
+          { href: '/createaccount', label: 'Create account' }
+        ]
+    },
     { title: 'Partners', links: [
       { href: '/travelagents',                   label: 'Travel agents' },
       { href: '/drivers',                        label: 'Drive with us' },
@@ -120,6 +153,7 @@
   menu.innerHTML =
     NAV.map(function (i) { return '<a href="' + esc(i.href) + '">' + esc(i.label) + '</a>'; }).join('') +
     '<a href="' + esc(account.href) + '">' + esc(account.label) + '</a>' +
+    (signedIn ? '' : '<a href="/createaccount">Create account</a>') +
     '<a href="/privacypolicy">Privacy policy</a>' +
     '<a class="hbtn amber" href="' + esc(ctaHref) + '">' + esc(ctaLabel) + '</a>';
 
