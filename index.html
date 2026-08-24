@@ -32,6 +32,7 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/layout.js" defer></script>
+<script src="/assets/phone.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <!-- Dados estruturados. O texto tem de ser igual ao visível na
@@ -188,11 +189,6 @@ html[data-theme="dark"] .agent-note strong{color:var(--amber)}
 .form-card{background:var(--surface-2);border:1px solid var(--rule);border-radius:22px;padding:18px}
 .field{margin-bottom:14px;position:relative}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-/* Um seletor com o país escrito por extenso vale mais do que uma
-   caixa vazia com um "+": ninguém sabe o indicativo da Croácia de
-   cabeça, e escrevê-lo mal só se descobre no dia da viagem. */
-.phone-row{display:grid;grid-template-columns:minmax(0,196px) minmax(0,1fr);gap:10px}
-.phone-row select{width:100%;text-overflow:ellipsis}
 .label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
 label{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .hint{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--rule-strong)}
@@ -201,7 +197,10 @@ label{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1
 .pin.pickup{background:var(--teal)}
 .pin.dropoff{background:var(--ink)}
 html[data-theme="dark"] .pin.dropoff{background:#E9EDF3}
-input[type="text"],input[type="email"],input[type="password"],input[type="date"],input[type="time"],select,input[type="number"]{
+/* type="tel" faltava nesta lista, e por isso o campo do telefone
+   nascia sem cantos arredondados. */
+input[type="text"],input[type="email"],input[type="password"],input[type="date"],
+input[type="time"],input[type="number"],input[type="tel"],select{
   width:100%;height:52px;border-radius:15px;border:1px solid var(--rule-strong);padding:0 15px;
   font-size:15px;background:var(--field);outline:none;font-family:var(--body)}
 #pickup,#dropoff{padding-left:34px}
@@ -536,7 +535,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
             <div class="field hidden" id="passengerEmailField"><div class="label-row"><label for="passengerEmail">Passenger email</label><span class="hint">Optional</span></div><input id="passengerEmail" type="email" placeholder="If they should get the details too" /></div>
             <div class="field">
               <div class="label-row"><label for="phoneNumber" id="phoneLabel">Phone</label><span class="hint">Required</span></div>
-              <div class="phone-row">
+              <div data-phone-mount>
                 <select id="phoneCode" aria-label="Country dialling code">
                   <option value="351">Portugal +351</option>
                   <option value="34">Spain +34</option>
@@ -780,6 +779,7 @@ var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KE
 var $ = function (id) { return document.getElementById(id); };
 var currentUser = null, authMode = 'signin', agentInfo = null;
 var payMode = 'now', payOptions = { pay_later: false, reason: null, charge_lead_hours: 48 };
+var phoneField = null;
 
 // ============================================================
 // ALTURA E TEMA
@@ -1277,6 +1277,16 @@ async function initMap() {
   setupAutocomplete('dropoff', 'dropoffSuggestions', 'dropoff');
 
   $('phoneCode').value = PHONE_CODES[window.__country] || '351';
+
+  // O campo de telefone com bandeira e verificação de dígitos. Monta
+  // por cima do select, que continua a ser o que o resto lê.
+  if (window.AirportlinkPhone) {
+    phoneField = window.AirportlinkPhone.mount({
+      select: 'phoneCode',
+      input: 'phoneNumber',
+      country: window.__country || 'PT'
+    });
+  }
   $('currency').value = COUNTRY_CURRENCY[(window.__country || '').toUpperCase()] || 'EUR';
 
   ['travelDate', 'travelTime', 'passengers'].forEach(function (id) {
@@ -1674,8 +1684,10 @@ async function onSignedIn(user) {
   if (!contact.error && contact.data) {
     if (contact.data.full_name) $('fullName').value = contact.data.full_name;
     if (contact.data.phone_number && !$('phoneNumber').value) {
-      var digits = String(contact.data.phone_number).replace(/[^\d+]/g, '');
-      $('phoneNumber').value = digits.replace(/^\+?\d{1,3}\s?/, '') || digits;
+      // O componente sabe separar o prefixo do número, incluindo o
+      // caso dos prefixos de três dígitos.
+      if (phoneField) phoneField.setValue(contact.data.phone_number);
+      else $('phoneNumber').value = String(contact.data.phone_number).replace(/[^\d]/g, '');
     }
   }
   if (!$('fullName').value && user.user_metadata && user.user_metadata.full_name) {
@@ -1716,6 +1728,13 @@ $('confirmBtn').addEventListener('click', function () {
   var phoneNumber = $('phoneNumber').value.trim();
   if (!fullName || !phoneCode || !phoneNumber) {
     return setStatus('Please fill in your name and phone number.', true);
+  }
+
+  // O aviso do comprimento não bloqueia a reserva — um plano de
+  // numeração muda, e recusar um número válido custa mais do que
+  // aceitar um errado. Mas vale a pena dizer antes de pagar.
+  if (phoneField && !phoneField.validate()) {
+    setStatus('Check the phone number — the driver calls it on the day.');
   }
 
   // full_name e phone são sempre de quem VIAJA — é quem o motorista
