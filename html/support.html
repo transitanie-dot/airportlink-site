@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Support | Airportlink</title>
+<meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('airportlink-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/layout.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* As variáveis antigas desta página passam a apontar para os tokens
+   partilhados em /assets/site.css. */
+:root{
+  --card:var(--surface);
+  --primary:var(--ink);
+  --primary-soft:var(--surface-2);
+  --border:var(--rule);
+  --shadow:0 14px 34px rgba(20,26,40,.07);
+  --success:var(--ok-text);--success-bg:var(--ok-bg);
+  --warning:var(--warn-text);--warning-bg:var(--warn-bg);
+  --neutral-bg:var(--surface-2);
+  --input-bg:var(--field);
+}
+html[data-theme="dark"]{
+  --primary:#E9EDF3;
+  --shadow:0 14px 34px rgba(0,0,0,.34);
+}
+html,body{font-family:var(--body)}
+.wrapper{max-width:1180px;margin:0 auto}
+.brand{font-family:var(--display)}
+.chat-list-head h2{font-family:var(--display);font-weight:700;letter-spacing:-.02em}
+.chat-panel-head h3,.chat-empty-state h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em}
+.sidebar{background:var(--ink)}
+html[data-theme="dark"] .sidebar{background:var(--surface);border:1px solid var(--rule)}
+.nav-btn.active{background:rgba(255,255,255,.12)}
+html[data-theme="dark"] .nav-btn.active{background:var(--surface-2)}
+.btn-primary{background:#fff;color:var(--ink)}
+.btn-secondary{background:rgba(255,255,255,.14);color:#fff}
+html[data-theme="dark"] .btn-primary{background:#E9EDF3;color:#141A28}
+html[data-theme="dark"] .btn-secondary{background:var(--surface-2);color:var(--text)}
+.status-badge{font-family:var(--mono);font-weight:600;letter-spacing:.06em}
+.chat-msg.customer{background:var(--ink)}
+html[data-theme="dark"] .chat-msg.customer{background:var(--surface-2);color:var(--text)}
+.send-btn{background:var(--teal);font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase}
+html[data-theme="dark"] .send-btn{background:var(--amber);color:#141A28}
+.modal-head{background:var(--ink)}
+html[data-theme="dark"] .modal-head{background:#0B1118}
+textarea,select,input{font-family:var(--body)}
+
+.wrapper{display:flex;padding:20px;gap:20px;align-items:flex-start}
+.sidebar{width:240px;flex:0 0 240px;background:#333B50;color:#fff;padding:22px;display:flex;flex-direction:column;gap:14px;border-radius:22px}
+html[data-theme="dark"] .sidebar{background:#151922}
+.brand{font-weight:800;letter-spacing:.04em;font-size:19px;margin-bottom:8px}
+.nav-btn{background:transparent;border:0;color:#fff;padding:11px 13px;border-radius:11px;cursor:pointer;font-weight:700;text-align:left;font-size:14px;width:100%}
+.nav-btn.active{background:#44506a}
+html[data-theme="dark"] .nav-btn.active{background:#2a3343}
+.sidebar-actions{margin-top:18px;display:flex;flex-direction:column;gap:9px}
+.btn{border:0;border-radius:13px;padding:12px 16px;font-weight:800;cursor:pointer;font-size:14px}
+.btn-primary{background:#fff;color:#333B50}
+.btn-secondary{background:#44506a;color:#fff}
+html[data-theme="dark"] .btn-primary{background:#e7ebf2;color:#11161D}
+html[data-theme="dark"] .btn-secondary{background:#222936;color:#e7ebf2}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.main{flex:1;min-width:0}
+.hidden{display:none!important}
+.boot{display:flex;align-items:center;justify-content:center;min-height:340px;color:var(--muted);font-size:15px;font-weight:700;text-align:center;padding:24px}
+.support-shell{display:flex;background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+.chat-list-panel{width:300px;flex:0 0 300px;border-right:1px solid var(--border);display:flex;flex-direction:column}
+.chat-list-head{padding:20px 18px 12px;border-bottom:1px solid var(--border)}
+.chat-list-head h2{margin:0 0 4px;font-size:19px;color:var(--text)}
+.chat-list-head p{margin:0;color:var(--muted);font-size:13px}
+.chat-list-scroll{max-height:560px;overflow-y:auto;padding:12px}
+.chat-item{padding:12px 13px;border-radius:15px;cursor:pointer;border:1px solid transparent;margin-bottom:8px;background:var(--card)}
+.chat-item:hover{background:var(--neutral-bg)}
+.chat-item.active{background:var(--primary-soft);border-color:var(--border)}
+.chat-item-subject{font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+.chat-item-snippet{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px}
+.chat-item-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chat-item-time{font-size:11px;color:var(--muted)}
+.status-badge{display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;font-size:10.5px;font-weight:800;text-transform:uppercase;border:1px solid transparent;white-space:nowrap}
+.status-badge.open{background:var(--warning-bg);color:var(--warning);border-color:#fed7aa}
+.status-badge.pending{background:#fef3c7;color:#92400e;border-color:#fde68a}
+html[data-theme="dark"] .status-badge.pending{background:#2a1f0f;color:#fbbf24;border-color:#b45309}
+.status-badge.resolved{background:var(--success-bg);color:var(--success);border-color:#bbf7d0}
+.chat-list-empty{color:var(--muted);font-size:13.5px;padding:18px 6px;text-align:center;line-height:1.5}
+.chat-panel{flex:1;display:flex;flex-direction:column;min-width:0}
+.chat-panel-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.chat-panel-head h3{margin:0 0 3px;font-size:16px;color:var(--text)}
+.chat-panel-head p{margin:0;color:var(--muted);font-size:12.5px}
+.chat-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--muted);text-align:center;padding:60px 30px;min-height:400px}
+.chat-empty-state h3{margin:0;color:var(--text);font-size:18px}
+.chat-empty-state p{margin:0;font-size:14px;max-width:340px;line-height:1.5}
+.messages-scroll{height:420px;overflow-y:auto;padding:20px 22px;display:flex;flex-direction:column}
+.chat-msg{max-width:74%;padding:12px 15px;border-radius:18px;font-size:14px;line-height:1.5;margin-bottom:12px;word-wrap:break-word;white-space:pre-wrap}
+.chat-msg.customer{margin-left:auto;background:#333B50;color:#fff;border-bottom-right-radius:5px}
+.chat-msg.admin{margin-right:auto;background:var(--neutral-bg);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:5px}
+.chat-msg-meta{font-size:10.5px;margin-top:5px;opacity:.75}
+.chat-msg.customer .chat-msg-meta{color:#e2e5ec}
+.chat-attachment{margin-top:8px;padding:8px 12px;background:rgba(255,255,255,.18);border-radius:10px;font-size:12.5px;color:inherit;display:inline-flex;align-items:center;gap:6px;max-width:100%;cursor:pointer;border:0;font-family:inherit;text-align:left}
+.chat-msg.admin .chat-attachment{background:rgba(51,59,80,.10)}
+html[data-theme="dark"] .chat-msg.admin .chat-attachment{background:rgba(255,255,255,.08)}
+.chat-attachment:hover{text-decoration:underline}
+.chat-input-row{border-top:1px solid var(--border);padding:15px 18px;display:flex;gap:10px;align-items:flex-end}
+.chat-input-row textarea{flex:1;resize:none;max-height:120px;padding:13px 15px;border:1px solid var(--border);border-radius:15px;font-size:14px;font-family:inherit;outline:none;line-height:1.4;background:var(--input-bg);color:var(--text)}
+.chat-input-row textarea:disabled{opacity:.6}
+.attach-btn{background:transparent;border:1px solid var(--border);border-radius:11px;padding:8px 11px;cursor:pointer;color:var(--text);font-size:13px;white-space:nowrap}
+.attach-btn:disabled{opacity:.4;cursor:not-allowed}
+.file-chip{display:none;align-items:center;gap:8px;background:var(--neutral-bg);border:1px solid var(--border);border-radius:11px;padding:6px 8px 6px 11px;font-size:12px;color:var(--text);max-width:260px}
+.file-chip.show{display:inline-flex}
+.file-chip .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-chip .remove{border:0;background:transparent;color:var(--muted);font-size:17px;line-height:1;cursor:pointer;padding:0 4px;font-weight:700}
+.file-chip .remove:hover{color:#b42318}
+.send-btn{background:#333B50;color:#fff;border:0;border-radius:13px;padding:0 20px;height:46px;font-weight:800;cursor:pointer;font-size:14px;flex:0 0 auto}
+html[data-theme="dark"] .send-btn{background:#e7ebf2;color:#11161D}
+.send-btn:disabled{opacity:.55;cursor:not-allowed}
+.chat-note{padding:10px 16px;text-align:center;font-size:12.5px;color:var(--muted);background:var(--neutral-bg);border-top:1px solid var(--border)}
+.chat-note.error{color:#b42318;background:#fff1f2;font-weight:700}
+html[data-theme="dark"] .chat-note.error{background:#2b1114;color:#fda4af}
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:9999}
+.modal-overlay.show{display:flex}
+.modal-card{width:min(100%,470px);background:var(--card);border-radius:22px;box-shadow:0 30px 80px rgba(15,23,42,.28);border:1px solid var(--border);overflow:hidden}
+.modal-head{padding:20px 22px;background:linear-gradient(180deg,#333B50,#252c3d);color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+html[data-theme="dark"] .modal-head{background:linear-gradient(180deg,#11161D,#0b1118)}
+.modal-head h3{margin:0;font-size:18px}
+.modal-head p{margin:6px 0 0;opacity:.82;font-size:13px}
+.modal-close{border:0;background:rgba(255,255,255,.12);color:#fff;width:32px;height:32px;border-radius:11px;cursor:pointer;font-size:19px;line-height:1}
+.modal-body{padding:20px 22px 22px}
+.field{margin-bottom:14px}
+.field label{display:block;margin:0 0 7px;font-size:13px;font-weight:700;color:var(--text)}
+.field textarea,.field select{width:100%;padding:13px 14px;border:1px solid var(--border);border-radius:13px;background:var(--input-bg);color:var(--text);font-size:14.5px;font-family:inherit;outline:none}
+.field textarea{resize:vertical;min-height:90px;line-height:1.45}
+.field-error{display:none;margin-top:6px;color:#b42318;font-size:12.5px}
+.modal-msg{display:none;margin-top:12px;padding:11px 13px;border-radius:12px;font-size:13.5px;background:#fff1f2;color:#b42318;border:1px solid #fda29b;line-height:1.45}
+html[data-theme="dark"] .modal-msg{background:#2b1114;color:#fda4af;border-color:#7f1d1d}
+.modal-actions{display:flex;gap:10px;margin-top:6px}
+.modal-actions .btn{flex:1}
+@media (max-width:860px){
+  .wrapper{flex-direction:column;padding:14px;gap:14px}
+  .sidebar{width:100%;flex:0 0 auto;border-radius:18px}
+  .sidebar-actions{margin-top:10px}
+  .support-shell{flex-direction:column}
+  .chat-list-panel{width:100%;flex:0 0 auto;border-right:0;border-bottom:1px solid var(--border)}
+  .chat-list-scroll{max-height:260px}
+  .messages-scroll{height:360px}
+}
+</style>
+</head>
+<body data-cta-href="/" data-cta-label="Book a transfer">
+
+<main id="main">
+
+<div id="bootView" class="boot">Loading support...</div>
+
+<div id="supportApp" class="hidden"><div class="wrapper">
+  <div class="sidebar">
+    <div class="brand">Support</div>
+    <button class="nav-btn active" type="button">Conversations</button>
+    <button class="nav-btn" id="myAccountBtn" type="button">My account</button>
+    <div class="sidebar-actions">
+      <button id="newChatBtn" class="btn btn-primary" type="button">+ New chat</button>
+      <button id="logoutBtn" class="btn btn-secondary" type="button">Log out</button>
+    </div>
+  </div>
+  <div class="main"><div class="support-shell">
+    <div class="chat-list-panel">
+      <div class="chat-list-head"><h2>Conversations</h2><p>Your support history.</p></div>
+      <div id="chatListScroll" class="chat-list-scroll"><div class="chat-list-empty">Loading...</div></div>
+    </div>
+    <div class="chat-panel">
+      <div id="chatEmptyState" class="chat-empty-state">
+        <h3>No conversation selected</h3>
+        <p>Choose a conversation on the left, or start a new one to talk to our support team.</p>
+        <button id="emptyStateNewChatBtn" class="btn btn-secondary" type="button" style="width:auto;padding:12px 22px;">+ New chat</button>
+      </div>
+      <div id="chatActiveView" class="hidden" style="flex-direction:column;flex:1;min-width:0;">
+        <div class="chat-panel-head">
+          <div><h3 id="activeChatSubject">&mdash;</h3><p id="activeChatMeta">&mdash;</p></div>
+          <span id="activeChatStatus" class="status-badge open">Open</span>
+        </div>
+        <div id="messagesScroll" class="messages-scroll"></div>
+        <div id="chatNote" class="chat-note hidden"></div>
+        <div class="chat-input-row">
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <input type="file" id="fileInput" style="display:none;" accept="image/*,.pdf,.doc,.docx,.txt">
+              <button id="attachFileBtn" class="attach-btn" type="button">&#128206; Attach</button>
+              <span id="fileChip" class="file-chip">
+                <span class="name" id="fileChipName"></span>
+                <button class="remove" id="fileChipRemove" type="button" title="Remove file" aria-label="Remove file">&times;</button>
+              </span>
+            </div>
+            <textarea id="messageInput" rows="1" placeholder="Write your message..."></textarea>
+          </div>
+          <button id="sendMessageBtn" class="send-btn" type="button">Send</button>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div></div>
+
+</main>
+
+<div id="newChatOverlay" class="modal-overlay" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true">
+  <div class="modal-head"><div><h3>New conversation</h3><p>Tell us what you need help with.</p></div>
+  <button id="newChatCloseBtn" class="modal-close" type="button" aria-label="Close">&times;</button></div>
+  <div class="modal-body">
+    <div class="field"><label for="newChatSubjectType">Subject</label>
+      <select id="newChatSubjectType">
+        <option value="Billing">Billing</option><option value="Booking">Booking</option>
+        <option value="Technical">Technical</option><option value="Account">Account</option>
+        <option value="General">General</option>
+        <option value="Travel Agents/Partnership">Travel Agents/Partnership</option>
+        <option value="Drivers">Drivers</option><option value="Other">Other</option>
+      </select></div>
+    <div class="field"><label for="newChatMessage">Message</label>
+      <textarea id="newChatMessage" placeholder="Describe your question or issue..."></textarea>
+      <div id="newChatMessageError" class="field-error">Please enter a message.</div></div>
+    <div id="newChatError" class="modal-msg"></div>
+    <div class="modal-actions">
+      <button id="newChatCancelBtn" class="btn btn-secondary" type="button">Cancel</button>
+      <button id="newChatSubmitBtn" class="btn btn-secondary" type="button">Start conversation</button>
+    </div>
+  </div>
+</div></div>
+
+<script>
+(function () {
+'use strict';
+
+var SUPABASE_URL = 'https://ujpagsccfiledbtfeyuq.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ';
+var SITE_ORIGIN = 'https://www.airportlink.app';
+var STORAGE_BUCKET = 'support-files';
+var MAX_FILE_BYTES = 10 * 1024 * 1024;
+var SIGNED_URL_SECONDS = 300;
+var THEME_KEY = 'airportlink-theme';
+
+var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+});
+
+var $ = function (id) { return document.getElementById(id); };
+
+var currentUser = null, currentFullName = '';
+var chats = [], activeChatId = null;
+var renderedMessageIds = new Set();
+var chatsChannel = null, messagesChannel = null, selectedFile = null;
+
+// ============================================================
+// NAVEGAÇÃO
+// Página normal: sem ponte, sem reporte de altura, sem window.top.
+// ============================================================
+function navigateTo(path) { window.location.href = path; }
+
+var bouncing = false;
+function bounceToLogin() {
+  if (bouncing) return;
+  bouncing = true;
+  window.location.href = '/login';
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function escapeHtml(s) {
+  return String(s === null || s === undefined ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function sameEmail(a, b) {
+  return String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase();
+}
+function formatListTime(v) {
+  var d = new Date(v);
+  if (isNaN(d.getTime())) return '';
+  return d.toDateString() === new Date().toDateString()
+    ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    : d.toLocaleDateString([], { day: '2-digit', month: 'short' });
+}
+function formatMsgTime(v) {
+  var d = new Date(v);
+  return isNaN(d.getTime()) ? '' : d.toLocaleString([], { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+function statusLabel(s) { return s === 'pending' ? 'Pending' : (s === 'resolved' ? 'Resolved' : 'Open'); }
+function chatReference(c) { return c.ticket_number || String(c.id).slice(0, 8).toUpperCase(); }
+
+function showNote(text, isError) {
+  var note = $('chatNote');
+  if (!text) { note.classList.add('hidden'); return; }
+  note.textContent = text;
+  note.classList.remove('hidden');
+  note.classList.toggle('error', !!isError);
+}
+
+// ============================================================
+// ANEXOS
+// O caminho começa pelo ID DA CONVERSA, não pelo uuid de quem envia.
+// Era esse o bug: o admin gravava em 'uuid-do-admin/...' e a política
+// do cliente só autorizava a pasta dele — daí "Could not open".
+// ============================================================
+async function openAttachment(att) {
+  var path = att.file_path;
+  if (!path && att.file_url) {
+    var marker = '/' + STORAGE_BUCKET + '/';
+    if (att.file_url.indexOf(marker) !== -1) path = att.file_url.split(marker)[1].split('?')[0];
+  }
+  if (!path) return alert('This attachment is no longer available.');
+
+  path = decodeURIComponent(path);
+  var res = await supabaseClient.storage.from(STORAGE_BUCKET)
+    .createSignedUrl(path, SIGNED_URL_SECONDS);
+
+  if (res.error || !res.data) {
+    console.error('signed url error:', res.error, '| path:', path);
+    return alert('Could not open the attachment.\n\nPath: ' + path +
+      '\nError: ' + ((res.error && res.error.message) || 'unknown'));
+  }
+  window.open(res.data.signedUrl, '_blank', 'noopener');
+}
+
+function attachmentButton(att) {
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'chat-attachment';
+  btn.textContent = '\uD83D\uDCCE ' + att.file_name;
+  btn.addEventListener('click', function () { openAttachment(att); });
+  return btn;
+}
+
+/**
+ * Cola os anexos na bolha, se ainda lá não estiverem. Necessário
+ * porque o evento realtime da mensagem chega antes de o upload
+ * terminar: a bolha era desenhada sem anexo e nunca mais atualizada.
+ */
+async function refreshAttachments(messageId) {
+  var bubble = document.querySelector('[data-msg-id="' + messageId + '"]');
+  if (!bubble) return;
+
+  var att = await supabaseClient.from('support_attachments')
+    .select('file_url, file_name, file_path').eq('message_id', messageId);
+
+  if (att.error) { console.error('attachments select error:', att.error); return; }
+  if (!att.data || !att.data.length) return;
+  if (bubble.querySelectorAll('.chat-attachment').length >= att.data.length) return;
+
+  Array.prototype.forEach.call(bubble.querySelectorAll('.chat-attachment'), function (n) { n.remove(); });
+  att.data.forEach(function (a) { bubble.appendChild(attachmentButton(a)); });
+}
+
+// ============================================================
+// SELEÇÃO DE FICHEIRO
+// ============================================================
+function setSelectedFile(file) {
+  selectedFile = file || null;
+  if (selectedFile) {
+    $('fileChipName').textContent = selectedFile.name;
+    $('fileChip').classList.add('show');
+  } else {
+    $('fileInput').value = '';
+    $('fileChip').classList.remove('show');
+    $('fileChipName').textContent = '';
+  }
+}
+
+$('attachFileBtn').addEventListener('click', function () {
+  if ($('attachFileBtn').disabled) return;
+  $('fileInput').click();
+});
+
+$('fileInput').addEventListener('change', function (e) {
+  var f = e.target.files && e.target.files[0];
+  if (!f) return;
+  if (f.size > MAX_FILE_BYTES) {
+    alert('That file is too large. The limit is 10 MB.');
+    setSelectedFile(null);
+    return;
+  }
+  setSelectedFile(f);
+  showNote('');
+});
+
+// Sem isto, um upload falhado deixava o ficheiro preso e o chat
+// encravado, sem forma de o remover.
+$('fileChipRemove').addEventListener('click', function () {
+  setSelectedFile(null);
+  showNote('');
+});
+
+// ============================================================
+// LISTA DE CONVERSAS
+// ============================================================
+function renderChatList() {
+  if (!chats.length) {
+    $('chatListScroll').innerHTML = '<div class="chat-list-empty">You have no conversations yet.<br>Start a new one whenever you need help.</div>';
+    return;
+  }
+  $('chatListScroll').innerHTML = chats.map(function (chat) {
+    return '<div class="chat-item ' + (chat.id === activeChatId ? 'active' : '') + '" data-id="' + escapeHtml(chat.id) + '">' +
+      '<div class="chat-item-subject">' + escapeHtml(chat.subject) +
+      ' <span style="font-size:11px;color:var(--muted);font-weight:400;">#' + escapeHtml(chatReference(chat)) + '</span></div>' +
+      '<div class="chat-item-snippet">' + escapeHtml(chat.last_message || 'No messages yet') + '</div>' +
+      '<div class="chat-item-bottom"><span class="chat-item-time">' + escapeHtml(formatListTime(chat.updated_at)) + '</span>' +
+      '<span class="status-badge ' + escapeHtml(chat.status) + '">' + escapeHtml(statusLabel(chat.status)) + '</span></div></div>';
+  }).join('');
+
+  Array.prototype.forEach.call($('chatListScroll').querySelectorAll('.chat-item'), function (el) {
+    el.addEventListener('click', function () { selectChat(el.getAttribute('data-id')); });
+  });
+}
+
+function ownedOnly(rows, email) {
+  if (!rows) return [];
+  var mine = rows.filter(function (r) { return sameEmail(r.email, email); });
+  if (mine.length !== rows.length) {
+    console.error('[SEGURANCA] A query devolveu ' + (rows.length - mine.length) +
+      ' conversa(s) de outros utilizadores. A RLS NAO esta ativa.');
+  }
+  return mine;
+}
+
+async function loadChats() {
+  if (!currentUser) return;
+  var res = await supabaseClient.from('support_chats').select('*')
+    .eq('email', currentUser.email).order('updated_at', { ascending: false });
+
+  if (res.error) {
+    console.error('loadChats error:', res.error);
+    $('chatListScroll').innerHTML = '<div class="chat-list-empty">Could not load conversations.</div>';
+    return;
+  }
+
+  chats = ownedOnly(res.data, currentUser.email).map(function (c) {
+    c.last_message = c.last_message || '';
+    return c;
+  });
+
+  await Promise.all(chats.map(async function (c) {
+    var last = await supabaseClient.from('support_messages').select('message, sender_type')
+      .eq('chat_id', c.id).order('created_at', { ascending: false }).limit(1).maybeSingle();
+    if (last.data) { c.last_message = last.data.message; c.last_sender = last.data.sender_type; }
+  }));
+
+  chats.sort(function (a, b) { return new Date(b.updated_at) - new Date(a.updated_at); });
+  renderChatList();
+}
+
+function upsertLocalChat(row) {
+  if (!sameEmail(row.email, currentUser.email)) return;
+  var idx = chats.findIndex(function (c) { return c.id === row.id; });
+  if (idx >= 0) chats[idx] = Object.assign({}, chats[idx], row);
+  else { row.last_message = row.last_message || ''; chats.unshift(row); }
+  chats.sort(function (a, b) { return new Date(b.updated_at) - new Date(a.updated_at); });
+  renderChatList();
+  if (row.id === activeChatId) renderActiveChatHeader();
+}
+
+function renderActiveChatHeader() {
+  var chat = chats.find(function (c) { return c.id === activeChatId; });
+  if (!chat) return;
+  $('activeChatSubject').textContent = chat.subject;
+  $('activeChatMeta').textContent = 'Ticket #' + chatReference(chat) + ' \u00b7 opened ' + formatListTime(chat.created_at);
+  $('activeChatStatus').textContent = statusLabel(chat.status);
+  $('activeChatStatus').className = 'status-badge ' + chat.status;
+}
+
+// ============================================================
+// MENSAGENS
+// ============================================================
+async function appendMessageBubble(msg) {
+  if (renderedMessageIds.has(msg.id)) return;
+  renderedMessageIds.add(msg.id);
+
+  var isAdmin = msg.sender_type === 'admin';
+  var bubble = document.createElement('div');
+  bubble.className = 'chat-msg ' + (isAdmin ? 'admin' : 'customer');
+  bubble.setAttribute('data-msg-id', msg.id);
+  bubble.innerHTML = escapeHtml(msg.message) +
+    '<div class="chat-msg-meta">' + (isAdmin ? 'Support team' : 'You') +
+    ' \u00b7 ' + escapeHtml(formatMsgTime(msg.created_at)) + '</div>';
+
+  $('messagesScroll').appendChild(bubble);
+  $('messagesScroll').scrollTop = $('messagesScroll').scrollHeight;
+
+  await refreshAttachments(msg.id);
+}
+
+async function selectChat(chatId) {
+  activeChatId = chatId;
+  renderedMessageIds = new Set();
+  $('messagesScroll').innerHTML = '';
+  $('chatEmptyState').classList.add('hidden');
+  $('chatActiveView').classList.remove('hidden');
+  $('chatActiveView').style.display = 'flex';
+  showNote('');
+  renderChatList();
+  renderActiveChatHeader();
+
+  var res = await supabaseClient.from('support_messages').select('*')
+    .eq('chat_id', chatId).order('created_at', { ascending: true });
+
+  if (res.error) console.error('load messages error:', res.error);
+  else if (res.data) {
+    for (var i = 0; i < res.data.length; i++) await appendMessageBubble(res.data[i]);
+  }
+
+  updateInputState();
+  subscribeToMessages(chatId);
+}
+
+function subscribeToMessages(chatId) {
+  if (messagesChannel) { supabaseClient.removeChannel(messagesChannel); messagesChannel = null; }
+  messagesChannel = supabaseClient.channel('support_messages_' + chatId)
+    .on('postgres_changes', {
+      event: 'INSERT', schema: 'public', table: 'support_messages', filter: 'chat_id=eq.' + chatId
+    }, async function (payload) {
+      await appendMessageBubble(payload.new);
+      // O anexo pode ainda estar a subir do outro lado.
+      setTimeout(function () { refreshAttachments(payload.new.id); }, 1500);
+      setTimeout(function () { refreshAttachments(payload.new.id); }, 4000);
+
+      var chat = chats.find(function (c) { return c.id === chatId; });
+      if (chat) {
+        chat.last_message = payload.new.message;
+        chat.last_sender = payload.new.sender_type;
+        chat.updated_at = payload.new.created_at;
+        chats.sort(function (a, b) { return new Date(b.updated_at) - new Date(a.updated_at); });
+        renderChatList();
+      }
+      updateInputState();
+    }).subscribe();
+}
+
+function subscribeToChats() {
+  if (chatsChannel) { supabaseClient.removeChannel(chatsChannel); chatsChannel = null; }
+  chatsChannel = supabaseClient.channel('support_chats_' + currentUser.id)
+    .on('postgres_changes', {
+      event: '*', schema: 'public', table: 'support_chats', filter: 'email=eq.' + currentUser.email
+    }, function (payload) {
+      if (payload.eventType === 'DELETE') {
+        chats = chats.filter(function (c) { return c.id !== payload.old.id; });
+        renderChatList();
+        return;
+      }
+      upsertLocalChat(payload.new);
+      updateInputState();
+    }).subscribe();
+}
+
+function updateInputState() {
+  var chat = chats.find(function (c) { return c.id === activeChatId; });
+  if (!chat) {
+    $('messageInput').disabled = false;
+    $('sendMessageBtn').disabled = false;
+    $('attachFileBtn').disabled = false;
+    return;
+  }
+
+  var blocked = (chat.status === 'pending' || chat.status === 'resolved');
+  $('messageInput').disabled = blocked;
+  $('sendMessageBtn').disabled = blocked;
+  $('attachFileBtn').disabled = blocked;
+
+  if (blocked) {
+    setSelectedFile(null);
+    $('messageInput').placeholder = chat.status === 'resolved'
+      ? 'This conversation has been resolved.'
+      : 'Waiting for the support team to reply...';
+  } else {
+    $('messageInput').placeholder = 'Write your message...';
+  }
+}
+
+/**
+ * O ficheiro sobe ANTES de a mensagem ser criada. Se o upload falhar,
+ * não fica uma mensagem órfã a dizer "Attached file" sem anexo, o
+ * ficheiro continua selecionado e o erro real fica visível.
+ */
+async function sendMessage() {
+  var text = $('messageInput').value.trim();
+  var fileToSend = selectedFile;
+  if (!text && !fileToSend) return;
+  if (!activeChatId || !currentUser) return;
+
+  var chat = chats.find(function (c) { return c.id === activeChatId; });
+  if (!chat || chat.status === 'pending' || chat.status === 'resolved') return;
+
+  $('sendMessageBtn').disabled = true;
+  $('attachFileBtn').disabled = true;
+  showNote('');
+
+  try {
+    var uploadedPath = null;
+
+    if (fileToSend) {
+      var ext = (fileToSend.name.split('.').pop() || 'bin').toLowerCase();
+      var rand = Math.random().toString(36).slice(2, 10);
+      // Primeira pasta = id da conversa. É o que as duas partes
+      // têm em comum, e o que a política de storage verifica.
+      uploadedPath = activeChatId + '/' + Date.now() + '-' + rand + '.' + ext;
+
+      var up = await supabaseClient.storage.from(STORAGE_BUCKET).upload(uploadedPath, fileToSend, {
+        contentType: fileToSend.type || 'application/octet-stream'
+      });
+
+      if (up.error) {
+        console.error('upload error:', up.error);
+        showNote('The file could not be uploaded, so nothing was sent: ' + up.error.message, true);
+        return;
+      }
+    }
+
+    var msgRes = await supabaseClient.from('support_messages').insert({
+      chat_id: activeChatId,
+      sender_type: 'customer',
+      sender_name: currentFullName || currentUser.email,
+      message: text || fileToSend.name
+    }).select().single();
+
+    if (msgRes.error) {
+      console.error('send message error:', msgRes.error);
+      showNote('Could not send your message: ' + msgRes.error.message, true);
+      return;
+    }
+
+    if (uploadedPath) {
+      var ins = await supabaseClient.from('support_attachments').insert({
+        chat_id: activeChatId,
+        message_id: msgRes.data.id,
+        file_url: '',
+        file_path: uploadedPath,
+        file_name: fileToSend.name,
+        file_type: fileToSend.type || 'application/octet-stream',
+        file_size: fileToSend.size,
+        sender_type: 'customer'
+      });
+      if (ins.error) {
+        console.error('attachment insert error:', ins.error);
+        showNote('The file was uploaded but could not be attached: ' +
+          ins.error.message + ' (code ' + (ins.error.code || 'n/a') + ')', true);
+      }
+    }
+
+    chat.status = 'pending';
+    renderActiveChatHeader();
+    await supabaseClient.from('support_chats')
+      .update({ status: 'pending', updated_at: new Date().toISOString() })
+      .eq('id', activeChatId);
+
+    $('messageInput').value = '';
+    $('messageInput').style.height = 'auto';
+    setSelectedFile(null);
+
+    await appendMessageBubble(msgRes.data);
+    await refreshAttachments(msgRes.data.id);
+  } finally {
+    updateInputState();
+  }
+}
+
+$('messageInput').addEventListener('input', function () {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+$('messageInput').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+$('sendMessageBtn').addEventListener('click', sendMessage);
+
+// ============================================================
+// NOVA CONVERSA
+// A mensagem de boas-vindas é criada por um trigger no Postgres:
+// o browser não pode escrever com sender_type 'admin'.
+// ============================================================
+function openNewChatModal() {
+  if (!currentUser) return;
+  $('newChatSubjectType').value = 'Billing';
+  $('newChatMessage').value = '';
+  $('newChatMessageError').style.display = 'none';
+  $('newChatError').style.display = 'none';
+  $('newChatOverlay').classList.add('show');
+  setTimeout(function () { $('newChatMessage').focus(); }, 50);
+}
+function closeNewChatModal() { $('newChatOverlay').classList.remove('show'); }
+
+$('newChatBtn').addEventListener('click', openNewChatModal);
+$('emptyStateNewChatBtn').addEventListener('click', openNewChatModal);
+$('newChatCloseBtn').addEventListener('click', closeNewChatModal);
+$('newChatCancelBtn').addEventListener('click', closeNewChatModal);
+$('newChatOverlay').addEventListener('click', function (e) {
+  if (e.target === $('newChatOverlay')) closeNewChatModal();
+});
+
+async function submitNewChat() {
+  if (!currentUser) return;
+  var subjectType = $('newChatSubjectType').value;
+  var message = $('newChatMessage').value.trim();
+
+  $('newChatMessageError').style.display = message ? 'none' : 'block';
+  $('newChatError').style.display = 'none';
+  if (!message) return;
+
+  $('newChatSubmitBtn').disabled = true;
+  try {
+    var chatRes = await supabaseClient.from('support_chats').insert({
+      email: currentUser.email,
+      full_name: currentFullName || null,
+      subject: subjectType,
+      subject_type: subjectType,
+      status: 'open',
+      ticket_number: 'SU' + Math.floor(10000 + Math.random() * 90000)
+    }).select().single();
+
+    if (chatRes.error) {
+      $('newChatError').textContent = chatRes.error.message || 'Could not start the conversation.';
+      $('newChatError').style.display = 'block';
+      return;
+    }
+
+    var msgRes = await supabaseClient.from('support_messages').insert({
+      chat_id: chatRes.data.id,
+      sender_type: 'customer',
+      sender_name: currentFullName || currentUser.email,
+      message: message
+    });
+
+    if (msgRes.error) {
+      $('newChatError').textContent = msgRes.error.message || 'Could not send the first message.';
+      $('newChatError').style.display = 'block';
+      return;
+    }
+
+    closeNewChatModal();
+    upsertLocalChat(chatRes.data);
+    selectChat(chatRes.data.id);
+  } finally {
+    $('newChatSubmitBtn').disabled = false;
+  }
+}
+$('newChatSubmitBtn').addEventListener('click', submitNewChat);
+
+$('myAccountBtn').addEventListener('click', function () { navigateTo('/myaccount'); });
+
+$('logoutBtn').addEventListener('click', async function () {
+  $('logoutBtn').disabled = true;
+  try { await supabaseClient.auth.signOut(); } catch (e) {}
+  window.location.href = '/login';
+});
+
+supabaseClient.auth.onAuthStateChange(function (event) {
+  if (event === 'SIGNED_OUT') bounceToLogin();
+});
+
+// ============================================================
+// ARRANQUE
+// ============================================================
+(async function boot() {
+  try {
+    var sessionRes = await supabaseClient.auth.getSession();
+    if (!sessionRes.data || !sessionRes.data.session) {
+      $('bootView').textContent = 'Please sign in to access support. Redirecting...';
+      return bounceToLogin();
+    }
+
+    var userRes = await supabaseClient.auth.getUser();
+    if (userRes.error || !userRes.data || !userRes.data.user) {
+      $('bootView').textContent = 'Session expired. Redirecting to login...';
+      return bounceToLogin();
+    }
+
+    currentUser = userRes.data.user;
+    currentFullName = currentUser.email;
+
+    var contactRes = await supabaseClient.from('contacts').select('full_name')
+      .eq('email', currentUser.email).maybeSingle();
+    if (!contactRes.error && contactRes.data && contactRes.data.full_name) {
+      currentFullName = contactRes.data.full_name;
+    }
+
+    await loadChats();
+    subscribeToChats();
+
+    $('bootView').classList.add('hidden');
+    $('supportApp').classList.remove('hidden');
+    console.log('[support] sessao valida:', currentUser.email);
+  } catch (e) {
+    console.error('boot error:', e);
+    $('bootView').textContent = 'Something went wrong. Redirecting to login...';
+    bounceToLogin();
+  }
+})();
+})();
+</script>
+</body>
+</html>
