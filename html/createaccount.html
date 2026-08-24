@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Create account | Airportlink</title>
+<meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('airportlink-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/layout.js" defer></script>
+<style>
+/* Só o que é específico das páginas de conta. O resto vive em
+   /assets/site.css e é partilhado por todas. */
+.auth-page{display:flex;align-items:center;justify-content:center;
+  min-height:calc(100vh - var(--header-h) - 220px);padding:40px 20px}
+.auth-card{width:100%;max-width:440px;background:var(--surface);
+  border:1px solid var(--rule);border-radius:26px;padding:34px;
+  box-shadow:0 18px 44px rgba(20,26,40,.08)}
+html[data-theme="dark"] .auth-card{box-shadow:0 18px 44px rgba(0,0,0,.4)}
+.auth-card h1{font-family:var(--display);font-weight:700;font-size:28px;
+  letter-spacing:-.03em;margin:0 0 8px}
+.auth-card .sub{margin:0 0 26px;color:var(--muted);font-size:14.5px;line-height:1.6}
+.field{margin-bottom:16px}
+.field label{display:block;font-family:var(--mono);font-size:10.5px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.field input{width:100%;height:50px;padding:0 15px;border:1px solid var(--rule-strong);
+  border-radius:14px;background:var(--field);outline:none;font-size:15px;font-family:var(--body)}
+.field input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,118,110,.16)}
+.field .help{margin-top:7px;font-size:12.5px;color:var(--muted);line-height:1.5}
+.btn{display:inline-flex;align-items:center;justify-content:center;width:100%;height:50px;
+  padding:0 22px;border:0;border-radius:14px;background:var(--ink);color:#fff;
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;cursor:pointer;transition:transform .12s ease}
+.btn:hover:not(:disabled){transform:translateY(-1px)}
+.btn:disabled,.btn.loading{opacity:.55;cursor:not-allowed;pointer-events:none}
+.btn.teal{background:var(--teal);color:#fff}
+.btn.line{background:transparent;color:var(--text);border:1px solid var(--rule-strong);margin-top:10px}
+html[data-theme="dark"] .btn{background:#E9EDF3;color:#141A28}
+html[data-theme="dark"] .btn.teal{background:var(--teal);color:#fff}
+html[data-theme="dark"] .btn.line{background:transparent;color:var(--text)}
+.msg{display:none;margin-top:16px;padding:13px 16px;border-radius:14px;font-size:14px;line-height:1.55}
+.err{background:var(--err-bg);color:var(--err-text);border:1px solid var(--err-rule)}
+.ok{background:var(--ok-bg);color:var(--ok-text);border:1px solid var(--ok-rule)}
+.links{display:flex;justify-content:space-between;gap:12px;margin-top:18px;flex-wrap:wrap}
+.linkish{background:none;border:0;padding:0;color:var(--teal);font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-family:var(--body)}
+html[data-theme="dark"] .linkish{color:var(--amber)}
+.boot{display:flex;align-items:center;justify-content:center;min-height:180px;
+  color:var(--muted);font-size:14px;text-align:center}
+.hidden{display:none!important}
+.pw-meter{height:4px;border-radius:999px;background:var(--rule);overflow:hidden;margin-top:9px}
+.pw-fill{height:100%;width:0;border-radius:999px;transition:width .3s ease,background .3s ease}
+</style>
+</head>
+<body data-cta-href="/" data-cta-label="Book a transfer">
+
+<main id="main">
+<div class="auth-page">
+  <div class="auth-card">
+    <h1>Create your account</h1>
+    <p class="sub">It keeps your trips and receipts in one place, gives you the cancel button, and lets you message us about a specific transfer.</p>
+
+    <div class="field">
+      <label for="newName">Full name</label>
+      <input id="newName" type="text" placeholder="Your name" autocomplete="name">
+    </div>
+
+    <div class="field">
+      <label for="newEmail">Email</label>
+      <input id="newEmail" type="email" placeholder="you@email.com" autocomplete="email">
+    </div>
+
+    <div class="field">
+      <label for="newPassword">Password</label>
+      <input id="newPassword" type="password" placeholder="At least 8 characters" minlength="8" autocomplete="new-password">
+      <div class="pw-meter"><div class="pw-fill" id="pwFill"></div></div>
+      <div class="help" id="pwHint">At least 8 characters, with a letter and a number.</div>
+    </div>
+
+    <div class="field">
+      <label for="confirmPassword">Confirm password</label>
+      <input id="confirmPassword" type="password" placeholder="Repeat your password" autocomplete="new-password">
+    </div>
+
+    <button id="registerBtn" type="button" class="btn teal">Create account</button>
+    <button id="backBtn" type="button" class="btn line">Back to sign in</button>
+
+    <div id="signupError" class="msg err"></div>
+    <div id="signupSuccess" class="msg ok"></div>
+  </div>
+</div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  const API_BASE = 'https://airportlink.onrender.com';
+
+  const newNameEl = document.getElementById('newName');
+  const newEmailEl = document.getElementById('newEmail');
+  const newPasswordEl = document.getElementById('newPassword');
+  const confirmPasswordEl = document.getElementById('confirmPassword');
+  const registerBtn = document.getElementById('registerBtn');
+  const backBtn = document.getElementById('backBtn');
+  const signupErrorEl = document.getElementById('signupError');
+  const signupSuccessEl = document.getElementById('signupSuccess');
+
+  function showSignupError(text){
+    signupErrorEl.textContent = text;
+    signupErrorEl.style.display = 'block';
+    signupSuccessEl.style.display = 'none';
+  }
+
+  function showSignupSuccess(text){
+    signupSuccessEl.textContent = text;
+    signupSuccessEl.style.display = 'block';
+    signupErrorEl.style.display = 'none';
+  }
+
+  function clearSignupMsgs(){
+    signupErrorEl.textContent = '';
+    signupSuccessEl.textContent = '';
+    signupErrorEl.style.display = 'none';
+    signupSuccessEl.style.display = 'none';
+  }
+
+  function validatePassword(password) {
+    if (password.length < 8) return 'Password must be at least 8 characters long.';
+    if (!/[A-Za-z]/.test(password)) return 'Password must contain at least one letter.';
+    if (!/[0-9]/.test(password)) return 'Password must contain at least one number.';
+    return null;
+  }
+
+  // Medidor de força: fala em comprimento, que é o que realmente
+  // torna uma password difícil de quebrar.
+  newPasswordEl.addEventListener('input', function () {
+    const v = newPasswordEl.value;
+    const fill = document.getElementById('pwFill');
+    fill.style.width = Math.min(100, (v.length / 16) * 100) + '%';
+    fill.style.background = v.length < 8 ? '#F87171' : (v.length < 12 ? 'var(--amber)' : 'var(--teal)');
+    document.getElementById('pwHint').textContent = v.length < 8
+      ? 'A little longer — at least 8 characters, with a letter and a number.'
+      : (v.length < 12 ? 'Good. A few more characters would be better.' : 'Strong.');
+  });
+
+  registerBtn.addEventListener('click', async () => {
+    clearSignupMsgs();
+
+    const name = newNameEl.value.trim();
+    const email = newEmailEl.value.trim();
+    const password = newPasswordEl.value;
+    const confirm = confirmPasswordEl.value;
+
+    if (!name || !email || !password || !confirm) {
+      return showSignupError('Please fill in all fields.');
+    }
+
+    const passwordError = validatePassword(password);
+    if (passwordError) return showSignupError(passwordError);
+
+    if (password !== confirm) {
+      return showSignupError('Passwords do not match.');
+    }
+
+    registerBtn.disabled = true;
+    registerBtn.textContent = 'Creating account...';
+
+    try {
+      const response = await fetch(`${API_BASE}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      // O servidor pode devolver HTML se estiver em baixo. Sem isto,
+      // o erro seria "Unexpected token '<'", que não ajuda ninguém.
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (parseError) {
+        console.error('non-JSON from /register:', text.slice(0, 400));
+        throw new Error('The server returned an unexpected response (HTTP ' +
+          response.status + '). It may be starting up — try again in a moment.');
+      }
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Could not create account.');
+      }
+
+      showSignupSuccess('Account created. Taking you to sign in...');
+
+      setTimeout(() => { window.location.href = '/login'; }, 1200);
+    } catch (err) {
+      showSignupError(err.message || 'Could not create account.');
+    } finally {
+      registerBtn.disabled = false;
+      registerBtn.textContent = 'Create account';
+    }
+  });
+
+  backBtn.addEventListener('click', () => { window.location.href = '/login'; });
+
+  confirmPasswordEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') registerBtn.click();
+  });
+})();
+</script>
+</body>
+</html>
