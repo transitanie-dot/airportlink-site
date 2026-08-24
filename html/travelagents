@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travel Agent Partners | Trade Rate on Airport Transfers | Airportlink</title>
+<meta name="description" content="Travel agencies book airport transfers at a 12% trade rate, with free cancellation until 12 hours before pick-up and one consolidated statement a month. No joining fee, no minimum volume.">
+<link rel="canonical" href="https://www.airportlink.app/travelagents">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Airportlink">
+<meta property="og:title" content="Travel Agent Partners | Airportlink">
+<meta property="og:description" content="The transfer part of your itineraries, handled. 12% trade rate, 12-hour cancellation window, one statement a month.">
+<meta property="og:url" content="https://www.airportlink.app/travelagents">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('airportlink-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/layout.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is there a fee or a minimum number of bookings?", "acceptedAnswer": { "@type": "Answer",
+      "text": "No. There is no subscription, no joining fee and no minimum volume. If you book once and never again, nothing happens." } },
+    { "@type": "Question", "name": "Who does the driver contact, me or my traveller?", "acceptedAnswer": { "@type": "Answer",
+      "text": "Your traveller. You enter their name and phone when booking, and that is what reaches the driver. You stay on the booking as the agency and receive the paperwork." } },
+    { "@type": "Question", "name": "Do you contact my clients about anything else?", "acceptedAnswer": { "@type": "Answer",
+      "text": "Never. We use the passenger details for that transfer only, because the driver needs to reach them on the day. No marketing, no newsletters, no upsells." } },
+    { "@type": "Question", "name": "Can I include the transfer in a package or itinerary?", "acceptedAnswer": { "@type": "Answer",
+      "text": "Of course. How you present it to your traveller is your commercial relationship, not ours. We handle the transfer and stay out of the way." } },
+    { "@type": "Question", "name": "How do I pay?", "acceptedAnswer": { "@type": "Answer",
+      "text": "By card, per booking, at the moment you book. The monthly statement is a summary for your accounts, not an invoice to settle." } },
+    { "@type": "Question", "name": "What if my traveller cancels?", "acceptedAnswer": { "@type": "Answer",
+      "text": "Cancel from your dashboard up to 12 hours before pick-up and the full amount goes back to your card automatically. Inside 12 hours the transfer is already assigned to a driver, so the booking stands." } },
+    { "@type": "Question", "name": "How long does approval take?", "acceptedAnswer": { "@type": "Answer",
+      "text": "Normally one working day. A website or social page makes it quicker, because it saves us asking." } }
+  ]
+}
+</script>
+<style>
+/* ============================================================
+   PALETA
+   Tirada do mundo do produto: o azul da marca levado a tom de
+   tinta, o verde-sálvia do site, e um âmbar de sinalética de
+   aeroporto para o que exige atenção. O teal fica reservado
+   para "confirmado" e "gratuito".
+   ============================================================ */
+/* Só o que é específico desta página. O resto vive em
+   /assets/site.css e é partilhado por todas.
+
+   O hero desta página é mais alto e tem o bilhete à direita, por
+   isso sobrepõe-se ao hero partilhado. */
+.hero{padding:64px 0 72px}
+.hero-grid{grid-template-columns:1.05fr .95fr;gap:52px}
+.hero h1{font-size:clamp(36px,5.4vw,60px);margin:0 0 20px;max-width:none}
+.hero p.lead{margin:0 0 30px;font-size:16.5px;line-height:1.68;color:var(--muted);max-width:44ch}
+.band{padding:74px 0}
+.band-head{max-width:52ch;margin-bottom:38px}
+.band-head h2{font-size:clamp(26px,3.4vw,38px)}
+.qa-item{padding:22px 0;grid-template-columns:34px 1fr}
+.qa-item .q-mark{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--amber-ink);padding-top:3px}
+.qa-item h3{font-size:16.5px;margin:0 0 8px}
+
+/* ---------- o bilhete: elemento assinatura ---------- */
+.docket{width:100%;max-width:400px;margin-left:auto;filter:drop-shadow(0 22px 44px rgba(20,26,40,.20))}
+html[data-theme="dark"] .docket{filter:drop-shadow(0 22px 44px rgba(0,0,0,.5))}
+/* As perfurações mostram o fundo da página através do bilhete. */
+.notch{fill:var(--bg)}
+@keyframes drawRoute{to{stroke-dashoffset:0}}
+.route-draw{stroke-dasharray:5 5;stroke-dashoffset:120;animation:drawRoute 1.5s .3s ease-out forwards}
+@media (prefers-reduced-motion:reduce){.route-draw{animation:none;stroke-dashoffset:0}}
+
+/* ============================================================
+   FAIXA DE CONDIÇÕES — três etiquetas de bagagem
+   ============================================================ */
+.strip{background:var(--surface);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.strip-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.deal{padding:34px 30px;border-right:1px dashed var(--rule-strong);position:relative}
+.deal:first-child{border-top-left-radius:24px;border-bottom-left-radius:24px}
+.deal:last-child{border-top-right-radius:24px;border-bottom-right-radius:24px}
+.deal:last-child{border-right:0}
+.deal .figure{font-family:var(--mono);font-weight:600;font-size:46px;letter-spacing:-.03em;line-height:1;color:var(--text);margin-bottom:12px}
+.deal .figure sup{font-size:22px;font-weight:500;top:-.7em;color:var(--amber-ink)}
+.deal h3{font-family:var(--display);font-weight:700;font-size:17px;margin:0 0 7px;letter-spacing:-.01em}
+.deal p{margin:0;color:var(--muted);font-size:14px;line-height:1.62}
+
+/* ============================================================
+   SECÇÕES
+   ============================================================ */
+.band{padding:74px 0}
+.band.alt{background:var(--surface)}
+.band-head{max-width:52ch;margin-bottom:38px}
+.band-head .tag{color:var(--teal);display:block;margin-bottom:12px}
+html[data-theme="dark"] .band-head .tag{color:var(--amber)}
+.band-head h2{font-family:var(--display);font-weight:700;letter-spacing:-.035em;font-size:clamp(26px,3.4vw,38px);line-height:1.08;margin:0 0 12px}
+.band-head p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.68}
+
+/* ---------- carril de rota: os quatro passos ---------- */
+.rail{position:relative;padding-left:34px}
+.rail::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:0;border-left:2px dashed var(--rule-strong)}
+.stop{position:relative;padding:0 0 34px 0}
+.stop:last-child{padding-bottom:0}
+.stop::before{content:"";position:absolute;left:-34px;top:4px;width:18px;height:18px;border-radius:999px;background:var(--surface);border:2px solid var(--teal)}
+.stop:last-child::before{background:var(--teal)}
+html[data-theme="dark"] .stop::before{background:var(--surface)}
+.stop .tag{color:var(--muted);display:block;margin-bottom:6px}
+.stop h3{font-family:var(--display);font-weight:700;font-size:19px;margin:0 0 7px;letter-spacing:-.02em}
+.stop p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.65;max-width:56ch}
+
+/* ---------- o que está incluído ---------- */
+.included{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--rule)}
+.inc{display:flex;gap:16px;padding:24px 26px 24px 0;border-bottom:1px solid var(--rule)}
+.inc:nth-child(odd){padding-right:34px;border-right:1px solid var(--rule)}
+.inc:nth-child(even){padding-left:34px}
+.inc svg{flex:0 0 auto;width:24px;height:24px;color:var(--teal);margin-top:2px}
+html[data-theme="dark"] .inc svg{color:var(--amber)}
+.inc strong{display:block;font-family:var(--display);font-weight:700;font-size:15.5px;margin-bottom:5px;letter-spacing:-.01em}
+.inc span{color:var(--muted);font-size:14px;line-height:1.62}
+
+/* ============================================================
+   CONTA
+   ============================================================ */
+.account{background:var(--surface);border:1px solid var(--rule);border-radius:26px;padding:34px}
+.account-top{display:flex;justify-content:space-between;gap:16px;align-items:baseline;flex-wrap:wrap;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid var(--teal)}
+html[data-theme="dark"] .account-top{border-bottom-color:var(--amber)}
+.account-top h2{font-family:var(--display);font-weight:700;font-size:24px;margin:0;letter-spacing:-.03em}
+.account-top .tag{color:var(--muted)}
+
+.tabs{display:flex;gap:0;margin-bottom:24px;border:1px solid var(--rule-strong);border-radius:14px;overflow:hidden;max-width:340px}
+.tab{flex:1;height:42px;border:0;background:transparent;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;color:var(--muted)}
+.tab + .tab{border-left:1px solid var(--rule-strong)}
+.tab.active{background:var(--ink);color:#fff}
+html[data-theme="dark"] .tab.active{background:var(--amber);color:#141A28}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.field{display:block}
+.field.full{grid-column:1 / -1}
+.field label{display:block;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.field label .opt{color:var(--rule-strong)}
+.field input,.field textarea{width:100%;height:50px;padding:0 14px;border:1px solid var(--rule-strong);border-radius:14px;background:var(--field);outline:none;font-size:15px}
+.field textarea{height:auto;min-height:98px;padding:13px 15px;border-radius:16px;resize:vertical;line-height:1.55;font-family:var(--body)}
+.field input:focus,.field textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,118,110,.16)}
+.field input[disabled]{opacity:.6}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:50px;padding:0 26px;border:0;border-radius:14px;background:var(--ink);color:#fff;font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;cursor:pointer;transition:transform .12s ease}
+.btn:hover:not(:disabled){transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.amber{background:var(--amber);color:#141A28}
+.btn.teal{background:var(--teal);color:#fff}
+.btn.line{background:transparent;color:var(--text);border:1px solid var(--rule-strong)}
+.btn.block{width:100%;margin-top:20px}
+html[data-theme="dark"] .btn{background:#E9EDF3;color:#141A28}
+html[data-theme="dark"] .btn.amber{background:var(--amber)}
+html[data-theme="dark"] .btn.teal{background:var(--teal);color:#fff}
+html[data-theme="dark"] .btn.line{background:transparent;color:var(--text)}
+.linkish{background:none;border:0;padding:0;margin-top:14px;color:var(--teal);font-size:13.5px;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+html[data-theme="dark"] .linkish{color:var(--amber)}
+
+.msg{display:none;margin-top:16px;padding:13px 16px;border-radius:14px;font-size:14px;line-height:1.55}
+.msg.err{background:var(--err-bg);color:var(--err-text);border:1px solid var(--err-rule)}
+.msg.ok{background:var(--ok-bg);color:var(--ok-text);border:1px solid var(--ok-rule)}
+
+.state{display:flex;gap:16px;align-items:flex-start;border-radius:18px;padding:22px 24px;margin-bottom:22px;line-height:1.62;font-size:14.5px}
+.state .mark{font-family:var(--mono);font-size:20px;line-height:1;flex:0 0 auto}
+.state strong{display:block;font-family:var(--display);font-weight:700;font-size:17px;margin-bottom:6px;letter-spacing:-.01em}
+.state.pending{background:var(--warn-bg);color:var(--warn-text);border:1px solid var(--warn-rule)}
+.state.approved{background:var(--ok-bg);color:var(--ok-text);border:1px solid var(--ok-rule)}
+.state.rejected{background:var(--err-bg);color:var(--err-text);border:1px solid var(--err-rule)}
+
+.ledger{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--rule);border-radius:20px;overflow:hidden;margin-bottom:20px}
+.cell{padding:18px 20px;border-right:1px solid var(--rule)}
+.cell:last-child{border-right:0}
+.cell .k{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.cell .v{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:21px;font-weight:600;letter-spacing:-.02em}
+.cell.accent .v{color:var(--teal)}
+html[data-theme="dark"] .cell.accent .v{color:var(--amber)}
+
+.toolbar{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:20px}
+.toolbar .field{min-width:170px}
+.table-wrap{border:1px solid var(--rule);border-radius:20px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:780px}
+th{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:13px 16px;background:var(--surface-2);border-bottom:1px solid var(--rule)}
+td{padding:14px 16px;border-bottom:1px solid var(--rule);font-size:14px;vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:999px;background:var(--surface-2);color:var(--muted);border:1px solid var(--rule)}
+.pill.paid,.pill.completed{background:var(--ok-bg);color:var(--ok-text);border-color:var(--ok-rule)}
+.pill.pending{background:var(--warn-bg);color:var(--warn-text);border-color:var(--warn-rule)}
+.pill.cancelled,.pill.refunded{background:var(--err-bg);color:var(--err-text);border-color:var(--err-rule)}
+.empty{padding:38px;text-align:center;color:var(--muted);font-size:14px}
+
+/* ---------- FAQ ---------- */
+.qa{border-top:1px solid var(--rule)}
+.qa-item{padding:22px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:34px 1fr;gap:16px}
+.qa-item .q-mark{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--amber-ink);padding-top:3px}
+.qa-item h3{font-family:var(--display);font-weight:700;font-size:16.5px;margin:0 0 8px;letter-spacing:-.015em}
+.qa-item p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.68}
+
+.subtabs{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--rule)}
+.subtab{height:40px;padding:0 18px;border:1px solid var(--rule-strong);background:transparent;border-radius:999px;
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);cursor:pointer}
+.subtab.active{background:var(--ink);color:#fff;border-color:transparent}
+html[data-theme="dark"] .subtab.active{background:#E9EDF3;color:#141A28}
+.subtab-cta{margin-left:auto;height:40px;padding:0 20px;width:auto}
+.pane{display:none}
+.pane.active{display:block}
+.pane-note{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.6}
+
+.scope{display:inline-flex;border:1px solid var(--rule-strong);border-radius:14px;overflow:hidden}
+.scope-btn{height:50px;padding:0 16px;border:0;background:transparent;font-family:var(--mono);font-size:11px;
+  font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);cursor:pointer}
+.scope-btn + .scope-btn{border-left:1px solid var(--rule-strong)}
+.scope-btn.active{background:var(--teal);color:#fff}
+html[data-theme="dark"] .scope-btn.active{background:var(--amber);color:#141A28}
+
+/* ---------- cartão de reserva ---------- */
+.bk{border:1px solid var(--rule);border-radius:20px;padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.bk-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
+.bk-who{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.02em;margin:0 0 3px}
+.bk-ref{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+.bk-route{display:grid;grid-template-columns:16px 1fr;gap:12px;row-gap:9px;margin-bottom:14px}
+.bk-dot{width:11px;height:11px;border-radius:999px;margin-top:5px}
+.bk-dot.p{background:var(--teal)}
+.bk-dot.d{background:var(--ink)}
+html[data-theme="dark"] .bk-dot.d{background:#E9EDF3}
+.bk-place{font-size:14.5px;line-height:1.45}
+.bk-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding-top:14px;border-top:1px solid var(--rule)}
+.bk-fact .k{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.bk-fact .v{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px;font-weight:600}
+.bk-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--rule)}
+.bk-actions .btn{height:40px;padding:0 16px;width:auto;margin:0;font-size:11px}
+.bk-hint{font-size:12.5px;color:var(--muted);line-height:1.5}
+.btn.danger{background:transparent;color:#B42318;border:1px solid var(--err-rule)}
+html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-color:#7F1D1D}
+
+/* ---------- folha modal ---------- */
+.overlay{position:fixed;inset:0;background:rgba(20,26,40,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:9999}
+.overlay.show{display:flex}
+.sheet{width:min(100%,560px);background:var(--surface);border:1px solid var(--rule);border-radius:26px;overflow:hidden;max-height:88vh;display:flex;flex-direction:column}
+.sheet-head{padding:22px 24px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.sheet-head strong{display:block;font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.02em;margin-bottom:5px}
+.sheet-head span{color:var(--muted);font-size:13.5px}
+.sheet-close{border:0;background:var(--surface-2);width:34px;height:34px;border-radius:999px;cursor:pointer;font-size:19px;line-height:1;flex:0 0 auto}
+.sheet-body{padding:22px 24px;overflow-y:auto}
+.sheet-line{margin:0 0 14px;font-size:14.5px;line-height:1.6;font-weight:600}
+.sheet-note{margin:0;color:var(--muted);font-size:13.5px;line-height:1.65}
+.sheet-foot{padding:18px 24px;border-top:1px solid var(--rule);display:flex;gap:12px;flex-wrap:wrap}
+.sheet-foot .btn{flex:1;min-width:150px;margin:0}
+
+.footnote{padding:30px 0 46px;color:var(--muted);font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;line-height:1.9}
+
+@media (max-width:900px){
+  .hero{padding:44px 0 52px}
+  .hero-grid{grid-template-columns:1fr;gap:38px}
+  .docket{margin:0 auto}
+  .strip-grid{grid-template-columns:1fr}
+  .deal{border-right:0;border-bottom:1px dashed var(--rule-strong)}
+  .deal:last-child{border-bottom:0}
+  .included{grid-template-columns:1fr}
+  .inc:nth-child(odd){padding-right:0;border-right:0}
+  .inc:nth-child(even){padding-left:0}
+  .form-grid{grid-template-columns:1fr}
+  .ledger{grid-template-columns:1fr 1fr}
+  .bk-facts{grid-template-columns:1fr 1fr}
+  .subtab-cta{margin-left:0;width:100%}
+  .scope,.scope-btn{width:100%}
+  .scope{flex-wrap:nowrap}
+  .cell:nth-child(2){border-right:0}
+  .cell:nth-child(1),.cell:nth-child(2){border-bottom:1px solid var(--rule)}
+  .band{padding:52px 0}
+  .account{padding:24px}
+}
+@media (max-width:560px){
+  .wrap{padding:0 16px}
+  .ledger{grid-template-columns:1fr}
+  .cell{border-right:0;border-bottom:1px solid var(--rule)}
+  .cell:last-child{border-bottom:0}
+  .tabs{max-width:none}
+}
+</style>
+</head>
+<body data-cta-href="#account" data-cta-label="Become a partner">
+
+<main id="main">
+
+<!-- ============================================================
+     HERO
+     O bilhete à direita é o elemento assinatura: é o artefacto
+     real deste negócio, e mostra o produto em vez de o descrever.
+     ============================================================ -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="kicker"><span class="bar"></span><span class="tag">Partner programme</span></div>
+      <h1>The transfer part of your itineraries, <em>handled.</em></h1>
+      <p class="lead">You already arrange the flights, the hotel and the tour. The airport transfer should not be the thing that costs you an afternoon of phone calls.</p>
+      <div class="hero-cta">
+        <button class="btn amber" type="button" id="heroApplyBtn">Apply for a partner account</button>
+        <button class="btn line" type="button" id="heroSignInBtn">I already have one</button>
+      </div>
+      <p class="hero-note">No joining fee &middot; no minimum volume &middot; approved by hand</p>
+    </div>
+
+    <div>
+      <svg class="docket" viewBox="0 0 400 466" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Example transfer docket showing a partner booking at a 12 percent trade rate">
+        <defs>
+          <clipPath id="cardClip"><rect x="8" y="8" width="384" height="450" rx="20"/></clipPath>
+        </defs>
+
+        <rect x="8" y="8" width="384" height="450" rx="20" fill="#FBFBF8"/>
+        <g clip-path="url(#cardClip)">
+          <rect x="8" y="8" width="384" height="52" fill="#141A28"/>
+          <text x="26" y="40" fill="#FBFBF8" font-family="'Bricolage Grotesque',sans-serif" font-size="16" font-weight="800" letter-spacing="-0.4">AIRPORTLINK</text>
+          <text x="374" y="39" fill="#E8A33D" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" letter-spacing="1.8">TRANSFER DOCKET</text>
+
+          <text x="26" y="88" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">PASSENGER</text>
+          <text x="26" y="110" fill="#141A28" font-family="'Bricolage Grotesque',sans-serif" font-size="19" font-weight="700">Marta Oliveira</text>
+          <text x="374" y="88" fill="#606A7B" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">REF</text>
+          <text x="374" y="110" fill="#141A28" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="15" font-weight="600">AL-48210</text>
+
+          <line x1="26" y1="130" x2="374" y2="130" stroke="#141A28" stroke-opacity="0.12"/>
+
+          <circle cx="33" cy="160" r="6" fill="#0F766E"/>
+          <path class="route-draw" d="M33 166 L33 214" stroke="#0F766E" stroke-width="2" stroke-linecap="round"/>
+          <rect x="27" y="208" width="12" height="12" rx="2" fill="#141A28"/>
+          <text x="56" y="152" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">PICK-UP</text>
+          <text x="56" y="169" fill="#141A28" font-family="'Inter',sans-serif" font-size="14" font-weight="600">Lisbon Airport, Terminal 1</text>
+          <text x="56" y="205" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">DROP-OFF</text>
+          <text x="56" y="222" fill="#141A28" font-family="'Inter',sans-serif" font-size="14" font-weight="600">Hotel Tivoli, Avenida</text>
+
+          <line x1="26" y1="248" x2="374" y2="248" stroke="#141A28" stroke-opacity="0.12"/>
+
+          <text x="26" y="272" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">FLIGHT</text>
+          <text x="26" y="292" fill="#141A28" font-family="'IBM Plex Mono',monospace" font-size="15" font-weight="600">TP1949</text>
+          <text x="160" y="272" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">ARRIVES</text>
+          <text x="160" y="292" fill="#141A28" font-family="'IBM Plex Mono',monospace" font-size="15" font-weight="600">14:35</text>
+          <text x="374" y="272" fill="#606A7B" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">PAX</text>
+          <text x="374" y="292" fill="#141A28" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="15" font-weight="600">3</text>
+
+          <rect x="26" y="312" width="348" height="30" rx="15" fill="#0F766E" fill-opacity="0.09"/>
+          <circle cx="43" cy="327" r="7" fill="#0F766E"/>
+          <path d="M39.5 327 L42 329.5 L46.5 324.5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="58" y="331" fill="#0F5F58" font-family="'Inter',sans-serif" font-size="12" font-weight="600">Flight tracked &middot; free cancellation until 12h before</text>
+
+          <circle class="notch" cx="8" cy="368" r="9"/>
+          <circle class="notch" cx="392" cy="368" r="9"/>
+          <line x1="26" y1="368" x2="374" y2="368" stroke="#141A28" stroke-opacity="0.28" stroke-dasharray="3 5"/>
+
+          <text x="26" y="398" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">PARTNER RATE</text>
+          <rect x="26" y="408" width="52" height="22" rx="11" fill="#E8A33D"/>
+          <text x="52" y="424" fill="#141A28" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="13" font-weight="600">-12%</text>
+          <text x="88" y="424" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="13" text-decoration="line-through">EUR 68.00</text>
+
+          <text x="374" y="398" fill="#606A7B" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">YOU PAY</text>
+          <text x="374" y="426" fill="#141A28" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="26" font-weight="600" letter-spacing="-0.8">EUR 59.84</text>
+        </g>
+        <rect x="8" y="8" width="384" height="450" rx="20" fill="none" stroke="#141A28" stroke-opacity="0.16"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONDIÇÕES ============ -->
+<section class="strip">
+  <div class="wrap strip-grid">
+    <div class="deal">
+      <div class="figure">12<sup>%</sup></div>
+      <h3>Trade rate on every transfer</h3>
+      <p>Applied at checkout from your first booking. No code to enter, no minimum spend to unlock it.</p>
+    </div>
+    <div class="deal">
+      <div class="figure">12<sup>h</sup></div>
+      <h3>Free cancellation window</h3>
+      <p>Itineraries change. Cancel up to 12 hours before pick-up and the refund is automatic and complete.</p>
+    </div>
+    <div class="deal">
+      <div class="figure">1</div>
+      <h3>Statement a month</h3>
+      <p>You pay per trip, but every booking lands on one consolidated statement for your accounts.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMO FUNCIONA ============ -->
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="tag">How it works</span>
+      <h2>Four steps, and your traveller stays your client.</h2>
+      <p>We are the operator behind the transfer. Your name is on the itinerary; ours is on the vehicle.</p>
+    </div>
+    <div class="rail">
+      <div class="stop">
+        <span class="tag">Step one</span>
+        <h3>Apply</h3>
+        <p>Create an account and tell us about your agency. We read every application ourselves, normally within one working day.</p>
+      </div>
+      <div class="stop">
+        <span class="tag">Step two</span>
+        <h3>Get approved</h3>
+        <p>Your rate is then applied automatically whenever you are signed in. Nothing to remember and nothing to type.</p>
+      </div>
+      <div class="stop">
+        <span class="tag">Step three</span>
+        <h3>Book for your traveller</h3>
+        <p>Enter their name and phone so the driver deals with them directly on the day. The paperwork stays in your agency's name.</p>
+      </div>
+      <div class="stop">
+        <span class="tag">Step four</span>
+        <h3>Hand the statement to your accountant</h3>
+        <p>Every booking in one dashboard, and one document a month instead of thirty separate card charges to reconcile.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INCLUÍDO ============ -->
+<section class="band alt">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="tag">What you get</span>
+      <h2>Everything below applies from the first booking.</h2>
+      <p>If any of it changes, we tell you before it does.</p>
+    </div>
+    <div class="included">
+      <div class="inc">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18M7 3v4M17 3v4"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 14h8"/></svg>
+        <div><strong>Invoiced to your agency</strong><span>Your agency name and VAT number go on the paperwork, so it slots straight into your accounts.</span></div>
+      </div>
+      <div class="inc">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 11-8 11s-8-5-8-11a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+        <div><strong>Your traveller's details on the trip</strong><span>The driver contacts them directly, so you are not the middleman at five in the morning.</span></div>
+      </div>
+      <div class="inc">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.2-2.4 2.4-2.2-.5a.5.5 0 0 0-.5.8L5 16l1.6 2.1a.5.5 0 0 0 .8-.1l-.5-2.2 2.4-2.4 4.2 3.9a.5.5 0 0 0 .8-.5Z"/></svg>
+        <div><strong>Flight tracking included</strong><span>Add the flight number and we adjust the pick-up for delays, so a late arrival is not your problem.</span></div>
+      </div>
+      <div class="inc">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.9-.9L3 20.5l1.5-4.6a8.4 8.4 0 0 1-1-4A8.4 8.4 0 0 1 12 3.5a8.4 8.4 0 0 1 9 8Z"/></svg>
+        <div><strong>Priority support</strong><span>Partner conversations are flagged in our queue and answered first, including on the day of travel.</span></div>
+      </div>
+      <div class="inc">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 1.9"/></svg>
+        <div><strong>No minimum volume</strong><span>Book one transfer a year or fifty a month. The rate is the same and the account never expires.</span></div>
+      </div>
+      <div class="inc">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+        <div><strong>One dashboard for everything</strong><span>Every booking your agency has made, searchable, with the statement one click away.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTA
+     ============================================================ -->
+<section class="band" id="accountPanel">
+  <div class="wrap">
+    <div class="account">
+
+      <!-- Sem sessão -->
+      <div id="authView">
+        <div class="account-top">
+          <h2 id="authTitle">Partner account</h2>
+          <span class="tag" id="authSub">Sign in or create one to apply</span>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" id="tabSignIn" type="button">Sign in</button>
+          <button class="tab" id="tabSignUp" type="button">Create account</button>
+        </div>
+
+        <div class="form-grid">
+          <div class="field full hidden" id="nameField">
+            <label for="authName">Your full name</label>
+            <input id="authName" type="text" autocomplete="name" placeholder="Who manages the account">
+          </div>
+          <div class="field">
+            <label for="authEmail">Email</label>
+            <input id="authEmail" type="email" autocomplete="email" placeholder="you@agency.com">
+          </div>
+          <div class="field">
+            <label for="authPassword">Password <span class="opt" id="pwHint"></span></label>
+            <input id="authPassword" type="password" autocomplete="current-password">
+          </div>
+        </div>
+
+        <button id="authBtn" class="btn block" type="button">Sign in</button>
+        <button id="forgotBtn" class="linkish" type="button">Forgot your password?</button>
+        <div id="authError" class="msg err"></div>
+        <div id="authOk" class="msg ok"></div>
+      </div>
+
+      <!-- Com sessão, sem candidatura -->
+      <div id="applyView" class="hidden">
+        <div class="account-top">
+          <h2>Apply for a partner account</h2>
+          <span class="tag">Signed in as <strong id="applyEmail">&mdash;</strong></span>
+        </div>
+
+        <div class="form-grid">
+          <div class="field full">
+            <label for="legalName">Registered company name</label>
+            <input id="legalName" type="text" placeholder="Exactly as it appears on your company registration">
+          </div>
+          <div class="field">
+            <label for="agencyName">Trading name <span class="opt">optional, if different</span></label>
+            <input id="agencyName" type="text" placeholder="The name your clients know you by">
+          </div>
+          <div class="field">
+            <label for="agencyVat">VAT / tax number <span class="opt">optional</span></label>
+            <input id="agencyVat" type="text" placeholder="Goes on your invoices">
+          </div>
+          <div class="field">
+            <label for="repName">Representative name</label>
+            <input id="repName" type="text" placeholder="Who is responsible for this account">
+          </div>
+          <div class="field">
+            <label for="repRole">Their role <span class="opt">optional</span></label>
+            <input id="repRole" type="text" placeholder="Owner, manager, travel consultant...">
+          </div>
+          <div class="field">
+            <label for="agencyCountry">Country</label>
+            <input id="agencyCountry" type="text" placeholder="Where the agency is registered">
+          </div>
+          <div class="field">
+            <label for="agencyPhone">Phone</label>
+            <input id="agencyPhone" type="text" placeholder="+351 ...">
+          </div>
+          <div class="field full">
+            <label for="agencyWebsite">Website or social page <span class="opt">optional, speeds up approval</span></label>
+            <input id="agencyWebsite" type="text" placeholder="https://">
+          </div>
+          <div class="field full">
+            <label for="agencyNote">Anything else <span class="opt">optional</span></label>
+            <textarea id="agencyNote" placeholder="Which airports and destinations you work with, roughly how many transfers a month, anything we should know."></textarea>
+          </div>
+        </div>
+
+        <button id="applyBtn" class="btn amber block" type="button">Submit application</button>
+        <button id="applySignOut" class="linkish" type="button">Sign out</button>
+        <div id="applyError" class="msg err"></div>
+        <div id="applyOk" class="msg ok"></div>
+      </div>
+
+      <!-- Estado da candidatura -->
+      <div id="statusView" class="hidden">
+        <div class="state" id="statusBanner">
+          <span class="mark" id="statusIcon">&#9679;</span>
+          <span><strong id="statusTitle"></strong><span id="statusText"></span></span>
+        </div>
+        <button id="statusSignOut" class="btn line" type="button">Sign out</button>
+      </div>
+
+      <!-- Painel do agente aprovado -->
+      <div id="dashView" class="hidden">
+        <div class="state approved">
+          <span class="mark">&#10003;</span>
+          <span><strong id="dashAgency">Partner account active</strong><span id="dashTerms"></span></span>
+        </div>
+
+        <div class="subtabs">
+          <button class="subtab active" data-pane="paneBookings" type="button">Bookings</button>
+          <button class="subtab" data-pane="paneStatement" type="button">Statement</button>
+          <button class="subtab" data-pane="paneProfile" type="button">Agency details</button>
+          <button class="btn teal subtab-cta" id="newBookingBtn" type="button">New booking</button>
+        </div>
+
+        <!-- ---------- reservas ---------- -->
+        <div class="pane active" id="paneBookings">
+          <div class="toolbar">
+            <div class="field" style="flex:1;min-width:220px">
+              <label for="bookingSearch">Search</label>
+              <input id="bookingSearch" type="text" placeholder="Passenger, reference, city or date">
+            </div>
+            <div class="scope">
+              <button class="scope-btn active" data-scope="future" type="button">Upcoming</button>
+              <button class="scope-btn" data-scope="past" type="button">Past</button>
+              <button class="scope-btn" data-scope="all" type="button">All</button>
+            </div>
+            <button id="reloadBookingsBtn" class="btn line" type="button">Refresh</button>
+          </div>
+          <div id="agentBookingList"><div class="empty">Loading...</div></div>
+        </div>
+
+        <!-- ---------- extrato ---------- -->
+        <div class="pane" id="paneStatement">
+          <div class="ledger">
+            <div class="cell"><div class="k">Bookings</div><div class="v num" id="statCount">0</div></div>
+            <div class="cell"><div class="k">Public price</div><div class="v num" id="statGross">&mdash;</div></div>
+            <div class="cell"><div class="k">You paid</div><div class="v num" id="statNet">&mdash;</div></div>
+            <div class="cell accent"><div class="k">You saved</div><div class="v num" id="statSaved">&mdash;</div></div>
+          </div>
+
+          <div class="toolbar">
+            <div class="field"><label for="monthPicker">Statement month</label><input id="monthPicker" type="month"></div>
+            <button id="loadStatementBtn" class="btn line" type="button">Load</button>
+            <button id="printStatementBtn" class="btn line" type="button">Print or save as PDF</button>
+            <button id="csvStatementBtn" class="btn line" type="button">Download CSV</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Reference</th><th>Passenger</th><th>Route</th><th>Date &amp; time</th><th>Public price</th><th>You paid</th><th>Status</th></tr></thead>
+              <tbody id="statementBody"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ---------- dados da agência ---------- -->
+        <div class="pane" id="paneProfile">
+          <p class="pane-note">Your trade rate and account status are set by us and cannot be edited here. Everything else is yours to change.</p>
+          <div class="form-grid">
+            <div class="field full"><label for="pLegalName">Registered company name</label><input id="pLegalName" type="text"></div>
+            <div class="field"><label for="pAgencyName">Trading name <span class="opt">optional</span></label><input id="pAgencyName" type="text"></div>
+            <div class="field"><label for="pAgencyVat">VAT / tax number <span class="opt">optional</span></label><input id="pAgencyVat" type="text"></div>
+            <div class="field"><label for="pAgencyCountry">Country</label><input id="pAgencyCountry" type="text"></div>
+            <div class="field"><label for="pAgencyPhone">Phone</label><input id="pAgencyPhone" type="text"></div>
+            <div class="field"><label for="pContactName">Representative name</label><input id="pContactName" type="text"></div>
+            <div class="field"><label for="pRepRole">Their role <span class="opt">optional</span></label><input id="pRepRole" type="text"></div>
+            <div class="field"><label for="pAgencyWebsite">Website <span class="opt">optional</span></label><input id="pAgencyWebsite" type="text"></div>
+            <div class="field"><label for="pEmail">Account email</label><input id="pEmail" type="email" disabled></div>
+            <div class="field"><label for="pRate">Trade rate</label><input id="pRate" type="text" disabled></div>
+          </div>
+          <button id="saveProfileBtn" class="btn amber" type="button" style="width:auto;padding:0 26px">Save agency details</button>
+          <div id="profileError" class="msg err"></div>
+          <div id="profileOk" class="msg ok"></div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
+          <button id="dashSupportBtn" class="btn line" type="button">Contact support</button>
+          <button id="dashSignOut" class="btn line" type="button">Sign out</button>
+        </div>
+        <div id="dashError" class="msg err"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="band alt">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="tag">Partner questions</span>
+      <h2>The things agencies ask us first.</h2>
+    </div>
+    <div class="qa">
+      <div class="qa-item"><span class="q-mark">01</span><div>
+        <h3>Is there a fee or a minimum number of bookings?</h3>
+        <p>No. There is no subscription, no joining fee and no minimum volume. If you book once and never again, nothing happens.</p>
+      </div></div>
+      <div class="qa-item"><span class="q-mark">02</span><div>
+        <h3>Who does the driver contact, me or my traveller?</h3>
+        <p>Your traveller. You enter their name and phone when booking, and that is what reaches the driver. You stay on the booking as the agency and receive the paperwork, so you are not relaying messages at dawn.</p>
+      </div></div>
+      <div class="qa-item"><span class="q-mark">03</span><div>
+        <h3>Do you contact my clients about anything else?</h3>
+        <p>Never. We use the passenger's details for that transfer only, because the driver needs to reach them on the day. No marketing, no newsletters, no upsells.</p>
+      </div></div>
+      <div class="qa-item"><span class="q-mark">04</span><div>
+        <h3>Can I include the transfer in a package or itinerary?</h3>
+        <p>Of course. How you present it to your traveller is your commercial relationship, not ours. We handle the transfer and stay out of the way.</p>
+      </div></div>
+      <div class="qa-item"><span class="q-mark">05</span><div>
+        <h3>How do I pay?</h3>
+        <p>By card, per booking, at the moment you book. The monthly statement is a summary for your accounts, not an invoice to settle.</p>
+      </div></div>
+      <div class="qa-item"><span class="q-mark">06</span><div>
+        <h3>What if my traveller cancels?</h3>
+        <p>Cancel from your dashboard up to 12 hours before pick-up and the full amount goes back to your card automatically. Inside 12 hours the transfer is already assigned to a driver, so the booking stands.</p>
+      </div></div>
+      <div class="qa-item"><span class="q-mark">07</span><div>
+        <h3>How long does approval take?</h3>
+        <p>Normally one working day. A website or social page makes it quicker, because it saves us asking.</p>
+      </div></div>
+    </div>
+    <p class="footnote">Airportlink partner programme &middot; terms apply from your first booking</p>
+  </div>
+</section>
+
+<script>
+(function () {
+'use strict';
+
+var SUPABASE_URL = 'https://ujpagsccfiledbtfeyuq.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ';
+var RENDER_URL = 'https://airportlink.onrender.com';
+var SITE_ORIGIN = 'https://www.airportlink.app';
+var THEME_KEY = 'airportlink-theme';
+
+var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+});
+
+var $ = function (id) { return document.getElementById(id); };
+var currentUser = null, authMode = 'signin', agentInfo = null, lastStatement = null;
+var agentBookings = [], bookingScope = 'future', pendingCancel = null;
+
+// ============================================================
+// NAVEGAÇÃO
+// Página normal: sem ponte para iframe, sem reporte de altura.
+// ============================================================
+function navigateTo(path) { window.location.href = path; }
+
+
+// ============================================================
+// HELPERS
+// ============================================================
+function esc(v) {
+  return String(v === null || v === undefined ? '' : v)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function showMsg(el, other, text) {
+  el.textContent = text; el.style.display = 'block';
+  if (other) other.style.display = 'none';
+}
+function hideMsgs() {
+  ['authError','authOk','applyError','applyOk','dashError','profileError','profileOk'].forEach(function (id) {
+    if ($(id)) $(id).style.display = 'none';
+  });
+}
+function money(value, currency) {
+  var n = Number(value);
+  if (isNaN(n)) return '\u2014';
+  try {
+    return new Intl.NumberFormat('en-GB', { style: 'currency', currency: (currency || 'EUR').toUpperCase() }).format(n);
+  } catch (e) { return n.toFixed(2) + ' ' + (currency || 'EUR'); }
+}
+function bookingRef(b) {
+  return b.booking_reference || b.booking_id || String(b.id || '').slice(0, 8).toUpperCase();
+}
+function whenText(b) {
+  var t = b.booking_time ? String(b.booking_time).slice(0, 5) : '';
+  return (b.booking_date || '\u2014') + (t ? ' \u00b7 ' + t : '');
+}
+async function authHeader() {
+  var s = await supabaseClient.auth.getSession();
+  var token = s.data && s.data.session && s.data.session.access_token;
+  if (!token) throw new Error('Your session expired. Please sign in again.');
+  return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+}
+
+function showView(name) {
+  ['authView', 'applyView', 'statusView', 'dashView'].forEach(function (id) {
+    $(id).classList.toggle('hidden', id !== name);
+  });
+}
+
+// ============================================================
+// AUTENTICAÇÃO
+// ============================================================
+function setAuthMode(mode) {
+  authMode = mode;
+  $('tabSignIn').classList.toggle('active', mode === 'signin');
+  $('tabSignUp').classList.toggle('active', mode === 'signup');
+  $('nameField').classList.toggle('hidden', mode !== 'signup');
+  $('authBtn').textContent = mode === 'signup' ? 'Create account' : 'Sign in';
+  $('authPassword').setAttribute('autocomplete', mode === 'signup' ? 'new-password' : 'current-password');
+  $('pwHint').textContent = mode === 'signup' ? 'At least 8 characters' : '';
+  $('forgotBtn').classList.toggle('hidden', mode === 'signup');
+  hideMsgs();
+}
+$('tabSignIn').addEventListener('click', function () { setAuthMode('signin'); });
+$('tabSignUp').addEventListener('click', function () { setAuthMode('signup'); });
+
+$('authBtn').addEventListener('click', async function () {
+  var email = $('authEmail').value.trim();
+  var password = $('authPassword').value;
+  var name = $('authName').value.trim();
+  hideMsgs();
+
+  if (!email || !password) return showMsg($('authError'), $('authOk'), 'Please fill in email and password.');
+  if (authMode === 'signup' && !name) return showMsg($('authError'), $('authOk'), 'Please enter your name.');
+  if (authMode === 'signup' && password.length < 8) {
+    return showMsg($('authError'), $('authOk'), 'Password must be at least 8 characters.');
+  }
+
+  $('authBtn').disabled = true;
+  var original = $('authBtn').textContent;
+  $('authBtn').textContent = 'Please wait...';
+
+  try {
+    if (authMode === 'signup') {
+      var reg = await fetch(RENDER_URL + '/register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, email: email, password: password })
+      });
+      var regResult = await reg.json();
+      if (!regResult.success) {
+        return showMsg($('authError'), $('authOk'), regResult.message || 'Could not create the account.');
+      }
+    }
+
+    var res = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
+    if (res.error) return showMsg($('authError'), $('authOk'), res.error.message || 'Sign in failed.');
+
+    currentUser = res.data.user;
+    await refreshAgentState();
+  } catch (e) {
+    console.error('auth error:', e);
+    showMsg($('authError'), $('authOk'), 'Something went wrong. Please try again.');
+  } finally {
+    $('authBtn').disabled = false;
+    $('authBtn').textContent = original;
+  }
+});
+
+$('authPassword').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('authBtn').click(); });
+
+$('forgotBtn').addEventListener('click', async function () {
+  var email = $('authEmail').value.trim();
+  if (!email) return showMsg($('authError'), $('authOk'), 'Enter your email first.');
+  try {
+    await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: SITE_ORIGIN + '/resetpassword' });
+  } catch (e) { console.error(e); }
+  // Resposta genérica: não revelamos que emails existem.
+  showMsg($('authOk'), $('authError'), 'If an account exists for that email, a reset link has been sent.');
+});
+
+async function signOut() {
+  try { await supabaseClient.auth.signOut(); } catch (e) {}
+  currentUser = null; agentInfo = null;
+  setAuthMode('signin');
+  showView('authView');
+}
+['applySignOut', 'statusSignOut', 'dashSignOut'].forEach(function (id) {
+  $(id).addEventListener('click', signOut);
+});
+
+// ============================================================
+// CANDIDATURA
+// ============================================================
+$('applyBtn').addEventListener('click', async function () {
+  hideMsgs();
+  var payload = {
+    legal_name: $('legalName').value.trim(),
+    agency_name: $('agencyName').value.trim(),
+    agency_vat: $('agencyVat').value.trim(),
+    agency_country: $('agencyCountry').value.trim(),
+    agency_phone: $('agencyPhone').value.trim(),
+    agency_website: $('agencyWebsite').value.trim(),
+    representative_name: $('repName').value.trim(),
+    representative_role: $('repRole').value.trim(),
+    note: $('agencyNote').value.trim(),
+    full_name: (currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name) || ''
+  };
+
+  if (!payload.legal_name || !payload.agency_country || !payload.agency_phone || !payload.representative_name) {
+    return showMsg($('applyError'), $('applyOk'),
+      'Registered company name, country, phone and representative name are required.');
+  }
+
+  $('applyBtn').disabled = true;
+  $('applyBtn').textContent = 'Submitting...';
+  try {
+    var res = await fetch(RENDER_URL + '/api/agent/apply', {
+      method: 'POST', headers: await authHeader(), body: JSON.stringify(payload)
+    });
+    var result = await res.json();
+    if (!res.ok || result.error) throw new Error(result.error || ('HTTP ' + res.status));
+    await refreshAgentState();
+  } catch (e) {
+    console.error('apply error:', e);
+    showMsg($('applyError'), $('applyOk'), e.message);
+  } finally {
+    $('applyBtn').disabled = false;
+    $('applyBtn').textContent = 'Submit application';
+  }
+});
+
+// ============================================================
+// ESTADO
+// ============================================================
+async function refreshAgentState() {
+  if (!currentUser) return showView('authView');
+
+  try {
+    var res = await fetch(RENDER_URL + '/api/agent/me', { headers: await authHeader() });
+    var info = await res.json();
+    if (!res.ok || info.error) throw new Error(info.error || ('HTTP ' + res.status));
+    agentInfo = info;
+  } catch (e) {
+    console.error('agent/me error:', e);
+    showView('applyView');
+    $('applyEmail').textContent = currentUser.email;
+    return;
+  }
+
+
+  if (agentInfo.status === 'approved') {
+    $('dashAgency').textContent = agentInfo.agency_name
+      ? (agentInfo.agency_name + ' \u00b7 partner account active')
+      : 'Partner account active';
+    $('dashTerms').textContent = agentInfo.commission + '% trade rate on every transfer, free cancellation up to ' +
+      agentInfo.cancellation_hours + ' hours before pick-up. Your rate is applied automatically while you are signed in \u2014 there is no code to enter.';
+    showView('dashView');
+    var now = new Date();
+    $('monthPicker').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    fillProfileForm();
+    loadAgentBookings();
+    loadStatement();
+    return;
+  }
+
+  if (agentInfo.status === 'pending') {
+    $('statusBanner').className = 'status-banner pending';
+    $('statusIcon').innerHTML = '&#8987;';
+    $('statusTitle').textContent = 'Application under review';
+    $('statusText').textContent = 'Thanks for applying' +
+      (agentInfo.agency_name ? ', ' + agentInfo.agency_name : '') +
+      '. We check every application by hand, normally within one working day. ' +
+      'We will email ' + currentUser.email + ' as soon as it is approved. In the meantime you can book at the normal price.';
+    showView('statusView');
+    return;
+  }
+
+  if (agentInfo.status === 'rejected') {
+    $('statusBanner').className = 'status-banner rejected';
+    $('statusIcon').innerHTML = '&#10005;';
+    $('statusTitle').textContent = 'Application not approved';
+    $('statusText').textContent = 'We were not able to approve this application. If you think that is a mistake, ' +
+      'or your circumstances have changed, contact support and we will look at it again.';
+    showView('statusView');
+    return;
+  }
+
+  $('applyEmail').textContent = currentUser.email;
+  showView('applyView');
+}
+
+// ============================================================
+// EXTRATO
+// ============================================================
+async function loadStatement() {
+  var body = $('statementBody');
+  body.innerHTML = '<tr><td colspan="7" class="empty">Loading...</td></tr>';
+  hideMsgs();
+
+  try {
+    var month = $('monthPicker').value || new Date().toISOString().slice(0, 7);
+    var res = await fetch(RENDER_URL + '/api/agent/statement?month=' + encodeURIComponent(month), {
+      headers: await authHeader()
+    });
+    var data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || ('HTTP ' + res.status));
+
+    lastStatement = data;
+    var cur = data.currency || 'EUR';
+
+    $('statCount').textContent = data.totals.count;
+    $('statGross').textContent = money(data.totals.gross, cur);
+    $('statNet').textContent = money(data.totals.net, cur);
+    $('statSaved').textContent = money(data.totals.saved, cur);
+
+    if (!data.bookings.length) {
+      body.innerHTML = '<tr><td colspan="7" class="empty">No bookings in this month yet.</td></tr>';
+      return    }
+
+    body.innerHTML = data.bookings.map(function (b) {
+      var status = String(b.status || 'pending').toLowerCase();
+      return '<tr>' +
+        '<td><strong>' + esc(bookingRef(b)) + '</strong></td>' +
+        '<td>' + esc(b.passenger_name || b.full_name || '\u2014') + '</td>' +
+        '<td>' + esc(b.pickup || '\u2014') + '<br><span style="color:var(--muted);font-size:12.5px">to ' + esc(b.dropoff || '\u2014') + '</span></td>' +
+        '<td>' + esc(whenText(b)) + '</td>' +
+        '<td>' + esc(money(b.agent_gross_price || b.price, b.currency || cur)) + '</td>' +
+        '<td><strong>' + esc(money(b.price, b.currency || cur)) + '</strong></td>' +
+        '<td><span class="pill ' + esc(status) + '">' + esc(status) + '</span></td>' +
+        '</tr>';
+    }).join('');
+  } catch (e) {
+    console.error('statement error:', e);
+    body.innerHTML = '<tr><td colspan="7" class="empty">Could not load the statement.</td></tr>';
+    showMsg($('dashError'), null, e.message);
+  }
+}
+
+$('loadStatementBtn').addEventListener('click', loadStatement);
+$('monthPicker').addEventListener('change', loadStatement);
+$('newBookingBtn').addEventListener('click', function () { navigateTo('/'); });
+$('dashSupportBtn').addEventListener('click', function () { navigateTo('/support'); });
+
+$('csvStatementBtn').addEventListener('click', function () {
+  if (!lastStatement || !lastStatement.bookings.length) return;
+  var headers = ['reference','passenger','pickup','dropoff','date','time','flight','passengers','public_price','you_paid','currency','status'];
+  function cell(v) { return '"' + String(v === null || v === undefined ? '' : v).split('"').join('""') + '"'; }
+
+  var lines = [headers.map(cell).join(',')];
+  lastStatement.bookings.forEach(function (b) {
+    lines.push([
+      bookingRef(b), b.passenger_name || b.full_name || '', b.pickup || '', b.dropoff || '',
+      b.booking_date || '', b.booking_time || '', b.flight_number || '', b.passengers || '',
+      b.agent_gross_price || b.price || '', b.price || '', b.currency || '', b.status || ''
+    ].map(cell).join(','));
+  });
+
+  var blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'airportlink-statement-' + lastStatement.month + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+});
+
+/**
+ * Abrimos uma janela com o extrato formatado e chamamos print(). O
+ * browser oferece "guardar como PDF", o que evita carregar uma
+ * biblioteca de PDF só para isto.
+ */
+$('printStatementBtn').addEventListener('click', function () {
+  if (!lastStatement) return;
+  var d = lastStatement, cur = d.currency || 'EUR';
+
+  var rows = d.bookings.map(function (b) {
+    return '<tr><td>' + esc(bookingRef(b)) + '</td><td>' + esc(b.passenger_name || b.full_name || '-') +
+      '</td><td>' + esc(b.pickup || '-') + ' &rarr; ' + esc(b.dropoff || '-') +
+      '</td><td>' + esc(whenText(b)) + '</td><td style="text-align:right">' + esc(money(b.price, b.currency || cur)) +
+      '</td><td>' + esc(b.status || '') + '</td></tr>';
+  }).join('');
+
+  var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Statement ' + esc(d.month) + '</title>' +
+    '<style>body{font-family:Arial,sans-serif;color:#111;padding:32px;max-width:900px;margin:0 auto}' +
+    'h1{font-size:22px;margin:0 0 4px}.meta{color:#666;font-size:13px;margin-bottom:24px;line-height:1.6}' +
+    'table{width:100%;border-collapse:collapse;font-size:12.5px}' +
+    'th{text-align:left;background:#f4f5f7;padding:9px;border-bottom:2px solid #ddd;font-size:11px;text-transform:uppercase;letter-spacing:.05em}' +
+    'td{padding:9px;border-bottom:1px solid #eee}' +
+    '.totals{margin-top:24px;border-top:2px solid #333;padding-top:14px;font-size:14px}' +
+    '.totals div{display:flex;justify-content:space-between;padding:4px 0}' +
+    '.totals .big{font-size:17px;font-weight:800}' +
+    '.foot{margin-top:28px;color:#666;font-size:11.5px;line-height:1.6}</style></head><body>' +
+    '<h1>Airportlink &mdash; partner statement</h1>' +
+    '<div class="meta"><strong>' + esc(d.agency_name || d.agent_email) + '</strong><br>' +
+    esc(d.agent_email) + '<br>Period: ' + esc(d.month) + '<br>Partner rate: ' + esc(d.commission) + '%</div>' +
+    '<table><thead><tr><th>Reference</th><th>Passenger</th><th>Route</th><th>Date &amp; time</th>' +
+    '<th style="text-align:right">You paid</th><th>Status</th></tr></thead><tbody>' +
+    (rows || '<tr><td colspan="6">No bookings in this period.</td></tr>') + '</tbody></table>' +
+    '<div class="totals">' +
+    '<div><span>Bookings</span><span>' + esc(d.totals.count) + '</span></div>' +
+    '<div><span>Public price total</span><span>' + esc(money(d.totals.gross, cur)) + '</span></div>' +
+    '<div><span>Your margin (' + esc(d.commission) + '%)</span><span>' + esc(money(d.totals.saved, cur)) + '</span></div>' +
+    '<div class="big"><span>Total paid</span><span>' + esc(money(d.totals.net, cur)) + '</span></div></div>' +
+    '<div class="foot">Each booking was paid individually by card at the time of booking. This statement is a ' +
+    'consolidated summary for your records and is not a request for payment.</div></body></html>';
+
+  var w = window.open('', '_blank');
+  if (!w) return alert('Please allow pop-ups to print the statement.');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(function () { w.print(); }, 400);
+});
+
+// ============================================================
+// SEPARADORES DO PAINEL
+// ============================================================
+Array.prototype.forEach.call(document.querySelectorAll('.subtab[data-pane]'), function (tab) {
+  tab.addEventListener('click', function () {
+    Array.prototype.forEach.call(document.querySelectorAll('.subtab[data-pane]'), function (t) {
+      t.classList.remove('active');
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.pane'), function (p) {
+      p.classList.remove('active');
+    });
+    tab.classList.add('active');
+    $(tab.getAttribute('data-pane')).classList.add('active');
+  });
+});
+
+// ============================================================
+// RESERVAS DA AGÊNCIA
+//
+// Lidas diretamente da bookings: a política de RLS já autoriza
+// booked_by = auth.uid(), por isso não é preciso endpoint.
+// ============================================================
+function pickupAt(b) {
+  if (!b || !b.booking_date) return null;
+  var d = new Date(b.booking_date + 'T' + (b.booking_time || '00:00'));
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function hoursUntil(b) {
+  var d = pickupAt(b);
+  return d ? (d.getTime() - Date.now()) / 36e5 : NaN;
+}
+
+function canCancel(b) {
+  if (!b || String(b.status || '').toLowerCase() === 'cancelled') return false;
+  var h = hoursUntil(b);
+  var window_ = (agentInfo && agentInfo.cancellation_hours) || 12;
+  return isFinite(h) && h >= window_;
+}
+
+async function loadAgentBookings() {
+  var box = $('agentBookingList');
+  box.innerHTML = '<div class="empty">Loading...</div>';
+
+  var res = await supabaseClient.from('bookings')
+    .select('id, booking_id, booking_reference, pickup, dropoff, booking_date, booking_time, passengers, price, agent_gross_price, currency, status, flight_number, full_name, passenger_name, passenger_phone, passenger_email, notes, booked_by')
+    .eq('booked_by', currentUser.id)
+    .order('booking_date', { ascending: false });
+
+  if (res.error) {
+    console.error('agent bookings error:', res.error);
+    box.innerHTML = '<div class="empty">Could not load your bookings.</div>';
+    return;
+  }
+
+  agentBookings = res.data || [];
+  renderAgentBookings();
+}
+
+function renderAgentBookings() {
+  var box = $('agentBookingList');
+  var now = Date.now();
+  var term = ($('bookingSearch').value || '').toLowerCase().trim();
+
+  var list = agentBookings.filter(function (b) {
+    var d = pickupAt(b);
+    if (bookingScope === 'future') return d && d.getTime() >= now;
+    if (bookingScope === 'past') return !d || d.getTime() < now;
+    return true;
+  });
+
+  if (term) {
+    list = list.filter(function (b) {
+      return [b.passenger_name, b.full_name, bookingRef(b), b.pickup, b.dropoff,
+              b.booking_date, b.flight_number]
+        .filter(Boolean).join(' ').toLowerCase().indexOf(term) !== -1;
+    });
+  }
+
+  if (!list.length) {
+    box.innerHTML = '<div class="empty">' +
+      (term ? 'Nothing matched that search.'
+            : (bookingScope === 'future' ? 'No upcoming bookings yet.' : 'No bookings in this view.')) +
+      '</div>';
+    return  }
+
+  box.innerHTML = list.map(function (b) {
+    var status = String(b.status || 'pending').toLowerCase();
+    var cur = b.currency || 'EUR';
+    var upcoming = pickupAt(b) && pickupAt(b).getTime() >= now;
+
+    var actions = '<button class="btn line" data-voucher="' + esc(b.id) + '" type="button">Voucher</button>';
+
+    if (upcoming && status !== 'cancelled') {
+      if (canCancel(b)) {
+        var left = Math.floor(hoursUntil(b) - ((agentInfo && agentInfo.cancellation_hours) || 12));
+        actions += '<button class="btn danger" data-cancel="' + esc(b.id) + '" type="button">Cancel</button>' +
+          '<span class="bk-hint">Free cancellation for about ' + left + 'h more.</span>';
+      } else {
+        actions += '<span class="bk-hint">Inside the ' +
+          ((agentInfo && agentInfo.cancellation_hours) || 12) +
+          'h window &mdash; the driver is assigned. Message support if something changed.</span>';
+      }
+    }
+
+    if (status === 'cancelled') {
+      actions += '<span class="bk-hint">Cancelled and refunded.</span>';
+    }
+
+    return '<article class="bk">' +
+      '<div class="bk-top"><div>' +
+      '<p class="bk-who">' + esc(b.passenger_name || b.full_name || 'Passenger') + '</p>' +
+      '<span class="bk-ref">' + esc(bookingRef(b)) +
+      (b.passenger_phone ? ' &middot; ' + esc(b.passenger_phone) : '') + '</span>' +
+      '</div><span class="pill ' + esc(status) + '">' + esc(status) + '</span></div>' +
+
+      '<div class="bk-route">' +
+      '<span class="bk-dot p"></span><span class="bk-place">' + esc(b.pickup || '-') + '</span>' +
+      '<span class="bk-dot d"></span><span class="bk-place">' + esc(b.dropoff || '-') + '</span>' +
+      '</div>' +
+
+      '<div class="bk-facts">' +
+      '<div class="bk-fact"><div class="k">Date</div><div class="v">' + esc(b.booking_date || '-') + '</div></div>' +
+      '<div class="bk-fact"><div class="k">Pick-up</div><div class="v">' +
+        esc(b.booking_time ? String(b.booking_time).slice(0, 5) : '-') + '</div></div>' +
+      '<div class="bk-fact"><div class="k">Flight</div><div class="v">' + esc(b.flight_number || '-') + '</div></div>' +
+      '<div class="bk-fact"><div class="k">You paid</div><div class="v">' + esc(money(b.price, cur)) + '</div></div>' +
+      '</div>' +
+
+      '<div class="bk-actions">' + actions + '</div></article>';
+  }).join('');
+
+  Array.prototype.forEach.call(box.querySelectorAll('[data-voucher]'), function (btn) {
+    btn.addEventListener('click', function () { printVoucher(btn.getAttribute('data-voucher')); });
+  });
+  Array.prototype.forEach.call(box.querySelectorAll('[data-cancel]'), function (btn) {
+    btn.addEventListener('click', function () { openCancel(btn.getAttribute('data-cancel')); });
+  });
+
+}
+
+$('bookingSearch').addEventListener('input', renderAgentBookings);
+$('reloadBookingsBtn').addEventListener('click', loadAgentBookings);
+
+Array.prototype.forEach.call(document.querySelectorAll('.scope-btn'), function (btn) {
+  btn.addEventListener('click', function () {
+    Array.prototype.forEach.call(document.querySelectorAll('.scope-btn'), function (b) {
+      b.classList.remove('active');
+    });
+    btn.classList.add('active');
+    bookingScope = btn.getAttribute('data-scope');
+    renderAgentBookings();
+  });
+});
+
+// ============================================================
+// CANCELAMENTO
+// A janela real é revalidada no servidor, que também emite o
+// reembolso. Isto aqui só decide se mostra o botão.
+// ============================================================
+function openCancel(id) {
+  var b = agentBookings.find(function (x) { return String(x.id) === String(id); });
+  if (!b) return;
+  pendingCancel = b;
+  $('cancelError').style.display = 'none';
+  $('cancelSummary').textContent = (b.passenger_name || b.full_name || 'Passenger') + ' \u00b7 ' +
+    bookingRef(b) + ' \u00b7 ' + (b.booking_date || '') +
+    (b.booking_time ? ' at ' + String(b.booking_time).slice(0, 5) : '') + ' \u00b7 ' +
+    (b.pickup || '?') + ' to ' + (b.dropoff || '?');
+  $('cancelConfirmBtn').disabled = false;
+  $('cancelConfirmBtn').textContent = 'Yes, cancel and refund';
+  $('cancelOverlay').classList.add('show');
+}
+
+function closeCancel() {
+  $('cancelOverlay').classList.remove('show');
+  pendingCancel = null;
+}
+
+$('cancelCloseBtn').addEventListener('click', closeCancel);
+$('cancelDismissBtn').addEventListener('click', closeCancel);
+$('cancelOverlay').addEventListener('click', function (e) {
+  if (e.target === $('cancelOverlay')) closeCancel();
+});
+
+$('cancelConfirmBtn').addEventListener('click', async function () {
+  if (!pendingCancel) return;
+  var btn = $('cancelConfirmBtn');
+  btn.disabled = true;
+  btn.textContent = 'Cancelling...';
+  $('cancelError').style.display = 'none';
+
+  try {
+    var res = await fetch(RENDER_URL + '/api/cancel-booking', {
+      method: 'POST',
+      headers: await authHeader(),
+      body: JSON.stringify({ booking_id: pendingCancel.id })
+    });
+    var result = await res.json();
+    if (!res.ok || result.error) throw new Error(result.error || ('HTTP ' + res.status));
+
+    closeCancel();
+    await loadAgentBookings();
+    await loadStatement();
+  } catch (e) {
+    console.error('cancel error:', e);
+    $('cancelError').textContent = e.message;
+    $('cancelError').style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Yes, cancel and refund';
+  }
+});
+
+// ============================================================
+// VOUCHER
+// O documento que o viajante mostra ao motorista. Abre numa
+// janela formatada e chama print(), que dá a opção de guardar
+// como PDF sem precisarmos de uma biblioteca.
+// ============================================================
+function printVoucher(id) {
+  var b = agentBookings.find(function (x) { return String(x.id) === String(id); });
+  if (!b) return;
+
+  var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Transfer ' + esc(bookingRef(b)) + '</title>' +
+    '<style>body{font-family:Arial,sans-serif;color:#141A28;padding:34px;max-width:640px;margin:0 auto}' +
+    '.head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #141A28;padding-bottom:14px;margin-bottom:24px}' +
+    'h1{font-size:20px;margin:0}.ref{font-family:monospace;font-size:15px}' +
+    '.row{display:flex;gap:16px;margin-bottom:16px}.row>div{flex:1}' +
+    '.k{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:#606A7B;margin-bottom:4px}' +
+    '.v{font-size:15px;font-weight:700}' +
+    '.route{border:1px solid #E2E4E0;border-radius:10px;padding:16px;margin-bottom:16px}' +
+    '.foot{margin-top:26px;padding-top:16px;border-top:1px solid #E2E4E0;color:#606A7B;font-size:11.5px;line-height:1.7}' +
+    '</style></head><body>' +
+    '<div class="head"><div><h1>Airportlink &mdash; transfer voucher</h1>' +
+    '<div style="color:#606A7B;font-size:12px;margin-top:5px">Booked by ' +
+    esc((agentInfo && agentInfo.agency_name) || 'partner agency') + '</div></div>' +
+    '<div class="ref">' + esc(bookingRef(b)) + '</div></div>' +
+    '<div class="row"><div><div class="k">Passenger</div><div class="v">' +
+    esc(b.passenger_name || b.full_name || '-') + '</div></div>' +
+    '<div><div class="k">Phone</div><div class="v">' + esc(b.passenger_phone || '-') + '</div></div></div>' +
+    '<div class="row"><div><div class="k">Date</div><div class="v">' + esc(b.booking_date || '-') + '</div></div>' +
+    '<div><div class="k">Pick-up time</div><div class="v">' +
+    esc(b.booking_time ? String(b.booking_time).slice(0, 5) : '-') + '</div></div>' +
+    '<div><div class="k">Passengers</div><div class="v">' + esc(b.passengers || '-') + '</div></div></div>' +
+    '<div class="route"><div class="k">Pick-up</div><div class="v" style="margin-bottom:14px">' +
+    esc(b.pickup || '-') + '</div>' +
+    '<div class="k">Drop-off</div><div class="v">' + esc(b.dropoff || '-') + '</div></div>' +
+    '<div class="row"><div><div class="k">Flight</div><div class="v">' + esc(b.flight_number || '-') + '</div></div>' +
+    '<div><div class="k">Status</div><div class="v">' + esc(b.status || '-') + '</div></div></div>' +
+    (b.notes ? '<div><div class="k">Notes</div><div class="v" style="font-weight:400">' + esc(b.notes) + '</div></div>' : '') +
+    '<div class="foot">Private transfer. The driver contacts the passenger on the number above. ' +
+    'For changes, the booking agency should contact Airportlink support.</div></body></html>';
+
+  var w = window.open('', '_blank');
+  if (!w) return alert('Please allow pop-ups to print the voucher.');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(function () { w.print(); }, 400);
+}
+
+// ============================================================
+// DADOS DA AGÊNCIA
+// O status e a commission são só de leitura: quem os altera é o
+// servidor, e só a pedido de um administrador.
+// ============================================================
+function fillProfileForm() {
+  var p = (agentInfo && agentInfo.profile) || {};
+  $('pLegalName').value = p.legal_name || p.agency_name || '';
+  $('pAgencyName').value = p.agency_name || '';
+  $('pRepRole').value = p.representative_role || '';
+  $('pAgencyVat').value = p.agency_vat || '';
+  $('pAgencyCountry').value = p.agency_country || '';
+  $('pAgencyPhone').value = p.agency_phone || '';
+  $('pContactName').value = p.contact_name || '';
+  $('pAgencyWebsite').value = p.agency_website || '';
+  $('pEmail').value = (agentInfo && agentInfo.email) || '';
+  $('pRate').value = ((agentInfo && agentInfo.commission) || 12) + '% off every transfer';
+}
+
+$('saveProfileBtn').addEventListener('click', async function () {
+  $('profileError').style.display = 'none';
+  $('profileOk').style.display = 'none';
+
+  var payload = {
+    legal_name: $('pLegalName').value.trim(),
+    agency_name: $('pAgencyName').value.trim(),
+    agency_vat: $('pAgencyVat').value.trim(),
+    agency_country: $('pAgencyCountry').value.trim(),
+    agency_phone: $('pAgencyPhone').value.trim(),
+    agency_website: $('pAgencyWebsite').value.trim(),
+    contact_name: $('pContactName').value.trim(),
+    representative_role: $('pRepRole').value.trim()
+  };
+
+  if (!payload.legal_name || !payload.agency_country || !payload.agency_phone || !payload.contact_name) {
+    return showMsg($('profileError'), $('profileOk'),
+      'Registered company name, country, phone and representative name are required.');
+  }
+
+  $('saveProfileBtn').disabled = true;
+  try {
+    var res = await fetch(RENDER_URL + '/api/agent/profile', {
+      method: 'POST', headers: await authHeader(), body: JSON.stringify(payload)
+    });
+    var result = await res.json();
+    if (!res.ok || result.error) throw new Error(result.error || ('HTTP ' + res.status));
+
+    if (agentInfo) {
+      agentInfo.profile = result.profile;
+      agentInfo.agency_name = result.profile.agency_name;
+    }
+    showMsg($('profileOk'), $('profileError'), 'Agency details saved.');
+  } catch (e) {
+    console.error('profile error:', e);
+    showMsg($('profileError'), $('profileOk'), e.message);
+  } finally {
+    $('saveProfileBtn').disabled = false;
+  }
+});
+
+// ============================================================
+// ATALHOS DO HERO
+// ============================================================
+function jumpToAccount(mode) {
+  if (!currentUser) setAuthMode(mode);
+  var target = document.getElementById('accountPanel');
+  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (!currentUser) setTimeout(function () { $('authEmail').focus(); }, 420);
+}
+
+$('heroApplyBtn').addEventListener('click', function () { jumpToAccount('signup'); });
+$('heroSignInBtn').addEventListener('click', function () { jumpToAccount('signin'); });
+
+// ============================================================
+// ARRANQUE
+// ============================================================
+(async function boot() {
+  setAuthMode('signin');
+  try {
+    var res = await supabaseClient.auth.getSession();
+    if (res.data && res.data.session) {
+      var userRes = await supabaseClient.auth.getUser();
+      if (!userRes.error && userRes.data && userRes.data.user) {
+        currentUser = userRes.data.user;
+        await refreshAgentState();
+        return;
+      }
+    }
+  } catch (e) { console.error('boot error:', e); }
+  showView('authView');
+})();
+})();
+</script>
+</main>
+
+<div class="overlay" id="cancelOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div><strong>Cancel this booking?</strong><span>Free cancellation, refunded in full to your card.</span></div>
+      <button class="sheet-close" id="cancelCloseBtn" type="button" aria-label="Close">&times;</button>
+    </div>
+    <div class="sheet-body">
+      <p class="sheet-line" id="cancelSummary"></p>
+      <p class="sheet-note">The full amount goes back to the card you paid with. Your bank usually takes 5 to 10 working days to show it. This cannot be undone &mdash; you would have to book the transfer again.</p>
+      <div id="cancelError" class="msg err"></div>
+    </div>
+    <div class="sheet-foot">
+      <button id="cancelDismissBtn" class="btn line" type="button">Keep booking</button>
+      <button id="cancelConfirmBtn" class="btn danger" type="button">Yes, cancel and refund</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
