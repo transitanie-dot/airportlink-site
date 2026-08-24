@@ -125,6 +125,13 @@ html[data-theme="dark"] .route-marker.dropoff{background:#e7ebf2;color:#11161D}
 .trip-meta-item{background:var(--neutral-bg);border:1px solid var(--border);border-radius:13px;padding:11px 12px}
 .trip-meta-label{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
 .trip-meta-value{font-size:14px;font-weight:700;color:var(--text);word-break:break-word}
+.pay-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;
+  padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted);line-height:1.5}
+.pay-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;padding:5px 10px;border-radius:999px;border:1px solid var(--rule)}
+.pay-tag.saved{background:var(--warn-bg);color:var(--warn-text);border-color:var(--warn-rule)}
+.pay-tag.paid{background:var(--ok-bg);color:var(--ok-text);border-color:var(--ok-rule)}
+.pay-tag.failed{background:var(--err-bg);color:var(--err-text);border-color:var(--err-rule)}
 .trip-actions{display:flex;gap:10px;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);flex-wrap:wrap}
 .cancel-btn{border:1px solid #fda29b;background:transparent;color:#b42318;border-radius:12px;padding:10px 16px;font-weight:800;font-size:13px;cursor:pointer}
 .cancel-btn:hover{background:#fff1f2}
@@ -248,6 +255,8 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
       </div>
       <div class="help-card">
         <h3>Frequently asked questions</h3>
+        <div class="faq-item"><h4 class="faq-question">What does &ldquo;card saved&rdquo; mean?</h4><p class="faq-answer">You booked without paying. We hold your card securely with Stripe and charge it 48 hours before pick-up. Cancel before then and nothing is ever charged.</p></div>
+        <div class="faq-item"><h4 class="faq-question">What if the payment fails?</h4><p class="faq-answer">We try again a few times and let you know. If it keeps failing the booking is cancelled, so a driver is not sent to a trip nobody paid for.</p></div>
         <div class="faq-item"><h4 class="faq-question">How do I cancel a booking?</h4><p class="faq-answer">Go to "My trips" and press Cancel on the booking. It is free until 24 hours before pick-up and the refund is automatic. After that, contact support.</p></div>
         <div class="faq-item"><h4 class="faq-question">When do I get my money back?</h4><p class="faq-answer">The refund is issued immediately on our side. Your bank usually takes 5 to 10 working days to show it.</p></div>
         <div class="faq-item"><h4 class="faq-question">What if my flight is delayed?</h4><p class="faq-answer">If you gave us your flight number we track the arrival and adjust the pick-up. Otherwise, message support as soon as you know.</p></div>
@@ -280,11 +289,11 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
 </div></div>
 
 <div id="cancelOverlay" class="overlay"><div class="modal">
-  <div class="modal-head"><div><h3>Cancel this booking?</h3><p>Free cancellation, refunded in full.</p></div>
+  <div class="modal-head"><div><h3 id="cancelTitle">Cancel this booking?</h3><p id="cancelSubtitle">Free cancellation, refunded in full.</p></div>
   <button id="cancelCloseBtn" class="modal-close" type="button" aria-label="Close">&times;</button></div>
   <div class="modal-body">
     <p class="sub" id="cancelSummary" style="margin-bottom:14px;"></p>
-    <p class="sub" style="margin:0;">We will refund the full amount to the card you paid with. Your bank usually takes 5 to 10 working days to show it. This cannot be undone &mdash; you would have to book again.</p>
+    <p class="sub" id="cancelNote" style="margin:0;">We will refund the full amount to the card you paid with. Your bank usually takes 5 to 10 working days to show it. This cannot be undone &mdash; you would have to book again.</p>
     <div id="cancelError" class="msg err"></div>
   </div>
   <div class="modal-actions">
@@ -371,11 +380,46 @@ function hoursUntilPickup(trip) {
   return (pickup.getTime() - Date.now()) / 36e5;
 }
 
+/** Ainda não foi cobrada: não há dinheiro em jogo. */
+function notYetCharged(trip) {
+  return Boolean(trip && trip.payment_mode === 'later' && !trip.charged_at);
+}
+
 function canCancel(trip) {
   if (!trip) return false;
   if (normalizeStatus(trip.status) === 'cancelled') return false;
+
+  // Reserva por cobrar cancela-se a qualquer momento: não há
+  // reembolso a processar nem comissão a perder.
+  if (notYetCharged(trip)) return true;
+
   var h = hoursUntilPickup(trip);
   return isFinite(h) && h >= FREE_CANCELLATION_HOURS;
+}
+
+function paymentLine(trip) {
+  if (normalizeStatus(trip.status) === 'cancelled') return '';
+
+  if (!trip.payment_mode || trip.payment_mode === 'now') {
+    return '<div class="pay-line"><span class="pay-tag paid">Paid</span>' +
+      '<span>Charged when you booked.</span></div>';
+  }
+
+  if (trip.charged_at) {
+    return '<div class="pay-line"><span class="pay-tag paid">Paid</span>' +
+      '<span>Charged on ' + esc(formatTripDate(trip.charged_at)) + '.</span></div>';
+  }
+
+  if (trip.payment_status === 'charge_failed') {
+    return '<div class="pay-line"><span class="pay-tag failed">Payment failed</span>' +
+      '<span>We could not charge your card. We will try again \u2014 check that it is still ' +
+      'valid, or contact support.</span></div>';
+  }
+
+  return '<div class="pay-line"><span class="pay-tag saved">Card saved</span>' +
+    '<span>Nothing charged yet. We take ' + esc(formatPrice(trip.price, trip.currency)) +
+    (trip.charge_at ? ' on ' + esc(formatTripDate(trip.charge_at)) : ' 48 hours before pick-up') +
+    '. Cancel before then and nothing is charged.</span></div>';
 }
 
 // ============================================================
@@ -465,12 +509,23 @@ $('receiptDownloadBtn').addEventListener('click', function () {
 // ============================================================
 function openCancelModal(trip, trigger) {
   pendingCancel = trip;
+
+  var uncharged = notYetCharged(trip);
+  $('cancelTitle').textContent = uncharged ? 'Cancel this booking?' : 'Cancel and refund?';
+  $('cancelSubtitle').textContent = uncharged
+    ? 'Nothing has been charged, so there is nothing to refund.'
+    : 'Free cancellation, refunded in full.';
+  $('cancelNote').textContent = uncharged
+    ? 'Your card has not been charged and we will remove it from our payment provider. ' +
+      'This cannot be undone \u2014 you would have to book the transfer again.'
+    : 'We will refund the full amount to the card you paid with. Your bank usually takes 5 to 10 ' +
+      'working days to show it. This cannot be undone \u2014 you would have to book again.';
   $('cancelError').style.display = 'none';
   $('cancelSummary').textContent =
     tripReference(trip) + ' \u00b7 ' + formatTripDate(trip.booking_date) + ' at ' +
     formatTripTime(trip) + ' \u00b7 ' + (trip.pickup || '?') + ' to ' + (trip.dropoff || '?');
   $('cancelConfirmBtn').disabled = false;
-  $('cancelConfirmBtn').textContent = 'Yes, cancel and refund';
+  $('cancelConfirmBtn').textContent = uncharged ? 'Yes, cancel it' : 'Yes, cancel and refund';
   $('cancelOverlay').classList.add('show');
 }
 
@@ -513,7 +568,7 @@ $('cancelConfirmBtn').addEventListener('click', async function () {
     $('cancelError').textContent = e.message;
     $('cancelError').style.display = 'block';
     btn.disabled = false;
-    btn.textContent = 'Yes, cancel and refund';
+    btn.textContent = notYetCharged(pendingCancel) ? 'Yes, cancel it' : 'Yes, cancel and refund';
   }
 });
 
@@ -533,7 +588,8 @@ function renderTripCard(trip, key, type) {
     } else if (canCancel(trip)) {
       // Sem contagem decrescente: um relógio a correr ao lado do botão
       // convida a cancelar. A política está explicada no separador Help.
-      actions = '<button class="cancel-btn" data-cancel-key="' + esc(key) + '" type="button">Cancel booking</button>';
+      actions = '<button class="cancel-btn" data-cancel-key="' + esc(key) + '" type="button">' +
+        (notYetCharged(trip) ? 'Cancel booking' : 'Cancel and refund') + '</button>';
     } else {
       actions = '<div class="cancel-info">This trip can no longer be cancelled online. Contact support if you need help.</div>';
     }
@@ -564,6 +620,7 @@ function renderTripCard(trip, key, type) {
     '<div class="trip-meta-item"><div class="trip-meta-label">Pick-up time</div><div class="trip-meta-value">' + esc(formatTripTime(trip)) + '</div></div>' +
     '<div class="trip-meta-item"><div class="trip-meta-label">Price</div><div class="trip-meta-value">' + esc(formatPrice(trip.price, trip.currency)) + '</div></div>' +
     '</div>' +
+    paymentLine(trip) +
     (actions ? '<div class="trip-actions">' + actions + '</div>' : '') +
     '</article>';
 }
@@ -618,7 +675,7 @@ async function loadTrips() {
   tripsByKey = Object.create(null);
 
   var res = await supabaseClient.from('bookings')
-    .select('id, booking_id, booking_reference, pickup, dropoff, booking_date, booking_time, passengers, price, currency, status, flight_number, full_name, email, receipt_url')
+    .select('id, booking_id, booking_reference, pickup, dropoff, booking_date, booking_time, passengers, price, currency, status, flight_number, full_name, email, receipt_url, payment_mode, payment_status, charge_at, charged_at, last_charge_error')
     .eq('email', currentUser.email)
     .order('booking_date', { ascending: false });
 
