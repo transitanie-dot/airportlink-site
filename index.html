@@ -169,7 +169,15 @@ html[data-theme="dark"] .agent-note strong{color:var(--amber)}
 .form-card{background:var(--surface-2);border:1px solid var(--rule);border-radius:22px;padding:18px}
 .field{margin-bottom:14px;position:relative}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.phone-col{display:grid;grid-template-columns:104px 1fr;gap:12px}
+/* Um seletor com o país escrito por extenso vale mais do que uma
+   caixa vazia com um "+": ninguém sabe o indicativo da Croácia de
+   cabeça, e escrevê-lo mal só se descobre no dia da viagem. */
+.phone-row{display:grid;grid-template-columns:minmax(0,196px) minmax(0,1fr);gap:10px}
+.phone-row select{width:100%;text-overflow:ellipsis;padding-right:34px;
+  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
+    linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 19px) calc(50% + 2px),calc(100% - 14px) calc(50% + 2px);
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat}
 .label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
 label{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .hint{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--rule-strong)}
@@ -182,9 +190,10 @@ input[type="text"],input[type="email"],input[type="password"],input[type="date"]
   width:100%;height:52px;border-radius:15px;border:1px solid var(--rule-strong);padding:0 15px;
   font-size:15px;background:var(--field);outline:none;font-family:var(--body)}
 #pickup,#dropoff{padding-left:34px}
-/* type="search" traz uma cruz nativa que desalinha o campo. */
-#pickup::-webkit-search-cancel-button,
-#dropoff::-webkit-search-cancel-button{display:none;-webkit-appearance:none}
+/* Sem isto, o browser impõe a sua própria aparência e os cantos
+   arredondados desaparecem em alguns temas do sistema. */
+input,select,textarea{appearance:none;-webkit-appearance:none}
+input[readonly]:not(#email){opacity:1;cursor:text}
 input:focus,select:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(15,118,110,.14)}
 input[readonly]{opacity:.7}
 .suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--rule-strong);
@@ -319,7 +328,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
   .hero{padding:36px 0 20px}
   .panel-inner,.checkout-inner,.section-inner{padding:18px}
   .flow{padding:16px}
-  .mini-grid,.two-col,.summary-grid,.phone-col{grid-template-columns:1fr}
+  .mini-grid,.two-col,.summary-grid,.phone-row{grid-template-columns:1fr}
   .map-panel{height:300px}
   .band{padding:44px 0}
 }
@@ -351,8 +360,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
     <div class="promo rise d4">
       <span class="mk">0&euro;</span>
       <span class="txt"><strong>Book now, pay later</strong>
-      <span>On most transfers you reserve today and pay nothing until 48 hours before pick-up. Change your mind before then and there is nothing to refund.</span></span>
-      <span class="chip">New</span>
+      <span>On most transfers nothing is charged until 48 hours before pick-up.</span></span>
     </div>
   </div>
 </section>
@@ -399,17 +407,17 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
 
           <div class="field">
             <div class="label-row"><label for="pickup">Pick-up</label><span class="hint">Where we collect you</span></div>
-            <div class="input-wrap"><span class="pin pickup"></span><input id="pickup" name="al-pickup" type="search" placeholder="Porto Airport, Portugal"
-              autocomplete="al-no-fill" autocorrect="off" autocapitalize="off" spellcheck="false"
-              data-lpignore="true" data-1p-ignore data-form-type="other" /></div>
+            <div class="input-wrap"><span class="pin pickup"></span><input id="pickup" name="al-pickup" type="text" placeholder="Porto Airport, Portugal"
+              readonly autocomplete="al-no-fill" autocorrect="off" autocapitalize="off"
+              spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" /></div>
             <div id="pickupSuggestions" class="suggestions"></div>
           </div>
 
           <div class="field">
             <div class="label-row"><label for="dropoff">Drop-off</label><span class="hint">Your destination</span></div>
-            <div class="input-wrap"><span class="pin dropoff"></span><input id="dropoff" name="al-dropoff" type="search" placeholder="Aliados, Porto"
-              autocomplete="al-no-fill" autocorrect="off" autocapitalize="off" spellcheck="false"
-              data-lpignore="true" data-1p-ignore data-form-type="other" /></div>
+            <div class="input-wrap"><span class="pin dropoff"></span><input id="dropoff" name="al-dropoff" type="text" placeholder="Aliados, Porto"
+              readonly autocomplete="al-no-fill" autocorrect="off" autocapitalize="off"
+              spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" /></div>
             <div id="dropoffSuggestions" class="suggestions"></div>
           </div>
 
@@ -430,7 +438,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
               <span class="d">Card charged today. Free cancellation until 24 hours before pick-up.</span>
             </button>
             <button class="pay-opt" id="payLaterOpt" data-mode="later" type="button">
-              <span class="t">Pay later<span class="badge" id="payLaterBadge">Popular</span></span>
+              <span class="t">Pay later</span>
               <span class="d" id="payLaterDesc">Card saved, nothing charged until 48 hours before pick-up.</span>
             </button>
           </div>
@@ -478,11 +486,68 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
             <div class="field"><div class="label-row"><label for="email" id="emailLabel">Email</label><span class="hint" id="emailHint">From your account</span></div><input id="email" type="email" readonly /></div>
             <div class="field hidden" id="passengerEmailField"><div class="label-row"><label for="passengerEmail">Passenger email</label><span class="hint">Optional</span></div><input id="passengerEmail" type="email" placeholder="If they should get the details too" /></div>
             <div class="field">
-              <div class="label-row"><label for="phoneCode" id="phoneLabel">Phone</label><span class="hint">Required</span></div>
-              <div class="phone-col">
-                <div style="position:relative;"><span style="position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--muted);z-index:2;">+</span><input id="phoneCode" type="text" placeholder="351" style="padding-left:30px;" /></div>
-                <input id="phoneNumber" type="text" placeholder="Phone number" />
+              <div class="label-row"><label for="phoneNumber" id="phoneLabel">Phone</label><span class="hint">Required</span></div>
+              <div class="phone-row">
+                <select id="phoneCode" aria-label="Country dialling code">
+                  <option value="351">Portugal +351</option>
+                  <option value="34">Spain +34</option>
+                  <option value="44">United Kingdom +44</option>
+                  <option value="353">Ireland +353</option>
+                  <option value="33">France +33</option>
+                  <option value="49">Germany +49</option>
+                  <option value="39">Italy +39</option>
+                  <option value="31">Netherlands +31</option>
+                  <option value="32">Belgium +32</option>
+                  <option value="41">Switzerland +41</option>
+                  <option value="43">Austria +43</option>
+                  <option value="352">Luxembourg +352</option>
+                  <option value="30">Greece +30</option>
+                  <option value="357">Cyprus +357</option>
+                  <option value="356">Malta +356</option>
+                  <option value="45">Denmark +45</option>
+                  <option value="46">Sweden +46</option>
+                  <option value="47">Norway +47</option>
+                  <option value="358">Finland +358</option>
+                  <option value="354">Iceland +354</option>
+                  <option value="48">Poland +48</option>
+                  <option value="420">Czechia +420</option>
+                  <option value="36">Hungary +36</option>
+                  <option value="40">Romania +40</option>
+                  <option value="359">Bulgaria +359</option>
+                  <option value="385">Croatia +385</option>
+                  <option value="386">Slovenia +386</option>
+                  <option value="90">Turkey +90</option>
+                  <option value="1">United States +1</option>
+                  <option value="1">Canada +1</option>
+                  <option value="52">Mexico +52</option>
+                  <option value="55">Brazil +55</option>
+                  <option value="54">Argentina +54</option>
+                  <option value="56">Chile +56</option>
+                  <option value="57">Colombia +57</option>
+                  <option value="51">Peru +51</option>
+                  <option value="212">Morocco +212</option>
+                  <option value="216">Tunisia +216</option>
+                  <option value="20">Egypt +20</option>
+                  <option value="27">South Africa +27</option>
+                  <option value="971">United Arab Emirates +971</option>
+                  <option value="966">Saudi Arabia +966</option>
+                  <option value="974">Qatar +974</option>
+                  <option value="972">Israel +972</option>
+                  <option value="91">India +91</option>
+                  <option value="65">Singapore +65</option>
+                  <option value="66">Thailand +66</option>
+                  <option value="60">Malaysia +60</option>
+                  <option value="62">Indonesia +62</option>
+                  <option value="81">Japan +81</option>
+                  <option value="82">South Korea +82</option>
+                  <option value="86">China +86</option>
+                  <option value="852">Hong Kong +852</option>
+                  <option value="61">Australia +61</option>
+                  <option value="64">New Zealand +64</option>
+                </select>
+                <input id="phoneNumber" type="tel" inputmode="tel" placeholder="912 345 678" autocomplete="tel-national" />
               </div>
+              <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)">The driver calls this if they cannot find you on the day.</div>
             </div>
             <div class="field">
               <div class="label-row"><label for="flightNumber">Flight number</label><span class="hint">Optional</span></div>
@@ -920,8 +985,6 @@ function applyPaymentUI() {
 
   $('payLaterDesc').textContent = 'Card saved, nothing charged until ' +
     (payOptions.charge_lead_hours || 48) + ' hours before pick-up.';
-  $('payLaterBadge').classList.toggle('hidden', !allowed);
-
   if (!allowed && payOptions.reason) {
     $('payWhy').textContent = payOptions.reason;
     $('payWhy').classList.remove('hidden');
@@ -1066,12 +1129,15 @@ window.initMap = initMap;
 function setupAutocomplete(inputId, boxId, type) {
   var input = $(inputId), box = $(boxId);
 
-  // O Chrome decide o que oferecer no momento em que carrega a
-  // página e ignora autocomplete="off". Trocar o token depois disso
-  // obriga-o a reavaliar, e é o que finalmente o cala.
-  setTimeout(function () {
+  // O Chrome ignora autocomplete="off" em campos soltos e oferece o
+  // email guardado. Mas não oferece nada num campo que estava
+  // readonly quando a página carregou — tirar o readonly ao primeiro
+  // toque dá-nos um campo normal sem o menu do autofill.
+  input.addEventListener('focus', function once() {
+    input.removeAttribute('readonly');
     input.setAttribute('autocomplete', 'al-' + Math.random().toString(36).slice(2, 8));
-  }, 400);
+    input.removeEventListener('focus', once);
+  });
 
   input.addEventListener('input', function () {
     var value = input.value.trim();
