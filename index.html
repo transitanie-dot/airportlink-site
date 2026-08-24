@@ -266,6 +266,10 @@ html[data-theme="dark"] .auth-tab.active{background:var(--amber);color:#141A28}
 .auth-msg{display:none;margin-top:12px;padding:12px 14px;border-radius:14px;font-size:13.5px;line-height:1.5}
 .auth-msg.err{background:var(--err-bg);color:var(--err-text);border:1px solid var(--err-rule)}
 .auth-msg.ok{background:var(--ok-bg);color:var(--ok-text);border:1px solid var(--ok-rule)}
+.save-traveller{display:flex;gap:11px;align-items:flex-start;cursor:pointer;
+  padding:12px 14px;border-radius:15px;background:var(--surface-2);
+  border:1px solid var(--rule);margin-bottom:14px;font-size:13.5px;line-height:1.5}
+.save-traveller input{width:17px;height:17px;margin-top:1px;flex:0 0 auto}
 .signed-in-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;
   border-radius:15px;background:var(--surface-2);border:1px solid var(--rule);font-size:13px;margin-bottom:14px}
 
@@ -512,6 +516,20 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
             </div>
             <div class="field"><div class="label-row"><label for="fullName" id="fullNameLabel">Full name</label><span class="hint">Required</span></div><input id="fullName" type="text" placeholder="Your full name" /></div>
             <div class="field"><div class="label-row"><label for="email" id="emailLabel">Email</label><span class="hint" id="emailHint">From your account</span></div><input id="email" type="email" readonly /></div>
+            <div class="field hidden" id="travellerField">
+              <div class="label-row"><label for="travellerPick">Saved traveller</label><span class="hint">Optional</span></div>
+              <select id="travellerPick">
+                <option value="">New traveller</option>
+              </select>
+              <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)">Pick someone you have booked before and the details fill in.</div>
+            </div>
+
+            <div class="field hidden" id="agentRefField">
+              <div class="label-row"><label for="agentReference">Your reference</label><span class="hint">Optional</span></div>
+              <input id="agentReference" type="text" placeholder="Your own file or booking number" maxlength="60">
+              <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)">Shown on your dashboard, the voucher and the monthly statement.</div>
+            </div>
+
             <div class="field hidden" id="passengerEmailField"><div class="label-row"><label for="passengerEmail">Passenger email</label><span class="hint">Optional</span></div><input id="passengerEmail" type="email" placeholder="If they should get the details too" /></div>
             <div class="field">
               <div class="label-row"><label for="phoneNumber" id="phoneLabel">Phone</label><span class="hint">Required</span></div>
@@ -583,6 +601,11 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
               <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)">Give us the flight and we track it. If it lands late, the driver waits.</div>
             </div>
             <div class="field"><div class="label-row"><label for="notes">Notes</label><span class="hint">Optional</span></div><input id="notes" type="text" placeholder="Child seat, extra luggage, anything else" /></div>
+
+            <label class="save-traveller hidden" id="saveTravellerRow">
+              <input type="checkbox" id="saveTraveller">
+              <span>Save this traveller for next time</span>
+            </label>
             <button id="confirmBtn" class="btn confirm-btn" type="button">Review booking</button>
           </div>
         </div>
@@ -616,6 +639,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
           <div class="summary-item"><div class="summary-label">Duration</div><div class="summary-value" id="summaryDuration">&mdash;</div></div>
           <div class="summary-item"><div class="summary-label">Price</div><div class="summary-value" id="summaryPrice">&mdash;</div><div class="price-eur hidden" id="summaryPriceEur"></div></div>
           <div class="summary-item"><div class="summary-label">Payment</div><div class="summary-value" id="summaryPayment">&mdash;</div></div>
+          <div class="summary-item hidden" id="summaryRefItem"><div class="summary-label">Your reference</div><div class="summary-value" id="summaryRef">&mdash;</div></div>
           <div class="summary-item" style="grid-column:1/-1"><div class="summary-label">Notes</div><div class="summary-value" id="summaryNotes">&mdash;</div></div>
         </div>
 
@@ -924,6 +948,11 @@ function applyAgentUI() {
   $('agentBanner').classList.toggle('hidden', !on);
   $('publicCancelNote').classList.toggle('hidden', on);
   $('passengerEmailField').classList.toggle('hidden', !on);
+  $('agentRefField').classList.toggle('hidden', !on);
+  $('travellerField').classList.toggle('hidden', !on);
+  $('saveTravellerRow').classList.toggle('hidden', !on);
+
+  if (on) loadTravellers();
 
   if (on) {
     $('agentBannerTitle').textContent =
@@ -1061,6 +1090,105 @@ Array.prototype.forEach.call(document.querySelectorAll('.pay-opt'), function (b)
     applyPaymentUI();
   });
 });
+
+// ============================================================
+// VIAJANTES GUARDADOS
+//
+// Pertencem à agência, não ao viajante — é a agência que os cria e
+// os apaga, e a RLS garante que só vê os seus. Ordenados pelos mais
+// usados, que é quase sempre quem se procura.
+// ============================================================
+var travellers = [];
+
+async function loadTravellers() {
+  if (!isAgent() || travellers.length) return;
+
+  var res = await supabaseClient.from('agency_travellers')
+    .select('id, full_name, phone, email, notes, times_booked')
+    .eq('archived', false)
+    .order('times_booked', { ascending: false })
+    .order('full_name');
+
+  if (res.error) {
+    console.log('travellers:', res.error.message);
+    return;
+  }
+
+  travellers = res.data || [];
+
+  var sel = $('travellerPick');
+  sel.innerHTML = '<option value="">New traveller</option>' +
+    travellers.map(function (t) {
+      var label = t.full_name + (t.times_booked ? '  \u00b7  ' + t.times_booked + '\u00d7' : '');
+      return '<option value="' + t.id + '">' +
+        label.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</option>';
+    }).join('');
+}
+
+$('travellerPick').addEventListener('change', function () {
+  var picked = travellers.find(function (t) { return t.id === $('travellerPick').value; });
+
+  if (!picked) {
+    // "New traveller": limpa em vez de deixar os dados do anterior,
+    // que é como se reserva uma viagem para a pessoa errada.
+    ['fullName', 'phoneNumber', 'passengerEmail'].forEach(function (id) { $(id).value = ''; });
+    $('saveTraveller').checked = false;
+    return;
+  }
+
+  $('fullName').value = picked.full_name || '';
+  $('passengerEmail').value = picked.email || '';
+
+  if (picked.phone) {
+    var digits = String(picked.phone).replace(/[^\d+]/g, '');
+    var codes = Array.prototype.map.call($('phoneCode').options, function (o) { return o.value; })
+      .sort(function (a, b) { return b.length - a.length; });
+
+    if (digits.charAt(0) === '+') {
+      var rest = digits.slice(1);
+      var code = codes.find(function (c) { return rest.indexOf(c) === 0; });
+      if (code) {
+        $('phoneCode').value = code;
+        $('phoneNumber').value = rest.slice(code.length);
+      } else {
+        $('phoneNumber').value = rest;
+      }
+    } else {
+      $('phoneNumber').value = digits;
+    }
+  }
+
+  if (picked.notes && !$('notes').value) $('notes').value = picked.notes;
+
+  // Já está guardado: voltar a guardar não faz nada de mal, mas a
+  // caixa marcada sugeriria que era preciso.
+  $('saveTraveller').checked = false;
+});
+
+async function persistTraveller() {
+  if (!isAgent() || !$('saveTraveller').checked) return;
+
+  var name = $('fullName').value.trim();
+  if (!name) return;
+
+  var phone = $('phoneNumber').value.trim()
+    ? ('+' + $('phoneCode').value + ' ' + $('phoneNumber').value.trim())
+    : null;
+
+  // onConflict com o índice único: guardar duas vezes a mesma pessoa
+  // atualiza em vez de criar uma segunda entrada igual.
+  var res = await supabaseClient.from('agency_travellers').upsert({
+    agent_id: currentUser.id,
+    full_name: name,
+    phone: phone,
+    email: $('passengerEmail').value.trim() || null,
+    notes: $('notes').value.trim() || null,
+    updated_at: new Date().toISOString()
+  }, { onConflict: 'agent_id,full_name,phone' });
+
+  if (res.error) console.log('save traveller:', res.error.message);
+  else travellers = [];
+}
 
 // ============================================================
 // MAPA E PREÇO
@@ -1650,6 +1778,7 @@ $('confirmBtn').addEventListener('click', function () {
     passenger_name: fullName,
     passenger_phone: '+' + phoneCode + ' ' + phoneNumber,
     passenger_email: isAgent() ? $('passengerEmail').value.trim() : currentUser.email,
+    agent_reference: isAgent() ? $('agentReference').value.trim() : '',
     flight_number: $('flightNumber').value.trim(),
     notes: $('notes').value.trim(),
     currency: $('currency').value, passengers: $('passengers').value,
@@ -1662,6 +1791,8 @@ $('confirmBtn').addEventListener('click', function () {
   $('summaryEmail').textContent = booking.email + (isAgent() ? ' (billing)' : '');
   $('summaryPhone').textContent = '+' + booking.phone_code + ' ' + booking.phone_number;
   $('summaryFlight').textContent = booking.flight_number || '\u2014';
+  $('summaryRefItem').classList.toggle('hidden', !booking.agent_reference);
+  $('summaryRef').textContent = booking.agent_reference || '\u2014';
   $('summaryNotes').textContent = booking.notes || '\u2014';
   updateCheckoutSummary();
 
@@ -1669,6 +1800,7 @@ $('confirmBtn').addEventListener('click', function () {
   $('checkoutSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   setStatus('Review your booking below and complete the payment.');
   window.__latestBooking = booking;
+  persistTraveller();
   reportHeight();
 });
 
