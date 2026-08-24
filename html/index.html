@@ -73,6 +73,67 @@
 /* Só o que é específico desta página. O resto vive em
    /assets/site.css e é partilhado por todas. */
 
+/* ---------- hero horizontal ----------
+   O quadro dos três passos saiu daqui para baixo do mapa. O texto
+   de introdução passa a ocupar a largura toda, o hero encolhe, e o
+   calculador e o mapa sobem no ecrã. */
+.hero{padding:38px 0 6px}
+.hero-top{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
+  gap:38px;align-items:end}
+.hero h1{max-width:22ch;margin-bottom:12px}
+.hero .lead{max-width:none;margin-bottom:0}
+.hero-side{display:flex;flex-direction:column;gap:14px}
+.promo{display:flex;gap:13px;align-items:flex-start;background:var(--surface);
+  border:1px solid var(--teal);border-radius:18px;padding:15px 17px}
+html[data-theme="dark"] .promo{border-color:var(--amber)}
+.promo .mk{width:34px;height:34px;border-radius:999px;background:var(--teal-soft);
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+  font-family:var(--mono);font-size:11px;font-weight:600;color:var(--teal)}
+html[data-theme="dark"] .promo .mk{color:var(--amber)}
+.promo strong{display:block;font-family:var(--display);font-weight:700;font-size:15px;
+  letter-spacing:-.01em;margin-bottom:3px}
+.promo span{color:var(--muted);font-size:13px;line-height:1.55}
+
+/* ---------- os três passos, agora em faixa ---------- */
+.steps-band{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+  border:1px solid var(--rule);border-radius:24px;overflow:hidden;background:var(--surface)}
+.step-cell{padding:24px 26px;border-right:1px dashed var(--rule-strong);
+  display:grid;grid-template-columns:42px 1fr;gap:15px;align-items:start}
+.step-cell:last-child{border-right:0}
+.step-cell .ic{width:42px;height:42px;border-radius:999px;background:var(--teal-soft);
+  border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.step-cell .ic svg{width:20px;height:20px;color:var(--teal)}
+html[data-theme="dark"] .step-cell .ic svg{color:var(--amber)}
+.step-cell strong{display:block;font-family:var(--display);font-weight:700;font-size:15.5px;
+  letter-spacing:-.01em;margin-bottom:4px}
+.step-cell span{color:var(--muted);font-size:13.5px;line-height:1.6}
+
+/* ---------- escolha de pagamento ---------- */
+.pay-choice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.pay-opt{border:1px solid var(--rule-strong);border-radius:16px;padding:14px 15px;
+  background:var(--field);cursor:pointer;text-align:left;transition:border-color .15s ease}
+.pay-opt:hover:not(:disabled){border-color:var(--teal)}
+.pay-opt.on{border-color:var(--teal);background:var(--teal-soft)}
+.pay-opt:disabled{opacity:.45;cursor:not-allowed}
+.pay-opt .t{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.01em;margin-bottom:4px}
+.pay-opt .d{color:var(--muted);font-size:12.5px;line-height:1.5}
+.pay-opt .badge{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;background:var(--teal);color:#fff;
+  border-radius:999px;padding:3px 7px;margin-left:7px;vertical-align:1px}
+html[data-theme="dark"] .pay-opt .badge{background:var(--amber);color:#141A28}
+.pay-why{margin-top:10px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.mandate{margin-top:14px;padding:13px 15px;border-radius:14px;background:var(--surface-2);
+  border:1px solid var(--rule);font-size:12.5px;color:var(--muted);line-height:1.6}
+.mandate b{color:var(--text)}
+@media (max-width:980px){
+  .hero-top{grid-template-columns:1fr;gap:22px;align-items:start}
+  .steps-band{grid-template-columns:1fr}
+  .step-cell{border-right:0;border-bottom:1px dashed var(--rule-strong)}
+  .step-cell:last-child{border-bottom:0}
+  .pay-choice{grid-template-columns:1fr}
+}
+
 /* ============================================================
    A FERRAMENTA
    ============================================================ */
@@ -262,35 +323,27 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
      pedir moradas.
      ============================================================ -->
 <section class="hero">
-  <div class="hero-inner hero-grid">
-    <div>
-      <div class="rise"><div class="kicker"><span class="bar"></span><span class="tag">Private airport transfers</span></div></div>
-      <h1 class="rise d1">A driver waiting for you, <em>at a price you already know.</em></h1>
-      <p class="lead rise d2">No queues, no meters, no surprises. One vehicle for your group, door to door. Get your fare below in under a minute.</p>
-      <div class="proofs rise d3">
-        <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Fixed price, taxes in</span>
-        <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Free cancellation, 24h</span>
-        <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/><path d="M22 20v-2a4 4 0 0 0-3-3.8"/></svg>Up to 16 people</span>
-        <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Stripe checkout</span>
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div>
+        <div class="rise"><div class="kicker"><span class="bar"></span><span class="tag">Private airport transfers</span></div></div>
+        <h1 class="rise d1">A driver waiting for you, <em>at a price you already know.</em></h1>
+        <p class="lead rise d2">No queues, no meters, no surprises. One vehicle for your group, door to door, with the fare agreed before you book.</p>
       </div>
-    </div>
 
-    <div class="flow rise d2">
-      <span class="tag">How a transfer works</span>
-      <ol class="flow-list">
-        <li class="flow-step roll">
-          <span class="flow-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M5.5 14.5 4 9.2a.6.6 0 0 1 .8-.7l2 .7 2.6 1.1 2-4.9a1.4 1.4 0 0 1 2.6.2l1.3 5.8 3.2 1.3a1.6 1.6 0 0 1-.5 3.1H7.2a1.8 1.8 0 0 1-1.7-1.3Z"/></svg></span>
-          <div><strong>Your flight lands</strong><span>Give us the flight number and we follow it. A delay moves the pick-up, never the price.</span></div>
-        </li>
-        <li class="flow-step roll" style="animation-delay:1.05s">
-          <span class="flow-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18"/><path d="M4 13V9.5L6 5h12l2 4.5V13"/><path d="M4 13v4h3v-4M17 13v4h3v-4"/><circle cx="7.5" cy="15.5" r="1"/><circle cx="16.5" cy="15.5" r="1"/></svg></span>
-          <div><strong>The driver is already there</strong><span>One vehicle for your group and your luggage. No app to open, no queue, no shared ride.</span></div>
-        </li>
-        <li class="flow-step roll" style="animation-delay:1.3s">
-          <span class="flow-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V10l7-5 7 5v11"/><path d="M10 21v-6h4v6"/></svg></span>
-          <div><strong>Straight to the door</strong><span>Hotel, apartment or street address. The fare you saw is the fare you pay.</span></div>
-        </li>
-      </ol>
+      <div class="hero-side rise d2">
+        <div class="promo">
+          <span class="mk">0&euro;</span>
+          <span><strong>Book now, pay later</strong>
+          <span>On most transfers you can reserve today and pay nothing until 48 hours before pick-up. Change your mind before then and there is nothing to refund.</span></span>
+        </div>
+        <div class="proofs rise d3">
+          <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Fixed price, taxes in</span>
+          <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Free cancellation, 24h</span>
+          <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/><path d="M22 20v-2a4 4 0 0 0-3-3.8"/></svg>Up to 16 people</span>
+          <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Stripe checkout</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -356,6 +409,25 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
             <div class="mini-card"><div class="mini-label">Distance</div><div class="mini-value" id="distanceValue">&mdash;</div></div>
             <div class="mini-card"><div class="mini-label">Duration</div><div class="mini-value" id="durationValue">&mdash;</div></div>
             <div class="mini-card"><div class="mini-label">Price</div><div class="mini-value price" id="priceValue">&mdash;</div><div class="public-price hidden" id="publicPrice"></div></div>
+          </div>
+
+          <div class="pay-choice hidden" id="payChoice">
+            <button class="pay-opt on" id="payNowOpt" data-mode="now" type="button">
+              <span class="t">Pay now</span>
+              <span class="d">Card charged today. Free cancellation until 24 hours before pick-up.</span>
+            </button>
+            <button class="pay-opt" id="payLaterOpt" data-mode="later" type="button">
+              <span class="t">Pay later<span class="badge" id="payLaterBadge">Popular</span></span>
+              <span class="d" id="payLaterDesc">Card saved, nothing charged until 48 hours before pick-up.</span>
+            </button>
+          </div>
+          <div class="pay-why hidden" id="payWhy"></div>
+
+          <div class="mandate hidden" id="payMandate">
+            <b>What happens with your card.</b> We save it securely with Stripe and charge
+            <b id="mandateAmount">the fare</b> once, <b id="mandateWhen">48 hours before pick-up</b>.
+            Nothing is taken today. Cancel any time before that from your account and the card is
+            removed without being charged.
           </div>
 
           <div class="booking-summary" id="bookingSummary"><strong>Trip details</strong><br>Date: &mdash;<br>Time: &mdash;<br>Passengers: &mdash;<br>Vehicle type: &mdash;</div>
@@ -437,6 +509,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
           <div class="summary-item"><div class="summary-label">Distance</div><div class="summary-value" id="summaryDistance">&mdash;</div></div>
           <div class="summary-item"><div class="summary-label">Duration</div><div class="summary-value" id="summaryDuration">&mdash;</div></div>
           <div class="summary-item"><div class="summary-label">Price</div><div class="summary-value" id="summaryPrice">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Payment</div><div class="summary-value" id="summaryPayment">&mdash;</div></div>
           <div class="summary-item" style="grid-column:1/-1"><div class="summary-label">Notes</div><div class="summary-value" id="summaryNotes">&mdash;</div></div>
         </div>
 
@@ -447,6 +520,25 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
 
         <button id="payNowBtn" class="btn pay-btn" type="button">Pay and confirm</button>
         <div id="payStatus" class="status"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" style="padding-top:34px;padding-bottom:0">
+  <div class="wrap">
+    <div class="steps-band">
+      <div class="step-cell">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M5.5 14.5 4 9.2a.6.6 0 0 1 .8-.7l2 .7 2.6 1.1 2-4.9a1.4 1.4 0 0 1 2.6.2l1.3 5.8 3.2 1.3a1.6 1.6 0 0 1-.5 3.1H7.2a1.8 1.8 0 0 1-1.7-1.3Z"/></svg></span>
+        <div><strong>Your flight lands</strong><span>Give us the flight number and we follow it. A delay moves the pick-up, never the price.</span></div>
+      </div>
+      <div class="step-cell">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18"/><path d="M4 13V9.5L6 5h12l2 4.5V13"/><path d="M4 13v4h3v-4M17 13v4h3v-4"/><circle cx="7.5" cy="15.5" r="1"/><circle cx="16.5" cy="15.5" r="1"/></svg></span>
+        <div><strong>The driver is already there</strong><span>One vehicle for your group and your luggage. No app to open, no queue, no shared ride.</span></div>
+      </div>
+      <div class="step-cell">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V10l7-5 7 5v11"/><path d="M10 21v-6h4v6"/></svg></span>
+        <div><strong>Straight to the door</strong><span>Hotel, apartment or street address. The fare you saw is the fare you pay.</span></div>
       </div>
     </div>
   </div>
@@ -554,6 +646,7 @@ var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KE
 
 var $ = function (id) { return document.getElementById(id); };
 var currentUser = null, authMode = 'signin', agentInfo = null;
+var payMode = 'now', payOptions = { pay_later: false, reason: null, charge_lead_hours: 48 };
 
 // ============================================================
 // ALTURA E TEMA
@@ -758,6 +851,101 @@ function applyAgentUI() {
 }
 
 // ============================================================
+// PAGAR JÁ OU PAGAR DEPOIS
+//
+// A elegibilidade é decidida no servidor e repetida no checkout.
+// Isto aqui é só para a interface: forçar payMode a 'later' na
+// consola não muda nada, o servidor recusa e explica porquê.
+// ============================================================
+async function refreshPaymentOptions() {
+  var base = parseFloat($('priceValue').dataset.basePrice || 'NaN');
+  if (!isFinite(base) || !$('travelDate').value) {
+    $('payChoice').classList.add('hidden');
+    $('payWhy').classList.add('hidden');
+    $('payMandate').classList.add('hidden');
+    return;
+  }
+
+  var body = {
+    booking: {
+      date: $('travelDate').value,
+      time: $('travelTime').value,
+      price_eur: base,
+      distance_km: parseFloat(($('distanceValue').textContent || '').replace(' km', '')) || 0,
+      pickup: pickupPlace ? pickupPlace.fullDescription : '',
+      dropoff: dropoffPlace ? dropoffPlace.fullDescription : ''
+    }
+  };
+
+  var headers = { 'Content-Type': 'application/json' };
+  try {
+    var sess = await supabaseClient.auth.getSession();
+    var tk = sess.data && sess.data.session && sess.data.session.access_token;
+    if (tk) headers['Authorization'] = 'Bearer ' + tk;
+  } catch (e) {}
+
+  try {
+    var res = await fetch(RENDER_URL + '/api/payment-options', {
+      method: 'POST', headers: headers, body: JSON.stringify(body)
+    });
+    payOptions = await res.json();
+  } catch (e) {
+    // Perante a dúvida, só pagar já. Nunca o contrário.
+    payOptions = { pay_later: false, reason: null, charge_lead_hours: 48 };
+  }
+
+  applyPaymentUI();
+}
+
+function applyPaymentUI() {
+  var allowed = Boolean(payOptions.pay_later);
+
+  $('payChoice').classList.remove('hidden');
+  $('payLaterOpt').disabled = !allowed;
+
+  if (!allowed && payMode === 'later') payMode = 'now';
+
+  $('payLaterDesc').textContent = 'Card saved, nothing charged until ' +
+    (payOptions.charge_lead_hours || 48) + ' hours before pick-up.';
+  $('payLaterBadge').classList.toggle('hidden', !allowed);
+
+  if (!allowed && payOptions.reason) {
+    $('payWhy').textContent = payOptions.reason;
+    $('payWhy').classList.remove('hidden');
+  } else {
+    $('payWhy').classList.add('hidden');
+  }
+
+  $('payNowOpt').classList.toggle('on', payMode === 'now');
+  $('payLaterOpt').classList.toggle('on', payMode === 'later');
+
+  // O mandato é uma exigência do Stripe: antes de guardar um cartão
+  // para uso futuro, o cliente tem de ver por escrito quanto, quando
+  // e como cancelar.
+  var showMandate = payMode === 'later' && allowed;
+  $('payMandate').classList.toggle('hidden', !showMandate);
+
+  if (showMandate) {
+    $('mandateAmount').textContent = $('priceValue').textContent;
+    var d = new Date($('travelDate').value + 'T' + ($('travelTime').value || '00:00'));
+    var chargeAt = new Date(d.getTime() - (payOptions.charge_lead_hours || 48) * 36e5);
+    $('mandateWhen').textContent = isNaN(chargeAt.getTime())
+      ? ((payOptions.charge_lead_hours || 48) + ' hours before pick-up')
+      : ('on ' + chargeAt.toLocaleDateString(undefined, { day: 'numeric', month: 'long' }));
+  }
+
+  updateCheckoutSummary();
+}
+
+Array.prototype.forEach.call(document.querySelectorAll('.pay-opt'), function (b) {
+  b.addEventListener('click', function () {
+    if (b.disabled) return;
+    payMode = b.getAttribute('data-mode');
+    applyPaymentUI();
+  });
+});
+
+// ============================================================
 // MAPA E PREÇO
 // ============================================================
 var map, directionsService, directionsRenderer, autocompleteService;
@@ -949,6 +1137,7 @@ function calculateRouteAndPrice() {
     $('durationValue').textContent = leg.duration.text;
     updatePriceDisplay(priceEUR);
     updateCheckoutSummary();
+    refreshPaymentOptions();
     setStatus('Fare calculated. ' + passengers + ' passenger(s), ' + getVehicleType(passengers) + '.');
   });
 }
@@ -995,6 +1184,9 @@ function updateCheckoutSummary() {
   $('summaryDistance').textContent = $('distanceValue').textContent;
   $('summaryDuration').textContent = $('durationValue').textContent;
   $('summaryPrice').textContent = $('priceValue').textContent;
+  $('summaryPayment').textContent = payMode === 'later'
+    ? ('Pay later \u00b7 charged ' + (payOptions.charge_lead_hours || 48) + 'h before pick-up')
+    : 'Pay now';
 }
 
 // ============================================================
@@ -1103,6 +1295,7 @@ async function onSignedIn(user) {
   }
 
   await loadAgentInfo();
+  refreshPaymentOptions();
   setStatus('Complete your booking details below.');
   reportHeight();
 }
@@ -1153,7 +1346,8 @@ $('confirmBtn').addEventListener('click', function () {
     notes: $('notes').value.trim(),
     currency: $('currency').value, passengers: $('passengers').value,
     pickup: pickupPlace.fullDescription, dropoff: dropoffPlace.fullDescription,
-    date: $('travelDate').value, time: $('travelTime').value
+    date: $('travelDate').value, time: $('travelTime').value,
+    payment_mode: payMode
   };
 
   $('summaryName').textContent = booking.full_name + (isAgent() ? ' (passenger)' : '');
@@ -1178,6 +1372,7 @@ $('confirmBtn').addEventListener('click', function () {
 // não fazia nada (o Stripe.js nem sequer estava na página).
 // ============================================================
 $('payNowBtn').addEventListener('click', async function () {
+  if (payMode === 'later') $('payNowBtn').textContent = 'Save card and confirm';
   if (!window.__latestBooking) {
     $('payStatus').textContent = 'Please confirm the booking first.';
     return;
@@ -1215,7 +1410,9 @@ $('payNowBtn').addEventListener('click', async function () {
       return;
     }
 
-    $('payStatus').textContent = 'Redirecting to Stripe...';
+    $('payStatus').textContent = payMode === 'later'
+      ? 'Taking you to Stripe to save your card. Nothing is charged today.'
+      : 'Redirecting to Stripe...';
     try { window.top.location.href = result.url; }
     catch (e) { window.open(result.url, '_blank'); }
   } catch (error) {
