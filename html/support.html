@@ -18,6 +18,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/layout.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -746,6 +750,9 @@ $('myAccountBtn').addEventListener('click', function () { navigateTo('/myaccount
 $('logoutBtn').addEventListener('click', async function () {
   $('logoutBtn').disabled = true;
   try { await supabaseClient.auth.signOut(); } catch (e) {}
+  // Sem isto, o cabeçalho continuaria a dizer "Partner dashboard"
+  // ao próximo visitante deste browser.
+  try { localStorage.removeItem('airportlink-role-hint'); } catch (e) {}
   window.location.href = '/login';
 });
 
