@@ -10,22 +10,68 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
+    /* Claro por omissão, escuro por escolha. Quem faz turnos de dia
+       num escritório iluminado prefere claro; quem faz noite prefere
+       escuro. O botão está no topo e a escolha fica guardada. */
     :root{
-      /* Consola de operações: fundo mais frio e profundo, cartões
-         com um degrau de contraste em vez de dois, e uma cor de ação
-         só. Um painel usado oito horas por dia não pode brilhar. */
+      --bg:#F4F6F9;--card:#FFFFFF;--card-2:#F0F3F7;
+      --primary:#2563EB;--primary-soft:rgba(37,99,235,.10);
+      --text:#0F1724;--muted:#5A6982;--border:#DDE3EC;--border-soft:#E8ECF2;
+      --ok:#047857;--ok-bg:rgba(4,120,87,.10);
+      --warn:#B45309;--warn-bg:rgba(180,83,9,.10);
+      --bad:#B42318;--bad-bg:rgba(180,35,24,.10);
+      --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+      --display:'Bricolage Grotesque','Inter',system-ui,sans-serif;
+      --body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+      --radius:14px;
+      --shadow:0 1px 2px rgba(15,23,36,.06),0 8px 24px rgba(15,23,36,.05);
+    }
+    html[data-theme="dark"]{
       --bg:#0B111C;--card:#141C2B;--card-2:#1A2436;
       --primary:#4F8EF7;--primary-soft:rgba(79,142,247,.14);
       --text:#E8EDF5;--muted:#8494AC;--border:#243044;--border-soft:#1C2637;
       --ok:#34D399;--ok-bg:rgba(52,211,153,.12);
       --warn:#F5B457;--warn-bg:rgba(245,180,87,.12);
       --bad:#F87171;--bad-bg:rgba(248,113,113,.12);
-      --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
-      --display:'Bricolage Grotesque','Inter',system-ui,sans-serif;
-      --body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
-      --radius:14px;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
     }
+    html{color-scheme:light}
+    html[data-theme="dark"]{color-scheme:dark}
     .warn-text{color:var(--bad);font-weight:600}
+
+    /* ---------- avisos ao vivo ----------
+       Três camadas: ponto no menu, título a piscar e uma faixa que
+       desliza. A primeira serve quem está a olhar, a segunda quem
+       tem o painel noutra aba, a terceira quem está ao telefone. */
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--warn);
+      display:inline-block;flex:0 0 auto;margin-left:auto;
+      box-shadow:0 0 0 0 rgba(245,180,87,.6);animation:ping 2s ease-out infinite}
+    @keyframes ping{
+      0%{box-shadow:0 0 0 0 rgba(245,180,87,.55)}
+      70%{box-shadow:0 0 0 7px rgba(245,180,87,0)}
+      100%{box-shadow:0 0 0 0 rgba(245,180,87,0)}
+    }
+    .toasts{position:fixed;right:18px;bottom:18px;z-index:900;display:flex;
+      flex-direction:column;gap:9px;max-width:340px}
+    .toast{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--warn);
+      border-radius:12px;padding:13px 15px;box-shadow:var(--shadow);
+      animation:toastIn .32s cubic-bezier(.22,.68,.35,1)}
+    @keyframes toastIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+    .toast .t{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--warn);margin-bottom:5px}
+    .toast .m{font-size:13.5px;line-height:1.5;margin-bottom:9px}
+    .toast .go{border:0;background:var(--primary);color:#fff;border-radius:8px;
+      padding:6px 12px;font-family:var(--mono);font-size:10.5px;font-weight:600;
+      letter-spacing:.07em;text-transform:uppercase;cursor:pointer}
+    .toast .x{position:absolute;top:8px;right:10px;border:0;background:none;
+      color:var(--muted);cursor:pointer;font-size:16px;line-height:1}
+
+    .head-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);
+      background:transparent;color:var(--muted);cursor:pointer;display:inline-flex;
+      align-items:center;justify-content:center}
+    .head-btn:hover{color:var(--text);border-color:var(--primary)}
+    .head-btn.off{opacity:.45}
+    .head-btn svg{width:16px;height:16px}
     *{box-sizing:border-box}
     /* Sem 100vh: dentro de um iframe, 100vh é a altura da janela e
        não do iframe. A altura é reportada ao Wix. */
@@ -300,9 +346,13 @@
   <div id="adminApp" class="hidden"><div class="container">
     <div class="header">
       <div><h1>AIRPORT<b style="color:var(--warn)">LINK</b> &middot; Operations</h1><div class="who" id="adminWhoami"></div></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button id="exportBookingsBtn" class="export-btn">Bookings CSV</button>
-        <button id="exportContactsBtn" class="export-btn">Contacts CSV</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button id="soundBtn" class="head-btn" type="button" title="Alert sound" aria-label="Alert sound">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        </button>
+        <button id="themeBtn" class="head-btn" type="button" title="Light or dark" aria-label="Switch theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        </button>
         <button id="refreshBtn" class="refresh-btn">Refresh</button>
         <button id="adminLogoutBtn" class="clear-btn">Log out</button>
       </div>
@@ -315,6 +365,7 @@
       <button class="tab-btn" data-tab="supportTab">Support</button>
 
       <div class="tab-group">Money</div>
+      <button class="tab-btn" data-tab="financeTab">Finance</button>
       <button class="tab-btn" data-tab="moneyTab">Payments <span id="moneyBadge"></span></button>
 
       <div class="tab-group">Network</div>
@@ -410,6 +461,70 @@
         </table></div>
       </div>
       <div class="pagination" id="contactsPagination"></div>
+    </div>
+
+    <div id="financeTab" class="panel">
+      <div class="search-section">
+        <h2>Finance</h2>
+        <p style="margin:0 0 14px;color:var(--muted);font-size:13.5px;line-height:1.6">
+          Everything that moved money, filtered by pick-up date. Refunds are shown as they were
+          issued, so the net column is what actually stayed with us.
+        </p>
+        <div class="search-grid">
+          <input id="finFrom" class="search-input" type="date" aria-label="From">
+          <input id="finTo" class="search-input" type="date" aria-label="To">
+          <select id="finStatus" class="search-input">
+            <option value="">All statuses</option>
+            <option value="paid">Paid</option>
+            <option value="card_saved">Card saved, not charged</option>
+            <option value="charge_failed">Charge failed</option>
+            <option value="refunded">Refunded</option>
+            <option value="partially_refunded">Partially refunded</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="search-grid">
+          <select id="finMode" class="search-input">
+            <option value="">Pay now and pay later</option>
+            <option value="now">Pay now only</option>
+            <option value="later">Pay later only</option>
+          </select>
+          <select id="finSource" class="search-input">
+            <option value="">Direct and agency</option>
+            <option value="agent">Agency bookings only</option>
+            <option value="direct">Direct customers only</option>
+          </select>
+          <select id="finCurrency" class="search-input"><option value="">All currencies</option></select>
+        </div>
+        <div class="search-actions">
+          <button id="finApplyBtn" class="search-btn">Apply</button>
+          <button id="finResetBtn" class="clear-btn">Reset</button>
+          <button id="finCsvBtn" class="export-btn">Finance CSV</button>
+          <button id="exportBookingsBtn" class="export-btn">All bookings CSV</button>
+          <button id="exportContactsBtn" class="export-btn">Contacts CSV</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card"><h3>Gross taken</h3><p class="value" id="finGross">0</p></div>
+        <div class="stat-card"><h3>Refunded</h3><p class="value" id="finRefunds">0</p></div>
+        <div class="stat-card"><h3>Net</h3><p class="value" id="finNet">0</p></div>
+        <div class="stat-card"><h3>Bookings</h3><p class="value" id="finCount">0</p></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card"><h3>Driver payouts</h3><p class="value" id="finPayouts">0</p></div>
+        <div class="stat-card"><h3>Agency discount</h3><p class="value" id="finAgentCut">0</p></div>
+        <div class="stat-card"><h3>Awaiting charge</h3><p class="value" id="finPending">0</p></div>
+        <div class="stat-card"><h3>Average booking</h3><p class="value" id="finAvg">0</p></div>
+      </div>
+
+      <div class="table-box table-scroll"><table>
+        <thead><tr><th>Reference</th><th>Pick-up</th><th>Customer</th><th>Route</th>
+          <th>Mode</th><th>Status</th><th>Gross</th><th>Refunded</th><th>Payout</th></tr></thead>
+        <tbody id="finRows"><tr><td colspan="9" class="loading-row">Set a range and press Apply.</td></tr></tbody>
+      </table></div>
+      <div id="finNote" style="margin-top:12px;color:var(--muted);font-size:12.5px;line-height:1.6"></div>
     </div>
 
     <div id="moneyTab" class="panel">
@@ -582,6 +697,8 @@
     </div><!-- /.body-wrap -->
   </div></div>
 
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
   <div id="detailsModal" class="modal hidden"><div class="modal-content">
     <h2 style="margin:0 0 18px">Booking - <span id="detailBookingId"></span></h2>
     <div class="detail-grid">
@@ -725,8 +842,8 @@ var PARTNER_BUCKET = 'partner-documents';
 var activeConvId = null, renderedAdminMsgIds = new Set();
 var adminChatsChannel = null, adminMessagesChannel = null, adminSelectedFile = null;
 
-var bookingSelect = 'id, booking_id, booking_reference, pickup, dropoff, booking_date, booking_time, passengers, price, status, payment_status, currency, amount_total, receipt_url, payment_method_type, email, phone_number, phone_code, notes, flight_number, full_name, created_at, user_id, booked_by, agent_commission_pct, agent_gross_price, passenger_name, passenger_email, passenger_phone, stripe_payment_intent_id, refunded_amount, refunded_at, refund_reason'
-var activeBooking = null;;
+var bookingSelect = 'id, booking_id, booking_reference, pickup, dropoff, booking_date, booking_time, passengers, price, status, payment_status, currency, amount_total, receipt_url, payment_method_type, email, phone_number, phone_code, notes, flight_number, full_name, created_at, user_id, booked_by, agent_commission_pct, agent_gross_price, passenger_name, passenger_email, passenger_phone, stripe_payment_intent_id, refunded_amount, refunded_at, refund_reason, payment_mode, charge_at, charged_at, charge_attempts, last_charge_error, pickup_airport, pickup_city, preferred_languages, driver_payout, assigned_partner_id, assigned_at, released_count'
+var activeBooking = null;
 
 // ============================================================
 // GATE
@@ -1549,6 +1666,400 @@ async function sendAdminReply() {
 }
 
 // ============================================================
+// FINANÇAS
+//
+// Lê da bookings e faz as contas no browser. O volume é pequeno o
+// suficiente para isso, e evita uma vista nova a cada pergunta nova
+// que se queira fazer aos números.
+// ============================================================
+var finance = [];
+
+function finRange() {
+  return {
+    from: el('finFrom').value || null,
+    to: el('finTo').value || null,
+    status: el('finStatus').value,
+    mode: el('finMode').value,
+    source: el('finSource').value,
+    currency: el('finCurrency').value
+  };
+}
+
+async function loadFinance() {
+  var f = finRange();
+  el('finRows').innerHTML = '<tr><td colspan="9" class="loading-row">Loading...</td></tr>';
+
+  var q = client.from('bookings').select(
+    'id, booking_id, booking_reference, email, full_name, pickup, dropoff, ' +
+    'booking_date, booking_time, price, currency, status, payment_status, payment_mode, ' +
+    'charged_at, charge_at, refunded_amount, refunded_at, driver_payout, ' +
+    'agent_commission_pct, agent_gross_price, booked_by, created_at'
+  ).order('booking_date', { ascending: false }).limit(2000);
+
+  if (f.from) q = q.gte('booking_date', f.from);
+  if (f.to) q = q.lte('booking_date', f.to);
+
+  var res = await q;
+
+  if (res.error) {
+    el('finRows').innerHTML = '<tr><td colspan="9" class="error-row">' +
+      escapeHtml(res.error.message) + '</td></tr>';
+    return;
+  }
+
+  finance = (res.data || []).filter(function (b) {
+    if (f.status) {
+      var st = b.status === 'cancelled' ? 'cancelled' : (b.payment_status || b.status);
+      if (st !== f.status) return false;
+    }
+    if (f.mode && (b.payment_mode || 'now') !== f.mode) return false;
+    if (f.source === 'agent' && !b.booked_by) return false;
+    if (f.source === 'direct' && b.booked_by) return false;
+    if (f.currency && String(b.currency || '').toUpperCase() !== f.currency) return false;
+    return true;
+  });
+
+  fillCurrencyFilter(res.data || []);
+  renderFinance();
+}
+
+function fillCurrencyFilter(rows) {
+  var sel = el('finCurrency');
+  if (sel.options.length > 1) return;
+
+  var seen = {};
+  rows.forEach(function (b) {
+    var c = String(b.currency || '').toUpperCase();
+    if (c) seen[c] = true;
+  });
+
+  Object.keys(seen).sort().forEach(function (c) {
+    var o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    sel.appendChild(o);
+  });
+}
+
+function renderFinance() {
+  // Somamos por moeda e não convertemos: um total misturado em euros
+  // e dólares seria um número bonito e falso.
+  var gross = {}, refunds = {}, payouts = {}, agentCut = {}, pending = {};
+  var charged = 0;
+
+  function add(bag, cur, value) {
+    var c = String(cur || 'EUR').toUpperCase();
+    bag[c] = (bag[c] || 0) + Number(value || 0);
+  }
+
+  finance.forEach(function (b) {
+    var isPaid = Boolean(b.charged_at) || b.payment_status === 'paid' ||
+                 b.status === 'paid' || b.status === 'completed';
+    var uncharged = b.payment_mode === 'later' && !b.charged_at && b.status !== 'cancelled';
+
+    if (uncharged) add(pending, b.currency, b.price);
+
+    if (isPaid && b.status !== 'cancelled') {
+      add(gross, b.currency, b.price);
+      charged += 1;
+      if (b.driver_payout) add(payouts, b.currency, b.driver_payout);
+      if (b.agent_gross_price && b.price) {
+        add(agentCut, b.currency, Number(b.agent_gross_price) - Number(b.price));
+      }
+    }
+
+    if (b.refunded_amount) add(refunds, b.currency, b.refunded_amount);
+  });
+
+  function show(bag) {
+    var keys = Object.keys(bag).filter(function (k) { return Math.abs(bag[k]) > 0.005; });
+    if (!keys.length) return '0';
+    return keys.map(function (k) { return money(k, bag[k]); }).join('  ·  ');
+  }
+
+  var net = {};
+  Object.keys(gross).forEach(function (c) { net[c] = gross[c]; });
+  Object.keys(refunds).forEach(function (c) { net[c] = (net[c] || 0) - refunds[c]; });
+
+  var avg = {};
+  Object.keys(gross).forEach(function (c) {
+    if (charged) avg[c] = gross[c] / charged;
+  });
+
+  el('finGross').textContent = show(gross);
+  el('finRefunds').textContent = show(refunds);
+  el('finNet').textContent = show(net);
+  el('finCount').textContent = finance.length;
+  el('finPayouts').textContent = show(payouts);
+  el('finAgentCut').textContent = show(agentCut);
+  el('finPending').textContent = show(pending);
+  el('finAvg').textContent = show(avg);
+
+  var smaller = ['finGross','finRefunds','finNet','finPayouts','finAgentCut','finPending','finAvg'];
+  smaller.forEach(function (id) {
+    el(id).style.fontSize = el(id).textContent.length > 12 ? '15px' : '';
+  });
+
+  if (!finance.length) {
+    el('finRows').innerHTML = '<tr><td colspan="9" class="no-results">Nothing in that range.</td></tr>';
+  } else {
+    el('finRows').innerHTML = finance.slice(0, 400).map(function (b) {
+      var st = b.status === 'cancelled' ? 'cancelled' : (b.payment_status || b.status || '');
+      return '<tr>' +
+        '<td><strong>' + escapeHtml(b.booking_reference || b.booking_id || '') + '</strong></td>' +
+        '<td>' + escapeHtml(b.booking_date || '') +
+          (b.booking_time ? '<br><small style="color:var(--muted)">' +
+            escapeHtml(String(b.booking_time).slice(0, 5)) + '</small>' : '') + '</td>' +
+        '<td>' + escapeHtml(b.full_name || '') + '<br><small style="color:var(--muted)">' +
+          escapeHtml(b.email || '') + '</small></td>' +
+        '<td>' + escapeHtml(String(b.pickup || '').slice(0, 34)) +
+          '<br><small style="color:var(--muted)">to ' +
+          escapeHtml(String(b.dropoff || '').slice(0, 34)) + '</small></td>' +
+        '<td>' + escapeHtml(b.payment_mode === 'later' ? 'Later' : 'Now') +
+          (b.booked_by ? '<br><small style="color:var(--muted)">agency</small>' : '') + '</td>' +
+        '<td><span class="status ' + escapeHtml(String(st).replace(/[^a-z_]/gi, '')) + '">' +
+          escapeHtml(st) + '</span></td>' +
+        '<td>' + escapeHtml(money(b.currency, b.price)) + '</td>' +
+        '<td>' + (b.refunded_amount
+          ? '<span class="warn-text">' + escapeHtml(money(b.currency, b.refunded_amount)) + '</span>'
+          : '-') + '</td>' +
+        '<td>' + escapeHtml(b.driver_payout ? money(b.currency, b.driver_payout) : '-') + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  el('finNote').textContent = finance.length > 400
+    ? 'Showing the first 400 rows. The CSV has all ' + finance.length + '.'
+    : (finance.length + ' booking' + (finance.length === 1 ? '' : 's') +
+       ' · totals are shown per currency, never converted.');
+
+  reportHeight();
+}
+
+el('finApplyBtn').addEventListener('click', loadFinance);
+
+el('finResetBtn').addEventListener('click', function () {
+  ['finFrom','finTo'].forEach(function (id) { el(id).value = ''; });
+  ['finStatus','finMode','finSource','finCurrency'].forEach(function (id) { el(id).value = ''; });
+  loadFinance();
+});
+
+el('finCsvBtn').addEventListener('click', function () {
+  if (!finance.length) return alert('Nothing to export. Apply a filter first.');
+
+  var rows = finance.map(function (b) {
+    return {
+      reference: b.booking_reference || b.booking_id || '',
+      pickup_date: b.booking_date || '',
+      pickup_time: b.booking_time ? String(b.booking_time).slice(0, 5) : '',
+      booked_on: b.created_at ? String(b.created_at).slice(0, 10) : '',
+      charged_on: b.charged_at ? String(b.charged_at).slice(0, 10) : '',
+      customer: b.full_name || '',
+      email: b.email || '',
+      pickup: b.pickup || '',
+      dropoff: b.dropoff || '',
+      currency: String(b.currency || '').toUpperCase(),
+      gross: b.price || 0,
+      refunded: b.refunded_amount || 0,
+      net: Number(b.price || 0) - Number(b.refunded_amount || 0),
+      driver_payout: b.driver_payout || 0,
+      agent_booking: b.booked_by ? 'yes' : 'no',
+      agent_rate_pct: b.agent_commission_pct || '',
+      agent_public_price: b.agent_gross_price || '',
+      payment_mode: b.payment_mode || 'now',
+      payment_status: b.payment_status || '',
+      booking_status: b.status || ''
+    };
+  });
+
+  downloadRows(rows, 'airportlink-finance');
+});
+
+/** Um CSV que o Excel abre sem estragar acentos nem transformar
+ *  referências em datas. O BOM resolve o primeiro; as aspas em tudo
+ *  resolvem o segundo.
+ *
+ *  Nome diferente do downloadCsv que já existia: aquele recebe os
+ *  cabeçalhos à parte, este deduz-os das próprias linhas. Dois
+ *  nomes iguais teriam feito o segundo apagar o primeiro em silêncio. */
+function downloadRows(rows, prefix) {
+  if (!rows || !rows.length) return;
+
+  var headers = Object.keys(rows[0]);
+  var lines = [headers.join(',')];
+
+  rows.forEach(function (r) {
+    lines.push(headers.map(function (h) {
+      var v = r[h];
+      if (v === null || v === undefined) v = '';
+      return '"' + String(v).replace(/"/g, '""') + '"';
+    }).join(','));
+  });
+
+  var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = prefix + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+}
+
+// ============================================================
+// TEMA
+// ============================================================
+var ADMIN_THEME_KEY = 'airportlink-admin-theme';
+
+(function theme() {
+  var saved;
+  try { saved = localStorage.getItem(ADMIN_THEME_KEY); } catch (e) {}
+  document.documentElement.setAttribute('data-theme', saved === 'dark' ? 'dark' : 'light');
+
+  el('themeBtn').addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem(ADMIN_THEME_KEY, next); } catch (e) {}
+  });
+})();
+
+// ============================================================
+// AVISOS AO VIVO
+//
+// Três camadas, porque um operador de call centre nem sempre está a
+// olhar para o painel: um ponto no menu para quem está, o título a
+// piscar para quem tem o painel noutra aba, e uma faixa que desliza
+// para quem está ao telefone. O som pode ser desligado — sem isso,
+// ao fim de uma hora desliga-se o painel inteiro.
+// ============================================================
+var alerts = { bookingsTab: 0, supportTab: 0 };
+var soundOn = true;
+var titleTimer = null;
+var BASE_TITLE = document.title;
+
+try { soundOn = localStorage.getItem('airportlink-admin-sound') !== 'off'; } catch (e) {}
+
+function paintSoundBtn() {
+  el('soundBtn').classList.toggle('off', !soundOn);
+  el('soundBtn').title = soundOn ? 'Alert sound is on' : 'Alert sound is off';
+}
+paintSoundBtn();
+
+el('soundBtn').addEventListener('click', function () {
+  soundOn = !soundOn;
+  try { localStorage.setItem('airportlink-admin-sound', soundOn ? 'on' : 'off'); } catch (e) {}
+  paintSoundBtn();
+  if (soundOn) beep();
+});
+
+/** Duas notas curtas geradas na hora. Sem ficheiro de som para
+ *  carregar, e impossível de bloquear por um adblocker. */
+function beep() {
+  if (!soundOn) return;
+  try {
+    var Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    var ctx = new Ctx();
+    [880, 1180].forEach(function (freq, i) {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime + i * 0.13);
+      gain.gain.exponentialRampToValueAtTime(0.14, ctx.currentTime + i * 0.13 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + i * 0.13 + 0.16);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + i * 0.13);
+      osc.stop(ctx.currentTime + i * 0.13 + 0.18);
+    });
+    setTimeout(function () { try { ctx.close(); } catch (e) {} }, 900);
+  } catch (e) {}
+}
+
+function paintAlerts() {
+  Object.keys(alerts).forEach(function (tab) {
+    var btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
+    if (!btn) return;
+    var dot = btn.querySelector('.dot');
+    if (alerts[tab] > 0) {
+      if (!dot) {
+        dot = document.createElement('span');
+        dot.className = 'dot';
+        btn.appendChild(dot);
+      }
+    } else if (dot) {
+      dot.remove();
+    }
+  });
+
+  var total = alerts.bookingsTab + alerts.supportTab;
+
+  if (titleTimer) { clearInterval(titleTimer); titleTimer = null; }
+  document.title = BASE_TITLE;
+
+  // O título a piscar é o que funciona com o painel numa aba em
+  // segundo plano, que é onde vai estar metade do turno.
+  if (total > 0) {
+    var flip = false;
+    titleTimer = setInterval(function () {
+      flip = !flip;
+      document.title = flip ? '(' + total + ') New activity' : BASE_TITLE;
+    }, 1400);
+  }
+}
+
+function clearAlerts(tab) {
+  if (alerts[tab]) { alerts[tab] = 0; paintAlerts(); }
+}
+
+function toast(kind, message, tab) {
+  var box = el('toasts');
+  var node = document.createElement('div');
+  node.className = 'toast';
+  node.style.position = 'relative';
+  node.innerHTML = '<button class="x" type="button" aria-label="Dismiss">&times;</button>' +
+    '<div class="t">' + escapeHtml(kind) + '</div>' +
+    '<div class="m">' + escapeHtml(message) + '</div>' +
+    '<button class="go" type="button">Open</button>';
+
+  node.querySelector('.x').addEventListener('click', function () { node.remove(); });
+  node.querySelector('.go').addEventListener('click', function () {
+    switchTab(tab);
+    node.remove();
+  });
+
+  box.appendChild(node);
+  setTimeout(function () { if (node.parentNode) node.remove(); }, 9000);
+}
+
+function watchLive() {
+  client.channel('admin_live_bookings')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bookings' },
+      function (payload) {
+        var b = payload.new || {};
+        alerts.bookingsTab += 1;
+        paintAlerts();
+        beep();
+        toast('New booking',
+          (b.full_name || b.email || 'Customer') + ' \u00b7 ' +
+          (b.pickup || '') + ' to ' + (b.dropoff || ''), 'bookingsTab');
+        loadBookings();
+      }).subscribe();
+
+  client.channel('admin_live_messages')
+    .on('postgres_changes', {
+      event: 'INSERT', schema: 'public', table: 'support_messages',
+      filter: 'sender_type=eq.customer'
+    }, function (payload) {
+      var m = payload.new || {};
+      alerts.supportTab += 1;
+      paintAlerts();
+      beep();
+      toast('New message',
+        (m.sender_name || 'Customer') + ': ' + String(m.message || '').slice(0, 90),
+        'supportTab');
+    }).subscribe();
+}
+
+// ============================================================
 // PAGAMENTOS AGENDADOS
 //
 // Reservas com pagamento adiado. O cron cobra sozinho 48 horas antes;
@@ -2309,13 +2820,24 @@ qsa('.modal-tab').forEach(function (tab) {
   });
 });
 
+function switchTab(name) {
+  var btn = document.querySelector('.tab-btn[data-tab="' + name + '"]');
+  if (!btn) return;
+
+  qsa('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+  qsa('.panel').forEach(function (p) { p.classList.remove('active'); });
+  btn.classList.add('active');
+  el(name).classList.add('active');
+
+  // Abrir o separador é o mesmo que dizer "já vi": o ponto desaparece.
+  clearAlerts(name);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  reportHeight();
+}
+
 qsa('.tab-btn').forEach(function (btn) {
   btn.addEventListener('click', function () {
-    qsa('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
-    qsa('.panel').forEach(function (p) { p.classList.remove('active'); });
-    btn.classList.add('active');
-    el(btn.getAttribute('data-tab')).classList.add('active');
-    reportHeight();
+    switchTab(btn.getAttribute('data-tab'));
   });
 });
 
@@ -2371,9 +2893,14 @@ el('clearContactSearchBtn').addEventListener('click', function () {
 
 el('exportBookingsBtn').addEventListener('click', function () {
   if (!allBookings.length) return alert('No bookings to export.');
-  downloadCsv(['id','booking_id','user_id','booking_reference','full_name','email','phone_code','phone_number',
-    'pickup','dropoff','booking_date','booking_time','flight_number','passengers','price','currency','status',
-    'payment_status','amount_total','notes','receipt_url','created_at'], allBookings, 'airportlink-bookings');
+  downloadCsv(['booking_id','booking_reference','full_name','email','phone_code','phone_number',
+    'passenger_name','passenger_phone','pickup','dropoff','pickup_airport','pickup_city',
+    'booking_date','booking_time','flight_number','passengers','preferred_languages',
+    'price','currency','status','payment_status','payment_mode','charge_at','charged_at',
+    'charge_attempts','last_charge_error','refunded_amount','refunded_at','refund_reason',
+    'amount_total','driver_payout','assigned_partner_id','assigned_at','released_count',
+    'booked_by','agent_commission_pct','agent_gross_price','notes','created_at'],
+    allBookings, 'airportlink-bookings');
 });
 el('exportContactsBtn').addEventListener('click', function () {
   if (!contacts.length) return alert('No accounts to export.');
@@ -2423,6 +2950,7 @@ async function init() {
   await loadPartners();
   await loadCharges();
   subscribeToAllConversations();
+  watchLive();
 }
 
 (async function boot() {
