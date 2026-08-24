@@ -115,6 +115,17 @@ html[data-theme="dark"] .hbtn{background:#E9EDF3;color:#141A28}
   .site-nav{display:none}
   .burger{display:flex}
   .header-right .hbtn.line{display:none}
+  /* O botão principal pode ser curto ("Get a price") ou longo
+     ("Become a partner"). Sem limite, o longo empurrava o
+     hambúrguer para fora da margem. */
+  .header-right .hbtn{max-width:44vw;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;padding:0 14px}
+}
+@media (max-width:560px){
+  /* Em ecrãs estreitos o botão sai de vez: está no menu, a dois
+     toques, e o hambúrguer precisa do espaço mais do que ele. */
+  .header-right .hbtn{display:none}
+  .header-inner{padding:0 14px;gap:12px}
 }
 
 /* ============================================================
