@@ -1,0 +1,2346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin - AirportLink</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{--bg:#0f172a;--card:#1e293b;--primary:#3b82f6;--text:#f1f5f9;--muted:#94a3b8;--border:#374151}
+    *{box-sizing:border-box}
+    /* Sem 100vh: dentro de um iframe, 100vh é a altura da janela e
+       não do iframe. A altura é reportada ao Wix. */
+    html,body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .container{max-width:1300px;margin:0 auto;padding:20px}
+    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+    .header h1{margin:0;font-size:24px}
+    .who{font-size:12px;color:var(--muted)}
+    .tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:11px 16px;border:0;border-radius:10px;background:var(--card);color:var(--text);cursor:pointer;font-weight:700}
+    .tab-btn.active{background:var(--primary)}
+    .panel{display:none}
+    .panel.active{display:block}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:18px}
+    .stat-card h3{margin:0 0 8px;font-size:13px;color:var(--muted)}
+    .stat-card .value{margin:0;font-size:26px;font-weight:800;color:var(--primary)}
+    .search-section{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:18px;margin-bottom:20px}
+    .search-section h2{margin:0 0 14px;font-size:17px}
+    .search-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+    .search-input{padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-size:14px;outline:none;width:100%}
+    .search-actions{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+    .search-btn,.clear-btn,.export-btn,.refresh-btn,.btn-danger{padding:11px 18px;border:0;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px}
+    .search-btn,.refresh-btn{background:var(--primary);color:#fff}
+    .clear-btn,.btn-danger{background:#ef4444;color:#fff}
+    .export-btn{background:#10b981;color:#fff}
+    .table-box{background:var(--card);border:1px solid var(--border);border-radius:15px;overflow:hidden}
+    .table-scroll{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;min-width:800px}
+    th{padding:13px 15px;text-align:left;border-bottom:1px solid var(--border);background:#162032;font-size:13px;font-weight:700;color:var(--muted)}
+    td{padding:13px 15px;border-bottom:1px solid var(--border);vertical-align:top}
+    tr:hover{background:#253045}
+    .status{padding:5px 11px;border-radius:8px;font-size:12px;font-weight:700;display:inline-block}
+    .status.pending{background:#fef3c7;color:#92400e}
+    .status.completed,.status.paid{background:#dcfce7;color:#166534}
+    .status.cancelled,.status.refunded{background:#fee2e2;color:#991b1b}
+    .status.partially_refunded{background:#fef3c7;color:#92400e}
+    .status.open{background:#fef3c7;color:#92400e}
+    .status.resolved{background:#dcfce7;color:#166534}
+    .btn{border:0;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:13px;background:var(--primary);color:#fff}
+    .btn-small{padding:6px 12px;font-size:12px}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px}
+    .modal-content{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;max-width:1000px;width:100%;max-height:88vh;overflow-y:auto}
+    .hidden{display:none!important}
+    .no-results{text-align:center;padding:36px;color:var(--muted)}
+    .pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:20px;flex-wrap:wrap}
+    .pagination-btn{padding:8px 15px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);cursor:pointer;font-size:14px}
+    .pagination-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .pagination-info{color:var(--muted);font-size:14px}
+    .per-page{display:flex;align-items:center;gap:8px;color:var(--muted);padding:14px 15px 0}
+    .per-page select{padding:7px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .detail-label{font-size:12px;color:var(--muted);margin-bottom:4px}
+    .detail-value{font-size:15px;font-weight:600;word-break:break-word;margin-bottom:12px}
+    .detail-full{grid-column:1/-1}
+    .loading-row,.error-row{padding:22px;text-align:center;color:var(--muted)}
+    a.receipt-link{color:var(--primary);text-decoration:none;font-weight:700}
+    .support-layout{display:flex;gap:14px}
+    .conv-list-box{width:330px;flex:0 0 330px;background:var(--card);border:1px solid var(--border);border-radius:15px;display:flex;flex-direction:column;overflow:hidden}
+    .conv-list-head{padding:15px;border-bottom:1px solid var(--border);font-weight:800}
+    .conv-list-scroll{max-height:620px;overflow-y:auto;padding:10px}
+    .conv-item{padding:11px 13px;border-radius:11px;cursor:pointer;margin-bottom:8px;background:#162032;border:1px solid transparent}
+    .conv-item:hover{background:#1b2740}
+    .conv-item.active{border-color:var(--primary);background:#1b2740}
+    .conv-item-top{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:5px}
+    .conv-item-subject{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+    .conv-item-email,.conv-item-snippet{font-size:12px;color:var(--muted);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .conv-item-time{font-size:11px;color:var(--muted)}
+    .conv-thread-box{flex:1;background:var(--card);border:1px solid var(--border);border-radius:15px;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+    .conv-thread-head{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .conv-thread-empty{display:flex;align-items:center;justify-content:center;color:var(--muted);text-align:center;padding:60px 30px;min-height:400px}
+    .conv-messages{height:440px;overflow-y:auto;padding:18px;display:flex;flex-direction:column}
+    .conv-msg{max-width:72%;padding:11px 14px;border-radius:15px;font-size:14px;line-height:1.5;margin-bottom:11px;white-space:pre-wrap;word-wrap:break-word}
+    .conv-msg.admin{margin-left:auto;background:var(--primary);color:#fff;border-bottom-right-radius:4px}
+    .conv-msg.customer{margin-right:auto;background:#162032;border:1px solid var(--border);border-bottom-left-radius:4px}
+    .conv-msg-meta{font-size:10.5px;margin-top:5px;opacity:.75}
+    .conv-attachment{margin-top:8px;padding:8px 12px;background:rgba(255,255,255,.18);border-radius:10px;font-size:12.5px;color:inherit;display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:0;font-family:inherit;text-align:left;max-width:100%}
+    .conv-msg.customer .conv-attachment{background:rgba(255,255,255,.10)}
+    .conv-attachment:hover{text-decoration:underline}
+    .conv-note{padding:9px 15px;text-align:center;font-size:12.5px;color:var(--muted);background:#162032;border-top:1px solid var(--border)}
+    .conv-note.error{color:#fecaca;background:#7f1d1d;font-weight:700}
+    .conv-reply-row{border-top:1px solid var(--border);padding:13px 15px;display:flex;gap:10px;align-items:flex-end}
+    .conv-reply-row textarea{flex:1;resize:none;max-height:120px;padding:11px 13px;border:1px solid var(--border);border-radius:11px;background:var(--bg);color:var(--text);font-family:inherit;font-size:14px;outline:none}
+    .status-toggle-btn,.attach-btn{background:#162032;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:8px 13px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap}
+    .attach-btn:disabled{opacity:.4;cursor:not-allowed}
+    .file-chip{display:none;align-items:center;gap:8px;background:#162032;border:1px solid var(--border);border-radius:10px;padding:6px 8px 6px 11px;font-size:12px;max-width:250px}
+    .file-chip.show{display:inline-flex}
+    .file-chip .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-chip .remove{border:0;background:transparent;color:var(--muted);font-size:17px;line-height:1;cursor:pointer;padding:0 4px;font-weight:700}
+    .file-chip .remove:hover{color:#fca5a5}
+    .modal-tabs{display:flex;gap:8px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:12px}
+    .modal-tab{padding:8px 15px;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--text);cursor:pointer;font-weight:700;font-size:13px}
+    .modal-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
+    .modal-tab-content{display:none}
+    .modal-tab-content.active{display:block}
+    .gate{display:flex;align-items:center;justify-content:center;padding:60px 24px;min-height:520px}
+    .gate-card{width:100%;max-width:390px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:30px}
+    .gate-card h1{margin:0 0 6px;font-size:23px}
+    .gate-card p{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.5}
+    .gate-field{margin-bottom:13px}
+    .gate-field label{display:block;margin-bottom:7px;font-size:13px;font-weight:700;color:var(--muted)}
+    .gate-field input{width:100%;padding:12px 13px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-size:15px;outline:none}
+    .gate-msg{display:none;margin-top:13px;padding:11px 13px;border-radius:10px;font-size:14px;background:#7f1d1d;color:#fecaca;border:1px solid #991b1b;line-height:1.45}
+    .gate-btn{width:100%;margin-top:8px;padding:12px;border:0;border-radius:10px;background:var(--primary);color:#fff;font-weight:800;font-size:15px;cursor:pointer}
+    .gate-btn:disabled{opacity:.6;cursor:not-allowed}
+    .agent-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:18px;margin-bottom:12px}
+    .agent-card.pending{border-color:#f59e0b}
+    .agent-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+    .agent-head h3{margin:0 0 4px;font-size:17px}
+    .agent-head .who{font-size:12.5px;color:var(--muted);line-height:1.6}
+    .agent-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+    .agent-fact{background:#162032;border:1px solid var(--border);border-radius:11px;padding:10px 12px}
+    .agent-fact .k{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+    .agent-fact .v{font-size:13.5px;font-weight:700;word-break:break-word}
+    .agent-note-box{background:#162032;border:1px solid var(--border);border-radius:11px;padding:12px 14px;font-size:13.5px;line-height:1.6;margin-bottom:12px;white-space:pre-wrap}
+    .agent-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .agent-actions input{width:90px;padding:9px 11px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);font-size:14px}
+    .btn-ok{background:#10b981;color:#fff;border:0;border-radius:9px;padding:10px 16px;font-weight:700;font-size:13px;cursor:pointer}
+    .btn-no{background:transparent;color:#fca5a5;border:1px solid #7f1d1d;border-radius:9px;padding:10px 16px;font-weight:700;font-size:13px;cursor:pointer}
+    a.agent-link{color:var(--primary);text-decoration:none;font-weight:700}
+    .chg-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:16px 18px;margin-bottom:10px}
+    .chg-card.late{border-color:#f59e0b}
+    .chg-card.failed{border-color:#7f1d1d}
+    .chg-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px}
+    .chg-top h4{margin:0 0 3px;font-size:15.5px}
+    .chg-top .m{font-size:12px;color:var(--muted);line-height:1.6}
+    .chg-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+    .chg-fact{background:#162032;border:1px solid var(--border);border-radius:10px;padding:9px 11px}
+    .chg-fact .k{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+    .chg-fact .v{font-size:13px;font-weight:700}
+    .chg-err{margin-top:10px;padding:9px 12px;border-radius:9px;background:#2b1114;color:#fca5a5;font-size:12.5px;line-height:1.5}
+    .chg-actions{display:flex;gap:9px;margin-top:11px;flex-wrap:wrap}
+    .btn-charge{background:#10b981;color:#fff;border:0;border-radius:9px;padding:9px 15px;font-weight:700;font-size:12.5px;cursor:pointer}
+    .btn-charge:disabled{opacity:.5;cursor:not-allowed}
+    .pt-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:18px;margin-bottom:12px}
+    .pt-card.needs{border-color:#f59e0b}
+    .pt-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+    .pt-head h3{margin:0 0 4px;font-size:17px}
+    .pt-head .who{font-size:12.5px;color:var(--muted);line-height:1.6}
+    .pt-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+    .pt-fact{background:#162032;border:1px solid var(--border);border-radius:11px;padding:10px 12px}
+    .pt-fact .k{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+    .pt-fact .v{font-size:13.5px;font-weight:700;word-break:break-word}
+    .pt-docs{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px}
+    .pt-doc{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+    .pt-doc:last-child{border-bottom:0}
+    .pt-doc .n{font-size:13.5px;font-weight:600}
+    .pt-doc .m{font-size:11.5px;color:var(--muted)}
+    .pt-doc .r{display:flex;gap:8px;align-items:center}
+    .doc-open{background:transparent;border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--primary);font-weight:700;font-size:12px;cursor:pointer}
+    .doc-open:hover{border-color:var(--primary)}
+    .pt-missing{color:#fca5a5;font-size:12.5px}
+    .pt-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--border)}
+    .pt-actions input[type=text]{flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);font-size:13.5px}
+    .btn-verify{background:#3b82f6;color:#fff;border:0;border-radius:9px;padding:10px 15px;font-weight:700;font-size:12.5px;cursor:pointer}
+    .btn-activate{background:#10b981;color:#fff;border:0;border-radius:9px;padding:10px 15px;font-weight:700;font-size:12.5px;cursor:pointer}
+    .btn-suspend{background:transparent;color:#fbbf24;border:1px solid #b45309;border-radius:9px;padding:10px 15px;font-weight:700;font-size:12.5px;cursor:pointer}
+    .btn-reject{background:transparent;color:#fca5a5;border:1px solid #7f1d1d;border-radius:9px;padding:10px 15px;font-weight:700;font-size:12.5px;cursor:pointer}
+    .pt-actions button:disabled{opacity:.5;cursor:not-allowed}
+    .status.verified{background:#dbeafe;color:#1e40af}
+    .status.submitted,.status.in_review,.status.draft{background:#fef3c7;color:#92400e}
+    .status.suspended{background:#fee2e2;color:#991b1b}
+    @media (max-width:900px){.pt-facts{grid-template-columns:1fr 1fr}}
+    .refund-box{margin-top:22px;padding:20px;border:1px solid #7f1d1d;border-radius:15px;background:#1a1013}
+    .refund-box h3{margin:0 0 6px;font-size:16px;color:#fca5a5}
+    .refund-box p.note{margin:0 0 16px;color:var(--muted);font-size:13px;line-height:1.6}
+    .refund-figures{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+    .refund-fig{background:#162032;border:1px solid var(--border);border-radius:11px;padding:11px 13px}
+    .refund-fig .k{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+    .refund-fig .v{font-size:16px;font-weight:700}
+    .refund-fields{display:grid;grid-template-columns:150px 1fr;gap:10px;margin-bottom:12px}
+    .refund-fields input{padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-size:14px;width:100%}
+    .refund-check{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--text);margin-bottom:14px;cursor:pointer}
+    .refund-check input{width:16px;height:16px;cursor:pointer}
+    .btn-refund{background:#ef4444;color:#fff;border:0;border-radius:10px;padding:12px 20px;font-weight:700;font-size:13.5px;cursor:pointer}
+    .btn-refund:disabled{opacity:.5;cursor:not-allowed}
+    .refund-msg{display:none;margin-top:13px;padding:11px 13px;border-radius:10px;font-size:13.5px;line-height:1.55}
+    .refund-msg.err{background:#7f1d1d;color:#fecaca;border:1px solid #991b1b}
+    .refund-msg.ok{background:#052e22;color:#6ee7b7;border:1px solid #14532d}
+    @media (max-width:900px){.refund-figures{grid-template-columns:1fr}.refund-fields{grid-template-columns:1fr}}
+    @media (max-width:900px){.agent-facts{grid-template-columns:1fr 1fr}}
+    @media (max-width:900px){
+      .stats{grid-template-columns:1fr 1fr}
+      .search-grid{grid-template-columns:1fr}
+      .support-layout{flex-direction:column}
+      .conv-list-box{width:100%;flex:0 0 auto}
+      .conv-list-scroll{max-height:260px}
+      .conv-messages{height:380px}
+      .detail-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+  <div id="gateView" class="gate">
+    <div class="gate-card">
+      <h1>Admin access</h1>
+      <p>Sign in with an administrator account to continue.</p>
+      <div class="gate-field"><label for="gateEmail">Email</label><input id="gateEmail" type="email" autocomplete="username"></div>
+      <div class="gate-field"><label for="gatePassword">Password</label><input id="gatePassword" type="password" autocomplete="current-password"></div>
+      <button id="gateBtn" class="gate-btn" type="button">Sign in</button>
+      <div id="gateError" class="gate-msg"></div>
+    </div>
+  </div>
+
+  <div id="bootView" class="gate hidden"><div class="gate-card"><p style="margin:0">Checking your session...</p></div></div>
+
+  <div id="adminApp" class="hidden"><div class="container">
+    <div class="header">
+      <div><h1>Admin Panel</h1><div class="who" id="adminWhoami"></div></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button id="exportBookingsBtn" class="export-btn">Bookings CSV</button>
+        <button id="exportContactsBtn" class="export-btn">Contacts CSV</button>
+        <button id="refreshBtn" class="refresh-btn">Refresh</button>
+        <button id="adminLogoutBtn" class="clear-btn">Log out</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="bookingsTab">Bookings</button>
+      <button class="tab-btn" data-tab="accountsTab">Accounts</button>
+      <button class="tab-btn" data-tab="moneyTab">Payments <span id="moneyBadge"></span></button>
+      <button class="tab-btn" data-tab="partnersTab">Driver partners <span id="partnersBadge"></span></button>
+      <button class="tab-btn" data-tab="agentsTab">Travel agents <span id="agentsBadge"></span></button>
+      <button class="tab-btn" data-tab="supportTab">Support</button>
+    </div>
+
+    <div id="bookingsTab" class="panel active">
+      <div class="search-section">
+        <h2>Search Bookings</h2>
+        <div class="search-grid">
+          <input type="text" id="searchBookingId" class="search-input" placeholder="Booking ID">
+          <input type="text" id="searchEmail" class="search-input" placeholder="Email">
+          <input type="text" id="searchName" class="search-input" placeholder="Name">
+        </div>
+        <div class="search-grid">
+          <div style="display:flex;gap:8px">
+            <input type="date" id="searchDateFrom" class="search-input">
+            <input type="date" id="searchDateTo" class="search-input">
+          </div>
+          <input type="text" id="searchPickup" class="search-input" placeholder="Pickup">
+          <input type="text" id="searchDropoff" class="search-input" placeholder="Dropoff">
+        </div>
+        <div class="search-grid">
+          <select id="searchStatus" class="search-input">
+            <option value="">All Status</option><option value="pending">Pending</option>
+            <option value="paid">Paid</option><option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select><div></div><div></div>
+        </div>
+        <div class="search-actions">
+          <button id="searchBtn" class="search-btn">Search</button>
+          <button id="clearSearchBtn" class="clear-btn">Clear Filters</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card"><h3>Upcoming</h3><p class="value" id="upcomingBookings">0</p></div>
+        <div class="stat-card"><h3>Revenue (listed)</h3><p class="value" id="revenueValue">0</p></div>
+        <div class="stat-card"><h3>Cancelled</h3><p class="value" id="cancelledBookings">0</p></div>
+        <div class="stat-card"><h3>Total</h3><p class="value" id="totalBookings">0</p></div>
+      </div>
+
+      <div class="table-box">
+        <div class="per-page"><label>Show:</label>
+          <select id="perPageSelect">
+            <option value="10">10</option><option value="25">25</option>
+            <option value="50" selected>50</option><option value="100">100</option>
+          </select>
+        </div>
+        <div class="table-scroll"><table>
+          <thead><tr><th>Booking ID</th><th>Customer</th><th>Route</th><th>Date &amp; time</th><th>Flight</th><th>Booked by</th><th>Price</th><th>Status</th><th></th></tr></thead>
+          <tbody id="bookingsList"></tbody>
+        </table></div>
+      </div>
+      <div class="pagination" id="bookingsPagination"></div>
+    </div>
+
+    <div id="accountsTab" class="panel">
+      <div class="search-section">
+        <h2>Accounts</h2>
+        <div class="search-grid">
+          <input type="text" id="contactSearch" class="search-input" placeholder="Name or email">
+          <input type="text" id="contactSearchId" class="search-input" placeholder="Client ID">
+          <div></div>
+        </div>
+        <div class="search-actions">
+          <button id="contactSearchBtn" class="search-btn">Search</button>
+          <button id="clearContactSearchBtn" class="clear-btn">Clear Filters</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat-card"><h3>Total Accounts</h3><p class="value" id="totalContacts">0</p></div>
+        <div class="stat-card"><h3>Admins</h3><p class="value" id="adminContacts">0</p></div>
+        <div class="stat-card"><h3>With Bookings</h3><p class="value" id="contactsWithBookings">0</p></div>
+        <div class="stat-card"><h3>Selected</h3><p class="value" id="selectedContactBookings">0</p></div>
+      </div>
+      <div class="table-box">
+        <div class="per-page"><label>Show:</label>
+          <select id="contactsPerPageSelect">
+            <option value="10">10</option><option value="25">25</option>
+            <option value="50" selected>50</option><option value="100">100</option>
+          </select>
+        </div>
+        <div class="table-scroll"><table>
+          <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Admin</th><th></th></tr></thead>
+          <tbody id="contactsList"></tbody>
+        </table></div>
+      </div>
+      <div class="pagination" id="contactsPagination"></div>
+    </div>
+
+    <div id="moneyTab" class="panel">
+      <div class="stats">
+        <div class="stat-card"><h3>Cards saved</h3><p class="value" id="mSaved">0</p></div>
+        <div class="stat-card"><h3>Charging soon</h3><p class="value" id="mSoon">0</p></div>
+        <div class="stat-card"><h3>Overdue</h3><p class="value" id="mLate">0</p></div>
+        <div class="stat-card"><h3>Failed</h3><p class="value" id="mFailed">0</p></div>
+      </div>
+
+      <div class="search-section">
+        <h2>Scheduled charges</h2>
+        <p style="margin:0 0 14px;color:var(--muted);font-size:13.5px;line-height:1.6">
+          Bookings paid later. The card is charged automatically 48 hours before pick-up.
+          Anything overdue or failed needs a person.
+        </p>
+        <div class="search-actions">
+          <button id="chgRefreshBtn" class="search-btn">Refresh</button>
+          <button id="chgRunBtn" class="export-btn">Run charge cycle now</button>
+        </div>
+        <div id="chgRunMsg" class="gate-msg" style="margin-top:14px"></div>
+      </div>
+
+      <div id="chgList"><div class="loading-row">Loading...</div></div>
+
+      <div class="search-section" style="margin-top:22px">
+        <h2>Rides nobody has taken</h2>
+        <p style="margin:0 0 14px;color:var(--muted);font-size:13.5px;line-height:1.6">
+          Paid bookings with no partner assigned. The last column is the one that matters:
+          if no partner can even see it, the problem is coverage, not willingness.
+        </p>
+      </div>
+      <div class="table-box table-scroll"><table>
+        <thead><tr><th>Reference</th><th>Route</th><th>Date &amp; time</th><th>Airport</th><th>Payout</th><th>Hours left</th><th>Partners who see it</th></tr></thead>
+        <tbody id="unclaimedList"><tr><td colspan="7" class="loading-row">Loading...</td></tr></tbody>
+      </table></div>
+    </div>
+
+    <div id="partnersTab" class="panel">
+      <div class="search-section">
+        <h2>Driver partner applications</h2>
+        <div class="search-grid">
+          <input type="text" id="ptSearch" class="search-input" placeholder="Company, VAT, email or country">
+          <select id="ptStatusFilter" class="search-input">
+            <option value="needs" selected>Waiting on you</option>
+            <option value="submitted">Submitted</option>
+            <option value="verified">Verified, not yet live</option>
+            <option value="approved">Live</option>
+            <option value="suspended">Suspended</option>
+            <option value="rejected">Rejected</option>
+            <option value="">All</option>
+          </select>
+          <div></div>
+        </div>
+        <div class="search-actions">
+          <button id="ptSearchBtn" class="search-btn">Search</button>
+          <button id="ptResetBtn" class="clear-btn">Reset</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card"><h3>Waiting on you</h3><p class="value" id="ptWaiting">0</p></div>
+        <div class="stat-card"><h3>Verified</h3><p class="value" id="ptVerified">0</p></div>
+        <div class="stat-card"><h3>Live</h3><p class="value" id="ptLive">0</p></div>
+        <div class="stat-card"><h3>Total</h3><p class="value" id="ptTotal">0</p></div>
+      </div>
+
+      <div id="ptList"><div class="loading-row">Loading...</div></div>
+      <div id="ptError" class="gate-msg" style="margin-top:14px"></div>
+    </div>
+
+    <div id="agentsTab" class="panel">
+      <div class="search-section">
+        <h2>Travel agent applications</h2>
+        <div class="search-grid">
+          <input type="text" id="agentSearch" class="search-input" placeholder="Agency, email or country">
+          <select id="agentStatusFilter" class="search-input">
+            <option value="pending" selected>Pending review</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="">All applications</option>
+          </select>
+          <div></div>
+        </div>
+        <div class="search-actions">
+          <button id="agentSearchBtn" class="search-btn">Search</button>
+          <button id="agentRefreshBtn" class="clear-btn">Reset</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card"><h3>Pending</h3><p class="value" id="agentPendingCount">0</p></div>
+        <div class="stat-card"><h3>Approved</h3><p class="value" id="agentApprovedCount">0</p></div>
+        <div class="stat-card"><h3>Rejected</h3><p class="value" id="agentRejectedCount">0</p></div>
+        <div class="stat-card"><h3>Agent bookings</h3><p class="value" id="agentBookingsCount">0</p></div>
+      </div>
+
+      <div id="agentList"><div class="loading-row">Loading...</div></div>
+      <div id="agentError" class="gate-msg" style="margin-top:14px"></div>
+    </div>
+
+    <div id="supportTab" class="panel">
+      <div class="search-section">
+        <h2>Search Conversations</h2>
+        <div class="search-grid">
+          <input type="text" id="convSearchText" class="search-input" placeholder="Ticket, email, name or subject">
+          <select id="convSearchStatus" class="search-input">
+            <option value="">All Status</option><option value="pending">Pending</option>
+            <option value="open">Open</option><option value="resolved">Resolved</option>
+          </select>
+          <select id="convSearchSubject" class="search-input">
+            <option value="">All Subjects</option><option value="Billing">Billing</option>
+            <option value="Booking">Booking</option><option value="Technical">Technical</option>
+            <option value="Account">Account</option><option value="General">General</option>
+            <option value="Travel Agents/Partnership">Travel Agents/Partnership</option>
+            <option value="Drivers">Drivers</option><option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="search-actions">
+          <button id="convSearchBtn" class="search-btn">Search</button>
+          <button id="convClearSearchBtn" class="clear-btn">Clear Filters</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat-card"><h3>Pending</h3><p class="value" id="pendingConvCount">0</p></div>
+        <div class="stat-card"><h3>Open</h3><p class="value" id="openConvCount">0</p></div>
+        <div class="stat-card"><h3>Resolved</h3><p class="value" id="resolvedConvCount">0</p></div>
+        <div class="stat-card"><h3>Total</h3><p class="value" id="totalConvCount">0</p></div>
+      </div>
+      <div class="support-layout">
+        <div class="conv-list-box">
+          <div class="conv-list-head">Conversations</div>
+          <div id="convListScroll" class="conv-list-scroll"><div class="loading-row">Loading...</div></div>
+        </div>
+        <div class="conv-thread-box">
+          <div id="convThreadEmpty" class="conv-thread-empty">Select a conversation to view the messages.</div>
+          <div id="convThreadActive" class="hidden" style="flex-direction:column;flex:1;min-width:0;">
+            <div class="conv-thread-head">
+              <div>
+                <div style="font-weight:800;font-size:16px" id="convSubject">-</div>
+                <div style="font-size:12.5px;color:var(--muted)" id="convTicketNumber">Ticket: -</div>
+                <div style="font-size:12.5px;color:var(--muted)" id="convCustomerInfo">-</div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:center">
+                <span class="status open" id="convStatusBadge">Open</span>
+                <button id="convToggleStatusBtn" class="status-toggle-btn" type="button">Mark as resolved</button>
+              </div>
+            </div>
+            <div id="convMessages" class="conv-messages"></div>
+            <div id="convNote" class="conv-note hidden"></div>
+            <div class="conv-reply-row">
+              <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                  <input type="file" id="adminFileInput" style="display:none;" accept="image/*,.pdf,.doc,.docx,.txt">
+                  <button id="adminAttachFileBtn" class="attach-btn" type="button">Attach file</button>
+                  <span id="adminFileChip" class="file-chip">
+                    <span class="name" id="adminFileChipName"></span>
+                    <button class="remove" id="adminFileChipRemove" type="button" title="Remove file" aria-label="Remove file">&times;</button>
+                  </span>
+                </div>
+                <textarea id="convReplyInput" rows="1" placeholder="Type your reply..."></textarea>
+              </div>
+              <button id="convSendBtn" class="btn" type="button">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <div id="detailsModal" class="modal hidden"><div class="modal-content">
+    <h2 style="margin:0 0 18px">Booking - <span id="detailBookingId"></span></h2>
+    <div class="detail-grid">
+      <div><div class="detail-label">Customer</div><div class="detail-value" id="detailName"></div></div>
+      <div><div class="detail-label">Email</div><div class="detail-value" id="detailEmail"></div></div>
+      <div><div class="detail-label">Phone</div><div class="detail-value" id="detailPhone"></div></div>
+      <div><div class="detail-label">Passengers</div><div class="detail-value" id="detailPassengers"></div></div>
+      <div><div class="detail-label">Flight number</div><div class="detail-value" id="detailFlight"></div></div>
+      <div><div class="detail-label">Booked by</div><div class="detail-value" id="detailBookedBy"></div></div>
+      <div class="detail-full"><div class="detail-label">Passenger contact</div><div class="detail-value" id="detailPassenger"></div></div>
+      <div><div class="detail-label">Payment status</div><div class="detail-value" id="detailPaymentStatus"></div></div>
+      <div><div class="detail-label">Refunded</div><div class="detail-value" id="detailRefunded"></div></div>
+      <div><div class="detail-label">Charged</div><div class="detail-value" id="detailAmountTotal"></div></div>
+      <div><div class="detail-label">Payment method</div><div class="detail-value" id="detailPaymentMethodType"></div></div>
+      <div class="detail-full"><div class="detail-label">Receipt</div><div class="detail-value" id="detailReceiptUrl"></div></div>
+      <div class="detail-full"><div class="detail-label">Pick-up</div><div class="detail-value" id="detailPickup"></div></div>
+      <div class="detail-full"><div class="detail-label">Drop-off</div><div class="detail-value" id="detailDropoff"></div></div>
+      <div><div class="detail-label">Date &amp; time</div><div class="detail-value" id="detailDate"></div></div>
+      <div><div class="detail-label">Price</div><div class="detail-value" id="detailPrice"></div></div>
+      <div><div class="detail-label">Status</div><div class="detail-value"><span id="detailStatus"></span></div></div>
+      <div class="detail-full"><div class="detail-label">Notes</div><div class="detail-value" id="detailNotes"></div></div>
+    </div>
+    <div class="refund-box" id="refundBox">
+      <h3>Issue a refund</h3>
+      <p class="note">For cases outside the automatic cancellation window. The money leaves immediately and cannot be undone from here. Partial refunds are allowed; leave the amount empty to refund everything still outstanding.</p>
+
+      <div class="refund-figures">
+        <div class="refund-fig"><div class="k">Charged</div><div class="v" id="refundPaid">&mdash;</div></div>
+        <div class="refund-fig"><div class="k">Already refunded</div><div class="v" id="refundDone">&mdash;</div></div>
+        <div class="refund-fig"><div class="k">Still refundable</div><div class="v" id="refundLeft">&mdash;</div></div>
+      </div>
+
+      <div class="refund-fields">
+        <input type="number" id="refundAmount" min="0" step="0.01" placeholder="Full amount">
+        <input type="text" id="refundReason" placeholder="Reason (goes on the Stripe record and your booking history)">
+      </div>
+
+      <label class="refund-check">
+        <input type="checkbox" id="refundCancel" checked>
+        Also mark this booking as cancelled
+      </label>
+
+      <button class="btn-refund" id="refundBtn" type="button">Issue refund</button>
+      <div id="refundError" class="refund-msg err"></div>
+      <div id="refundOk" class="refund-msg ok"></div>
+    </div>
+
+    <button id="closeDetailsBtn" class="btn btn-danger" style="width:100%;margin-top:18px">Close</button>
+  </div></div>
+
+  <div id="accountDetailsModal" class="modal hidden"><div class="modal-content">
+    <h2 style="margin:0 0 8px"><span id="accountDetailsName"></span></h2>
+    <p style="color:var(--muted);margin:0 0 14px" id="accountDetailsEmail"></p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" data-tab="bookingsTabModal">Bookings (<span id="accountBookingsCount">0</span>)</button>
+      <button class="modal-tab" data-tab="chatsTabModal">Support (<span id="accountChatsCount">0</span>)</button>
+    </div>
+    <div id="bookingsTabModal" class="modal-tab-content active"><div class="table-box table-scroll"><table>
+      <thead><tr><th>Booking ID</th><th>Route</th><th>Date</th><th>Price</th><th>Status</th><th>Receipt</th></tr></thead>
+      <tbody id="accountBookingsList"></tbody></table></div></div>
+    <div id="chatsTabModal" class="modal-tab-content"><div class="table-box table-scroll"><table>
+      <thead><tr><th>Ticket</th><th>Subject</th><th>Status</th><th>Last message</th><th>Updated</th></tr></thead>
+      <tbody id="accountChatsList"></tbody></table></div></div>
+    <button class="btn btn-danger" id="closeAccountDetailsBtn" style="width:100%;margin-top:16px">Close</button>
+  </div></div>
+
+<script>
+(function () {
+'use strict';
+
+var SUPABASE_URL = 'https://ujpagsccfiledbtfeyuq.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ';
+var STORAGE_BUCKET = 'support-files';
+var SIGNED_URL_SECONDS = 300;
+var MAX_FILE_BYTES = 10 * 1024 * 1024;
+var RENDER_URL = 'https://airportlink.onrender.com';
+
+// storageKey próprio: todos os embeds do Wix correm em filesusr.com,
+// logo partilham origem e localStorage. Sem isto, criar uma conta de
+// cliente noutro separador substituía a sessão de admin — e o painel
+// ficava aberto a enviar o token errado. Com uma chave separada, as
+// duas sessões coexistem.
+var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: false,
+    storageKey: 'airportlink-admin-auth'
+  }
+});
+
+var el = function (id) { return document.getElementById(id); };
+var qsa = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+// ============================================================
+// AUTO-ALTURA
+// ============================================================
+function notifyParent(m) { try { window.parent.postMessage(m, '*'); } catch (e) {} }
+var lastSent = 0;
+function reportHeight() {
+  var h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+  if (Math.abs(h - lastSent) < 12) return;
+  lastSent = h;
+  notifyParent({ type: 'resize', height: h });
+}
+if (window.ResizeObserver) new ResizeObserver(reportHeight).observe(document.body);
+window.addEventListener('load', reportHeight);
+[300, 900, 2000].forEach(function (ms) { setTimeout(reportHeight, ms); });
+notifyParent('ready');
+
+function escapeHtml(s) {
+  return String(s === null || s === undefined ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function formatTime(v) {
+  var d = new Date(v);
+  return isNaN(d.getTime()) ? '' : d.toLocaleString([], { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+function money(currency, value) {
+  var c = currency ? String(currency).toUpperCase() : 'EUR';
+  var n = Number(value);
+  return isNaN(n) ? (c + ' 0.00') : (c + ' ' + n.toFixed(2));
+}
+function bookingWhen(b) {
+  var t = b.booking_time ? String(b.booking_time).slice(0, 5) : '';
+  return t ? ((b.booking_date || 'N/A') + ' \u00b7 ' + t) : (b.booking_date || 'N/A');
+}
+function bookingRef(b) { return b.booking_id || b.booking_reference || String(b.id || '').slice(0, 8); }
+
+var currentAdmin = null;
+var bookingFilters = { bookingId:'', email:'', name:'', pickup:'', dropoff:'', dateFrom:'', dateTo:'', status:'' };
+var allBookings = [], bookingPage = 1, bookingPerPage = 50;
+var contacts = [], contactFilters = { search:'', searchId:'' }, contactPage = 1, contactPerPage = 50;
+var selectedContactBookings = [], selectedContactChats = [];
+var conversations = [], convFilters = { search:'', status:'', subject:'' };
+var agents = [], agentFilters = { search: '', status: 'pending' };
+var partners = [], ptFilters = { search: '', status: 'needs' };
+var charges = [], unclaimed = [];
+var PARTNER_BUCKET = 'partner-documents';
+var activeConvId = null, renderedAdminMsgIds = new Set();
+var adminChatsChannel = null, adminMessagesChannel = null, adminSelectedFile = null;
+
+var bookingSelect = 'id, booking_id, booking_reference, pickup, dropoff, booking_date, booking_time, passengers, price, status, payment_status, currency, amount_total, receipt_url, payment_method_type, email, phone_number, phone_code, notes, flight_number, full_name, created_at, user_id, booked_by, agent_commission_pct, agent_gross_price, passenger_name, passenger_email, passenger_phone, stripe_payment_intent_id, refunded_amount, refunded_at, refund_reason'
+var activeBooking = null;;
+
+// ============================================================
+// GATE
+// ============================================================
+function showGateError(t) { el('gateError').textContent = t; el('gateError').style.display = 'block'; reportHeight(); }
+
+async function verifyAdmin() {
+  var s = await client.auth.getSession();
+  if (!s.data || !s.data.session) return null;
+  var u = await client.auth.getUser();
+  if (u.error || !u.data || !u.data.user) return null;
+
+  // Conveniência de interface. A garantia real é a RLS no servidor.
+  var c = await client.from('contacts').select('id, email, full_name, is_admin')
+    .eq('id', u.data.user.id).maybeSingle();
+  if (c.error) { console.error('admin check error:', c.error); return null; }
+  if (!c.data || c.data.is_admin !== true) return null;
+  return { user: u.data.user, contact: c.data };
+}
+
+async function enterAdmin(session) {
+  currentAdmin = session;
+  el('gateView').classList.add('hidden');
+  el('bootView').classList.add('hidden');
+  el('adminApp').classList.remove('hidden');
+  el('adminWhoami').textContent = session.user.email;
+  await init();
+  reportHeight();
+}
+
+el('gateBtn').addEventListener('click', async function () {
+  var email = el('gateEmail').value.trim(), password = el('gatePassword').value;
+  el('gateError').style.display = 'none';
+  if (!email || !password) return showGateError('Please fill in both fields.');
+
+  el('gateBtn').disabled = true;
+  el('gateBtn').textContent = 'Signing in...';
+  try {
+    var res = await client.auth.signInWithPassword({ email: email, password: password });
+    if (res.error) return showGateError(res.error.message || 'Sign in failed.');
+    var session = await verifyAdmin();
+    if (!session) {
+      await client.auth.signOut();
+      return showGateError('This account does not have administrator access.');
+    }
+    await enterAdmin(session);
+  } catch (e) {
+    console.error(e);
+    showGateError('Something went wrong. Please try again.');
+  } finally {
+    el('gateBtn').disabled = false;
+    el('gateBtn').textContent = 'Sign in';
+  }
+});
+el('gatePassword').addEventListener('keydown', function (e) { if (e.key === 'Enter') el('gateBtn').click(); });
+el('adminLogoutBtn').addEventListener('click', async function () {
+  if (!window.confirm('Sign out of the admin panel?')) return;
+  await client.auth.signOut();
+  window.location.reload();
+});
+
+// ============================================================
+// ANEXOS
+// O caminho começa pelo ID DA CONVERSA, não pelo uuid de quem envia.
+// Antes o admin gravava em 'uuid-do-admin/...' e o cliente não tinha
+// permissão para ler — via o link e recebia "Could not open".
+// ============================================================
+function showConvNote(text, isError) {
+  var note = el('convNote');
+  if (!text) { note.classList.add('hidden'); return; }
+  note.textContent = text;
+  note.classList.remove('hidden');
+  note.classList.toggle('error', !!isError);
+  reportHeight();
+}
+
+async function openAttachment(att) {
+  var path = att.file_path;
+  if (!path && att.file_url) {
+    var marker = '/' + STORAGE_BUCKET + '/';
+    if (att.file_url.indexOf(marker) !== -1) path = att.file_url.split(marker)[1].split('?')[0];
+  }
+  if (!path) return alert('This attachment has no stored path.');
+
+  path = decodeURIComponent(path);
+  var res = await client.storage.from(STORAGE_BUCKET).createSignedUrl(path, SIGNED_URL_SECONDS);
+  if (res.error || !res.data) {
+    console.error('signed url error:', res.error, '| path:', path);
+    return alert('Could not open the attachment.\n\nPath: ' + path +
+      '\nError: ' + ((res.error && res.error.message) || 'unknown'));
+  }
+  window.open(res.data.signedUrl, '_blank', 'noopener');
+}
+
+function attachmentButton(att) {
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'conv-attachment';
+  btn.textContent = '\uD83D\uDCCE ' + att.file_name;
+  btn.addEventListener('click', function () { openAttachment(att); });
+  return btn;
+}
+
+/** Cola os anexos na bolha. O evento realtime chega antes de o
+ *  upload terminar, por isso a bolha nasce sem anexo. */
+async function refreshAttachments(messageId) {
+  var bubble = document.querySelector('[data-msg-id="' + messageId + '"]');
+  if (!bubble) return;
+
+  var att = await client.from('support_attachments')
+    .select('file_url, file_name, file_path').eq('message_id', messageId);
+
+  if (att.error) { console.error('attachments select error:', att.error); return; }
+  if (!att.data || !att.data.length) return;
+  if (bubble.querySelectorAll('.conv-attachment').length >= att.data.length) return;
+
+  Array.prototype.forEach.call(bubble.querySelectorAll('.conv-attachment'), function (n) { n.remove(); });
+  att.data.forEach(function (a) { bubble.appendChild(attachmentButton(a)); });
+  reportHeight();
+}
+
+// ============================================================
+// SELEÇÃO DE FICHEIRO — com remoção
+// ============================================================
+function setAdminFile(file) {
+  adminSelectedFile = file || null;
+  if (adminSelectedFile) {
+    el('adminFileChipName').textContent = adminSelectedFile.name;
+    el('adminFileChip').classList.add('show');
+  } else {
+    el('adminFileInput').value = '';
+    el('adminFileChip').classList.remove('show');
+    el('adminFileChipName').textContent = '';
+  }
+  reportHeight();
+}
+
+el('adminAttachFileBtn').addEventListener('click', function () {
+  if (el('adminAttachFileBtn').disabled) return;
+  el('adminFileInput').click();
+});
+
+el('adminFileInput').addEventListener('change', function (e) {
+  var f = e.target.files && e.target.files[0];
+  if (!f) return;
+  if (f.size > MAX_FILE_BYTES) {
+    alert('That file is too large. The limit is 10 MB.');
+    setAdminFile(null);
+    return;
+  }
+  setAdminFile(f);
+  showConvNote('');
+});
+
+// Sem isto, um upload falhado deixava o ficheiro preso e o chat
+// encravado, sem forma de o remover.
+el('adminFileChipRemove').addEventListener('click', function () {
+  setAdminFile(null);
+  showConvNote('');
+});
+
+// ============================================================
+// BOOKINGS
+// ============================================================
+async function loadBookings(filters) {
+  filters = filters || {};
+  var tbody = el('bookingsList');
+  tbody.innerHTML = '<tr><td colspan="9" class="loading-row">Loading...</td></tr>';
+
+  var q = client.from('bookings').select(bookingSelect).order('booking_date', { ascending: false });
+  if (filters.bookingId) q = q.ilike('booking_id', '%' + filters.bookingId + '%');
+  if (filters.email) q = q.ilike('email', '%' + filters.email + '%');
+  if (filters.name) q = q.ilike('full_name', '%' + filters.name + '%');
+  if (filters.pickup) q = q.ilike('pickup', '%' + filters.pickup + '%');
+  if (filters.dropoff) q = q.ilike('dropoff', '%' + filters.dropoff + '%');
+  if (filters.dateFrom) q = q.gte('booking_date', filters.dateFrom);
+  if (filters.dateTo) q = q.lte('booking_date', filters.dateTo);
+  if (filters.status) q = q.eq('status', filters.status);
+
+  var res = await q;
+  if (res.error) {
+    tbody.innerHTML = '<tr><td colspan="9" class="error-row">' + escapeHtml(res.error.message) + '</td></tr>';
+    return;
+  }
+
+  allBookings = res.data || [];
+  bookingPage = 1;
+  renderBookings(); renderBookingPagination(); renderBookingStats();
+}
+
+function renderBookingStats() {
+  var today = new Date().toISOString().split('T')[0];
+  var live = allBookings.filter(function (b) { return b.status !== 'cancelled'; });
+  el('upcomingBookings').textContent = live.filter(function (b) { return b.booking_date >= today; }).length;
+  el('revenueValue').textContent = live.reduce(function (s, b) { return s + (parseFloat(b.price) || 0); }, 0).toFixed(2);
+  el('cancelledBookings').textContent = allBookings.filter(function (b) { return b.status === 'cancelled'; }).length;
+  el('totalBookings').textContent = allBookings.length;
+}
+
+function renderBookings() {
+  var tbody = el('bookingsList');
+  var start = (bookingPage - 1) * bookingPerPage;
+  var page = allBookings.slice(start, start + bookingPerPage);
+
+  if (!page.length) {
+    tbody.innerHTML = '<tr><td colspan="9"><div class="no-results">No bookings found</div></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = page.map(function (b) {
+    return '<tr>' +
+      '<td><strong>' + escapeHtml(bookingRef(b)) + '</strong></td>' +
+      '<td><strong>' + escapeHtml(b.full_name || 'N/A') + '</strong><br><small style="color:var(--muted)">' + escapeHtml(b.email || '') + '</small></td>' +
+      '<td style="max-width:260px">' + escapeHtml(b.pickup || 'N/A') + '<br><small style="color:var(--muted)">to ' + escapeHtml(b.dropoff || 'N/A') + '</small></td>' +
+      '<td>' + escapeHtml(bookingWhen(b)) + '</td>' +
+      '<td>' + escapeHtml(b.flight_number || '-') + '</td>' +
+      '<td>' + (b.booked_by
+        ? '<span class="status completed">agent</span>'
+        : '<span style="color:var(--muted)">direct</span>') + '</td>' +
+      '<td>' + escapeHtml(money(b.currency, b.price)) +
+        (b.agent_gross_price ? '<br><small style="color:var(--muted)">public ' +
+          escapeHtml(money(b.currency, b.agent_gross_price)) + '</small>' : '') + '</td>' +
+      '<td><span class="status ' + escapeHtml(b.status || 'pending') + '">' + escapeHtml(b.status || 'pending') + '</span></td>' +
+      '<td><button class="btn btn-small" data-view-booking="' + escapeHtml(b.id) + '">View</button></td></tr>';
+  }).join('');
+
+  qsa('[data-view-booking]').forEach(function (btn) {
+    btn.addEventListener('click', function () { openDetails(btn.getAttribute('data-view-booking')); });
+  });
+  reportHeight();
+}
+
+function renderBookingPagination() {
+  var p = el('bookingsPagination');
+  var totalPages = Math.ceil(allBookings.length / bookingPerPage);
+  if (totalPages <= 1) { p.innerHTML = ''; return; }
+
+  var html = '<button class="pagination-btn" id="bookingPrevBtn">Prev</button>';
+  for (var i = 1; i <= totalPages; i++) {
+    if (i === bookingPage) html += '<button class="pagination-btn active">' + i + '</button>';
+    else if (i === 1 || i === totalPages || (i >= bookingPage - 2 && i <= bookingPage + 2))
+      html += '<button class="pagination-btn booking-page-btn" data-page="' + i + '">' + i + '</button>';
+  }
+  html += '<button class="pagination-btn" id="bookingNextBtn">Next</button>' +
+          '<span class="pagination-info">Page ' + bookingPage + ' of ' + totalPages + '</span>';
+  p.innerHTML = html;
+
+  el('bookingPrevBtn').addEventListener('click', function () { changeBookingPage(bookingPage - 1); });
+  el('bookingNextBtn').addEventListener('click', function () { changeBookingPage(bookingPage + 1); });
+  qsa('.booking-page-btn').forEach(function (b) {
+    b.addEventListener('click', function () { changeBookingPage(Number(b.getAttribute('data-page'))); });
+  });
+}
+
+function changeBookingPage(page) {
+  var totalPages = Math.ceil(allBookings.length / bookingPerPage);
+  if (page < 1 || page > totalPages) return;
+  bookingPage = page;
+  renderBookings(); renderBookingPagination();
+}
+
+// O Stripe trabalha em unidades menores. O iene não tem cêntimos.
+function majorFromMinor(amount, currency) {
+  if (amount === null || amount === undefined) return null;
+  return String(currency || 'EUR').toUpperCase() === 'JPY'
+    ? Number(amount)
+    : Number(amount) / 100;
+}
+
+function renderRefundBox(b) {
+  var box = el('refundBox');
+  el('refundError').style.display = 'none';
+  el('refundOk').style.display = 'none';
+  el('refundAmount').value = '';
+  el('refundReason').value = '';
+  el('refundCancel').checked = b.status !== 'cancelled';
+
+  if (!b.stripe_payment_intent_id) {
+    box.classList.add('hidden');
+    return;
+  }
+  box.classList.remove('hidden');
+
+  var cur = b.currency || 'EUR';
+  var paid = b.amount_total ? majorFromMinor(b.amount_total, cur) : Number(b.price || 0);
+  var done = Number(b.refunded_amount || 0);
+  var left = Math.max(0, Number((paid - done).toFixed(2)));
+
+  el('refundPaid').textContent = money(cur, paid);
+  el('refundDone').textContent = money(cur, done);
+  el('refundLeft').textContent = money(cur, left);
+  el('refundAmount').max = left;
+  el('refundAmount').placeholder = 'Full amount (' + left.toFixed(2) + ')';
+  el('refundBtn').disabled = left <= 0;
+  el('refundBtn').textContent = left <= 0 ? 'Fully refunded' : 'Issue refund';
+}
+
+el('refundBtn').addEventListener('click', async function () {
+  if (!activeBooking) return;
+
+  el('refundError').style.display = 'none';
+  el('refundOk').style.display = 'none';
+
+  var amount = el('refundAmount').value.trim();
+  var reason = el('refundReason').value.trim();
+  var cancel = el('refundCancel').checked;
+  var cur = activeBooking.currency || 'EUR';
+  var label = amount ? (money(cur, Number(amount))) : 'the full outstanding amount';
+
+  if (!window.confirm('Refund ' + label + ' to ' + (activeBooking.email || 'this customer') +
+      '?\n\nThe money leaves your Stripe balance immediately and this cannot be undone here.')) {
+    return;
+  }
+
+  el('refundBtn').disabled = true;
+  el('refundBtn').textContent = 'Refunding...';
+
+  try {
+    var res = await fetch(RENDER_URL + '/api/admin/refund', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({
+        booking_id: activeBooking.id,
+        amount: amount || undefined,
+        cancel_booking: cancel,
+        reason: reason || undefined
+      })
+    });
+
+    var result = await res.json();
+    if (!res.ok || result.error) throw new Error(result.error || ('HTTP ' + res.status));
+
+    el('refundOk').textContent = 'Refunded ' + money(result.currency, result.refunded_now) +
+      '. Total refunded on this booking: ' + money(result.currency, result.refunded_total) +
+      (result.fully_refunded ? ' (fully refunded).' : '. Remaining: ' + money(result.currency, result.remaining) + '.');
+    el('refundOk').style.display = 'block';
+
+    await loadBookings(bookingFilters);
+    activeBooking = allBookings.find(function (x) { return String(x.id) === String(activeBooking.id); }) || activeBooking;
+    renderRefundBox(activeBooking);
+    el('detailStatus').textContent = activeBooking.status || 'pending';
+    el('detailStatus').className = 'status ' + (activeBooking.status || 'pending');
+    el('detailPaymentStatus').textContent = activeBooking.payment_status || 'N/A';
+  } catch (e) {
+    console.error('refund error:', e);
+    el('refundError').textContent = e.message;
+    el('refundError').style.display = 'block';
+    el('refundBtn').disabled = false;
+    el('refundBtn').textContent = 'Issue refund';
+  } finally {
+    reportHeight();
+  }
+});
+
+function openDetails(id) {
+  var b = allBookings.find(function (x) { return String(x.id) === String(id); });
+  if (!b) return;
+  activeBooking = b;
+  el('detailBookingId').textContent = bookingRef(b);
+  el('detailName').textContent = b.full_name || 'N/A';
+  el('detailEmail').textContent = b.email || 'N/A';
+  el('detailPhone').textContent = [b.phone_code, b.phone_number].filter(Boolean).join(' ') || 'N/A';
+  el('detailPassengers').textContent = b.passengers || 'N/A';
+  el('detailFlight').textContent = b.flight_number || 'N/A';
+  el('detailBookedBy').textContent = b.booked_by
+    ? ('Travel agent' + (b.agent_commission_pct ? ' (' + b.agent_commission_pct + '% rate)' : ''))
+    : 'Direct customer';
+  el('detailPassenger').textContent = b.booked_by
+    ? [b.passenger_name || b.full_name, b.passenger_phone || b.phone_number, b.passenger_email]
+        .filter(Boolean).join(' \u00b7 ')
+    : 'Same as customer';
+  el('detailPaymentStatus').textContent = b.payment_status || 'N/A';
+  el('detailRefunded').textContent = Number(b.refunded_amount || 0) > 0
+    ? (money(b.currency, b.refunded_amount) +
+       (b.refund_reason ? ' \u00b7 ' + b.refund_reason : ''))
+    : 'Nothing refunded';
+  el('detailAmountTotal').textContent = b.amount_total ? money(b.currency, b.amount_total / 100) : 'N/A';
+  el('detailPaymentMethodType').textContent = b.payment_method_type || 'N/A';
+  el('detailReceiptUrl').innerHTML = b.receipt_url
+    ? '<a class="receipt-link" href="' + escapeHtml(b.receipt_url) + '" target="_blank" rel="noopener">Open receipt</a>' : 'N/A';
+  el('detailPickup').textContent = b.pickup || 'N/A';
+  el('detailDropoff').textContent = b.dropoff || 'N/A';
+  el('detailDate').textContent = bookingWhen(b);
+  el('detailPrice').textContent = money(b.currency, b.price);
+  el('detailStatus').textContent = b.status || 'pending';
+  el('detailStatus').className = 'status ' + (b.status || 'pending');
+  el('detailNotes').textContent = b.notes || 'No notes';
+  renderRefundBox(b);
+  el('detailsModal').classList.remove('hidden');
+}
+
+// ============================================================
+// CONTACTS
+// ============================================================
+async function loadContacts() {
+  var tbody = el('contactsList');
+  tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Loading...</td></tr>';
+
+  var q = client.from('contacts')
+    .select('id, display_id, full_name, email, phone_number, is_admin, created_at')
+    .order('created_at', { ascending: false });
+
+  if (contactFilters.search) {
+    q = q.or('full_name.ilike.%' + contactFilters.search + '%,email.ilike.%' + contactFilters.search + '%');
+  }
+  if (contactFilters.searchId) {
+    q = q.eq('display_id', parseInt(contactFilters.searchId, 10) || contactFilters.searchId);
+  }
+
+  var res = await q;
+  if (res.error) {
+    tbody.innerHTML = '<tr><td colspan="6" class="error-row">' + escapeHtml(res.error.message) + '</td></tr>';
+    return;
+  }
+
+  contacts = res.data || [];
+  contactPage = 1;
+  renderContacts(); renderContactStats(); renderContactPagination();
+}
+
+function renderContacts() {
+  var tbody = el('contactsList');
+  var start = (contactPage - 1) * contactPerPage;
+  var page = contacts.slice(start, start + contactPerPage);
+
+  if (!page.length) {
+    tbody.innerHTML = '<tr><td colspan="6"><div class="no-results">No accounts found</div></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = page.map(function (c) {
+    return '<tr>' +
+      '<td><strong>' + escapeHtml(c.display_id || String(c.id || '').slice(0, 8)) + '</strong></td>' +
+      '<td><strong>' + escapeHtml(c.full_name || 'N/A') + '</strong></td>' +
+      '<td>' + escapeHtml(c.email || 'N/A') + '</td>' +
+      '<td>' + escapeHtml(c.phone_number || '-') + '</td>' +
+      '<td><span class="status ' + (c.is_admin ? 'completed' : 'pending') + '">' + (c.is_admin ? 'Yes' : 'No') + '</span></td>' +
+      '<td><button class="btn btn-small" data-view-account="' + escapeHtml(c.email || '') + '">View</button></td></tr>';
+  }).join('');
+
+  qsa('[data-view-account]').forEach(function (b) {
+    b.addEventListener('click', function () { viewAccount(b.getAttribute('data-view-account')); });
+  });
+  reportHeight();
+}
+
+function renderContactPagination() {
+  var p = el('contactsPagination');
+  var totalPages = Math.ceil(contacts.length / contactPerPage);
+  if (totalPages <= 1) { p.innerHTML = ''; return; }
+
+  var html = '<button class="pagination-btn" id="contactsPrevBtn">Prev</button>';
+  for (var i = 1; i <= totalPages; i++) {
+    if (i === contactPage) html += '<button class="pagination-btn active">' + i + '</button>';
+    else if (i === 1 || i === totalPages || (i >= contactPage - 2 && i <= contactPage + 2))
+      html += '<button class="pagination-btn contact-page-btn" data-page="' + i + '">' + i + '</button>';
+  }
+  html += '<button class="pagination-btn" id="contactsNextBtn">Next</button>' +
+          '<span class="pagination-info">Page ' + contactPage + ' of ' + totalPages + '</span>';
+  p.innerHTML = html;
+
+  el('contactsPrevBtn').addEventListener('click', function () { changeContactPage(contactPage - 1); });
+  el('contactsNextBtn').addEventListener('click', function () { changeContactPage(contactPage + 1); });
+  qsa('.contact-page-btn').forEach(function (b) {
+    b.addEventListener('click', function () { changeContactPage(Number(b.getAttribute('data-page'))); });
+  });
+}
+
+function changeContactPage(page) {
+  var totalPages = Math.ceil(contacts.length / contactPerPage);
+  if (page < 1 || page > totalPages) return;
+  contactPage = page;
+  renderContacts(); renderContactPagination();
+}
+
+async function renderContactStats() {
+  var res = await client.from('bookings').select('email');
+  var withBookings = new Set((res.data || []).map(function (b) { return b.email; }).filter(Boolean));
+  el('totalContacts').textContent = contacts.length;
+  el('adminContacts').textContent = contacts.filter(function (c) { return c.is_admin; }).length;
+  el('contactsWithBookings').textContent = contacts.filter(function (c) { return withBookings.has(c.email); }).length;
+  el('selectedContactBookings').textContent = selectedContactBookings.length;
+}
+
+async function viewAccount(email) {
+  var contact = contacts.find(function (c) { return c.email === email; });
+  if (!contact) return;
+
+  el('accountDetailsName').textContent = contact.full_name || 'N/A';
+  el('accountDetailsEmail').textContent = contact.email || '';
+  el('accountDetailsModal').classList.remove('hidden');
+
+  qsa('.modal-tab').forEach(function (t) { t.classList.remove('active'); });
+  qsa('.modal-tab-content').forEach(function (c) { c.classList.remove('active'); });
+  document.querySelector('[data-tab="bookingsTabModal"]').classList.add('active');
+  el('bookingsTabModal').classList.add('active');
+
+  await loadAccountBookings(contact.email);
+  await loadAccountChats(contact.email);
+}
+
+async function loadAccountBookings(email) {
+  var tbody = el('accountBookingsList');
+  tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Loading...</td></tr>';
+
+  var res = await client.from('bookings').select(bookingSelect)
+    .eq('email', email).order('booking_date', { ascending: false });
+
+  if (res.error) {
+    tbody.innerHTML = '<tr><td colspan="6" class="error-row">' + escapeHtml(res.error.message) + '</td></tr>';
+    return;
+  }
+
+  selectedContactBookings = res.data || [];
+  el('accountBookingsCount').textContent = selectedContactBookings.length;
+  el('selectedContactBookings').textContent = selectedContactBookings.length;
+
+  if (!selectedContactBookings.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="no-results">No bookings</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = selectedContactBookings.map(function (b) {
+    return '<tr><td><strong>' + escapeHtml(bookingRef(b)) + '</strong></td>' +
+      '<td>' + escapeHtml(b.pickup || 'N/A') + ' &rarr; ' + escapeHtml(b.dropoff || 'N/A') + '</td>' +
+      '<td>' + escapeHtml(bookingWhen(b)) + '</td>' +
+      '<td>' + escapeHtml(money(b.currency, b.price)) + '</td>' +
+      '<td><span class="status ' + escapeHtml(b.status || 'pending') + '">' + escapeHtml(b.status || 'pending') + '</span></td>' +
+      '<td>' + (b.receipt_url ? '<a class="receipt-link" href="' + escapeHtml(b.receipt_url) + '" target="_blank" rel="noopener">Open</a>' : 'N/A') + '</td></tr>';
+  }).join('');
+}
+
+async function loadAccountChats(email) {
+  var tbody = el('accountChatsList');
+  tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Loading...</td></tr>';
+
+  var res = await client.from('support_chats').select('*')
+    .eq('email', email).order('updated_at', { ascending: false });
+
+  if (res.error) {
+    tbody.innerHTML = '<tr><td colspan="5" class="error-row">' + escapeHtml(res.error.message) + '</td></tr>';
+    return;
+  }
+
+  selectedContactChats = res.data || [];
+  el('accountChatsCount').textContent = selectedContactChats.length;
+
+  if (!selectedContactChats.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="no-results">No conversations</td></tr>';
+    return;
+  }
+
+  await Promise.all(selectedContactChats.map(async function (c) {
+    var last = await client.from('support_messages').select('message, sender_type')
+      .eq('chat_id', c.id).order('created_at', { ascending: false }).limit(1).maybeSingle();
+    c.last_message = last.data ? last.data.message : '';
+    c.last_sender = last.data ? last.data.sender_type : '';
+  }));
+
+  tbody.innerHTML = selectedContactChats.map(function (c) {
+    return '<tr><td><strong>' + escapeHtml(c.ticket_number || String(c.id).slice(0, 8)) + '</strong></td>' +
+      '<td>' + escapeHtml(c.subject || '-') + '</td>' +
+      '<td><span class="status ' + escapeHtml(c.status) + '">' + escapeHtml(c.status) + '</span></td>' +
+      '<td style="max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' +
+        (c.last_sender === 'admin' ? 'Support: ' : '') + escapeHtml(c.last_message || '-') + '</td>' +
+      '<td>' + escapeHtml(formatTime(c.updated_at)) + '</td></tr>';
+  }).join('');
+}
+
+// ============================================================
+// SUPPORT
+// ============================================================
+async function loadConversations() {
+  var box = el('convListScroll');
+  box.innerHTML = '<div class="loading-row">Loading...</div>';
+
+  var q = client.from('support_chats').select('*').order('updated_at', { ascending: false });
+  if (convFilters.status) q = q.eq('status', convFilters.status);
+  if (convFilters.subject) q = q.eq('subject_type', convFilters.subject);
+
+  var res = await q;
+  if (res.error) { box.innerHTML = '<div class="error-row">' + escapeHtml(res.error.message) + '</div>'; return; }
+
+  var list = res.data || [];
+  if (convFilters.search) {
+    var s = convFilters.search.toLowerCase();
+    list = list.filter(function (c) {
+      return (c.ticket_number || '').toLowerCase().indexOf(s) !== -1 ||
+             (c.email || '').toLowerCase().indexOf(s) !== -1 ||
+             (c.subject || '').toLowerCase().indexOf(s) !== -1 ||
+             (c.full_name || '').toLowerCase().indexOf(s) !== -1;
+    });
+  }
+
+  await Promise.all(list.map(async function (c) {
+    var last = await client.from('support_messages').select('message, sender_type')
+      .eq('chat_id', c.id).order('created_at', { ascending: false }).limit(1).maybeSingle();
+    c.last_message = last.data ? last.data.message : '';
+    c.last_sender = last.data ? last.data.sender_type : '';
+  }));
+
+  conversations = list;
+  renderConversationList(); renderConvStats();
+}
+
+function renderConversationList() {
+  var box = el('convListScroll');
+  if (!conversations.length) { box.innerHTML = '<div class="no-results">No conversations</div>'; return; }
+
+  box.innerHTML = conversations.map(function (c) {
+    return '<div class="conv-item ' + (String(c.id) === String(activeConvId) ? 'active' : '') + '" data-id="' + escapeHtml(c.id) + '">' +
+      '<div class="conv-item-top"><div class="conv-item-subject">' + escapeHtml(c.subject || '-') + '</div>' +
+      '<span class="status ' + escapeHtml(c.status) + '">' + escapeHtml(c.status) + '</span></div>' +
+      '<div class="conv-item-email"><strong>' + escapeHtml(c.ticket_number || 'No ticket') + '</strong>' +
+      (c.email ? ' - ' + escapeHtml(c.email) : '') + '</div>' +
+      '<div class="conv-item-snippet">' + (c.last_sender === 'admin' ? 'You: ' : '') + escapeHtml(c.last_message || 'No messages') + '</div>' +
+      '<div><span class="conv-item-time">' + escapeHtml(formatTime(c.updated_at)) + '</span></div></div>';
+  }).join('');
+
+  qsa('.conv-item').forEach(function (e) {
+    e.addEventListener('click', function () { selectConversation(e.getAttribute('data-id')); });
+  });
+  reportHeight();
+}
+
+function renderConvStats() {
+  el('pendingConvCount').textContent = conversations.filter(function (c) { return c.status === 'pending'; }).length;
+  el('openConvCount').textContent = conversations.filter(function (c) { return c.status === 'open'; }).length;
+  el('resolvedConvCount').textContent = conversations.filter(function (c) { return c.status === 'resolved'; }).length;
+  el('totalConvCount').textContent = conversations.length;
+}
+
+async function selectConversation(id) {
+  activeConvId = id;
+  renderedAdminMsgIds = new Set();
+  showConvNote('');
+  renderConversationList();
+
+  var conv = conversations.find(function (c) { return String(c.id) === String(id); });
+  if (!conv) return;
+
+  el('convThreadEmpty').classList.add('hidden');
+  el('convThreadActive').classList.remove('hidden');
+  el('convThreadActive').style.display = 'flex';
+  el('convSubject').textContent = conv.subject || '-';
+  el('convTicketNumber').textContent = 'Ticket: ' + (conv.ticket_number || 'Not assigned');
+  el('convCustomerInfo').textContent = (conv.full_name || 'Unknown') + ' - ' + (conv.email || '');
+  updateStatusUI(conv.status);
+  el('convMessages').innerHTML = '';
+
+  var res = await client.from('support_messages').select('*')
+    .eq('chat_id', id).order('created_at', { ascending: true });
+
+  if (res.error) console.error('load messages error:', res.error);
+  else if (res.data) {
+    for (var i = 0; i < res.data.length; i++) await appendAdminMsgBubble(res.data[i]);
+  }
+
+  subscribeToActiveConv(id);
+  reportHeight();
+}
+
+function updateStatusUI(status) {
+  var badge = el('convStatusBadge');
+  badge.textContent = status === 'pending' ? 'Pending' : (status === 'resolved' ? 'Resolved' : 'Open');
+  badge.className = 'status ' + status;
+  el('convToggleStatusBtn').textContent = status === 'resolved' ? 'Reopen conversation' : 'Mark as resolved';
+
+  var blocked = status === 'resolved';
+  el('convReplyInput').disabled = blocked;
+  el('convSendBtn').disabled = blocked;
+  el('adminAttachFileBtn').disabled = blocked;
+  if (blocked) setAdminFile(null);
+}
+
+async function appendAdminMsgBubble(msg) {
+  if (renderedAdminMsgIds.has(msg.id)) return;
+  renderedAdminMsgIds.add(msg.id);
+
+  var isAdmin = msg.sender_type === 'admin';
+  var wrap = document.createElement('div');
+  wrap.className = 'conv-msg ' + (isAdmin ? 'admin' : 'customer');
+  wrap.setAttribute('data-msg-id', msg.id);
+  wrap.innerHTML = escapeHtml(msg.message) +
+    '<div class="conv-msg-meta">' + escapeHtml(isAdmin ? 'Support team' : (msg.sender_name || 'Customer')) +
+    ' - ' + escapeHtml(formatTime(msg.created_at)) + '</div>';
+
+  el('convMessages').appendChild(wrap);
+  el('convMessages').scrollTop = el('convMessages').scrollHeight;
+
+  await refreshAttachments(msg.id);
+}
+
+function subscribeToActiveConv(id) {
+  if (adminMessagesChannel) { client.removeChannel(adminMessagesChannel); adminMessagesChannel = null; }
+  adminMessagesChannel = client.channel('admin_conv_' + id)
+    .on('postgres_changes', {
+      event: 'INSERT', schema: 'public', table: 'support_messages', filter: 'chat_id=eq.' + id
+    }, async function (payload) {
+      await appendAdminMsgBubble(payload.new);
+      setTimeout(function () { refreshAttachments(payload.new.id); }, 1500);
+      setTimeout(function () { refreshAttachments(payload.new.id); }, 4000);
+
+      var conv = conversations.find(function (c) { return String(c.id) === String(id); });
+      if (conv) {
+        conv.last_message = payload.new.message;
+        conv.last_sender = payload.new.sender_type;
+        conv.updated_at = payload.new.created_at;
+        conversations.sort(function (a, b) { return new Date(b.updated_at) - new Date(a.updated_at); });
+        renderConversationList();
+      }
+    }).subscribe();
+}
+
+function subscribeToAllConversations() {
+  if (adminChatsChannel) { client.removeChannel(adminChatsChannel); adminChatsChannel = null; }
+  adminChatsChannel = client.channel('admin_support_chats')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'support_chats' }, function (payload) {
+      if (payload.eventType === 'DELETE') {
+        conversations = conversations.filter(function (c) { return c.id !== payload.old.id; });
+        renderConversationList(); renderConvStats();
+        return;
+      }
+      var row = payload.new;
+      var idx = conversations.findIndex(function (c) { return c.id === row.id; });
+      if (idx >= 0) conversations[idx] = Object.assign({}, conversations[idx], row);
+      else conversations.unshift(Object.assign({ last_message: '', last_sender: '' }, row));
+      conversations.sort(function (a, b) { return new Date(b.updated_at) - new Date(a.updated_at); });
+      renderConversationList(); renderConvStats();
+      if (String(row.id) === String(activeConvId)) updateStatusUI(row.status);
+    }).subscribe();
+}
+
+/** O ficheiro sobe ANTES de a mensagem ser criada: se falhar, não
+ *  fica uma mensagem órfã e o ficheiro continua selecionado. */
+async function sendAdminReply() {
+  var text = el('convReplyInput').value.trim();
+  var fileToSend = adminSelectedFile;
+  if (!text && !fileToSend) return;
+  if (!activeConvId || !currentAdmin) return;
+
+  var conv = conversations.find(function (c) { return String(c.id) === String(activeConvId); });
+  if (!conv || conv.status === 'resolved') return;
+
+  el('convSendBtn').disabled = true;
+  el('adminAttachFileBtn').disabled = true;
+  showConvNote('');
+
+  try {
+    var uploadedPath = null;
+
+    if (fileToSend) {
+      var ext = (fileToSend.name.split('.').pop() || 'bin').toLowerCase();
+      var rand = Math.random().toString(36).slice(2, 10);
+      // Primeira pasta = id da conversa, para o cliente também poder ler.
+      uploadedPath = activeConvId + '/' + Date.now() + '-' + rand + '.' + ext;
+
+      var up = await client.storage.from(STORAGE_BUCKET).upload(uploadedPath, fileToSend, {
+        contentType: fileToSend.type || 'application/octet-stream'
+      });
+
+      if (up.error) {
+        console.error('upload error:', up.error);
+        showConvNote('The file could not be uploaded, so nothing was sent: ' + up.error.message, true);
+        return;
+      }
+    }
+
+    var msgRes = await client.from('support_messages').insert({
+      chat_id: activeConvId,
+      sender_type: 'admin',
+      sender_name: 'Airportlink Support',
+      message: text || fileToSend.name
+    }).select().single();
+
+    if (msgRes.error) {
+      console.error('send message error:', msgRes.error);
+      showConvNote('Could not send the reply: ' + msgRes.error.message, true);
+      return;
+    }
+
+    if (uploadedPath) {
+      var ins = await client.from('support_attachments').insert({
+        chat_id: activeConvId,
+        message_id: msgRes.data.id,
+        file_url: '',
+        file_path: uploadedPath,
+        file_name: fileToSend.name,
+        file_type: fileToSend.type || 'application/octet-stream',
+        file_size: fileToSend.size,
+        sender_type: 'admin'
+      });
+      if (ins.error) {
+        console.error('attachment insert error:', ins.error);
+        showConvNote('Uploaded but not attached: ' + ins.error.message +
+          ' (code ' + (ins.error.code || 'n/a') + ')', true);
+      }
+    }
+
+    if (conv.status === 'pending') {
+      var st = await client.from('support_chats')
+        .update({ status: 'open', updated_at: new Date().toISOString() }).eq('id', activeConvId);
+      if (!st.error) conv.status = 'open';
+    }
+
+    conv.last_message = text || fileToSend.name;
+    conv.last_sender = 'admin';
+    conv.updated_at = msgRes.data.created_at;
+
+    el('convReplyInput').value = '';
+    el('convReplyInput').style.height = 'auto';
+    setAdminFile(null);
+
+    await appendAdminMsgBubble(msgRes.data);
+    await refreshAttachments(msgRes.data.id);
+    renderConversationList(); renderConvStats();
+  } finally {
+    updateStatusUI(conv.status);
+  }
+}
+
+// ============================================================
+// PAGAMENTOS AGENDADOS
+//
+// Reservas com pagamento adiado. O cron cobra sozinho 48 horas antes;
+// isto serve para ver o que correu mal e agir antes do cliente ligar.
+// ============================================================
+async function loadCharges() {
+  var box = el('chgList');
+  box.innerHTML = '<div class="loading-row">Loading...</div>';
+
+  var results = await Promise.all([
+    client.from('pending_charges').select('*'),
+    client.from('unclaimed_rides').select('*').order('hours_to_pickup')
+  ]);
+
+  if (results[0].error) {
+    box.innerHTML = '<div class="error-row">' + escapeHtml(results[0].error.message) + '</div>';
+  } else {
+    charges = results[0].data || [];
+    renderCharges();
+  }
+
+  unclaimed = results[1].error ? [] : (results[1].data || []);
+  renderUnclaimed();
+}
+
+function renderCharges() {
+  var box = el('chgList');
+
+  var late = charges.filter(function (c) { return Number(c.hours_until_charge) < 0; });
+  var soon = charges.filter(function (c) {
+    var h = Number(c.hours_until_charge);
+    return h >= 0 && h <= 24;
+  });
+  var failed = charges.filter(function (c) { return c.payment_status === 'charge_failed'; });
+
+  el('mSaved').textContent = charges.length;
+  el('mSoon').textContent = soon.length;
+  el('mLate').textContent = late.length;
+  el('mFailed').textContent = failed.length;
+
+  var needs = late.length + failed.length;
+  el('moneyBadge').textContent = needs ? ' (' + needs + ')' : '';
+
+  if (!charges.length) {
+    box.innerHTML = '<div class="no-results">Nothing waiting to be charged.</div>';
+    return reportHeight();
+  }
+
+  box.innerHTML = charges.map(function (c) {
+    var hoursToCharge = Number(c.hours_until_charge);
+    var isLate = hoursToCharge < 0;
+    var isFailed = c.payment_status === 'charge_failed';
+
+    return '<div class="chg-card ' + (isFailed ? 'failed' : (isLate ? 'late' : '')) + '">' +
+      '<div class="chg-top"><div>' +
+      '<h4>' + escapeHtml(c.full_name || c.email || 'Customer') + '</h4>' +
+      '<div class="m">' + escapeHtml(c.booking_reference || c.booking_id || '') +
+      ' &middot; ' + escapeHtml(c.email || '') + '<br>' +
+      escapeHtml(c.pickup || '') + ' &rarr; ' + escapeHtml(c.dropoff || '') + '</div></div>' +
+      '<span class="status ' + (isFailed ? 'cancelled' : (isLate ? 'pending' : 'verified')) + '">' +
+      escapeHtml(isFailed ? 'failed' : (isLate ? 'overdue' : 'scheduled')) + '</span></div>' +
+
+      '<div class="chg-facts">' +
+      '<div class="chg-fact"><div class="k">Amount</div><div class="v">' +
+        escapeHtml(money(c.currency, c.price)) + '</div></div>' +
+      '<div class="chg-fact"><div class="k">Charge at</div><div class="v">' +
+        escapeHtml(c.charge_at ? formatTime(c.charge_at) : '-') + '</div></div>' +
+      '<div class="chg-fact"><div class="k">Pick-up in</div><div class="v">' +
+        escapeHtml(Math.round(Number(c.hours_to_pickup)) + 'h') + '</div></div>' +
+      '<div class="chg-fact"><div class="k">Attempts</div><div class="v">' +
+        escapeHtml(c.charge_attempts || 0) +
+        (c.has_card ? '' : ' <small style="color:#fca5a5">no card</small>') + '</div></div>' +
+      '</div>' +
+
+      (c.last_charge_error
+        ? '<div class="chg-err">' + escapeHtml(c.last_charge_error) + '</div>' : '') +
+      '</div>';
+  }).join('');
+
+  reportHeight();
+}
+
+function renderUnclaimed() {
+  var body = el('unclaimedList');
+
+  if (!unclaimed.length) {
+    body.innerHTML = '<tr><td colspan="7" class="no-results">Every ride has a partner.</td></tr>';
+    return reportHeight();
+  }
+
+  body.innerHTML = unclaimed.map(function (r) {
+    var hours = Math.round(Number(r.hours_to_pickup));
+    var seen = Number(r.partners_that_can_see_it) || 0;
+    var urgent = hours < 48;
+
+    return '<tr>' +
+      '<td><strong>' + escapeHtml(r.booking_reference || r.booking_id || '') + '</strong>' +
+      (r.released_count ? '<br><small style="color:#fbbf24">released ' +
+        escapeHtml(r.released_count) + '\u00d7</small>' : '') + '</td>' +
+      '<td>' + escapeHtml(r.pickup || '') + '<br><small style="color:var(--muted)">to ' +
+        escapeHtml(r.dropoff || '') + '</small></td>' +
+      '<td>' + escapeHtml(r.booking_date || '') +
+        (r.booking_time ? ' ' + escapeHtml(String(r.booking_time).slice(0, 5)) : '') + '</td>' +
+      '<td>' + escapeHtml(r.pickup_airport || '<span style="color:#fca5a5">not matched</span>') + '</td>' +
+      '<td>' + escapeHtml(r.driver_payout ? money(r.currency, r.driver_payout) : '-') + '</td>' +
+      '<td' + (urgent ? ' style="color:#fca5a5;font-weight:700"' : '') + '>' + hours + 'h</td>' +
+      '<td' + (seen === 0 ? ' style="color:#fca5a5;font-weight:700"' : '') + '>' + seen + '</td>' +
+      '</tr>';
+  }).join('');
+
+  reportHeight();
+}
+
+el('chgRefreshBtn').addEventListener('click', loadCharges);
+
+// Disparar o ciclo à mão. Precisa do mesmo segredo do cron — não o
+// guardamos aqui, é pedido na altura.
+el('chgRunBtn').addEventListener('click', async function () {
+  var box = el('chgRunMsg');
+  box.style.display = 'none';
+
+  var secret = window.prompt(
+    'Cron secret\n\nThis charges every booking that is due right now. ' +
+    'Same value as CRON_SECRET on the server.');
+  if (!secret) return;
+
+  el('chgRunBtn').disabled = true;
+  el('chgRunBtn').textContent = 'Running...';
+
+  try {
+    var res = await fetch(RENDER_URL + '/api/tasks/charge-due', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-cron-secret': secret }
+    });
+    var result = await res.json();
+    if (!res.ok || result.error) throw new Error(result.error || ('HTTP ' + res.status));
+
+    box.style.background = '#052e22';
+    box.style.color = '#6ee7b7';
+    box.style.border = '1px solid #14532d';
+    box.textContent = 'Checked ' + result.checked + ' · charged ' + result.charged +
+      ' · failed ' + result.failed + ' · abandoned ' + result.abandoned +
+      ' · skipped ' + result.skipped;
+    box.style.display = 'block';
+    await loadCharges();
+  } catch (e) {
+    box.style.background = '#7f1d1d';
+    box.style.color = '#fecaca';
+    box.style.border = '1px solid #991b1b';
+    box.textContent = e.message;
+    box.style.display = 'block';
+  } finally {
+    el('chgRunBtn').disabled = false;
+    el('chgRunBtn').textContent = 'Run charge cycle now';
+  }
+});
+
+// ============================================================
+// PARCEIROS DE MOTORISTAS
+//
+// Duas decisões distintas, e a diferença importa:
+//   verified  — os três documentos de entrada foram aceites
+//   approved  — está tudo completo e pode receber viagens
+// Sem essa separação, um parceiro verificado ficava indistinguível
+// de um que ainda não tinha mandado nada.
+// ============================================================
+function showPtError(text) {
+  var box = el('ptError');
+  if (!text) { box.style.display = 'none'; return; }
+  box.textContent = text;
+  box.style.display = 'block';
+  reportHeight();
+}
+
+async function loadPartners() {
+  var box = el('ptList');
+  box.innerHTML = '<div class="loading-row">Loading...</div>';
+  showPtError('');
+
+  var res = await client.from('driver_partners')
+    .select('*')
+    .neq('status', 'draft')
+    .order('submitted_at', { ascending: false, nullsFirst: false });
+
+  if (res.error) {
+    box.innerHTML = '<div class="error-row">' + escapeHtml(res.error.message) + '</div>';
+    return;
+  }
+
+  partners = res.data || [];
+  if (!partners.length) {
+    el('ptWaiting').textContent = '0';
+    el('ptVerified').textContent = '0';
+    el('ptLive').textContent = '0';
+    el('ptTotal').textContent = '0';
+    el('partnersBadge').textContent = '';
+    box.innerHTML = '<div class="no-results">No applications yet.</div>';
+    return reportHeight();
+  }
+
+  var ids = partners.map(function (p) { return p.id; });
+
+  // Carregado à parte porque a lista precisa de contagens que não
+  // vivem na tabela do parceiro.
+  var results = await Promise.all([
+    client.from('compliance_documents').select('*').in('partner_id', ids),
+    client.from('drivers').select('id, partner_id, full_name, phone, status').in('partner_id', ids),
+    client.from('partner_vehicles').select('id, partner_id, make, model, plate, seats, status').in('partner_id', ids),
+    client.from('partner_zones').select('partner_id, zone_code').in('partner_id', ids),
+    client.from('document_requirements').select('*').eq('active', true).order('sort_order')
+  ]);
+
+  var docs = results[0].data || [], drvs = results[1].data || [];
+  var vehs = results[2].data || [], zones = results[3].data || [];
+  var reqs = results[4].data || [];
+
+  partners.forEach(function (p) {
+    p._docs = docs.filter(function (d) { return d.partner_id === p.id; });
+    p._drivers = drvs.filter(function (d) { return d.partner_id === p.id; });
+    p._vehicles = vehs.filter(function (v) { return v.partner_id === p.id; });
+    p._zones = zones.filter(function (z) { return z.partner_id === p.id; }).map(function (z) { return z.zone_code; });
+    p._reqs = reqs.filter(function (r) { return r.country === (p.country || 'PT'); });
+  });
+
+  var waiting = partners.filter(needsAction).length;
+  el('ptWaiting').textContent = waiting;
+  el('ptVerified').textContent = partners.filter(function (p) { return p.status === 'verified'; }).length;
+  el('ptLive').textContent = partners.filter(function (p) { return p.status === 'approved'; }).length;
+  el('ptTotal').textContent = partners.length;
+  el('partnersBadge').textContent = waiting ? ' (' + waiting + ')' : '';
+
+  renderPartners();
+}
+
+// "À espera de ti" cobre dois casos: uma candidatura por rever, e um
+// parceiro verificado que já completou tudo e espera ativação.
+function needsAction(p) {
+  if (p.status === 'submitted' || p.status === 'in_review') return true;
+  if (p.status === 'verified') return activationComplete(p);
+  return false;
+}
+
+function activationComplete(p) {
+  var need = (p._reqs || []).filter(function (r) { return r.mandatory && r.stage === 'activation'; });
+
+  function has(code, driverId, vehicleId) {
+    return (p._docs || []).some(function (d) {
+      return d.requirement_code === code &&
+        (d.driver_id || null) === (driverId || null) &&
+        (d.vehicle_id || null) === (vehicleId || null);
+    });
+  }
+
+  var drivers = (p._drivers || []).filter(function (d) { return d.status !== 'removed'; });
+  var vehicles = (p._vehicles || []).filter(function (v) { return v.status !== 'removed'; });
+
+  if (!drivers.length || !vehicles.length) return false;
+  if (!(p._zones || []).length) return false;
+  if (!p.payout_iban) return false;
+
+  var driverOk = drivers.every(function (d) {
+    return need.filter(function (r) { return r.scope === 'driver'; })
+      .every(function (r) { return has(r.code, d.id, null); });
+  });
+  var vehicleOk = vehicles.every(function (v) {
+    return need.filter(function (r) { return r.scope === 'vehicle'; })
+      .every(function (r) { return has(r.code, null, v.id); });
+  });
+
+  return driverOk && vehicleOk;
+}
+
+function missingForActivation(p) {
+  var out = [];
+  var drivers = (p._drivers || []).filter(function (d) { return d.status !== 'removed'; });
+  var vehicles = (p._vehicles || []).filter(function (v) { return v.status !== 'removed'; });
+
+  if (!drivers.length) out.push('no chauffeurs');
+  if (!vehicles.length) out.push('no vehicles');
+  if (!(p._zones || []).length) out.push('no service zones');
+  if (!p.payout_iban) out.push('no bank details');
+
+  var need = (p._reqs || []).filter(function (r) { return r.mandatory && r.stage === 'activation'; });
+  function has(code, driverId, vehicleId) {
+    return (p._docs || []).some(function (d) {
+      return d.requirement_code === code &&
+        (d.driver_id || null) === (driverId || null) &&
+        (d.vehicle_id || null) === (vehicleId || null);
+    });
+  }
+  drivers.forEach(function (d) {
+    need.filter(function (r) { return r.scope === 'driver'; }).forEach(function (r) {
+      if (!has(r.code, d.id, null)) out.push(r.label + ' for ' + d.full_name);
+    });
+  });
+  vehicles.forEach(function (v) {
+    need.filter(function (r) { return r.scope === 'vehicle'; }).forEach(function (r) {
+      if (!has(r.code, null, v.id)) out.push(r.label + ' for ' + v.plate);
+    });
+  });
+
+  return out;
+}
+
+function docLabel(p, code) {
+  var r = (p._reqs || []).find(function (x) { return x.code === code; });
+  return r ? r.label : code;
+}
+
+function renderPartners() {
+  var box = el('ptList');
+  var list = partners.slice();
+
+  if (ptFilters.status === 'needs') list = list.filter(needsAction);
+  else if (ptFilters.status) list = list.filter(function (p) { return p.status === ptFilters.status; });
+
+  if (ptFilters.search) {
+    var q = ptFilters.search.toLowerCase();
+    list = list.filter(function (p) {
+      return [p.legal_name, p.trading_name, p.vat_number, p.email, p.country, p.contact_name]
+        .filter(Boolean).join(' ').toLowerCase().indexOf(q) !== -1;
+    });
+  }
+
+  if (!list.length) {
+    box.innerHTML = '<div class="no-results">Nothing matches this filter.</div>';
+    return reportHeight();
+  }
+
+  box.innerHTML = list.map(function (p) {
+    var statusClass = p.status === 'approved' ? 'completed'
+      : (p.status === 'rejected' || p.status === 'suspended') ? 'cancelled'
+      : (p.status === 'verified' ? 'verified' : 'pending');
+
+    var signupReqs = (p._reqs || []).filter(function (r) {
+      return r.scope === 'company' && r.stage === 'signup' && r.mandatory;
+    });
+
+    var docRows = signupReqs.map(function (r) {
+      var d = (p._docs || []).find(function (x) {
+        return x.requirement_code === r.code && !x.driver_id && !x.vehicle_id;
+      });
+      if (!d) {
+        return '<div class="pt-doc"><div><div class="n">' + escapeHtml(r.label) + '</div>' +
+          '<div class="pt-missing">Not uploaded</div></div></div>';
+      }
+      var expired = d.expires_on && new Date(d.expires_on) < new Date();
+      return '<div class="pt-doc"><div><div class="n">' + escapeHtml(r.label) + '</div>' +
+        '<div class="m">' + escapeHtml(d.file_name || 'file') +
+        (d.expires_on ? ' &middot; valid until ' + escapeHtml(d.expires_on) : '') +
+        (expired ? ' &middot; <span style="color:#fca5a5">EXPIRED</span>' : '') + '</div></div>' +
+        '<div class="r"><button class="doc-open" data-doc="' + escapeHtml(d.file_path) + '" type="button">Open</button></div>' +
+        '</div>';
+    }).join('');
+
+    // Documentos de ativação, agrupados por motorista e veículo.
+    var extraDocs = (p._docs || []).filter(function (d) { return d.driver_id || d.vehicle_id; });
+    if (extraDocs.length) {
+      docRows += extraDocs.map(function (d) {
+        var owner = d.driver_id
+          ? ((p._drivers || []).find(function (x) { return x.id === d.driver_id; }) || {}).full_name
+          : ((p._vehicles || []).find(function (x) { return x.id === d.vehicle_id; }) || {}).plate;
+        var expired = d.expires_on && new Date(d.expires_on) < new Date();
+        return '<div class="pt-doc"><div><div class="n">' + escapeHtml(docLabel(p, d.requirement_code)) +
+          ' <span class="m">— ' + escapeHtml(owner || '?') + '</span></div>' +
+          '<div class="m">' + escapeHtml(d.file_name || 'file') +
+          (d.expires_on ? ' &middot; valid until ' + escapeHtml(d.expires_on) : '') +
+          (expired ? ' &middot; <span style="color:#fca5a5">EXPIRED</span>' : '') + '</div></div>' +
+          '<div class="r"><button class="doc-open" data-doc="' + escapeHtml(d.file_path) + '" type="button">Open</button></div>' +
+          '</div>';
+      }).join('');
+    }
+
+    var missing = p.status === 'verified' ? missingForActivation(p) : [];
+    var activationLine = p.status === 'verified'
+      ? (missing.length
+          ? '<div class="pt-missing" style="margin-bottom:12px">Still missing: ' +
+            escapeHtml(missing.join(', ')) + '</div>'
+          : '<div style="color:#6ee7b7;font-size:12.5px;margin-bottom:12px">' +
+            'Activation complete — ready to go live.</div>')
+      : '';
+
+    var actions = '<div class="pt-actions">' +
+      '<input type="text" placeholder="Reason (shown to the partner if rejected)" data-reason="' + escapeHtml(p.id) + '">';
+
+    if (p.status === 'submitted' || p.status === 'in_review') {
+      actions += '<button class="btn-verify" data-decide="verified|' + escapeHtml(p.id) + '">Verify documents</button>';
+    }
+    if (p.status === 'verified') {
+      actions += '<button class="btn-activate" data-decide="approved|' + escapeHtml(p.id) + '">Go live</button>';
+    }
+    if (p.status === 'approved') {
+      actions += '<button class="btn-suspend" data-decide="suspended|' + escapeHtml(p.id) + '">Suspend</button>';
+    }
+    if (p.status === 'suspended' || p.status === 'rejected') {
+      actions += '<button class="btn-activate" data-decide="approved|' + escapeHtml(p.id) + '">Reinstate</button>';
+    }
+    if (p.status !== 'rejected') {
+      actions += '<button class="btn-reject" data-decide="rejected|' + escapeHtml(p.id) + '">Reject</button>';
+    }
+    actions += '</div>';
+
+    return '<div class="pt-card ' + (needsAction(p) ? 'needs' : '') + '">' +
+      '<div class="pt-head"><div>' +
+      '<h3>' + escapeHtml(p.legal_name || '(no name)') + '</h3>' +
+      (p.trading_name && p.trading_name !== p.legal_name
+        ? '<div class="who">Trading as ' + escapeHtml(p.trading_name) + '</div>' : '') +
+      '<div class="who">' + escapeHtml(p.contact_name || '-') +
+      (p.contact_role ? ', ' + escapeHtml(p.contact_role) : '') +
+      ' &middot; ' + escapeHtml(p.email || '') +
+      (p.submitted_at ? '<br>Submitted ' + escapeHtml(formatTime(p.submitted_at)) : '') +
+      '</div></div>' +
+      '<span class="status ' + statusClass + '">' + escapeHtml(p.status) + '</span></div>' +
+
+      '<div class="pt-facts">' +
+      '<div class="pt-fact"><div class="k">VAT</div><div class="v">' + escapeHtml(p.vat_number || '-') + '</div></div>' +
+      '<div class="pt-fact"><div class="k">Country</div><div class="v">' + escapeHtml(p.country || '-') + '</div></div>' +
+      '<div class="pt-fact"><div class="k">Phone</div><div class="v">' + escapeHtml(p.contact_phone || '-') +
+        (p.emergency_phone ? '<br><small style="color:var(--muted)">24h: ' + escapeHtml(p.emergency_phone) + '</small>' : '') +
+        '</div></div>' +
+      '<div class="pt-fact"><div class="k">Fleet</div><div class="v">' +
+        (p._drivers || []).length + ' drv &middot; ' + (p._vehicles || []).length + ' veh<br>' +
+        '<small style="color:var(--muted)">' + ((p._zones || []).length) + ' zones</small></div></div>' +
+      '</div>' +
+
+      (p.registered_address
+        ? '<div class="who" style="margin-bottom:12px;color:var(--muted);font-size:12.5px">' +
+          escapeHtml(p.registered_address) + (p.city ? ', ' + escapeHtml(p.city) : '') +
+          (p.postal_code ? ' ' + escapeHtml(p.postal_code) : '') + '</div>'
+        : '') +
+
+      activationLine +
+      (docRows ? '<div class="pt-docs">' + docRows + '</div>' : '') +
+      (p.payout_iban ? '<div class="who" style="margin-bottom:12px;font-size:12.5px">IBAN: ' +
+        escapeHtml(p.payout_iban) + (p.payout_holder ? ' &middot; ' + escapeHtml(p.payout_holder) : '') + '</div>' : '') +
+      (p.rejection_reason ? '<div class="pt-missing" style="margin-bottom:12px">Rejected: ' +
+        escapeHtml(p.rejection_reason) + '</div>' : '') +
+      actions + '</div>';
+  }).join('');
+
+  qsa('[data-doc]').forEach(function (b) {
+    b.addEventListener('click', function () { openPartnerDoc(b.getAttribute('data-doc'), b); });
+  });
+  qsa('[data-decide]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var parts = b.getAttribute('data-decide').split('|');
+      decidePartner(parts[1], parts[0], b);
+    });
+  });
+
+  reportHeight();
+}
+
+async function openPartnerDoc(path, button) {
+  if (!path) return alert('This document has no stored path.');
+  button.disabled = true;
+  try {
+    var res = await client.storage.from(PARTNER_BUCKET).createSignedUrl(path, 300);
+    if (res.error || !res.data) throw new Error((res.error && res.error.message) || 'unknown');
+    window.open(res.data.signedUrl, '_blank', 'noopener');
+  } catch (e) {
+    console.error('signed url:', e, '| path:', path);
+    alert('Could not open the document.\n\nPath: ' + path + '\nError: ' + e.message);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+// A revisão de parceiros vive no serviço dos motoristas, não na API
+// principal. Apontar para o sítio errado dava 404.
+var DRIVERS_URL = 'https://drivers.airportlink.app';
+
+async function decidePartner(partnerId, decision, button) {
+  showPtError('');
+  var p = partners.find(function (x) { return x.id === partnerId; });
+  var name = (p && p.legal_name) || 'this company';
+  var input = document.querySelector('[data-reason="' + partnerId + '"]');
+  var reason = input ? input.value.trim() : '';
+
+  var confirmText = {
+    verified: 'Mark ' + name + ' as verified? Their entry documents are accepted and they can start adding chauffeurs and vehicles.',
+    approved: 'Take ' + name + ' live? They will start receiving ride offers.',
+    suspended: 'Suspend ' + name + '? They stop receiving offers immediately.',
+    rejected: 'Reject ' + name + '? They will see the reason you typed.'
+  }[decision];
+
+  if (decision === 'rejected' && !reason) {
+    return showPtError('Please type a reason before rejecting — the partner sees it.');
+  }
+  if (!window.confirm(confirmText)) return;
+
+  var label = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Saving...';
+
+  try {
+    var res = await fetch(DRIVERS_URL + '/api/admin/partner/review', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({ partner_id: partnerId, decision: decision, reason: reason || undefined })
+    });
+    var result = await res.json();
+    if (!res.ok || result.error) throw new Error(result.error || ('HTTP ' + res.status));
+    await loadPartners();
+  } catch (e) {
+    console.error('decide:', e);
+    showPtError(e.message);
+    button.disabled = false;
+    button.textContent = label;
+  }
+}
+
+el('ptSearchBtn').addEventListener('click', function () {
+  ptFilters = { search: el('ptSearch').value.trim(), status: el('ptStatusFilter').value };
+  renderPartners();
+});
+el('ptResetBtn').addEventListener('click', function () {
+  el('ptSearch').value = '';
+  el('ptStatusFilter').value = 'needs';
+  ptFilters = { search: '', status: 'needs' };
+  loadPartners();
+});
+el('ptStatusFilter').addEventListener('change', function () {
+  ptFilters.status = el('ptStatusFilter').value;
+  renderPartners();
+});
+
+// ============================================================
+// TRAVEL AGENTS
+//
+// A leitura vem da tabela travel_agents; a escrita passa pelo
+// servidor. A tabela não tem política de INSERT nem de UPDATE para o
+// papel authenticated — e o admin também é authenticated. Sem isso,
+// um agente aprovava-se a si próprio com um update no browser.
+// ============================================================
+async function authHeaders() {
+  var s = await client.auth.getSession();
+  var token = s.data && s.data.session && s.data.session.access_token;
+  if (!token) throw new Error('Your admin session expired. Sign in again.');
+
+  // Se a sessão trocou desde que entrámos, é melhor dizê-lo agora do
+  // que deixar o servidor devolver um 403 opaco.
+  if (currentAdmin && s.data.session.user &&
+      s.data.session.user.id !== currentAdmin.user.id) {
+    throw new Error('This browser is now signed in as ' + s.data.session.user.email +
+      '. Sign out and sign in again with your admin account.');
+  }
+
+  return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+}
+
+function showAgentError(text) {
+  var box = el('agentError');
+  if (!text) { box.style.display = 'none'; return; }
+  box.textContent = text;
+  box.style.display = 'block';
+  reportHeight();
+}
+
+async function loadAgents() {
+  var box = el('agentList');
+  box.innerHTML = '<div class="loading-row">Loading...</div>';
+  showAgentError('');
+
+  // travel_agents é a tabela das agências. Os clientes vivem na
+  // contacts e não aparecem aqui.
+  var res = await client.from('travel_agents')
+    .select('id, email, contact_name, representative_role, legal_name, agency_name, agency_vat, agency_country, agency_website, agency_phone, note, status, commission, applied_at, reviewed_at')
+    .order('applied_at', { ascending: false });
+
+  if (res.error) {
+    box.innerHTML = '<div class="error-row">' + escapeHtml(res.error.message) + '</div>';
+    return;
+  }
+
+  agents = res.data || [];
+
+  el('agentPendingCount').textContent = agents.filter(function (a) { return a.status === 'pending'; }).length;
+  el('agentApprovedCount').textContent = agents.filter(function (a) { return a.status === 'approved'; }).length;
+  el('agentRejectedCount').textContent = agents.filter(function (a) { return a.status === 'rejected'; }).length;
+
+  var pending = agents.filter(function (a) { return a.status === 'pending'; }).length;
+  el('agentsBadge').textContent = pending ? ' (' + pending + ')' : '';
+
+  var bookingRes = await client.from('bookings').select('id').not('booked_by', 'is', null);
+  el('agentBookingsCount').textContent = (bookingRes.data || []).length;
+
+  renderAgents();
+}
+
+function renderAgents() {
+  var box = el('agentList');
+  var list = agents.slice();
+
+  if (agentFilters.status) {
+    list = list.filter(function (a) { return a.status === agentFilters.status; });
+  }
+  if (agentFilters.search) {
+    var s = agentFilters.search.toLowerCase();
+    list = list.filter(function (a) {
+      return (a.agency_name || '').toLowerCase().indexOf(s) !== -1 ||
+             (a.legal_name || '').toLowerCase().indexOf(s) !== -1 ||
+             (a.contact_name || '').toLowerCase().indexOf(s) !== -1 ||
+             (a.email || '').toLowerCase().indexOf(s) !== -1 ||
+             (a.agency_country || '').toLowerCase().indexOf(s) !== -1;
+    });
+  }
+
+  if (!list.length) {
+    box.innerHTML = '<div class="no-results">No applications match this filter.</div>';
+    return reportHeight();
+  }
+
+  box.innerHTML = list.map(function (a) {
+    var pending = a.status === 'pending';
+    var site = a.agency_website
+      ? '<a class="agent-link" href="' + escapeHtml(a.agency_website) + '" target="_blank" rel="noopener">' +
+        escapeHtml(a.agency_website) + '</a>'
+      : '-';
+
+    var rateInput = '<label style="font-size:12.5px;color:var(--muted)">Rate %</label>' +
+      '<input type="number" min="1" max="60" step="0.5" value="' + escapeHtml(a.commission || 12) +
+      '" data-rate-for="' + escapeHtml(a.id) + '">';
+
+    var actions;
+    if (pending) {
+      actions = rateInput +
+        '<button class="btn-ok" data-approve="' + escapeHtml(a.id) + '">Approve</button>' +
+        '<button class="btn-no" data-reject="' + escapeHtml(a.id) + '">Reject</button>';
+    } else if (a.status === 'approved') {
+      actions = rateInput +
+        '<button class="btn-ok" data-approve="' + escapeHtml(a.id) + '">Update rate</button>' +
+        '<button class="btn-no" data-reject="' + escapeHtml(a.id) + '">Revoke access</button>';
+    } else {
+      actions = rateInput +
+        '<button class="btn-ok" data-approve="' + escapeHtml(a.id) + '">Approve now</button>';
+    }
+
+    return '<div class="agent-card ' + (pending ? 'pending' : '') + '">' +
+      '<div class="agent-head"><div>' +
+      '<h3>' + escapeHtml(a.legal_name || a.agency_name || '(no company name)') + '</h3>' +
+      (a.agency_name && a.legal_name && a.agency_name !== a.legal_name
+        ? '<div class="who">Trading as ' + escapeHtml(a.agency_name) + '</div>' : '') +
+      '<div class="who">' + escapeHtml(a.contact_name || '-') +
+      (a.representative_role ? ', ' + escapeHtml(a.representative_role) : '') +
+      ' &middot; ' + escapeHtml(a.email || '-') +
+      (a.applied_at ? '<br>Applied ' + escapeHtml(formatTime(a.applied_at)) : '') +
+      (a.reviewed_at ? ' &middot; reviewed ' + escapeHtml(formatTime(a.reviewed_at)) : '') +
+      '</div></div>' +
+      '<span class="status ' + (a.status === 'approved' ? 'completed' : (a.status === 'rejected' ? 'cancelled' : 'pending')) + '">' +
+      escapeHtml(a.status) + (a.status === 'approved' ? ' &middot; ' + escapeHtml(a.commission || 12) + '%' : '') +
+      '</span></div>' +
+      '<div class="agent-facts">' +
+      '<div class="agent-fact"><div class="k">Country</div><div class="v">' + escapeHtml(a.agency_country || '-') + '</div></div>' +
+      '<div class="agent-fact"><div class="k">VAT</div><div class="v">' + escapeHtml(a.agency_vat || '-') + '</div></div>' +
+      '<div class="agent-fact"><div class="k">Phone</div><div class="v">' + escapeHtml(a.agency_phone || '-') + '</div></div>' +
+      '<div class="agent-fact"><div class="k">Website</div><div class="v">' + site + '</div></div>' +
+      '</div>' +
+      (a.note ? '<div class="agent-note-box">' + escapeHtml(a.note) + '</div>' : '') +
+      '<div class="agent-actions">' + actions + '</div></div>';
+  }).join('');
+
+  qsa('[data-approve]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var id = b.getAttribute('data-approve');
+      var input = document.querySelector('[data-rate-for="' + id + '"]');
+      reviewAgent(id, 'approved', input ? input.value : null, b);
+    });
+  });
+
+  qsa('[data-reject]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var id = b.getAttribute('data-reject');
+      var agent = agents.find(function (a) { return a.id === id; });
+      var name = (agent && agent.agency_name) || 'this agency';
+      if (!window.confirm('Reject ' + name + '? They lose the partner rate immediately.')) return;
+      reviewAgent(id, 'rejected', null, b);
+    });
+  });
+
+  reportHeight();
+}
+
+async function reviewAgent(agentId, decision, commission, button) {
+  showAgentError('');
+  var original = button ? button.textContent : '';
+  if (button) { button.disabled = true; button.textContent = 'Saving...'; }
+
+  try {
+    var res = await fetch(RENDER_URL + '/api/agent/review', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({
+        agent_id: agentId,
+        decision: decision,
+        commission: commission ? Number(commission) : undefined
+      })
+    });
+
+    var result = await res.json();
+    if (!res.ok || result.error) throw new Error(result.error || ('HTTP ' + res.status));
+
+    await loadAgents();
+  } catch (e) {
+    console.error('review error:', e);
+    showAgentError(e.message);
+    if (button) { button.disabled = false; button.textContent = original; }
+  }
+}
+
+el('agentSearchBtn').addEventListener('click', function () {
+  agentFilters = { search: el('agentSearch').value.trim(), status: el('agentStatusFilter').value };
+  renderAgents();
+});
+
+el('agentRefreshBtn').addEventListener('click', function () {
+  el('agentSearch').value = '';
+  el('agentStatusFilter').value = 'pending';
+  agentFilters = { search: '', status: 'pending' };
+  loadAgents();
+});
+
+el('agentStatusFilter').addEventListener('change', function () {
+  agentFilters.status = el('agentStatusFilter').value;
+  renderAgents();
+});
+
+// ============================================================
+// CSV
+// ============================================================
+function csvValue(v) { return '"' + String(v === null || v === undefined ? '' : v).split('"').join('""') + '"'; }
+function downloadCsv(headers, rows, prefix) {
+  var lines = [headers.map(csvValue).join(',')];
+  rows.forEach(function (r) { lines.push(headers.map(function (h) { return csvValue(r[h]); }).join(',')); });
+  var blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var link = document.createElement('a');
+  link.href = url;
+  link.download = prefix + '-' + new Date().toISOString().slice(0, 19).split(':').join('-') + '.csv';
+  document.body.appendChild(link); link.click(); link.remove();
+  URL.revokeObjectURL(url);
+}
+
+// ============================================================
+// EVENTOS
+// ============================================================
+el('closeDetailsBtn').addEventListener('click', function () { el('detailsModal').classList.add('hidden'); });
+el('closeAccountDetailsBtn').addEventListener('click', function () { el('accountDetailsModal').classList.add('hidden'); });
+
+qsa('.modal-tab').forEach(function (tab) {
+  tab.addEventListener('click', function () {
+    qsa('.modal-tab').forEach(function (t) { t.classList.remove('active'); });
+    qsa('.modal-tab-content').forEach(function (c) { c.classList.remove('active'); });
+    tab.classList.add('active');
+    el(tab.getAttribute('data-tab')).classList.add('active');
+  });
+});
+
+qsa('.tab-btn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    qsa('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+    qsa('.panel').forEach(function (p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    el(btn.getAttribute('data-tab')).classList.add('active');
+    reportHeight();
+  });
+});
+
+el('searchBtn').addEventListener('click', function () {
+  bookingFilters = {
+    bookingId: el('searchBookingId').value.trim(),
+    email: el('searchEmail').value.trim().toLowerCase(),
+    name: el('searchName').value.trim(),
+    pickup: el('searchPickup').value.trim(),
+    dropoff: el('searchDropoff').value.trim(),
+    dateFrom: el('searchDateFrom').value,
+    dateTo: el('searchDateTo').value,
+    status: el('searchStatus').value
+  };
+  loadBookings(bookingFilters);
+});
+
+el('clearSearchBtn').addEventListener('click', function () {
+  ['searchBookingId','searchEmail','searchName','searchPickup','searchDropoff','searchDateFrom','searchDateTo']
+    .forEach(function (id) { el(id).value = ''; });
+  el('searchStatus').value = '';
+  bookingFilters = { bookingId:'', email:'', name:'', pickup:'', dropoff:'', dateFrom:'', dateTo:'', status:'' };
+  loadBookings(bookingFilters);
+});
+
+el('refreshBtn').addEventListener('click', async function () {
+  await loadBookings(bookingFilters);
+  await loadContacts();
+  await loadConversations();
+  await loadAgents();
+  await loadPartners();
+  await loadCharges();
+});
+
+el('perPageSelect').addEventListener('change', function (e) {
+  bookingPerPage = parseInt(e.target.value, 10); bookingPage = 1;
+  renderBookings(); renderBookingPagination();
+});
+el('contactsPerPageSelect').addEventListener('change', function (e) {
+  contactPerPage = parseInt(e.target.value, 10); contactPage = 1;
+  renderContacts(); renderContactPagination();
+});
+
+el('contactSearchBtn').addEventListener('click', function () {
+  contactFilters = { search: el('contactSearch').value.trim(), searchId: el('contactSearchId').value.trim() };
+  loadContacts();
+});
+el('clearContactSearchBtn').addEventListener('click', function () {
+  el('contactSearch').value = ''; el('contactSearchId').value = '';
+  contactFilters = { search: '', searchId: '' };
+  loadContacts();
+});
+
+el('exportBookingsBtn').addEventListener('click', function () {
+  if (!allBookings.length) return alert('No bookings to export.');
+  downloadCsv(['id','booking_id','user_id','booking_reference','full_name','email','phone_code','phone_number',
+    'pickup','dropoff','booking_date','booking_time','flight_number','passengers','price','currency','status',
+    'payment_status','amount_total','notes','receipt_url','created_at'], allBookings, 'airportlink-bookings');
+});
+el('exportContactsBtn').addEventListener('click', function () {
+  if (!contacts.length) return alert('No accounts to export.');
+  downloadCsv(['id','display_id','full_name','email','phone_number','is_admin','created_at'], contacts, 'airportlink-contacts');
+});
+
+el('convSendBtn').addEventListener('click', sendAdminReply);
+el('convReplyInput').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAdminReply(); }
+});
+el('convReplyInput').addEventListener('input', function () {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+el('convToggleStatusBtn').addEventListener('click', async function () {
+  var conv = conversations.find(function (c) { return String(c.id) === String(activeConvId); });
+  if (!conv) return;
+  var newStatus = conv.status === 'resolved' ? 'open' : 'resolved';
+  var res = await client.from('support_chats')
+    .update({ status: newStatus, updated_at: new Date().toISOString() }).eq('id', activeConvId);
+  if (res.error) return alert(res.error.message);
+  conv.status = newStatus;
+  updateStatusUI(newStatus);
+  renderConversationList(); renderConvStats();
+});
+
+el('convSearchBtn').addEventListener('click', function () {
+  convFilters = {
+    search: el('convSearchText').value.trim(),
+    status: el('convSearchStatus').value,
+    subject: el('convSearchSubject').value
+  };
+  loadConversations();
+});
+el('convClearSearchBtn').addEventListener('click', function () {
+  el('convSearchText').value = ''; el('convSearchStatus').value = ''; el('convSearchSubject').value = '';
+  convFilters = { search: '', status: '', subject: '' };
+  loadConversations();
+});
+
+async function init() {
+  await loadBookings(bookingFilters);
+  await loadContacts();
+  await loadConversations();
+  await loadAgents();
+  await loadPartners();
+  await loadCharges();
+  subscribeToAllConversations();
+}
+
+(async function boot() {
+  el('gateView').classList.add('hidden');
+  el('bootView').classList.remove('hidden');
+  try {
+    var session = await verifyAdmin();
+    if (session) { await enterAdmin(session); return; }
+  } catch (e) { console.error('boot error:', e); }
+  el('bootView').classList.add('hidden');
+  el('gateView').classList.remove('hidden');
+  reportHeight();
+})();
+})();
+</script>
+</body>
+</html>
