@@ -90,21 +90,29 @@
    Ilustrado, não fotografado. Os carros são dos parceiros: uma foto
    de uma marca concreta prometia um veículo que não controlamos, e
    quem chegasse e encontrasse outro tinha razão em reclamar. */
-.vehicle{display:grid;grid-template-columns:112px 1fr;gap:16px;align-items:center;
+.vehicle{display:grid;grid-template-columns:136px 1fr;gap:16px;align-items:center;
   background:var(--surface);border:1px solid var(--rule);border-radius:20px;
   padding:16px 18px;margin-top:16px}
-.vehicle-art{width:112px}
+.vehicle-art{width:136px}
 .vehicle-art svg{width:100%;height:auto;display:block}
 .vehicle-text .tag{display:block;color:var(--muted);margin-bottom:6px}
 .vehicle-text strong{display:block;font-family:var(--display);font-weight:700;font-size:17px;
   letter-spacing:-.02em;margin-bottom:4px}
 .vehicle-text span{color:var(--muted);font-size:13px;line-height:1.55}
+.veh-shadow{fill:var(--ink);opacity:.07}
+html[data-theme="dark"] .veh-shadow{fill:#000;opacity:.35}
 .veh-body{fill:var(--ink)}
-html[data-theme="dark"] .veh-body{fill:#E9EDF3}
-.veh-glass{fill:var(--teal-soft);stroke:var(--rule-strong);stroke-width:1}
-.veh-wheel{fill:var(--surface);stroke:var(--ink);stroke-width:3.4}
-html[data-theme="dark"] .veh-wheel{stroke:#E9EDF3}
-.veh-accent{fill:var(--amber)}
+html[data-theme="dark"] .veh-body{fill:#D8DEE8}
+.veh-glass{fill:#7FB8B2;opacity:.55}
+html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
+.veh-pillar{fill:var(--surface);opacity:.5}
+.veh-line{stroke:var(--surface);stroke-width:1.6;opacity:.28;fill:none;stroke-linecap:round}
+.veh-lamp{fill:#F4E3B8}
+.veh-tail{fill:#D9534F}
+.veh-tyre{fill:#0B0F16}
+html[data-theme="dark"] .veh-tyre{fill:#05080D}
+.veh-rim{fill:var(--surface);stroke:var(--rule-strong);stroke-width:1}
+.veh-spokes{stroke:var(--muted);stroke-width:1.5;fill:none;stroke-linecap:round;opacity:.6}
 @media (max-width:420px){
   .vehicle{grid-template-columns:1fr;text-align:center;justify-items:center}
 }
@@ -223,6 +231,7 @@ input[readonly]{opacity:.7}
 .mini-value.price{color:var(--teal);display:inline-block}
 html[data-theme="dark"] .mini-value.price{color:var(--amber)}
 .public-price{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:6px}
+.price-eur{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:5px}
 
 .booking-summary{margin-top:14px;padding:14px 16px;border-radius:18px;background:var(--surface);
   border:1px solid var(--rule);font-size:13px;line-height:1.7}
@@ -445,7 +454,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
           <div class="mini-grid">
             <div class="mini-card"><div class="mini-label">Distance</div><div class="mini-value" id="distanceValue">&mdash;</div></div>
             <div class="mini-card"><div class="mini-label">Duration</div><div class="mini-value" id="durationValue">&mdash;</div></div>
-            <div class="mini-card"><div class="mini-label">Price</div><div class="mini-value price" id="priceValue">&mdash;</div><div class="public-price hidden" id="publicPrice"></div></div>
+            <div class="mini-card"><div class="mini-label">Price</div><div class="mini-value price" id="priceValue">&mdash;</div><div class="price-eur hidden" id="priceEur"></div><div class="public-price hidden" id="publicPrice"></div></div>
           </div>
 
           <div class="pay-choice hidden" id="payChoice">
@@ -605,7 +614,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
           <div class="summary-item"><div class="summary-label">Flight</div><div class="summary-value" id="summaryFlight">&mdash;</div></div>
           <div class="summary-item"><div class="summary-label">Distance</div><div class="summary-value" id="summaryDistance">&mdash;</div></div>
           <div class="summary-item"><div class="summary-label">Duration</div><div class="summary-value" id="summaryDuration">&mdash;</div></div>
-          <div class="summary-item"><div class="summary-label">Price</div><div class="summary-value" id="summaryPrice">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Price</div><div class="summary-value" id="summaryPrice">&mdash;</div><div class="price-eur hidden" id="summaryPriceEur"></div></div>
           <div class="summary-item"><div class="summary-label">Payment</div><div class="summary-value" id="summaryPayment">&mdash;</div></div>
           <div class="summary-item" style="grid-column:1/-1"><div class="summary-label">Notes</div><div class="summary-value" id="summaryNotes">&mdash;</div></div>
         </div>
@@ -1262,8 +1271,10 @@ function calculateRouteAndPrice() {
 
 function updatePriceDisplay(priceEUR) {
   var currency = $('currency').value || 'EUR';
-  var fmt = function (v) {
-    return new Intl.NumberFormat('en-IE', { style: 'currency', currency: currency }).format(v);
+  var fmt = function (v, cur) {
+    return new Intl.NumberFormat('en-IE', {
+      style: 'currency', currency: cur || currency
+    }).format(v);
   };
 
   var publicPrice = priceEUR * (EXCHANGE_RATES[currency] || 1);
@@ -1271,6 +1282,18 @@ function updatePriceDisplay(priceEUR) {
 
   $('priceValue').textContent = fmt(payable);
   $('priceValue').dataset.basePrice = String(priceEUR);
+
+  // O equivalente em euros, quando a moeda escolhida não é o euro.
+  // O cartão é debitado na moeda mostrada; este número existe para a
+  // pessoa reconhecer o valor e para não haver surpresa no extrato.
+  var payableEUR = isAgent() ? priceEUR * (1 - agentInfo.commission / 100) : priceEUR;
+
+  if (currency !== 'EUR') {
+    $('priceEur').textContent = 'about ' + fmt(payableEUR, 'EUR');
+    $('priceEur').classList.remove('hidden');
+  } else {
+    $('priceEur').classList.add('hidden');
+  }
 
   if (isAgent()) {
     $('publicPrice').innerHTML = 'Public price <s>' + fmt(publicPrice) + '</s> \u00b7 you save ' +
@@ -1297,35 +1320,80 @@ function updatePriceDisplayOnly() {
 // o modelo.
 // ============================================================
 var VEHICLE_ART = {
-  sedan: '<svg viewBox="0 0 200 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-    '<path class="veh-body" d="M18 66h164a6 6 0 0 0 6-6v-9c0-7-5-13-12-14l-24-4-19-14a20 20 0 0 0-12-4H74a20 20 0 0 0-13 5L44 33l-22 5c-7 2-12 8-12 15v7a6 6 0 0 0 6 6h2Z"/>' +
-    '<path class="veh-glass" d="M78 20h20v14H64l14-14Zm28 0h18a12 12 0 0 1 7 2l14 12h-39V20Z"/>' +
-    '<rect class="veh-accent" x="171" y="44" width="13" height="6" rx="3"/>' +
-    '<circle class="veh-wheel" cx="55" cy="66" r="15"/><circle class="veh-wheel" cx="149" cy="66" r="15"/>' +
+  // Silhuetas de classe executiva: capô longo, tejadilho baixo, vidro
+  // lateral em três painéis, jantes com raios. O que separa um
+  // desenho "genérico" de um "de luxo" são as proporções — capô e
+  // cauda longos, altura menor — e não os adornos.
+  sedan: '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<ellipse class="veh-shadow" cx="120" cy="92" rx="102" ry="6"/>' +
+    // corpo
+    '<path class="veh-body" d="M12 74c-4 0-6-3-6-7l1-13c1-8 7-14 15-16l31-7 26-19c5-4 11-6 17-6h44c7 0 14 3 19 8l20 19 27 6c9 2 15 9 15 18v10c0 4-3 7-7 7H12Z"/>' +
+    // vidros, em três painéis com montantes finos
+    '<path class="veh-glass" d="M84 15h26v25H57l21-21a9 9 0 0 1 6-4Zm34 0h22c5 0 9 2 12 5l17 20h-51V15Z"/>' +
+    '<path class="veh-pillar" d="M112 15h4v25h-4z"/>' +
+    // vinco lateral: é este traço que dá a leitura de carro caro
+    '<path class="veh-line" d="M40 56h158"/>' +
+    // faróis e farolim
+    '<path class="veh-lamp" d="M205 50h18a6 6 0 0 1 6 6v3h-24a4 4 0 0 1-4-4v-1a4 4 0 0 1 4-4Z"/>' +
+    '<path class="veh-tail" d="M10 52h13a4 4 0 0 1 4 4v4H10a5 5 0 0 1-5-5 3 3 0 0 1 5-3Z"/>' +
+    // rodas com jante
+    '<g class="veh-wheelset"><circle class="veh-tyre" cx="68" cy="74" r="18"/>' +
+    '<circle class="veh-rim" cx="68" cy="74" r="9"/>' +
+    '<path class="veh-spokes" d="M68 65v18M59 74h18M62 68l12 12M74 68L62 80"/></g>' +
+    '<g class="veh-wheelset"><circle class="veh-tyre" cx="180" cy="74" r="18"/>' +
+    '<circle class="veh-rim" cx="180" cy="74" r="9"/>' +
+    '<path class="veh-spokes" d="M180 65v18M171 74h18M174 68l12 12M186 68l-12 12"/></g>' +
     '</svg>',
 
-  van: '<svg viewBox="0 0 200 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-    '<path class="veh-body" d="M14 66h172a6 6 0 0 0 6-6V33a12 12 0 0 0-8-11l-22-8a30 30 0 0 0-10-2H30a16 16 0 0 0-16 16v32a6 6 0 0 0 6 6h-6Z"/>' +
-    '<path class="veh-glass" d="M32 22h34v20H32V22Zm44 0h34v20H76V22Zm44 0h24a20 20 0 0 1 7 1l16 6v13h-47V22Z"/>' +
-    '<rect class="veh-accent" x="178" y="42" width="12" height="6" rx="3"/>' +
-    '<circle class="veh-wheel" cx="54" cy="66" r="15"/><circle class="veh-wheel" cx="150" cy="66" r="15"/>' +
+  van: '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<ellipse class="veh-shadow" cx="120" cy="92" rx="104" ry="6"/>' +
+    '<path class="veh-body" d="M14 76c-5 0-8-3-8-8V30c0-11 9-20 20-20h132c6 0 12 2 17 6l32 25c6 5 9 12 9 19v8c0 5-3 8-8 8H14Z"/>' +
+    // quatro janelas: é o que diz "leva gente" sem precisar de texto
+    '<path class="veh-glass" d="M28 22h34v26H28V22Zm42 0h34v26H70V22Zm42 0h34v26h-34V22Zm42 0h13c3 0 6 1 9 3l21 17c2 2 3 4 3 6h-46V22Z"/>' +
+    '<path class="veh-line" d="M22 60h190"/>' +
+    // calha do tejadilho
+    '<path class="veh-line" d="M30 14h120"/>' +
+    '<path class="veh-lamp" d="M212 52h16a5 5 0 0 1 5 5v3h-21a4 4 0 0 1-4-4v0a4 4 0 0 1 4-4Z"/>' +
+    '<path class="veh-tail" d="M10 46h12a4 4 0 0 1 4 4v10H10a6 6 0 0 1-6-6v-3a5 5 0 0 1 6-5Z"/>' +
+    '<g class="veh-wheelset"><circle class="veh-tyre" cx="62" cy="76" r="18"/>' +
+    '<circle class="veh-rim" cx="62" cy="76" r="9"/>' +
+    '<path class="veh-spokes" d="M62 67v18M53 76h18M56 70l12 12M68 70L56 82"/></g>' +
+    '<g class="veh-wheelset"><circle class="veh-tyre" cx="182" cy="76" r="18"/>' +
+    '<circle class="veh-rim" cx="182" cy="76" r="9"/>' +
+    '<path class="veh-spokes" d="M182 67v18M173 76h18M176 70l12 12M188 70l-12 12"/></g>' +
     '</svg>',
 
-  pair: '<svg viewBox="0 0 200 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-    '<g opacity=".38" transform="translate(6 6) scale(.72)">' +
-    '<path class="veh-body" d="M18 66h164a6 6 0 0 0 6-6v-9c0-7-5-13-12-14l-24-4-19-14a20 20 0 0 0-12-4H74a20 20 0 0 0-13 5L44 33l-22 5c-7 2-12 8-12 15v7a6 6 0 0 0 6 6h2Z"/>' +
-    '<circle class="veh-wheel" cx="55" cy="66" r="15"/><circle class="veh-wheel" cx="149" cy="66" r="15"/></g>' +
-    '<g transform="translate(28 26) scale(.78)">' +
-    '<path class="veh-body" d="M14 66h172a6 6 0 0 0 6-6V33a12 12 0 0 0-8-11l-22-8a30 30 0 0 0-10-2H30a16 16 0 0 0-16 16v32a6 6 0 0 0 6 6h-6Z"/>' +
-    '<path class="veh-glass" d="M32 22h34v20H32V22Zm44 0h34v20H76V22Zm44 0h24a20 20 0 0 1 7 1l16 6v13h-47V22Z"/>' +
-    '<circle class="veh-wheel" cx="54" cy="66" r="15"/><circle class="veh-wheel" cx="150" cy="66" r="15"/></g>' +
+  pair: '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<ellipse class="veh-shadow" cx="120" cy="94" rx="106" ry="6"/>' +
+    // a de trás mais pequena e esbatida: lê-se logo que são duas
+    '<g opacity=".32" transform="translate(4 2) scale(.62)">' +
+    '<path class="veh-body" d="M12 74c-4 0-6-3-6-7l1-13c1-8 7-14 15-16l31-7 26-19c5-4 11-6 17-6h44c7 0 14 3 19 8l20 19 27 6c9 2 15 9 15 18v10c0 4-3 7-7 7H12Z"/>' +
+    '<circle class="veh-tyre" cx="68" cy="74" r="18"/><circle class="veh-rim" cx="68" cy="74" r="9"/>' +
+    '<circle class="veh-tyre" cx="180" cy="74" r="18"/><circle class="veh-rim" cx="180" cy="74" r="9"/></g>' +
+    '<g transform="translate(46 30) scale(.78)">' +
+    '<path class="veh-body" d="M14 76c-5 0-8-3-8-8V30c0-11 9-20 20-20h132c6 0 12 2 17 6l32 25c6 5 9 12 9 19v8c0 5-3 8-8 8H14Z"/>' +
+    '<path class="veh-glass" d="M28 22h34v26H28V22Zm42 0h34v26H70V22Zm42 0h34v26h-34V22Zm42 0h13c3 0 6 1 9 3l21 17c2 2 3 4 3 6h-46V22Z"/>' +
+    '<path class="veh-line" d="M22 60h190"/>' +
+    '<circle class="veh-tyre" cx="62" cy="76" r="18"/><circle class="veh-rim" cx="62" cy="76" r="9"/>' +
+    '<path class="veh-spokes" d="M62 67v18M53 76h18"/>' +
+    '<circle class="veh-tyre" cx="182" cy="76" r="18"/><circle class="veh-rim" cx="182" cy="76" r="9"/>' +
+    '<path class="veh-spokes" d="M182 67v18M173 76h18"/></g>' +
     '</svg>',
 
-  minibus: '<svg viewBox="0 0 200 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-    '<path class="veh-body" d="M12 68h176a4 4 0 0 0 4-4V24a10 10 0 0 0-10-10H18A10 10 0 0 0 8 24v40a4 4 0 0 0 4 4Z"/>' +
-    '<path class="veh-glass" d="M20 24h30v20H20V24Zm40 0h30v20H60V24Zm40 0h30v20h-30V24Zm40 0h32v20h-32V24Z"/>' +
-    '<rect class="veh-accent" x="180" y="46" width="11" height="6" rx="3"/>' +
-    '<circle class="veh-wheel" cx="48" cy="68" r="15"/><circle class="veh-wheel" cx="152" cy="68" r="15"/>' +
+  minibus: '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<ellipse class="veh-shadow" cx="120" cy="94" rx="108" ry="6"/>' +
+    '<g opacity=".32" transform="translate(2 0) scale(.62)">' +
+    '<path class="veh-body" d="M14 76c-5 0-8-3-8-8V30c0-11 9-20 20-20h132c6 0 12 2 17 6l32 25c6 5 9 12 9 19v8c0 5-3 8-8 8H14Z"/>' +
+    '<circle class="veh-tyre" cx="62" cy="76" r="18"/><circle class="veh-rim" cx="62" cy="76" r="9"/>' +
+    '<circle class="veh-tyre" cx="182" cy="76" r="18"/><circle class="veh-rim" cx="182" cy="76" r="9"/></g>' +
+    '<g transform="translate(46 30) scale(.78)">' +
+    '<path class="veh-body" d="M14 76c-5 0-8-3-8-8V30c0-11 9-20 20-20h132c6 0 12 2 17 6l32 25c6 5 9 12 9 19v8c0 5-3 8-8 8H14Z"/>' +
+    '<path class="veh-glass" d="M28 22h34v26H28V22Zm42 0h34v26H70V22Zm42 0h34v26h-34V22Zm42 0h13c3 0 6 1 9 3l21 17c2 2 3 4 3 6h-46V22Z"/>' +
+    '<path class="veh-line" d="M22 60h190"/>' +
+    '<circle class="veh-tyre" cx="62" cy="76" r="18"/><circle class="veh-rim" cx="62" cy="76" r="9"/>' +
+    '<path class="veh-spokes" d="M62 67v18M53 76h18"/>' +
+    '<circle class="veh-tyre" cx="182" cy="76" r="18"/><circle class="veh-rim" cx="182" cy="76" r="9"/>' +
+    '<path class="veh-spokes" d="M182 67v18M173 76h18"/></g>' +
     '</svg>'
 };
 
@@ -1377,6 +1445,18 @@ function updateCheckoutSummary() {
   $('summaryDistance').textContent = $('distanceValue').textContent;
   $('summaryDuration').textContent = $('durationValue').textContent;
   $('summaryPrice').textContent = $('priceValue').textContent;
+
+  // Montado com textContent e não com innerHTML: não há nada aqui
+  // que precise de HTML, e assim não há como injetar nada.
+  var eurNote = $('priceEur');
+  var eurLine = $('summaryPriceEur');
+
+  if (eurNote && !eurNote.classList.contains('hidden')) {
+    eurLine.textContent = eurNote.textContent + ' \u00b7 charged in ' + $('currency').value;
+    eurLine.classList.remove('hidden');
+  } else {
+    eurLine.classList.add('hidden');
+  }
   $('summaryPayment').textContent = payMode === 'later'
     ? ('Pay later \u00b7 charged ' + (payOptions.charge_lead_hours || 48) + 'h before pick-up')
     : 'Pay now';
