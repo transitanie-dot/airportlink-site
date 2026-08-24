@@ -40,18 +40,8 @@ html[data-theme="dark"]{
   --shadow:0 14px 34px rgba(0,0,0,.34);
 }
 html,body{font-family:var(--body)}
-.wrapper{max-width:1180px;margin:0 auto}
-.brand{font-family:var(--display)}
 .chat-list-head h2{font-family:var(--display);font-weight:700;letter-spacing:-.02em}
 .chat-panel-head h3,.chat-empty-state h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em}
-.sidebar{background:var(--ink)}
-html[data-theme="dark"] .sidebar{background:var(--surface);border:1px solid var(--rule)}
-.nav-btn.active{background:rgba(255,255,255,.12)}
-html[data-theme="dark"] .nav-btn.active{background:var(--surface-2)}
-.btn-primary{background:#fff;color:var(--ink)}
-.btn-secondary{background:rgba(255,255,255,.14);color:#fff}
-html[data-theme="dark"] .btn-primary{background:#E9EDF3;color:#141A28}
-html[data-theme="dark"] .btn-secondary{background:var(--surface-2);color:var(--text)}
 .status-badge{font-family:var(--mono);font-weight:600;letter-spacing:.06em}
 .chat-msg.customer{background:var(--ink)}
 html[data-theme="dark"] .chat-msg.customer{background:var(--surface-2);color:var(--text)}
@@ -61,21 +51,22 @@ html[data-theme="dark"] .send-btn{background:var(--amber);color:#141A28}
 html[data-theme="dark"] .modal-head{background:#0B1118}
 textarea,select,input{font-family:var(--body)}
 
-.wrapper{display:flex;padding:20px;gap:20px;align-items:flex-start}
-.sidebar{width:240px;flex:0 0 240px;background:#333B50;color:#fff;padding:22px;display:flex;flex-direction:column;gap:14px;border-radius:22px}
-html[data-theme="dark"] .sidebar{background:#151922}
-.brand{font-weight:800;letter-spacing:.04em;font-size:19px;margin-bottom:8px}
-.nav-btn{background:transparent;border:0;color:#fff;padding:11px 13px;border-radius:11px;cursor:pointer;font-weight:700;text-align:left;font-size:14px;width:100%}
-.nav-btn.active{background:#44506a}
-html[data-theme="dark"] .nav-btn.active{background:#2a3343}
-.sidebar-actions{margin-top:18px;display:flex;flex-direction:column;gap:9px}
-.btn{border:0;border-radius:13px;padding:12px 16px;font-weight:800;cursor:pointer;font-size:14px}
-.btn-primary{background:#fff;color:#333B50}
-.btn-secondary{background:#44506a;color:#fff}
-html[data-theme="dark"] .btn-primary{background:#e7ebf2;color:#11161D}
-html[data-theme="dark"] .btn-secondary{background:#222936;color:#e7ebf2}
-.btn:disabled{opacity:.6;cursor:not-allowed}
+.wrapper{display:flex;padding:24px 20px;gap:22px;align-items:flex-start;max-width:1180px;margin:0 auto}
 .main{flex:1;min-width:0}
+
+/* Botões dos modais e do formulário de perfil, alinhados com o
+   sistema: monoespaçado, maiúsculas pequenas, cantos de 14px. */
+.btn{border:0;border-radius:14px;padding:0 20px;height:48px;font-family:var(--mono);
+  font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  transition:transform .12s ease}
+.btn:hover:not(:disabled){transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-primary{background:var(--teal);color:#fff}
+.btn-secondary{background:var(--ink);color:#fff}
+html[data-theme="dark"] .btn-primary{background:var(--teal);color:#fff}
+html[data-theme="dark"] .btn-secondary{background:#E9EDF3;color:#141A28}
+
 .hidden{display:none!important}
 .boot{display:flex;align-items:center;justify-content:center;min-height:340px;color:var(--muted);font-size:15px;font-weight:700;text-align:center;padding:24px}
 .support-shell{display:flex;background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
@@ -149,9 +140,7 @@ html[data-theme="dark"] .modal-msg{background:#2b1114;color:#fda4af;border-color
 .modal-actions{display:flex;gap:10px;margin-top:6px}
 .modal-actions .btn{flex:1}
 @media (max-width:860px){
-  .wrapper{flex-direction:column;padding:14px;gap:14px}
-  .sidebar{width:100%;flex:0 0 auto;border-radius:18px}
-  .sidebar-actions{margin-top:10px}
+  .wrapper{flex-direction:column;padding:16px 14px;gap:16px}
   .support-shell{flex-direction:column}
   .chat-list-panel{width:100%;flex:0 0 auto;border-right:0;border-bottom:1px solid var(--border)}
   .chat-list-scroll{max-height:260px}
@@ -166,15 +155,15 @@ html[data-theme="dark"] .modal-msg{background:#2b1114;color:#fda4af;border-color
 <div id="bootView" class="boot">Loading support...</div>
 
 <div id="supportApp" class="hidden"><div class="wrapper">
-  <div class="sidebar">
-    <div class="brand">Support</div>
-    <button class="nav-btn active" type="button">Conversations</button>
-    <button class="nav-btn" id="myAccountBtn" type="button">My account</button>
-    <div class="sidebar-actions">
-      <button id="newChatBtn" class="btn btn-primary" type="button">+ New chat</button>
-      <button id="logoutBtn" class="btn btn-secondary" type="button">Log out</button>
+  <nav class="side" aria-label="Support">
+    <span class="side-title">Support</span>
+    <button class="side-item active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.9-.9L3 20.5l1.5-4.6a8.4 8.4 0 0 1-1-4A8.4 8.4 0 0 1 12 3.5a8.4 8.4 0 0 1 9 8Z"/></svg>Conversations</button>
+    <button class="side-item" id="myAccountBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My account</button>
+    <div class="side-actions">
+      <button id="newChatBtn" class="side-btn teal" type="button">New conversation</button>
+      <button id="logoutBtn" class="side-btn line" type="button">Log out</button>
     </div>
-  </div>
+  </nav>
   <div class="main"><div class="support-shell">
     <div class="chat-list-panel">
       <div class="chat-list-head"><h2>Conversations</h2><p>Your support history.</p></div>
@@ -184,7 +173,7 @@ html[data-theme="dark"] .modal-msg{background:#2b1114;color:#fda4af;border-color
       <div id="chatEmptyState" class="chat-empty-state">
         <h3>No conversation selected</h3>
         <p>Choose a conversation on the left, or start a new one to talk to our support team.</p>
-        <button id="emptyStateNewChatBtn" class="btn btn-secondary" type="button" style="width:auto;padding:12px 22px;">+ New chat</button>
+        <button id="emptyStateNewChatBtn" class="side-btn teal" type="button" style="padding:0 24px;">New conversation</button>
       </div>
       <div id="chatActiveView" class="hidden" style="flex-direction:column;flex:1;min-width:0;">
         <div class="chat-panel-head">
