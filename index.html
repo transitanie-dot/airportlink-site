@@ -1,1 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Private Airport Transfers | Fixed Price, Door to Door | Airportlink</title>
+<meta name="description" content="Book a private airport transfer with a fixed price agreed before you pay. A driver waiting for you, door to door, flight tracked, free cancellation until 24 hours before pick-up.">
+<link rel="canonical" href="https://www.airportlink.app/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Airportlink">
+<meta property="og:title" content="Private Airport Transfers | Fixed Price, Door to Door">
+<meta property="og:description" content="A driver waiting for you, at a price you already know. No queues, no meters, no surprises.">
+<meta property="og:url" content="https://www.airportlink.app/">
+<meta property="og:image" content="https://www.airportlink.app/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('airportlink-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/layout.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<!-- Dados estruturados. O texto tem de ser igual ao visível na
+     página, senão o Google penaliza em vez de premiar. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "Organization", "@id": "https://www.airportlink.app/#org",
+      "name": "Airportlink", "url": "https://www.airportlink.app/" },
+    { "@type": "WebSite", "@id": "https://www.airportlink.app/#site",
+      "url": "https://www.airportlink.app/", "name": "Airportlink",
+      "publisher": { "@id": "https://www.airportlink.app/#org" } },
+    { "@type": "Service", "name": "Private airport transfer",
+      "serviceType": "Airport transfer",
+      "provider": { "@id": "https://www.airportlink.app/#org" },
+      "areaServed": "Worldwide",
+      "description": "Private door-to-door airport transfers with a fixed price agreed before booking, flight tracking, and free cancellation until 24 hours before pick-up." },
+    { "@type": "FAQPage", "mainEntity": [
+      { "@type": "Question", "name": "Can I cancel my booking?", "acceptedAnswer": { "@type": "Answer",
+        "text": "Yes. Cancellation is free until 24 hours before your pick-up time and the refund is issued in full, automatically. Open My trips in your account and press cancel. Within 24 hours of pick-up the driver is already assigned, so contact support." } },
+      { "@type": "Question", "name": "What if my flight is delayed?", "acceptedAnswer": { "@type": "Answer",
+        "text": "Add your flight number when booking. We monitor the arrival and move the pick-up to match it. You are not charged for the waiting time." } },
+      { "@type": "Question", "name": "Is the vehicle just for us?", "acceptedAnswer": { "@type": "Answer",
+        "text": "Yes. Every transfer is private. You never share the vehicle with other passengers and there are no extra stops." } },
+      { "@type": "Question", "name": "Do you go all the way to my address?", "acceptedAnswer": { "@type": "Answer",
+        "text": "Yes. The journey runs directly between the pick-up point and the destination you enter, whether that is a hotel, an apartment or a street address." } },
+      { "@type": "Question", "name": "Can you take a group?", "acceptedAnswer": { "@type": "Answer",
+        "text": "Up to 16 passengers. The vehicle type adjusts automatically as you change the number, and the fare updates with it." } },
+      { "@type": "Question", "name": "Is the price really final?", "acceptedAnswer": { "@type": "Answer",
+        "text": "Yes. Taxes and tolls are included and there is no meter. The fare is recalculated on our servers before checkout, so what you were quoted is what you are charged." } },
+      { "@type": "Question", "name": "Can I pay in my own currency?", "acceptedAnswer": { "@type": "Answer",
+        "text": "Sixteen currencies are available and we suggest one based on your location. Rates come from the European Central Bank and are updated daily." } },
+      { "@type": "Question", "name": "Why do I need an account?", "acceptedAnswer": { "@type": "Answer",
+        "text": "So you can find the booking again. It keeps your trip details and receipt in one place, gives you the cancel button, and lets you message us about that specific transfer." } },
+      { "@type": "Question", "name": "Is paying safe?", "acceptedAnswer": { "@type": "Answer",
+        "text": "Payment goes through Stripe Checkout. Your card details never touch our servers and we never see or store them." } }
+    ] }
+  ]
+}
+</script>
+<style>
+/* Só o que é específico desta página. O resto vive em
+   /assets/site.css e é partilhado por todas. */
+
+/* ============================================================
+   A FERRAMENTA
+   ============================================================ */
+.tool{padding:18px 0 10px}
+.shell{display:grid;grid-template-columns:430px 1fr;gap:22px;align-items:start}
+.panel,.map-panel,.checkout-panel,.section-card{
+  background:var(--surface);border:1px solid var(--rule);border-radius:26px;overflow:hidden;
+  box-shadow:0 14px 34px rgba(20,26,40,.07)}
+html[data-theme="dark"] .panel,html[data-theme="dark"] .map-panel,
+html[data-theme="dark"] .checkout-panel,html[data-theme="dark"] .section-card{box-shadow:0 14px 34px rgba(0,0,0,.34)}
+.panel-inner,.checkout-inner,.section-inner{padding:26px}
+.panel-title{font-family:var(--display);font-weight:700;font-size:21px;letter-spacing:-.025em;margin:0 0 4px}
+.panel-sub{margin:0 0 20px;color:var(--muted);font-size:13.5px;line-height:1.55}
+
+.cancel-note{display:flex;gap:11px;align-items:flex-start;background:var(--ok-bg);border:1px solid var(--ok-rule);
+  color:var(--ok-text);border-radius:16px;padding:13px 15px;font-size:13.5px;line-height:1.55;margin-bottom:18px;font-weight:600}
+.cancel-note .tick{flex:0 0 auto}
+.agent-note{display:flex;gap:11px;align-items:flex-start;background:var(--teal-soft);border:1px solid var(--teal);
+  border-radius:16px;padding:13px 15px;font-size:13.5px;line-height:1.55;margin-bottom:18px}
+.agent-note strong{display:block;margin-bottom:3px;color:var(--teal)}
+html[data-theme="dark"] .agent-note strong{color:var(--amber)}
+
+.form-card{background:var(--surface-2);border:1px solid var(--rule);border-radius:22px;padding:18px}
+.field{margin-bottom:14px;position:relative}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.phone-col{display:grid;grid-template-columns:104px 1fr;gap:12px}
+.label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+label{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.hint{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--rule-strong)}
+.input-wrap{position:relative}
+.pin{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:999px;z-index:2}
+.pin.pickup{background:var(--teal)}
+.pin.dropoff{background:var(--ink)}
+html[data-theme="dark"] .pin.dropoff{background:#E9EDF3}
+input[type="text"],input[type="email"],input[type="password"],input[type="date"],input[type="time"],select,input[type="number"]{
+  width:100%;height:52px;border-radius:15px;border:1px solid var(--rule-strong);padding:0 15px;
+  font-size:15px;background:var(--field);outline:none;font-family:var(--body)}
+#pickup,#dropoff{padding-left:34px}
+input:focus,select:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(15,118,110,.14)}
+input[readonly]{opacity:.7}
+.suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--rule-strong);
+  border-radius:18px;box-shadow:0 18px 40px rgba(20,26,40,.16);z-index:50;overflow:hidden;display:none}
+.suggestions.show{display:block}
+.suggestion-item{padding:12px 15px;cursor:pointer;border-bottom:1px solid var(--rule)}
+.suggestion-item:last-child{border-bottom:0}
+.suggestion-item:hover{background:var(--surface-2)}
+.suggestion-main{font-size:14px;font-weight:600}
+.suggestion-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.mini-card{background:var(--surface);border:1px solid var(--rule);border-radius:18px;padding:14px}
+.mini-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;font-weight:600}
+.mini-value{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:18px;font-weight:600;letter-spacing:-.02em}
+.mini-value.price{color:var(--teal);display:inline-block}
+html[data-theme="dark"] .mini-value.price{color:var(--amber)}
+.public-price{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:6px}
+
+.booking-summary{margin-top:14px;padding:14px 16px;border-radius:18px;background:var(--surface);
+  border:1px solid var(--rule);font-size:13px;line-height:1.7}
+.status{margin-top:12px;font-size:13px;color:var(--muted);line-height:1.55}
+.status.error{color:var(--err-text);font-weight:600}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;width:100%;height:52px;border:0;border-radius:15px;
+  font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  cursor:pointer;margin-top:14px;transition:transform .12s ease,box-shadow .12s ease}
+.btn:hover:not(:disabled){transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.proceed-btn{background:var(--teal);color:#fff;box-shadow:0 10px 24px rgba(15,118,110,.24)}
+.confirm-btn{background:var(--ink);color:#fff}
+html[data-theme="dark"] .confirm-btn{background:#E9EDF3;color:#141A28}
+.pay-btn{background:var(--amber);color:#141A28;box-shadow:0 10px 24px rgba(232,163,61,.3)}
+.auth-btn{background:var(--slate);color:#fff}
+html[data-theme="dark"] .auth-btn{background:#E9EDF3;color:#141A28}
+.ghost-btn{width:auto;height:44px;padding:0 20px;background:transparent;border:1px solid var(--rule-strong);color:var(--text)}
+.link-btn{background:none;border:0;padding:0;margin-top:12px;width:auto;height:auto;color:var(--teal);
+  font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-transform:none;letter-spacing:0;font-family:var(--body)}
+html[data-theme="dark"] .link-btn{color:var(--amber)}
+
+.final-form,.auth-card{margin-top:16px;padding:18px;border-radius:22px;background:var(--surface);border:1px solid var(--rule)}
+.auth-card h3{font-family:var(--display);font-weight:700;margin:0 0 6px;font-size:18px;letter-spacing:-.02em}
+.auth-card p{margin:0 0 16px;color:var(--muted);font-size:13.5px;line-height:1.6}
+.auth-tabs{display:flex;margin-bottom:16px;border:1px solid var(--rule-strong);border-radius:14px;overflow:hidden}
+.auth-tab{flex:1;height:40px;border:0;background:transparent;font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--muted);cursor:pointer}
+.auth-tab + .auth-tab{border-left:1px solid var(--rule-strong)}
+.auth-tab.active{background:var(--slate);color:#fff}
+html[data-theme="dark"] .auth-tab.active{background:var(--amber);color:#141A28}
+.auth-msg{display:none;margin-top:12px;padding:12px 14px;border-radius:14px;font-size:13.5px;line-height:1.5}
+.auth-msg.err{background:var(--err-bg);color:var(--err-text);border:1px solid var(--err-rule)}
+.auth-msg.ok{background:var(--ok-bg);color:var(--ok-text);border:1px solid var(--ok-rule)}
+.signed-in-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;
+  border-radius:15px;background:var(--surface-2);border:1px solid var(--rule);font-size:13px;margin-bottom:14px}
+
+.map-panel{height:720px;position:relative;background:var(--map-bg)}
+.map-topbar{position:absolute;top:16px;left:16px;right:16px;z-index:3;display:flex;justify-content:space-between;gap:12px;pointer-events:none}
+.glass-chip{background:var(--surface);border:1px solid var(--rule);border-radius:999px;padding:9px 14px;
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+#map{width:100%;height:100%}
+
+.checkout-panel{margin-top:20px}
+.checkout-title{font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:-.03em;margin:0 0 8px}
+.checkout-text{color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 18px}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.summary-item{background:var(--surface-2);border:1px solid var(--rule);border-radius:16px;padding:13px 15px}
+.summary-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:600;margin-bottom:6px}
+.summary-value{font-size:14px;font-weight:600;word-break:break-word;line-height:1.5}
+
+/* ============================================================
+   SECÇÕES
+   ============================================================ */
+.band{padding:62px 0}
+.band-head{max-width:54ch;margin-bottom:34px}
+.band-head .tag{color:var(--teal);display:block;margin-bottom:12px}
+html[data-theme="dark"] .band-head .tag{color:var(--amber)}
+.band-head h2{font-family:var(--display);font-weight:700;letter-spacing:-.035em;font-size:clamp(25px,3.3vw,36px);line-height:1.08;margin:0 0 12px}
+.band-head p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.68}
+
+.rail{position:relative;padding-left:34px}
+.rail::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;border-left:2px dashed var(--rule-strong)}
+.stop{position:relative;padding-bottom:32px}
+.stop:last-child{padding-bottom:0}
+.stop::before{content:"";position:absolute;left:-34px;top:3px;width:18px;height:18px;border-radius:999px;background:var(--bg);border:2px solid var(--teal)}
+.stop:last-child::before{background:var(--teal)}
+.stop .tag{color:var(--muted);display:block;margin-bottom:6px}
+.stop h3{font-family:var(--display);font-weight:700;font-size:18px;margin:0 0 6px;letter-spacing:-.02em}
+.stop p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.65;max-width:56ch}
+
+.faq-search{width:100%;height:46px;border-radius:15px;border:1px solid var(--rule-strong);background:var(--surface);
+  padding:0 16px;font-size:14px;outline:none;margin-bottom:12px}
+.faq-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.faq-filter{border:1px solid var(--rule-strong);background:var(--surface);color:var(--text);border-radius:999px;
+  padding:8px 14px;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.faq-filter.active{background:var(--slate);color:#fff;border-color:transparent}
+html[data-theme="dark"] .faq-filter.active{background:var(--amber);color:#141A28}
+.faq-results{margin-bottom:10px;color:var(--muted);font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.faq-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.faq-item{background:var(--surface);border:1px solid var(--rule);border-radius:18px;overflow:hidden}
+.faq-question{width:100%;border:0;background:transparent;text-align:left;padding:15px 17px;display:flex;
+  align-items:center;justify-content:space-between;gap:12px;cursor:pointer}
+.faq-question-title{font-family:var(--display);font-weight:700;font-size:15px;margin:0;line-height:1.3;letter-spacing:-.015em}
+.faq-question-tag{display:inline-block;margin-top:4px;font-family:var(--mono);font-size:9.5px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--amber-ink)}
+.faq-icon{width:26px;height:26px;border-radius:999px;display:flex;align-items:center;justify-content:center;
+  background:var(--surface-2);border:1px solid var(--rule);color:var(--teal);font-size:15px;font-weight:700;flex-shrink:0;transition:transform .2s ease}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--teal);color:#fff;border-color:transparent}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height .24s ease;background:var(--surface-2)}
+.faq-answer-inner{padding:13px 17px 15px;border-top:1px solid var(--rule)}
+.faq-answer p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.65}
+.faq-empty{display:none;padding:12px 2px 0;color:var(--muted);font-size:13.5px}
+
+.agents-cta{background:var(--surface);border:1px solid var(--rule);border-radius:26px;padding:34px;
+  display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.agents-cta h2{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.03em;margin:0 0 8px}
+.agents-cta p{margin:0;color:var(--muted);font-size:15px;line-height:1.62;max-width:56ch}
+.agents-cta .btn{width:auto;padding:0 26px;margin:0;background:var(--slate);color:#fff}
+html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
+
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;gap:26px}
+  .shell{grid-template-columns:1fr}
+  .map-panel{height:400px}
+  .faq-list{grid-template-columns:1fr}
+
+  .summary-grid{grid-template-columns:1fr 1fr}
+  .agents-cta{grid-template-columns:1fr}
+  .agents-cta .btn{width:100%}
+}
+@media (max-width:600px){
+  .wrap,.hero-inner{padding:0 14px}
+  .hero{padding:36px 0 20px}
+  .panel-inner,.checkout-inner,.section-inner{padding:18px}
+  .flow{padding:16px}
+  .mini-grid,.two-col,.summary-grid,.phone-col{grid-template-columns:1fr}
+  .map-panel{height:300px}
+  .band{padding:44px 0}
+}
+</style>
+</head>
+<body data-cta-href="#book" data-cta-label="Get a price">
+
+<main id="main">
+
+<!-- ============================================================
+     HERO
+     A tira desenha a viagem: o voo aterra, o motorista espera, e
+     o carro leva o passageiro à porta. Mostra o serviço antes de
+     pedir moradas.
+     ============================================================ -->
+<section class="hero">
+  <div class="hero-inner hero-grid">
+    <div>
+      <div class="rise"><div class="kicker"><span class="bar"></span><span class="tag">Private airport transfers</span></div></div>
+      <h1 class="rise d1">A driver waiting for you, <em>at a price you already know.</em></h1>
+      <p class="lead rise d2">No queues, no meters, no surprises. One vehicle for your group, door to door. Get your fare below in under a minute.</p>
+      <div class="proofs rise d3">
+        <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Fixed price, taxes in</span>
+        <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Free cancellation, 24h</span>
+        <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/><path d="M22 20v-2a4 4 0 0 0-3-3.8"/></svg>Up to 16 people</span>
+        <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Stripe checkout</span>
+      </div>
+    </div>
+
+    <div class="flow rise d2">
+      <span class="tag">How a transfer works</span>
+      <ol class="flow-list">
+        <li class="flow-step roll">
+          <span class="flow-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M5.5 14.5 4 9.2a.6.6 0 0 1 .8-.7l2 .7 2.6 1.1 2-4.9a1.4 1.4 0 0 1 2.6.2l1.3 5.8 3.2 1.3a1.6 1.6 0 0 1-.5 3.1H7.2a1.8 1.8 0 0 1-1.7-1.3Z"/></svg></span>
+          <div><strong>Your flight lands</strong><span>Give us the flight number and we follow it. A delay moves the pick-up, never the price.</span></div>
+        </li>
+        <li class="flow-step roll" style="animation-delay:1.05s">
+          <span class="flow-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18"/><path d="M4 13V9.5L6 5h12l2 4.5V13"/><path d="M4 13v4h3v-4M17 13v4h3v-4"/><circle cx="7.5" cy="15.5" r="1"/><circle cx="16.5" cy="15.5" r="1"/></svg></span>
+          <div><strong>The driver is already there</strong><span>One vehicle for your group and your luggage. No app to open, no queue, no shared ride.</span></div>
+        </li>
+        <li class="flow-step roll" style="animation-delay:1.3s">
+          <span class="flow-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V10l7-5 7 5v11"/><path d="M10 21v-6h4v6"/></svg></span>
+          <div><strong>Straight to the door</strong><span>Hotel, apartment or street address. The fare you saw is the fare you pay.</span></div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     A FERRAMENTA
+     ============================================================ -->
+<section class="tool" id="book">
+  <div class="wrap shell">
+    <div class="panel">
+      <div class="panel-inner">
+        <h2 class="panel-title">Get your fare</h2>
+        <p class="panel-sub">Enter the route and the time. The price is calculated on the real driving route, not on an estimate.</p>
+
+        <div class="cancel-note" id="publicCancelNote">
+          <span class="tick">&#10004;</span>
+          <span>Free cancellation until 24 hours before pick-up, refunded in full from your account.</span>
+        </div>
+
+        <div class="agent-note hidden" id="agentBanner">
+          <span>&#9733;</span>
+          <span><strong id="agentBannerTitle">Partner rate applied</strong><span id="agentBannerText"></span></span>
+        </div>
+
+        <div class="form-card">
+          <div class="field">
+            <div class="label-row"><label for="currency">Currency</label><span class="hint" id="ratesHint">Auto</span></div>
+            <select id="currency">
+              <option value="EUR" selected>EUR - Euro</option><option value="USD">USD - US Dollar</option>
+              <option value="GBP">GBP - British Pound</option><option value="BRL">BRL - Brazilian Real</option>
+              <option value="CAD">CAD - Canadian Dollar</option><option value="AUD">AUD - Australian Dollar</option>
+              <option value="CHF">CHF - Swiss Franc</option><option value="JPY">JPY - Japanese Yen</option>
+              <option value="NOK">NOK - Norwegian Krone</option><option value="SEK">SEK - Swedish Krona</option>
+              <option value="DKK">DKK - Danish Krone</option><option value="NZD">NZD - New Zealand Dollar</option>
+              <option value="MXN">MXN - Mexican Peso</option><option value="ZAR">ZAR - South African Rand</option>
+              <option value="AED">AED - UAE Dirham</option><option value="SAR">SAR - Saudi Riyal</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <div class="label-row"><label for="passengers">Passengers</label><span class="hint">1 to 16</span></div>
+            <input id="passengers" type="number" min="1" max="16" step="1" value="1" />
+          </div>
+
+          <div class="field">
+            <div class="label-row"><label for="pickup">Pick-up</label><span class="hint">Where we collect you</span></div>
+            <div class="input-wrap"><span class="pin pickup"></span><input id="pickup" type="text" placeholder="Porto Airport, Portugal" autocomplete="off" /></div>
+            <div id="pickupSuggestions" class="suggestions"></div>
+          </div>
+
+          <div class="field">
+            <div class="label-row"><label for="dropoff">Drop-off</label><span class="hint">Your destination</span></div>
+            <div class="input-wrap"><span class="pin dropoff"></span><input id="dropoff" type="text" placeholder="Aliados, Porto" autocomplete="off" /></div>
+            <div id="dropoffSuggestions" class="suggestions"></div>
+          </div>
+
+          <div class="two-col">
+            <div class="field"><div class="label-row"><label for="travelDate">Date</label></div><input id="travelDate" type="date" /></div>
+            <div class="field"><div class="label-row"><label for="travelTime">Pick-up time</label></div><input id="travelTime" type="time" /></div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini-card"><div class="mini-label">Distance</div><div class="mini-value" id="distanceValue">&mdash;</div></div>
+            <div class="mini-card"><div class="mini-label">Duration</div><div class="mini-value" id="durationValue">&mdash;</div></div>
+            <div class="mini-card"><div class="mini-label">Price</div><div class="mini-value price" id="priceValue">&mdash;</div><div class="public-price hidden" id="publicPrice"></div></div>
+          </div>
+
+          <div class="booking-summary" id="bookingSummary"><strong>Trip details</strong><br>Date: &mdash;<br>Time: &mdash;<br>Passengers: &mdash;<br>Vehicle type: &mdash;</div>
+          <div class="status" id="statusText">Enter your pick-up and drop-off to get a quote.</div>
+
+          <button id="proceedBtn" class="btn proceed-btn" type="button">Continue to booking</button>
+
+          <div id="authCard" class="auth-card hidden">
+            <h3>Sign in to continue</h3>
+            <p>Your account keeps the booking, the receipt and the cancel button in one place, and lets you message us about this specific transfer.</p>
+            <div class="auth-tabs">
+              <button class="auth-tab active" id="tabSignIn" type="button">Sign in</button>
+              <button class="auth-tab" id="tabSignUp" type="button">Create account</button>
+            </div>
+            <div id="signUpNameField" class="field hidden">
+              <div class="label-row"><label for="authName">Full name</label></div>
+              <input id="authName" type="text" placeholder="Your full name" autocomplete="name" />
+            </div>
+            <div class="field"><div class="label-row"><label for="authEmail">Email</label></div>
+              <input id="authEmail" type="email" placeholder="you@email.com" autocomplete="email" /></div>
+            <div class="field"><div class="label-row"><label for="authPassword">Password</label><span class="hint" id="passwordHint">&nbsp;</span></div>
+              <input id="authPassword" type="password" autocomplete="current-password" /></div>
+            <button id="authSubmitBtn" class="btn auth-btn" type="button">Sign in and continue</button>
+            <button id="forgotBtn" class="link-btn" type="button">Forgot your password?</button>
+            <div id="authError" class="auth-msg err"></div>
+            <div id="authSuccess" class="auth-msg ok"></div>
+          </div>
+
+          <div id="finalForm" class="final-form hidden">
+            <div class="signed-in-chip">
+              <span>Booking as <strong id="signedInEmail">&mdash;</strong></span>
+              <button id="signOutBtn" class="link-btn" type="button" style="margin:0">Not you?</button>
+            </div>
+            <div class="field"><div class="label-row"><label for="fullName" id="fullNameLabel">Full name</label><span class="hint">Required</span></div><input id="fullName" type="text" placeholder="Your full name" /></div>
+            <div class="field"><div class="label-row"><label for="email" id="emailLabel">Email</label><span class="hint" id="emailHint">From your account</span></div><input id="email" type="email" readonly /></div>
+            <div class="field hidden" id="passengerEmailField"><div class="label-row"><label for="passengerEmail">Passenger email</label><span class="hint">Optional</span></div><input id="passengerEmail" type="email" placeholder="If they should get the details too" /></div>
+            <div class="field">
+              <div class="label-row"><label for="phoneCode" id="phoneLabel">Phone</label><span class="hint">Required</span></div>
+              <div class="phone-col">
+                <div style="position:relative;"><span style="position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--muted);z-index:2;">+</span><input id="phoneCode" type="text" placeholder="351" style="padding-left:30px;" /></div>
+                <input id="phoneNumber" type="text" placeholder="Phone number" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="label-row"><label for="flightNumber">Flight number</label><span class="hint">Optional</span></div>
+              <input id="flightNumber" type="text" placeholder="TP1949" />
+              <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)">Give us the flight and we track it. If it lands late, the driver waits.</div>
+            </div>
+            <div class="field"><div class="label-row"><label for="notes">Notes</label><span class="hint">Optional</span></div><input id="notes" type="text" placeholder="Child seat, extra luggage, anything else" /></div>
+            <button id="confirmBtn" class="btn confirm-btn" type="button">Review booking</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-panel">
+      <div class="map-topbar"><span class="glass-chip">Live route</span><span class="glass-chip">Driving distance</span></div>
+      <div id="map"></div>
+    </div>
+  </div>
+</section>
+
+<section id="checkoutSection" class="hidden">
+  <div class="wrap">
+    <div class="checkout-panel">
+      <div class="checkout-inner">
+        <h2 class="checkout-title">Check your booking</h2>
+        <p class="checkout-text">Everything below is what the driver receives. Change anything above before paying.</p>
+        <div class="summary-grid">
+          <div class="summary-item"><div class="summary-label">Full name</div><div class="summary-value" id="summaryName">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Email</div><div class="summary-value" id="summaryEmail">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Phone</div><div class="summary-value" id="summaryPhone">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Pick-up</div><div class="summary-value" id="summaryPickup">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Drop-off</div><div class="summary-value" id="summaryDropoff">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Passengers</div><div class="summary-value" id="summaryPassengers">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Date</div><div class="summary-value" id="summaryDate">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Pick-up time</div><div class="summary-value" id="summaryTime">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Flight</div><div class="summary-value" id="summaryFlight">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Distance</div><div class="summary-value" id="summaryDistance">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Duration</div><div class="summary-value" id="summaryDuration">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label">Price</div><div class="summary-value" id="summaryPrice">&mdash;</div></div>
+          <div class="summary-item" style="grid-column:1/-1"><div class="summary-label">Notes</div><div class="summary-value" id="summaryNotes">&mdash;</div></div>
+        </div>
+
+        <div class="cancel-note" style="margin-top:18px;margin-bottom:0;">
+          <span class="tick">&#10004;</span>
+          <span id="checkoutCancelText">You can cancel this booking free of charge until 24 hours before pick-up, straight from your account. After that, contact support.</span>
+        </div>
+
+        <button id="payNowBtn" class="btn pay-btn" type="button">Pay and confirm</button>
+        <div id="payStatus" class="status"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="tag">How it works</span>
+      <h2>From quote to confirmed, in four steps.</h2>
+      <p>No calls, no waiting for someone to email you back a price.</p>
+    </div>
+    <div class="rail">
+      <div class="stop"><span class="tag">Step one</span><h3>Enter your route</h3><p>Pick-up point, destination, date and time. We use the real driving route, so the distance is the one the car will actually cover.</p></div>
+      <div class="stop"><span class="tag">Step two</span><h3>See the fare</h3><p>The price appears immediately, in your currency, with everything included. It is recalculated on our servers before checkout so the quote and the charge always match.</p></div>
+      <div class="stop"><span class="tag">Step three</span><h3>Add your details</h3><p>Name, phone and, if you are landing, your flight number. That is what reaches the driver.</p></div>
+      <div class="stop"><span class="tag">Step four</span><h3>Pay and forget about it</h3><p>Stripe handles the card. Your booking, receipt and cancel button live in your account until the day you travel.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="tag">Questions</span>
+      <h2>Before you book.</h2>
+    </div>
+    <input id="faqSearch" class="faq-search" type="text" placeholder="Search questions..." />
+    <div class="faq-filters">
+      <button class="faq-filter active" data-filter="all" type="button">All</button>
+      <button class="faq-filter" data-filter="booking" type="button">Booking</button>
+      <button class="faq-filter" data-filter="service" type="button">Service</button>
+      <button class="faq-filter" data-filter="pricing" type="button">Pricing</button>
+    </div>
+    <div class="faq-results" id="faqResults">9 answers</div>
+    <div class="faq-list" id="faqList">
+      <article class="faq-item" data-category="booking" data-search="cancel cancellation refund free 24 hours money back">
+        <button class="faq-question" type="button"><div><p class="faq-question-title">Can I cancel my booking?</p><span class="faq-question-tag">Booking</span></div><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner"><p>Yes. Cancellation is free until 24 hours before your pick-up time and the refund is issued in full, automatically. Open "My trips" in your account and press cancel. Within 24 hours of pick-up the driver is already assigned, so contact support.</p></div></div>
+      </article>
+      <article class="faq-item" data-category="service" data-search="flight number tracking delay late airport waiting">
+        <button class="faq-question" type="button"><div><p class="faq-question-title">What if my flight is delayed?</p><span class="faq-question-tag">Service</span></div><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner"><p>Add your flight number when booking. We monitor the arrival and move the pick-up to match it. You are not charged for the waiting time.</p></div></div>
+      </article>
+      <article class="faq-item" data-category="service" data-search="private transfer shared vehicle only for me">
+        <button class="faq-question" type="button"><div><p class="faq-question-title">Is the vehicle just for us?</p><span class="faq-question-tag">Service</span></div><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner"><p>Yes. Every transfer is private. You never share the vehicle with other passengers and there are no extra stops.</p></div></div>
+      </article>
+      <article class="faq-item" data-category="service" data-search="door to door hotel apartment address">
+        <button class="faq-question" type="button"><div><p class="faq-question-title">Do you go all the way to my address?</p><span class="faq-question-tag">Service</span></div><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner"><p>Yes. The journey runs directly between the pick-up point and the destination you enter, whether that is a hotel, an apartment or a street address.</p></div></div>
+      </article>
+      <article class="faq-item" data-category="service" data-search="group family luggage passengers seats van">
+        <button class="faq-question" type="button"><div><p class="faq-question-title">Can you take a group?</p><span class="faq-question-tag">Service</span></div><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner"><p>Up to 16 passengers. The vehicle type adjusts automatically as you change the number, and the fare updates with it.</p></div></div>
+      </article>
+      <article class="faq-item" data-category="pricing" data-search="price fare final extra charges tolls tax">
+        <button class="faq-question" type="button"><div><p class="faq-question-title">Is the price really final?</p><span class="faq-question-tag">Pricing</span></div><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner"><p>Yes. Taxes and tolls are included and there is no meter. The fare is recalculated on our servers before checkout, so what you were quoted is what you are charged.</p></div></div>
+      </article>
+      <article class="faq-item" data-category="pricing" data-search="currency exchange euro dollar pound rates">
+        <button class="faq-question" type="button"><div><p class="faq-question-title">Can I pay in my own currency?</p><span class="faq-question-tag">Pricing</span></div><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner"><p>Sixteen currencies are available and we suggest one based on your location. Rates come from the European Central Bank and are updated daily.</p></div></div>
+      </article>
+      <article class="faq-item" data-category="booking" data-search="account why login register sign up">
+        <button class="faq-question" type="button"><div><p class="faq-question-title">Why do I need an account?</p><span class="faq-question-tag">Booking</span></div><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner"><p>So you can find the booking again. It keeps your trip details and receipt in one place, gives you the cancel button, and lets you message us about that specific transfer.</p></div></div>
+      </article>
+      <article class="faq-item" data-category="booking" data-search="payment stripe secure checkout card safe">
+        <button class="faq-question" type="button"><div><p class="faq-question-title">Is paying safe?</p><span class="faq-question-tag">Booking</span></div><span class="faq-icon">+</span></button>
+        <div class="faq-answer"><div class="faq-answer-inner"><p>Payment goes through Stripe Checkout. Your card details never touch our servers and we never see or store them.</p></div></div>
+      </article>
+    </div>
+    <div class="faq-empty" id="faqEmpty">Nothing matched. Try words like cancel, flight, price or luggage.</div>
+  </div>
+</section>
+
+<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <div class="agents-cta">
+      <div>
+        <h2>Booking for someone else?</h2>
+        <p>Travel agencies get a trade rate on every transfer, a longer cancellation window, and one statement a month instead of thirty card charges to reconcile.</p>
+      </div>
+      <button class="btn" id="agentsCtaBtn" type="button">Travel agent programme</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function () {
+'use strict';
+
+var SUPABASE_URL = 'https://ujpagsccfiledbtfeyuq.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ';
+var RENDER_URL = 'https://airportlink.onrender.com';
+var SITE_ORIGIN = 'https://www.airportlink.app';
+var THEME_KEY = 'airportlink-theme';
+
+var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+});
+
+var $ = function (id) { return document.getElementById(id); };
+var currentUser = null, authMode = 'signin', agentInfo = null;
+
+// ============================================================
+// ALTURA E TEMA
+// A altura vai para o Wix para o iframe nunca ter scroll próprio.
+// Fora do iframe estas chamadas não fazem nada, mas ficam para o
+// mesmo ficheiro poder ser usado nos dois sítios durante a
+// transição.
+// ============================================================
+function notifyParent(m) { try { window.parent.postMessage(m, '*'); } catch (e) {} }
+
+// Navegação real. Estava a ser chamada pelo botão dos agentes mas
+// nunca chegou a ser definida — o clique dava ReferenceError.
+function navigateTo(path) {
+  try { window.top.location.href = SITE_ORIGIN + path; }
+  catch (e) { window.location.href = path; }
+}
+
+var lastSent = 0;
+function reportHeight() {
+  var h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+  if (Math.abs(h - lastSent) < 12) return;
+  lastSent = h;
+  notifyParent({ type: 'resize', height: h });
+}
+if (window.ResizeObserver) new ResizeObserver(reportHeight).observe(document.body);
+window.addEventListener('load', reportHeight);
+[300, 900, 2000, 4000].forEach(function (ms) { setTimeout(reportHeight, ms); });
+
+function applyTheme(theme) {
+  var t = theme === 'dark' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', t);
+  try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+}
+window.addEventListener('message', function (event) {
+  var d = event.data;
+  if (!d) return;
+  if (typeof d === 'string') return applyTheme(d);
+  if (d.type === 'theme') applyTheme(d.value);
+});
+notifyParent('ready');
+
+// ============================================================
+// FAQ
+// ============================================================
+(function () {
+  var searchInput = $('faqSearch');
+  var filterButtons = Array.prototype.slice.call(document.querySelectorAll('.faq-filter'));
+  var faqItems = Array.prototype.slice.call(document.querySelectorAll('.faq-item'));
+  var activeFilter = 'all';
+
+  function updateFaq() {
+    var query = (searchInput.value || '').toLowerCase().trim();
+    var visible = 0;
+    faqItems.forEach(function (item) {
+      var cat = (item.getAttribute('data-category') || '').toLowerCase();
+      var hay = ((item.getAttribute('data-search') || '') + ' ' + item.innerText).toLowerCase();
+      var show = (activeFilter === 'all' || cat.indexOf(activeFilter) !== -1) &&
+                 (!query || hay.indexOf(query) !== -1);
+      item.style.display = show ? '' : 'none';
+      if (!show) {
+        item.classList.remove('open');
+        var a = item.querySelector('.faq-answer');
+        if (a) a.style.maxHeight = null;
+      } else visible++;
+    });
+    $('faqResults').textContent = visible + ' answer' + (visible === 1 ? '' : 's');
+    $('faqEmpty').style.display = visible === 0 ? 'block' : 'none';
+    reportHeight();
+  }
+
+  filterButtons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      filterButtons.forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      activeFilter = b.getAttribute('data-filter');
+      updateFaq();
+    });
+  });
+
+  faqItems.forEach(function (item) {
+    var trigger = item.querySelector('.faq-question');
+    var answer = item.querySelector('.faq-answer');
+    trigger.addEventListener('click', function () {
+      var isOpen = item.classList.contains('open');
+      faqItems.forEach(function (o) {
+        o.classList.remove('open');
+        var oa = o.querySelector('.faq-answer');
+        if (oa) oa.style.maxHeight = null;
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+      setTimeout(reportHeight, 280);
+    });
+  });
+
+  searchInput.addEventListener('input', updateFaq);
+  updateFaq();
+})();
+
+// ============================================================
+// CÂMBIOS — vindos da API, para o preço mostrado e o cobrado
+// virem sempre da mesma fonte. Os valores locais só existem
+// enquanto a resposta não chega.
+// ============================================================
+var EXCHANGE_RATES = {
+  EUR:1.0, USD:1.191, GBP:0.873, BRL:6.14, CAD:1.640, AUD:1.672, CHF:0.955,
+  JPY:189.4, NOK:11.17, SEK:11.26, DKK:7.61, NZD:1.992, MXN:20.16,
+  ZAR:19.18, AED:4.38, SAR:4.47
+};
+
+async function loadRates() {
+  try {
+    var res = await fetch(RENDER_URL + '/api/exchange-rates');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    var data = await res.json();
+    if (data && data.rates && data.rates.USD) {
+      EXCHANGE_RATES = data.rates;
+      $('ratesHint').textContent = data.source === 'ecb' ? 'Live rates' : 'Auto-selected';
+      updatePriceDisplayOnly();
+      updateCheckoutSummary();
+    }
+  } catch (e) {
+    console.log('exchange rates fallback:', e.message);
+  }
+}
+
+var COUNTRY_CURRENCY = { PT:'EUR',ES:'EUR',FR:'EUR',DE:'EUR',IE:'EUR',IT:'EUR',NL:'EUR',BE:'EUR',
+  AT:'EUR',LU:'EUR',GR:'EUR',FI:'EUR',MT:'EUR',CY:'EUR',US:'USD',GB:'GBP',BR:'BRL',CA:'CAD',
+  AU:'AUD',CH:'CHF',JP:'JPY',NO:'NOK',SE:'SEK',DK:'DKK',NZ:'NZD',MX:'MXN',ZA:'ZAR',AE:'AED',SA:'SAR' };
+var PHONE_CODES = { US:'1',GB:'44',PT:'351',BR:'55',IE:'353',ES:'34',FR:'33',DE:'49',IT:'39',
+  CA:'1',AU:'61',CH:'41',JP:'81',NO:'47',SE:'46',DK:'45',NZ:'64',MX:'52',ZA:'27',AE:'971',
+  SA:'966',NL:'31',BE:'32',AT:'43' };
+
+// ============================================================
+// AGENTES
+//
+// O desconto é sempre recalculado no servidor no momento do
+// checkout. Isto aqui é só para o agente ver o preço certo antes
+// de pagar — se alguém forçar este objeto no browser, o servidor
+// cobra o preço público na mesma.
+// ============================================================
+async function loadAgentInfo() {
+  agentInfo = null;
+  if (currentUser) {
+    try {
+      var s = await supabaseClient.auth.getSession();
+      var token = s.data && s.data.session && s.data.session.access_token;
+      if (token) {
+        var res = await fetch(RENDER_URL + '/api/agent/me', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        var info = await res.json();
+        if (res.ok && info && info.status === 'approved') agentInfo = info;
+      }
+    } catch (e) {
+      console.log('agent lookup skipped:', e.message);
+    }
+  }
+  applyAgentUI();
+}
+
+function isAgent() { return !!(agentInfo && agentInfo.status === 'approved'); }
+
+function applyAgentUI() {
+  var on = isAgent();
+
+  $('agentBanner').classList.toggle('hidden', !on);
+  $('publicCancelNote').classList.toggle('hidden', on);
+  $('passengerEmailField').classList.toggle('hidden', !on);
+
+  if (on) {
+    $('agentBannerTitle').textContent =
+      (agentInfo.agency_name ? agentInfo.agency_name + ' \u00b7 ' : '') +
+      agentInfo.commission + '% partner rate applied';
+    $('agentBannerText').textContent =
+      'Prices below already include your trade rate. Enter your traveller\u2019s name and phone so the driver deals with them directly \u2014 the booking stays invoiced to your agency. Free cancellation until ' +
+      agentInfo.cancellation_hours + ' hours before pick-up.';
+
+    $('fullNameLabel').textContent = 'Passenger name';
+    $('fullName').placeholder = 'Who is travelling';
+    $('phoneLabel').textContent = 'Passenger phone';
+    $('emailLabel').textContent = 'Billing email';
+    $('emailHint').textContent = 'Your agency account';
+    $('checkoutCancelText').textContent =
+      'You can cancel this booking free of charge until ' + agentInfo.cancellation_hours +
+      ' hours before pick-up, straight from your partner dashboard. After that, contact support.';
+  } else {
+    $('fullNameLabel').textContent = 'Full name';
+    $('fullName').placeholder = 'Your full name';
+    $('phoneLabel').textContent = 'Phone';
+    $('emailLabel').textContent = 'Email';
+    $('emailHint').textContent = 'From your account';
+    $('checkoutCancelText').textContent =
+      'You can cancel this booking free of charge until 24 hours before pick-up, straight from your account. After that, contact support.';
+  }
+
+  updatePriceDisplayOnly();
+  updateCheckoutSummary();
+  reportHeight();
+}
+
+// ============================================================
+// MAPA E PREÇO
+// ============================================================
+var map, directionsService, directionsRenderer, autocompleteService;
+var pickupPlace = null, dropoffPlace = null, sessionToken;
+
+function setStatus(text, isError) {
+  var el = $('statusText');
+  el.textContent = text;
+  el.classList.toggle('error', !!isError);
+}
+
+function passengerMultiplier(count) {
+  var n = Math.max(1, Math.min(16, parseInt(count || '1', 10) || 1));
+  if (n <= 4) return 1.0;
+  if (n <= 8) return 1.5;
+  if (n <= 12) return 2.0;
+  return 2.5;
+}
+
+function getVehicleType(count) {
+  var n = Math.max(1, Math.min(16, parseInt(count || '1', 10) || 1));
+  if (n <= 4) return 'Sedan';
+  if (n <= 8) return 'Van';
+  if (n <= 13) return 'Van + Sedan';
+  return '2 Vans';
+}
+
+function isPortugalRoute() {
+  var p = ((pickupPlace && pickupPlace.fullDescription) || '').toLowerCase();
+  var d = ((dropoffPlace && dropoffPlace.fullDescription) || '').toLowerCase();
+  return p.indexOf('portugal') !== -1 && d.indexOf('portugal') !== -1;
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function setDateConstraints() {
+  var di = $('travelDate'), ti = $('travelTime'), now = new Date();
+  var today = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+  di.min = today;
+  if (!di.value || di.value < today) di.value = today;
+  if (!ti.value) ti.value = pad(now.getHours()) + ':' + pad(now.getMinutes());
+  updateTimeConstraint();
+}
+
+function updateTimeConstraint() {
+  var di = $('travelDate'), ti = $('travelTime'), now = new Date();
+  var today = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+  if (di.value === today) {
+    ti.min = pad(now.getHours()) + ':' + pad(now.getMinutes());
+    if (!ti.value || ti.value < ti.min) ti.value = ti.min;
+  } else ti.min = '';
+}
+
+async function initMap() {
+  setDateConstraints();
+  window.__country = (navigator.language || 'en-US').split('-')[1] || '';
+
+  var mapsLib = await google.maps.importLibrary('maps');
+  var routesLib = await google.maps.importLibrary('routes');
+  var placesLib = await google.maps.importLibrary('places');
+
+  map = new mapsLib.Map($('map'), {
+    center: { lat: 41.1579, lng: -8.6291 }, zoom: 11,
+    mapTypeControl: false, streetViewControl: false, fullscreenControl: false,
+    // Com um dedo o scroll passa à página; só dois dedos movem o mapa.
+    // Sem isto, o mapa rouba o gesto e a página não se mexe no telemóvel.
+    gestureHandling: 'cooperative'
+  });
+
+  directionsService = new routesLib.DirectionsService();
+  directionsRenderer = new routesLib.DirectionsRenderer({
+    map, suppressMarkers: false,
+    polylineOptions: { strokeColor: '#0f766e', strokeOpacity: .9, strokeWeight: 5 }
+  });
+
+  autocompleteService = new placesLib.AutocompleteService();
+  sessionToken = new placesLib.AutocompleteSessionToken();
+  window.placesService = new placesLib.PlacesService(map);
+
+  setupAutocomplete('pickup', 'pickupSuggestions', 'pickup');
+  setupAutocomplete('dropoff', 'dropoffSuggestions', 'dropoff');
+
+  $('phoneCode').value = PHONE_CODES[window.__country] || '351';
+  $('currency').value = COUNTRY_CURRENCY[(window.__country || '').toUpperCase()] || 'EUR';
+
+  ['travelDate', 'travelTime', 'passengers'].forEach(function (id) {
+    ['input', 'change'].forEach(function (evt) {
+      $(id).addEventListener(evt, function () {
+        if (id === 'travelDate') updateTimeConstraint();
+        updateBookingSummary(); updateCheckoutSummary(); tryAutoCalculate();
+      });
+    });
+  });
+
+  $('currency').addEventListener('change', function () {
+    updatePriceDisplayOnly(); updateCheckoutSummary();
+  });
+
+  updateBookingSummary();
+  updateCheckoutSummary();
+  reportHeight();
+}
+window.initMap = initMap;
+
+function setupAutocomplete(inputId, boxId, type) {
+  var input = $(inputId), box = $(boxId);
+
+  input.addEventListener('input', function () {
+    var value = input.value.trim();
+    if (value.length < 3) { box.innerHTML = ''; box.classList.remove('show'); return; }
+
+    autocompleteService.getPlacePredictions({ input: value, sessionToken }, function (preds, status) {
+      if (status !== google.maps.places.PlacesServiceStatus.OK || !preds || !preds.length) {
+        box.innerHTML = ''; box.classList.remove('show'); return;
+      }
+      box.innerHTML = preds.slice(0, 5).map(function (p) {
+        return '<div class="suggestion-item" data-placeid="' + p.place_id + '" data-description="' +
+          String(p.description).replace(/"/g, '&quot;') + '">' +
+          '<div class="suggestion-main">' + (p.structured_formatting.main_text || p.description) + '</div>' +
+          '<div class="suggestion-sub">' + (p.structured_formatting.secondary_text || '') + '</div></div>';
+      }).join('');
+      box.classList.add('show');
+    });
+  });
+
+  box.addEventListener('click', function (e) {
+    var item = e.target.closest('.suggestion-item');
+    if (!item) return;
+    selectPrediction(item.getAttribute('data-placeid'), item.getAttribute('data-description'), type);
+    box.classList.remove('show');
+  });
+}
+
+function selectPrediction(placeId, description, type) {
+  window.placesService.getDetails({
+    placeId, fields: ['name', 'formatted_address', 'geometry', 'place_id']
+  }, function (place, status) {
+    if (status !== google.maps.places.PlacesServiceStatus.OK || !place || !place.geometry) return;
+
+    var data = { fullDescription: description, placeId: place.place_id || placeId };
+    if (type === 'pickup') { pickupPlace = data; $('pickup').value = description; }
+    else { dropoffPlace = data; $('dropoff').value = description; }
+
+    sessionToken = new google.maps.places.AutocompleteSessionToken();
+    updateBookingSummary(); updateCheckoutSummary(); tryAutoCalculate();
+  });
+}
+
+function tryAutoCalculate() {
+  if (!pickupPlace || !dropoffPlace) return setStatus('Select pick-up and drop-off first.');
+  if (!$('travelDate').value || !$('travelTime').value) return setStatus('Select date and time to calculate.');
+  calculateRouteAndPrice();
+}
+
+function calculateRouteAndPrice() {
+  var passengers = Math.max(1, Math.min(16, parseInt($('passengers').value, 10) || 1));
+  if (new Date($('travelDate').value + 'T' + $('travelTime').value + ':00') < new Date()) {
+    return setStatus('Please select a future date and time.', true);
+  }
+
+  setStatus('Calculating route and fare...');
+
+  directionsService.route({
+    origin: { placeId: pickupPlace.placeId },
+    destination: { placeId: dropoffPlace.placeId },
+    travelMode: google.maps.TravelMode.DRIVING,
+    unitSystem: google.maps.UnitSystem.METRIC
+  }, function (response, status) {
+    if (status !== 'OK') {
+      setStatus('We could not find a driving route for those locations.', true);
+      $('distanceValue').textContent = '\u2014';
+      $('durationValue').textContent = '\u2014';
+      $('priceValue').textContent = '\u2014';
+      return;
+    }
+
+    directionsRenderer.setDirections(response);
+    var leg = response.routes[0].legs[0];
+    var distanceKm = leg.distance.value / 1000;
+
+    var p = isPortugalRoute()
+      ? { BASE_FARE: 40, PRICE_PER_KM: 1.60, MIN_PRICE: 25, PRICE_MARKUP: 1.0 }
+      : { BASE_FARE: 20, PRICE_PER_KM: 3.5, MIN_PRICE: 25, PRICE_MARKUP: 1.3 };
+
+    var priceEUR = (p.BASE_FARE + distanceKm * p.PRICE_PER_KM) * p.PRICE_MARKUP * passengerMultiplier(passengers);
+    if (priceEUR < p.MIN_PRICE) priceEUR = p.MIN_PRICE;
+
+    $('distanceValue').textContent = distanceKm.toFixed(1) + ' km';
+    $('durationValue').textContent = leg.duration.text;
+    updatePriceDisplay(priceEUR);
+    updateCheckoutSummary();
+    setStatus('Fare calculated. ' + passengers + ' passenger(s), ' + getVehicleType(passengers) + '.');
+  });
+}
+
+function updatePriceDisplay(priceEUR) {
+  var currency = $('currency').value || 'EUR';
+  var fmt = function (v) {
+    return new Intl.NumberFormat('en-IE', { style: 'currency', currency: currency }).format(v);
+  };
+
+  var publicPrice = priceEUR * (EXCHANGE_RATES[currency] || 1);
+  var payable = isAgent() ? publicPrice * (1 - agentInfo.commission / 100) : publicPrice;
+
+  $('priceValue').textContent = fmt(payable);
+  $('priceValue').dataset.basePrice = String(priceEUR);
+
+  if (isAgent()) {
+    $('publicPrice').innerHTML = 'Public price <s>' + fmt(publicPrice) + '</s> \u00b7 you save ' +
+      fmt(publicPrice - payable);
+    $('publicPrice').classList.remove('hidden');
+  } else {
+    $('publicPrice').classList.add('hidden');
+  }
+}
+
+function updatePriceDisplayOnly() {
+  var base = parseFloat($('priceValue').dataset.basePrice || 'NaN');
+  if (isFinite(base)) updatePriceDisplay(base);
+}
+
+function updateBookingSummary() {
+  $('bookingSummary').innerHTML = '<strong>Trip details</strong><br>Date: ' +
+    ($('travelDate').value || '\u2014') + '<br>Time: ' + ($('travelTime').value || '\u2014') +
+    '<br>Passengers: ' + ($('passengers').value || '\u2014') +
+    '<br>Vehicle type: ' + getVehicleType($('passengers').value);
+}
+
+function updateCheckoutSummary() {
+  $('summaryPickup').textContent = pickupPlace ? pickupPlace.fullDescription : ($('pickup').value || '\u2014');
+  $('summaryDropoff').textContent = dropoffPlace ? dropoffPlace.fullDescription : ($('dropoff').value || '\u2014');
+  $('summaryPassengers').textContent = $('passengers').value || '\u2014';
+  $('summaryDate').textContent = $('travelDate').value || '\u2014';
+  $('summaryTime').textContent = $('travelTime').value || '\u2014';
+  $('summaryDistance').textContent = $('distanceValue').textContent;
+  $('summaryDuration').textContent = $('durationValue').textContent;
+  $('summaryPrice').textContent = $('priceValue').textContent;
+}
+
+// ============================================================
+// AUTENTICAÇÃO
+// ============================================================
+function showAuthMsg(el, other, text) {
+  el.textContent = text; el.style.display = 'block'; other.style.display = 'none';
+  reportHeight();
+}
+
+function setAuthMode(mode) {
+  authMode = mode;
+  $('tabSignIn').classList.toggle('active', mode === 'signin');
+  $('tabSignUp').classList.toggle('active', mode === 'signup');
+  $('signUpNameField').classList.toggle('hidden', mode !== 'signup');
+  $('authSubmitBtn').textContent = mode === 'signup' ? 'Create account and continue' : 'Sign in and continue';
+  $('authPassword').setAttribute('autocomplete', mode === 'signup' ? 'new-password' : 'current-password');
+  $('passwordHint').textContent = mode === 'signup' ? 'At least 8 characters' : '';
+  $('forgotBtn').classList.toggle('hidden', mode === 'signup');
+  $('authError').style.display = 'none';
+  $('authSuccess').style.display = 'none';
+  reportHeight();
+}
+
+$('tabSignIn').addEventListener('click', function () { setAuthMode('signin'); });
+$('tabSignUp').addEventListener('click', function () { setAuthMode('signup'); });
+
+$('authSubmitBtn').addEventListener('click', async function () {
+  var email = $('authEmail').value.trim(), password = $('authPassword').value, name = $('authName').value.trim();
+  var errEl = $('authError'), okEl = $('authSuccess');
+
+  if (!email || !password) return showAuthMsg(errEl, okEl, 'Please fill in email and password.');
+  if (authMode === 'signup' && !name) return showAuthMsg(errEl, okEl, 'Please enter your full name.');
+  if (authMode === 'signup' && password.length < 8) {
+    return showAuthMsg(errEl, okEl, 'Password must be at least 8 characters.');
+  }
+
+  $('authSubmitBtn').disabled = true;
+  var original = $('authSubmitBtn').textContent;
+  $('authSubmitBtn').textContent = 'Please wait...';
+
+  try {
+    if (authMode === 'signup') {
+      var reg = await fetch(RENDER_URL + '/register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      var regResult = await reg.json();
+      if (!regResult.success) return showAuthMsg(errEl, okEl, regResult.message || 'Could not create the account.');
+    }
+
+    var res = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (res.error) return showAuthMsg(errEl, okEl, res.error.message || 'Sign in failed.');
+    await onSignedIn(res.data.user);
+  } catch (e) {
+    console.error('auth error:', e);
+    showAuthMsg(errEl, okEl, 'Something went wrong. Please try again.');
+  } finally {
+    $('authSubmitBtn').disabled = false;
+    $('authSubmitBtn').textContent = original;
+  }
+});
+
+$('forgotBtn').addEventListener('click', async function () {
+  var email = $('authEmail').value.trim();
+  if (!email) return showAuthMsg($('authError'), $('authSuccess'), 'Enter your email first.');
+  try {
+    await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: SITE_ORIGIN + '/resetpassword' });
+  } catch (e) { console.error(e); }
+  // Resposta genérica: não revelamos que emails existem.
+  showAuthMsg($('authSuccess'), $('authError'), 'If an account exists for that email, a reset link has been sent.');
+});
+
+$('signOutBtn').addEventListener('click', async function () {
+  try { await supabaseClient.auth.signOut(); } catch (e) {}
+  currentUser = null;
+  agentInfo = null;
+  applyAgentUI();
+  notifyParent({ type: 'session-invalid' });
+  $('finalForm').classList.add('hidden');
+  $('authCard').classList.remove('hidden');
+  setAuthMode('signin');
+});
+
+async function onSignedIn(user) {
+  currentUser = user;
+  notifyParent({ type: 'login-success', email: user.email });
+
+  $('authCard').classList.add('hidden');
+  $('finalForm').classList.remove('hidden');
+  $('signedInEmail').textContent = user.email;
+  $('email').value = user.email;
+
+  var contact = await supabaseClient.from('contacts')
+    .select('full_name, phone_number').eq('email', user.email).maybeSingle();
+
+  if (!contact.error && contact.data) {
+    if (contact.data.full_name) $('fullName').value = contact.data.full_name;
+    if (contact.data.phone_number && !$('phoneNumber').value) {
+      var digits = String(contact.data.phone_number).replace(/[^\d+]/g, '');
+      $('phoneNumber').value = digits.replace(/^\+?\d{1,3}\s?/, '') || digits;
+    }
+  }
+  if (!$('fullName').value && user.user_metadata && user.user_metadata.full_name) {
+    $('fullName').value = user.user_metadata.full_name;
+  }
+
+  await loadAgentInfo();
+  setStatus('Complete your booking details below.');
+  reportHeight();
+}
+
+// ============================================================
+// FLUXO DE RESERVA
+// ============================================================
+$('proceedBtn').addEventListener('click', function () {
+  if (!pickupPlace || !dropoffPlace) return setStatus('Select pick-up and drop-off first.', true);
+  if (!$('travelDate').value || !$('travelTime').value) return setStatus('Select date and time first.', true);
+  if (!$('priceValue').dataset.basePrice) return setStatus('Wait for the fare to be calculated.', true);
+
+  if (currentUser) {
+    $('finalForm').classList.remove('hidden');
+    $('finalForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    setStatus('Complete your booking details below.');
+  } else {
+    $('authCard').classList.remove('hidden');
+    $('authCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    setStatus('Sign in or create an account to continue.');
+  }
+  reportHeight();
+});
+
+$('confirmBtn').addEventListener('click', function () {
+  if (!currentUser) return setStatus('Please sign in first.', true);
+
+  var fullName = $('fullName').value.trim();
+  var phoneCode = $('phoneCode').value.trim();
+  var phoneNumber = $('phoneNumber').value.trim();
+  if (!fullName || !phoneCode || !phoneNumber) {
+    return setStatus('Please fill in your name and phone number.', true);
+  }
+
+  // full_name e phone são sempre de quem VIAJA — é quem o motorista
+  // vai buscar. O email é o da conta que paga, que para um agente é
+  // a agência. Os campos passenger_* guardam o contacto do viajante
+  // de forma explícita, para o admin não ter de adivinhar.
+  var booking = {
+    user_id: currentUser.id,
+    full_name: fullName,
+    email: currentUser.email,
+    phone_code: phoneCode, phone_number: phoneNumber,
+    passenger_name: fullName,
+    passenger_phone: '+' + phoneCode + ' ' + phoneNumber,
+    passenger_email: isAgent() ? $('passengerEmail').value.trim() : currentUser.email,
+    flight_number: $('flightNumber').value.trim(),
+    notes: $('notes').value.trim(),
+    currency: $('currency').value, passengers: $('passengers').value,
+    pickup: pickupPlace.fullDescription, dropoff: dropoffPlace.fullDescription,
+    date: $('travelDate').value, time: $('travelTime').value
+  };
+
+  $('summaryName').textContent = booking.full_name + (isAgent() ? ' (passenger)' : '');
+  $('summaryEmail').textContent = booking.email + (isAgent() ? ' (billing)' : '');
+  $('summaryPhone').textContent = '+' + booking.phone_code + ' ' + booking.phone_number;
+  $('summaryFlight').textContent = booking.flight_number || '\u2014';
+  $('summaryNotes').textContent = booking.notes || '\u2014';
+  updateCheckoutSummary();
+
+  $('checkoutSection').classList.remove('hidden');
+  $('checkoutSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  setStatus('Review your booking below and complete the payment.');
+  window.__latestBooking = booking;
+  reportHeight();
+});
+
+// ============================================================
+// PAGAMENTO
+// O servidor devolve session.url e navegamos com window.top. Não se
+// usa Stripe.js: o redirectToCheckout está depreciado e o Stripe
+// recusa ser carregado dentro de iframes — era por isso que o botão
+// não fazia nada (o Stripe.js nem sequer estava na página).
+// ============================================================
+$('payNowBtn').addEventListener('click', async function () {
+  if (!window.__latestBooking) {
+    $('payStatus').textContent = 'Please confirm the booking first.';
+    return;
+  }
+
+  var btn = $('payNowBtn'), original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  $('payStatus').textContent = 'Creating a secure payment session...';
+
+  try {
+    // O token vai no pedido para o servidor poder confirmar, do seu
+    // lado, se quem reserva é mesmo um agente aprovado.
+    var headers = { 'Content-Type': 'application/json' };
+    try {
+      var sess = await supabaseClient.auth.getSession();
+      var tk = sess.data && sess.data.session && sess.data.session.access_token;
+      if (tk) headers['Authorization'] = 'Bearer ' + tk;
+    } catch (e) {}
+
+    var response = await fetch(RENDER_URL + '/api/create-checkout-session', {
+      method: 'POST', headers: headers,
+      body: JSON.stringify({ booking: window.__latestBooking })
+    });
+    var result = await response.json();
+
+    if (!response.ok || result.error) {
+      $('payStatus').textContent = 'Error: ' + (result.error || ('HTTP ' + response.status));
+      btn.disabled = false; btn.textContent = original;
+      return;
+    }
+    if (!result.url) {
+      $('payStatus').textContent = 'The server did not return a checkout URL. Please contact support.';
+      btn.disabled = false; btn.textContent = original;
+      return;
+    }
+
+    $('payStatus').textContent = 'Redirecting to Stripe...';
+    try { window.top.location.href = result.url; }
+    catch (e) { window.open(result.url, '_blank'); }
+  } catch (error) {
+    console.error('Payment error:', error);
+    $('payStatus').textContent = 'Payment error: ' + error.message;
+    btn.disabled = false; btn.textContent = original;
+  }
+});
+
+document.addEventListener('click', function (e) {
+  if (!e.target.closest('.field') && !e.target.closest('.suggestions')) {
+    Array.prototype.forEach.call(document.querySelectorAll('.suggestions'), function (el) {
+      el.classList.remove('show');
+    });
+  }
+});
+
+// ============================================================
+// LIGAÇÕES E MOVIMENTO
+// ============================================================
+$('agentsCtaBtn').addEventListener('click', function () { navigateTo('/travelagents'); });
+
+// Um pulso curto quando o valor muda, para o olho notar que o
+// preço se atualizou sem ter de o procurar.
+(function () {
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced || !window.MutationObserver) return;
+
+  var target = $('priceValue');
+  new MutationObserver(function () {
+    target.classList.remove('priced');
+    void target.offsetWidth;
+    target.classList.add('priced');
+  }).observe(target, { childList: true, characterData: true, subtree: true });
+})();
+
+// ============================================================
+// ARRANQUE
+// ============================================================
+(async function boot() {
+  loadRates();
+  try {
+    var res = await supabaseClient.auth.getSession();
+    if (res.data && res.data.session) {
+      var userRes = await supabaseClient.auth.getUser();
+      if (!userRes.error && userRes.data && userRes.data.user) {
+        currentUser = userRes.data.user;
+        $('signedInEmail').textContent = currentUser.email;
+        $('email').value = currentUser.email;
+        notifyParent({ type: 'session-active', email: currentUser.email });
+        await loadAgentInfo();
+      }
+    }
+  } catch (e) { console.error('boot error:', e); }
+  setAuthMode('signin');
+  reportHeight();
+})();
+})();
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWH1TXxWhFmFo7fMB8NXE4swU2idCc_0M&loading=async&libraries=places,routes&callback=initMap&language=en&region=IE"></script>
+</body>
+</html>
