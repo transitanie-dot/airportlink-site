@@ -270,6 +270,44 @@
     .chg-actions{display:flex;gap:9px;margin-top:11px;flex-wrap:wrap}
     .btn-charge{background:#10b981;color:#fff;border:0;border-radius:9px;padding:9px 15px;font-weight:700;font-size:12.5px;cursor:pointer}
     .btn-charge:disabled{opacity:.5;cursor:not-allowed}
+    .stat-sub{margin:7px 0 0;font-size:11.5px;color:var(--muted);line-height:1.4}
+    .fin-periods{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+    .fin-period{padding:8px 14px;border:1px solid var(--border);border-radius:999px;
+      background:transparent;color:var(--muted);cursor:pointer;font-size:13px}
+    .fin-period:hover{color:var(--text)}
+    .fin-period.active{background:var(--primary);color:#fff;border-color:transparent;font-weight:600}
+
+    .fin-chart-box{background:var(--card);border:1px solid var(--border);border-radius:14px;
+      padding:20px;margin-bottom:18px}
+    .fin-chart-head{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+    .fin-chart-head h3{margin:0 0 5px;font-family:var(--display);font-weight:700;font-size:16px;
+      letter-spacing:-.02em}
+    .fin-chart-head p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.5;max-width:52ch}
+    .fin-legend{display:flex;gap:16px;font-size:12px;color:var(--muted);align-items:flex-start}
+    .fin-legend span{display:inline-flex;align-items:center;gap:7px}
+    .fin-legend .sw{width:12px;height:12px;border-radius:4px}
+    .fin-legend .sw.net{background:var(--primary)}
+    .fin-legend .sw.margin{background:var(--ok)}
+    .fin-chart{display:flex;align-items:flex-end;gap:10px;height:180px;padding-top:10px}
+    .fin-bar{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;
+      align-items:center;gap:7px;height:100%}
+    .fin-bar .stack{width:100%;background:var(--primary);border-radius:6px 6px 0 0;
+      position:relative;min-height:2px;transition:height .4s ease}
+    .fin-bar .stack i{position:absolute;left:0;right:0;bottom:0;background:var(--ok);
+      border-radius:0 0 6px 6px}
+    .fin-bar .lbl{font-family:var(--mono);font-size:9.5px;color:var(--muted);white-space:nowrap}
+    .fin-bar .amt{font-family:var(--mono);font-size:10.5px;font-weight:600}
+    .fin-bar.empty .stack{background:var(--card-2)}
+
+    .fin-tabs{display:flex;gap:2px;padding:3px;background:var(--card);border:1px solid var(--border);
+      border-radius:12px;margin-bottom:14px;flex-wrap:wrap}
+    .fin-tab{padding:9px 15px;border:0;border-radius:9px;background:transparent;color:var(--muted);
+      cursor:pointer;font-size:13.5px;font-weight:600}
+    .fin-tab:hover{color:var(--text)}
+    .fin-tab.active{background:var(--card-2);color:var(--text);box-shadow:inset 0 0 0 1px var(--border)}
+    .num-cell{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+    .pos{color:var(--ok)}
+    .neg{color:var(--bad)}
     .driver-box{background:var(--card-2);border:1px solid var(--border);border-radius:14px;
       padding:20px;margin:20px 0}
     .driver-box h3{margin:0 0 6px;font-family:var(--display);font-weight:700;font-size:16px;
@@ -494,64 +532,79 @@
       <div class="search-section">
         <h2>Finance</h2>
         <p style="margin:0 0 14px;color:var(--muted);font-size:13.5px;line-height:1.6">
-          Everything that moved money, filtered by pick-up date. Refunds are shown as they were
-          issued, so the net column is what actually stayed with us.
+          Everything in euros, converted at the rate that applied on the day of each
+          transaction &mdash; never at today's rate. Figures are management reporting,
+          not accounting output.
         </p>
-        <div class="search-grid">
-          <input id="finFrom" class="search-input" type="date" aria-label="From">
-          <input id="finTo" class="search-input" type="date" aria-label="To">
-          <select id="finStatus" class="search-input">
-            <option value="">All statuses</option>
-            <option value="paid">Paid</option>
-            <option value="card_saved">Card saved, not charged</option>
-            <option value="charge_failed">Charge failed</option>
-            <option value="refunded">Refunded</option>
-            <option value="partially_refunded">Partially refunded</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-        </div>
-        <div class="search-grid">
-          <select id="finMode" class="search-input">
-            <option value="">Pay now and pay later</option>
-            <option value="now">Pay now only</option>
-            <option value="later">Pay later only</option>
-          </select>
-          <select id="finSource" class="search-input">
-            <option value="">Direct and agency</option>
-            <option value="agent">Agency bookings only</option>
-            <option value="direct">Direct customers only</option>
-          </select>
-          <select id="finCurrency" class="search-input"><option value="">All currencies</option></select>
+        <div class="fin-periods" id="finPeriods">
+          <button class="fin-period active" data-period="mtd" type="button">This month</button>
+          <button class="fin-period" data-period="last" type="button">Last month</button>
+          <button class="fin-period" data-period="qtd" type="button">This quarter</button>
+          <button class="fin-period" data-period="ytd" type="button">This year</button>
+          <button class="fin-period" data-period="all" type="button">All time</button>
         </div>
         <div class="search-actions">
-          <button id="finApplyBtn" class="search-btn">Apply</button>
-          <button id="finResetBtn" class="clear-btn">Reset</button>
-          <button id="finCsvBtn" class="export-btn">Finance CSV</button>
-          <button id="exportBookingsBtn" class="export-btn">All bookings CSV</button>
+          <button id="finRefreshBtn" class="search-btn">Refresh</button>
+          <button id="finTxCsv" class="export-btn">Transactions CSV</button>
+          <button id="finMonthCsv" class="export-btn">Monthly summary CSV</button>
+          <button id="finPayoutCsv" class="export-btn">Driver payment run CSV</button>
+          <button id="exportBookingsBtn" class="export-btn">Raw bookings CSV</button>
           <button id="exportContactsBtn" class="export-btn">Contacts CSV</button>
         </div>
+        <div id="finNote" style="margin-top:12px;color:var(--muted);font-size:12.5px">&mdash;</div>
       </div>
 
       <div class="stats">
-        <div class="stat-card"><h3>Gross taken</h3><p class="value" id="finGross">0</p></div>
-        <div class="stat-card"><h3>Refunded</h3><p class="value" id="finRefunds">0</p></div>
-        <div class="stat-card"><h3>Net</h3><p class="value" id="finNet">0</p></div>
-        <div class="stat-card"><h3>Bookings</h3><p class="value" id="finCount">0</p></div>
+        <div class="stat-card"><h3>Revenue</h3><p class="value" id="kGross">&mdash;</p>
+          <p class="stat-sub" id="kGrossSub">&mdash;</p></div>
+        <div class="stat-card"><h3>Refunded</h3><p class="value" id="kRefund">&mdash;</p>
+          <p class="stat-sub" id="kRefundSub">&mdash;</p></div>
+        <div class="stat-card"><h3>Driver cost</h3><p class="value" id="kCost">&mdash;</p>
+          <p class="stat-sub" id="kCostSub">&mdash;</p></div>
+        <div class="stat-card"><h3>Gross margin</h3><p class="value" id="kMargin">&mdash;</p>
+          <p class="stat-sub" id="kMarginSub">&mdash;</p></div>
       </div>
 
       <div class="stats">
-        <div class="stat-card"><h3>Driver payouts</h3><p class="value" id="finPayouts">0</p></div>
-        <div class="stat-card"><h3>Agency discount</h3><p class="value" id="finAgentCut">0</p></div>
-        <div class="stat-card"><h3>Awaiting charge</h3><p class="value" id="finPending">0</p></div>
-        <div class="stat-card"><h3>Average booking</h3><p class="value" id="finAvg">0</p></div>
+        <div class="stat-card"><h3>Bookings</h3><p class="value" id="kCount">&mdash;</p>
+          <p class="stat-sub" id="kCountSub">&mdash;</p></div>
+        <div class="stat-card"><h3>Average booking</h3><p class="value" id="kAvg">&mdash;</p>
+          <p class="stat-sub" id="kAvgSub">&mdash;</p></div>
+        <div class="stat-card"><h3>Awaiting charge</h3><p class="value" id="kPending">&mdash;</p>
+          <p class="stat-sub" id="kPendingSub">&mdash;</p></div>
+        <div class="stat-card"><h3>Stripe fees</h3><p class="value" id="kFees">&mdash;</p>
+          <p class="stat-sub" id="kFeesSub">&mdash;</p></div>
       </div>
 
-      <div class="table-box table-scroll"><table>
-        <thead><tr><th>Reference</th><th>Pick-up</th><th>Customer</th><th>Route</th>
-          <th>Mode</th><th>Status</th><th>Gross</th><th>Refunded</th><th>Payout</th></tr></thead>
-        <tbody id="finRows"><tr><td colspan="9" class="loading-row">Set a range and press Apply.</td></tr></tbody>
-      </table></div>
-      <div id="finNote" style="margin-top:12px;color:var(--muted);font-size:12.5px;line-height:1.6"></div>
+      <div class="fin-chart-box">
+        <div class="fin-chart-head">
+          <div>
+            <h3>Revenue and margin by month</h3>
+            <p>Bars are revenue after refunds. The line inside each bar is what stayed
+            with us after paying the drivers.</p>
+          </div>
+          <div class="fin-legend">
+            <span><i class="sw net"></i>Net revenue</span>
+            <span><i class="sw margin"></i>Margin</span>
+          </div>
+        </div>
+        <div id="finChart" class="fin-chart"></div>
+      </div>
+
+      <div class="fin-tabs" id="finTabs">
+        <button class="fin-tab active" data-view="months" type="button">By month</button>
+        <button class="fin-tab" data-view="airports" type="button">By airport</button>
+        <button class="fin-tab" data-view="partners" type="button">By partner</button>
+        <button class="fin-tab" data-view="agencies" type="button">By agency</button>
+        <button class="fin-tab" data-view="recon" type="button">Bank reconciliation</button>
+      </div>
+
+      <div class="table-box table-scroll">
+        <table><thead><tr id="finHead"></tr></thead><tbody id="finBody">
+          <tr><td colspan="8" class="loading-row">Loading...</td></tr>
+        </tbody></table>
+      </div>
+      <div id="finViewNote" style="margin-top:12px;color:var(--muted);font-size:12.5px;line-height:1.6"></div>
     </div>
 
     <div id="moneyTab" class="panel">
@@ -1855,241 +1908,451 @@ async function sendAdminReply() {
 // ============================================================
 // FINANÇAS
 //
-// Lê da bookings e faz as contas no browser. O volume é pequeno o
-// suficiente para isso, e evita uma vista nova a cada pergunta nova
-// que se queira fazer aos números.
+// Lê das vistas criadas no v23 e v24, que já fazem as somas em
+// euros à taxa do dia de cada transação. Somar aqui no browser
+// obrigaria a trazer milhares de linhas e a repetir a lógica.
 // ============================================================
-var finance = [];
+var fin = { months: [], airports: [], partners: [], agencies: [], recon: [] };
+var finPeriod = 'mtd';
+var finView = 'months';
 
-function finRange() {
-  return {
-    from: el('finFrom').value || null,
-    to: el('finTo').value || null,
-    status: el('finStatus').value,
-    mode: el('finMode').value,
-    source: el('finSource').value,
-    currency: el('finCurrency').value
-  };
+function eur(v) {
+  var n = Number(v || 0);
+  return new Intl.NumberFormat('en-IE', {
+    style: 'currency', currency: 'EUR', maximumFractionDigits: n >= 1000 ? 0 : 2
+  }).format(n);
+}
+
+function pct(part, whole) {
+  var w = Number(whole || 0);
+  if (!w) return '—';
+  return Math.round((Number(part || 0) / w) * 100) + '%';
+}
+
+function monthLabel(iso) {
+  var d = new Date(iso + 'T12:00:00');
+  return isNaN(d.getTime()) ? iso
+    : d.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' });
+}
+
+/** Os meses que caem no período escolhido. */
+function periodMonths() {
+  var now = new Date();
+  var y = now.getFullYear();
+  var m = now.getMonth();
+
+  var from;
+  if (finPeriod === 'mtd') from = new Date(y, m, 1);
+  else if (finPeriod === 'last') from = new Date(y, m - 1, 1);
+  else if (finPeriod === 'qtd') from = new Date(y, Math.floor(m / 3) * 3, 1);
+  else if (finPeriod === 'ytd') from = new Date(y, 0, 1);
+  else return fin.months;
+
+  var to = finPeriod === 'last' ? new Date(y, m, 1) : new Date(y, m + 1, 1);
+
+  return fin.months.filter(function (r) {
+    var d = new Date(r.month + 'T12:00:00');
+    return d >= from && d < to;
+  });
+}
+
+function sum(rows, field) {
+  return rows.reduce(function (t, r) { return t + Number(r[field] || 0); }, 0);
 }
 
 async function loadFinance() {
-  var f = finRange();
-  el('finRows').innerHTML = '<tr><td colspan="9" class="loading-row">Loading...</td></tr>';
+  el('finBody').innerHTML = '<tr><td colspan="8" class="loading-row">Loading...</td></tr>';
 
-  var q = client.from('bookings').select(
-    'id, booking_id, booking_reference, email, full_name, pickup, dropoff, ' +
-    'booking_date, booking_time, price, currency, status, payment_status, payment_mode, ' +
-    'charged_at, charge_at, refunded_amount, refunded_at, driver_payout, ' +
-    'agent_commission_pct, agent_gross_price, booked_by, created_at'
-  ).order('booking_date', { ascending: false }).limit(2000);
+  var results = await Promise.all([
+    client.from('finance_monthly').select('*'),
+    client.from('finance_by_airport').select('*'),
+    client.from('finance_by_partner').select('*'),
+    client.from('finance_by_agency').select('*'),
+    client.from('finance_reconciliation').select('*')
+  ]);
 
-  if (f.from) q = q.gte('booking_date', f.from);
-  if (f.to) q = q.lte('booking_date', f.to);
+  var names = ['months', 'airports', 'partners', 'agencies', 'recon'];
+  var failed = [];
 
-  var res = await q;
-
-  if (res.error) {
-    el('finRows').innerHTML = '<tr><td colspan="9" class="error-row">' +
-      escapeHtml(res.error.message) + '</td></tr>';
-    return;
-  }
-
-  finance = (res.data || []).filter(function (b) {
-    if (f.status) {
-      var st = b.status === 'cancelled' ? 'cancelled' : (b.payment_status || b.status);
-      if (st !== f.status) return false;
+  results.forEach(function (r, i) {
+    if (r.error) {
+      failed.push(names[i] + ': ' + r.error.message);
+      fin[names[i]] = [];
+    } else {
+      fin[names[i]] = r.data || [];
     }
-    if (f.mode && (b.payment_mode || 'now') !== f.mode) return false;
-    if (f.source === 'agent' && !b.booked_by) return false;
-    if (f.source === 'direct' && b.booked_by) return false;
-    if (f.currency && String(b.currency || '').toUpperCase() !== f.currency) return false;
-    return true;
   });
 
-  fillCurrencyFilter(res.data || []);
+  if (failed.length) {
+    // Quase sempre uma migração por correr. Dizer qual é poupa
+    // meia hora de procura.
+    el('finNote').innerHTML = '<span class="warn-text">Some views are missing — ' +
+      'run the SQL migrations v23, v23b and v24.</span><br>' + escapeHtml(failed.join(' · '));
+  }
+
   renderFinance();
 }
 
-function fillCurrencyFilter(rows) {
-  var sel = el('finCurrency');
-  if (sel.options.length > 1) return;
-
-  var seen = {};
-  rows.forEach(function (b) {
-    var c = String(b.currency || '').toUpperCase();
-    if (c) seen[c] = true;
-  });
-
-  Object.keys(seen).sort().forEach(function (c) {
-    var o = document.createElement('option');
-    o.value = c; o.textContent = c;
-    sel.appendChild(o);
-  });
-}
-
 function renderFinance() {
-  // Somamos por moeda e não convertemos: um total misturado em euros
-  // e dólares seria um número bonito e falso.
-  var gross = {}, refunds = {}, payouts = {}, agentCut = {}, pending = {};
-  var charged = 0;
+  var rows = periodMonths();
 
-  function add(bag, cur, value) {
-    var c = String(cur || 'EUR').toUpperCase();
-    bag[c] = (bag[c] || 0) + Number(value || 0);
-  }
+  var gross = sum(rows, 'gross_eur');
+  var refunded = sum(rows, 'refunded_eur');
+  var net = gross - refunded;
+  var cost = sum(rows, 'supplier_cost_eur');
+  var margin = sum(rows, 'margin_eur');
+  var fees = sum(rows, 'stripe_fees_eur');
+  var pending = sum(rows, 'awaiting_charge_eur');
+  var bookings = sum(rows, 'bookings');
+  var paid = sum(rows, 'paid_bookings');
+  var cancelled = sum(rows, 'cancelled');
+  var agency = sum(rows, 'agency_bookings');
+  var later = sum(rows, 'pay_later_bookings');
 
-  finance.forEach(function (b) {
-    var isPaid = Boolean(b.charged_at) || b.payment_status === 'paid' ||
-                 b.status === 'paid' || b.status === 'completed';
-    var uncharged = b.payment_mode === 'later' && !b.charged_at && b.status !== 'cancelled';
+  el('kGross').textContent = eur(gross);
+  el('kGrossSub').textContent = paid + ' paid booking' + (paid === 1 ? '' : 's');
 
-    if (uncharged) add(pending, b.currency, b.price);
+  el('kRefund').textContent = eur(refunded);
+  el('kRefundSub').textContent = refunded > 0
+    ? pct(refunded, gross) + ' of revenue · ' + cancelled + ' cancelled'
+    : 'Nothing refunded';
 
-    if (isPaid && b.status !== 'cancelled') {
-      add(gross, b.currency, b.price);
-      charged += 1;
-      if (b.driver_payout) add(payouts, b.currency, b.driver_payout);
-      if (b.agent_gross_price && b.price) {
-        add(agentCut, b.currency, Number(b.agent_gross_price) - Number(b.price));
-      }
-    }
+  el('kCost').textContent = eur(cost);
+  el('kCostSub').textContent = cost > 0 ? pct(cost, net) + ' of net revenue' : 'No driver costs yet';
 
-    if (b.refunded_amount) add(refunds, b.currency, b.refunded_amount);
-  });
+  el('kMargin').textContent = eur(margin);
+  el('kMarginSub').textContent = net > 0 ? pct(margin, net) + ' margin' : '—';
 
-  function show(bag) {
-    var keys = Object.keys(bag).filter(function (k) { return Math.abs(bag[k]) > 0.005; });
-    if (!keys.length) return '0';
-    return keys.map(function (k) { return money(k, bag[k]); }).join('  ·  ');
-  }
+  el('kCount').textContent = bookings;
+  el('kCountSub').textContent = agency + ' agency · ' + later + ' pay later';
 
-  var net = {};
-  Object.keys(gross).forEach(function (c) { net[c] = gross[c]; });
-  Object.keys(refunds).forEach(function (c) { net[c] = (net[c] || 0) - refunds[c]; });
+  el('kAvg').textContent = paid ? eur(net / paid) : '—';
+  el('kAvgSub').textContent = paid ? 'Per paid booking' : '—';
 
-  var avg = {};
-  Object.keys(gross).forEach(function (c) {
-    if (charged) avg[c] = gross[c] / charged;
-  });
+  el('kPending').textContent = eur(pending);
+  el('kPendingSub').textContent = pending > 0 ? 'Cards saved, not yet charged' : 'Nothing waiting';
 
-  el('finGross').textContent = show(gross);
-  el('finRefunds').textContent = show(refunds);
-  el('finNet').textContent = show(net);
-  el('finCount').textContent = finance.length;
-  el('finPayouts').textContent = show(payouts);
-  el('finAgentCut').textContent = show(agentCut);
-  el('finPending').textContent = show(pending);
-  el('finAvg').textContent = show(avg);
+  el('kFees').textContent = eur(fees);
+  el('kFeesSub').textContent = fees > 0 ? pct(fees, gross) + ' of revenue' : 'No fees recorded';
 
-  var smaller = ['finGross','finRefunds','finNet','finPayouts','finAgentCut','finPending','finAvg'];
-  smaller.forEach(function (id) {
-    el(id).style.fontSize = el(id).textContent.length > 12 ? '15px' : '';
-  });
+  el('finNote').textContent = rows.length
+    ? rows.length + ' month' + (rows.length === 1 ? '' : 's') +
+      ' in view · all figures in euros at the rate that applied on the day'
+    : 'Nothing in this period yet.';
 
-  if (!finance.length) {
-    el('finRows').innerHTML = '<tr><td colspan="9" class="no-results">Nothing in that range.</td></tr>';
-  } else {
-    el('finRows').innerHTML = finance.slice(0, 400).map(function (b) {
-      var st = b.status === 'cancelled' ? 'cancelled' : (b.payment_status || b.status || '');
-      return '<tr>' +
-        '<td><strong>' + escapeHtml(b.booking_reference || b.booking_id || '') + '</strong></td>' +
-        '<td>' + escapeHtml(b.booking_date || '') +
-          (b.booking_time ? '<br><small style="color:var(--muted)">' +
-            escapeHtml(String(b.booking_time).slice(0, 5)) + '</small>' : '') + '</td>' +
-        '<td>' + escapeHtml(b.full_name || '') + '<br><small style="color:var(--muted)">' +
-          escapeHtml(b.email || '') + '</small></td>' +
-        '<td>' + escapeHtml(String(b.pickup || '').slice(0, 34)) +
-          '<br><small style="color:var(--muted)">to ' +
-          escapeHtml(String(b.dropoff || '').slice(0, 34)) + '</small></td>' +
-        '<td>' + escapeHtml(b.payment_mode === 'later' ? 'Later' : 'Now') +
-          (b.booked_by ? '<br><small style="color:var(--muted)">agency</small>' : '') + '</td>' +
-        '<td><span class="status ' + escapeHtml(String(st).replace(/[^a-z_]/gi, '')) + '">' +
-          escapeHtml(st) + '</span></td>' +
-        '<td>' + escapeHtml(money(b.currency, b.price)) + '</td>' +
-        '<td>' + (b.refunded_amount
-          ? '<span class="warn-text">' + escapeHtml(money(b.currency, b.refunded_amount)) + '</span>'
-          : '-') + '</td>' +
-        '<td>' + escapeHtml(b.driver_payout ? money(b.currency, b.driver_payout) : '-') + '</td>' +
-        '</tr>';
-    }).join('');
-  }
-
-  el('finNote').textContent = finance.length > 400
-    ? 'Showing the first 400 rows. The CSV has all ' + finance.length + '.'
-    : (finance.length + ' booking' + (finance.length === 1 ? '' : 's') +
-       ' · totals are shown per currency, never converted.');
-
+  renderChart();
+  renderFinTable();
   reportHeight();
 }
 
-el('finApplyBtn').addEventListener('click', loadFinance);
-
-el('finResetBtn').addEventListener('click', function () {
-  ['finFrom','finTo'].forEach(function (id) { el(id).value = ''; });
-  ['finStatus','finMode','finSource','finCurrency'].forEach(function (id) { el(id).value = ''; });
-  loadFinance();
-});
-
-el('finCsvBtn').addEventListener('click', function () {
-  if (!finance.length) return alert('Nothing to export. Apply a filter first.');
-
-  var rows = finance.map(function (b) {
-    return {
-      reference: b.booking_reference || b.booking_id || '',
-      pickup_date: b.booking_date || '',
-      pickup_time: b.booking_time ? String(b.booking_time).slice(0, 5) : '',
-      booked_on: b.created_at ? String(b.created_at).slice(0, 10) : '',
-      charged_on: b.charged_at ? String(b.charged_at).slice(0, 10) : '',
-      customer: b.full_name || '',
-      email: b.email || '',
-      pickup: b.pickup || '',
-      dropoff: b.dropoff || '',
-      currency: String(b.currency || '').toUpperCase(),
-      gross: b.price || 0,
-      refunded: b.refunded_amount || 0,
-      net: Number(b.price || 0) - Number(b.refunded_amount || 0),
-      driver_payout: b.driver_payout || 0,
-      agent_booking: b.booked_by ? 'yes' : 'no',
-      agent_rate_pct: b.agent_commission_pct || '',
-      agent_public_price: b.agent_gross_price || '',
-      payment_mode: b.payment_mode || 'now',
-      payment_status: b.payment_status || '',
-      booking_status: b.status || ''
-    };
-  });
-
-  downloadRows(rows, 'airportlink-finance');
-});
-
-/** Um CSV que o Excel abre sem estragar acentos nem transformar
- *  referências em datas. O BOM resolve o primeiro; as aspas em tudo
- *  resolvem o segundo.
+/**
+ * Barras em HTML e não numa biblioteca de gráficos.
  *
- *  Nome diferente do downloadCsv que já existia: aquele recebe os
- *  cabeçalhos à parte, este deduz-os das próprias linhas. Dois
- *  nomes iguais teriam feito o segundo apagar o primeiro em silêncio. */
-function downloadRows(rows, prefix) {
-  if (!rows || !rows.length) return;
+ * Doze barras não justificam trezentos kilobytes de dependência, e
+ * uma biblioteca a mais é uma coisa a mais que parte quando muda de
+ * versão.
+ */
+function renderChart() {
+  var rows = fin.months.slice(0, 12).reverse();
+  var box = el('finChart');
 
-  var headers = Object.keys(rows[0]);
-  var lines = [headers.join(',')];
+  if (!rows.length) {
+    box.innerHTML = '<div class="no-results" style="width:100%">No months to show yet.</div>';
+    return;
+  }
 
-  rows.forEach(function (r) {
-    lines.push(headers.map(function (h) {
-      var v = r[h];
-      if (v === null || v === undefined) v = '';
-      return '"' + String(v).replace(/"/g, '""') + '"';
-    }).join(','));
+  var peak = Math.max.apply(null, rows.map(function (r) {
+    return Number(r.net_eur || 0);
+  }).concat([1]));
+
+  box.innerHTML = rows.map(function (r) {
+    var netValue = Number(r.net_eur || 0);
+    var marginValue = Number(r.margin_eur || 0);
+    var height = Math.max(2, Math.round((netValue / peak) * 130));
+    var inner = netValue > 0
+      ? Math.max(0, Math.round((marginValue / netValue) * height))
+      : 0;
+
+    return '<div class="fin-bar' + (netValue <= 0 ? ' empty' : '') + '">' +
+      '<span class="amt">' + escapeHtml(netValue ? eur(netValue) : '') + '</span>' +
+      '<div class="stack" style="height:' + height + 'px" ' +
+      'title="' + escapeHtml(monthLabel(r.month) + ': ' + eur(netValue) +
+        ' net, ' + eur(marginValue) + ' margin') + '">' +
+      (inner ? '<i style="height:' + inner + 'px"></i>' : '') + '</div>' +
+      '<span class="lbl">' + escapeHtml(monthLabel(r.month)) + '</span>' +
+      '</div>';
+  }).join('');
+}
+
+var FIN_VIEWS = {
+  months: {
+    head: ['Month', 'Bookings', 'Revenue', 'Refunds', 'Net', 'Driver cost', 'Margin', 'Margin %'],
+    note: 'Every month on record, newest first. Margin is net revenue minus what the drivers were paid.',
+    rows: function () {
+      return fin.months.map(function (r) {
+        var net = Number(r.net_eur || 0);
+        return [
+          monthLabel(r.month),
+          r.bookings,
+          eur(r.gross_eur),
+          Number(r.refunded_eur) ? '<span class="neg">' + eur(r.refunded_eur) + '</span>' : '—',
+          eur(net),
+          eur(r.supplier_cost_eur),
+          '<span class="pos">' + eur(r.margin_eur) + '</span>',
+          pct(r.margin_eur, net)
+        ];
+      });
+    }
+  },
+
+  airports: {
+    head: ['Airport', 'City', 'Bookings', 'Revenue', 'Margin', 'Average', 'Unassigned'],
+    note: 'Where the money is made. The last column is rides nobody took — if it is high at ' +
+          'one airport, you need more partners there, not more marketing.',
+    rows: function () {
+      return fin.airports.map(function (r) {
+        return [
+          '<strong>' + escapeHtml(r.airport) + '</strong>',
+          escapeHtml(r.city || '—'),
+          r.bookings,
+          eur(r.gross_eur),
+          eur(r.margin_eur),
+          eur(r.avg_booking_eur),
+          Number(r.unassigned)
+            ? '<span class="neg">' + r.unassigned + '</span>'
+            : '0'
+        ];
+      });
+    }
+  },
+
+  partners: {
+    head: ['Partner', 'Country', 'Rides', 'Completed', 'Owed total', 'Owed last month', 'Released'],
+    note: 'What each company did and what they are owed. The last month column is what goes ' +
+          'in this month\u2019s payment run. "Released" counts rides they took and gave back — ' +
+          'a number above two or three is worth a conversation.',
+    rows: function () {
+      return fin.partners.map(function (r) {
+        return [
+          '<strong>' + escapeHtml(r.trading_name || r.legal_name || '—') + '</strong>' +
+          '<br><small style="color:var(--muted)">' + escapeHtml(r.email || '') + '</small>',
+          escapeHtml(r.country || '—'),
+          r.rides,
+          r.completed,
+          eur(r.owed_eur),
+          '<strong>' + eur(r.owed_last_month_eur) + '</strong>',
+          Number(r.times_released)
+            ? '<span class="neg">' + r.times_released + '</span>'
+            : '0'
+        ];
+      });
+    }
+  },
+
+  agencies: {
+    head: ['Agency', 'Rate', 'Bookings', 'Billed', 'Discount given', 'Margin', 'Last booking'],
+    note: 'Discount given is what the trade rate cost you. Compare it with the margin column: ' +
+          'an agency that brings volume can be worth more than a direct customer even at 12% off.',
+    rows: function () {
+      return fin.agencies.map(function (r) {
+        return [
+          '<strong>' + escapeHtml(r.agency_name || '—') + '</strong>' +
+          '<br><small style="color:var(--muted)">' + escapeHtml(r.email || '') + '</small>',
+          (r.trade_rate_pct || 12) + '%',
+          r.bookings,
+          eur(r.billed_eur),
+          '<span class="neg">' + eur(r.discount_given) + '</span>',
+          '<span class="pos">' + eur(r.margin_eur) + '</span>',
+          r.last_booking ? escapeHtml(r.last_booking) : '—'
+        ];
+      });
+    }
+  },
+
+  recon: {
+    head: ['Month', 'Settled bookings', 'Quoted', 'Settled', 'Stripe fees', 'Difference', '%'],
+    note: 'Quoted is what we told the customer, converted at the ECB rate. Settled is what ' +
+          'Stripe actually deposited. A consistently negative difference means the currency ' +
+          'margin is too thin, or Stripe is charging more than assumed.',
+    rows: function () {
+      return fin.recon.map(function (r) {
+        var diff = Number(r.difference_eur || 0);
+        return [
+          monthLabel(r.month),
+          r.settled_bookings,
+          eur(r.quoted_eur),
+          eur(r.settled_eur),
+          '<span class="neg">' + eur(r.stripe_fees_eur) + '</span>',
+          '<span class="' + (diff < 0 ? 'neg' : 'pos') + '">' + eur(diff) + '</span>',
+          '<span class="' + (Number(r.difference_pct) < 0 ? 'neg' : 'pos') + '">' +
+            (r.difference_pct || 0) + '%</span>'
+        ];
+      });
+    }
+  }
+};
+
+function renderFinTable() {
+  var view = FIN_VIEWS[finView];
+  var rows = view.rows();
+
+  el('finHead').innerHTML = view.head.map(function (h, i) {
+    return '<th' + (i > 1 ? ' style="text-align:right"' : '') + '>' + escapeHtml(h) + '</th>';
+  }).join('');
+
+  el('finBody').innerHTML = rows.length
+    ? rows.map(function (cells) {
+        return '<tr>' + cells.map(function (c, i) {
+          return '<td' + (i > 1 ? ' class="num-cell"' : '') + '>' + c + '</td>';
+        }).join('') + '</tr>';
+      }).join('')
+    : '<tr><td colspan="' + view.head.length + '" class="no-results">Nothing here yet.</td></tr>';
+
+  el('finViewNote').textContent = view.note;
+}
+
+qsa('.fin-period').forEach(function (b) {
+  b.addEventListener('click', function () {
+    qsa('.fin-period').forEach(function (x) { x.classList.remove('active'); });
+    b.classList.add('active');
+    finPeriod = b.getAttribute('data-period');
+    renderFinance();
+  });
+});
+
+qsa('.fin-tab').forEach(function (b) {
+  b.addEventListener('click', function () {
+    qsa('.fin-tab').forEach(function (x) { x.classList.remove('active'); });
+    b.classList.add('active');
+    finView = b.getAttribute('data-view');
+    renderFinTable();
+    reportHeight();
+  });
+});
+
+el('finRefreshBtn').addEventListener('click', loadFinance);
+
+// ---------- exportações ----------
+
+el('finMonthCsv').addEventListener('click', function () {
+  if (!fin.months.length) return alert('Nothing to export yet.');
+
+  downloadRows(fin.months.map(function (r) {
+    return {
+      month: r.month,
+      bookings: r.bookings,
+      paid_bookings: r.paid_bookings,
+      cancelled: r.cancelled,
+      agency_bookings: r.agency_bookings,
+      pay_later_bookings: r.pay_later_bookings,
+      revenue_eur: Number(r.gross_eur || 0).toFixed(2),
+      refunded_eur: Number(r.refunded_eur || 0).toFixed(2),
+      net_eur: Number(r.net_eur || 0).toFixed(2),
+      settled_eur: Number(r.settled_eur || 0).toFixed(2),
+      stripe_fees_eur: Number(r.stripe_fees_eur || 0).toFixed(2),
+      driver_cost_eur: Number(r.supplier_cost_eur || 0).toFixed(2),
+      margin_eur: Number(r.margin_eur || 0).toFixed(2),
+      vat_eur: Number(r.vat_eur || 0).toFixed(2),
+      awaiting_charge_eur: Number(r.awaiting_charge_eur || 0).toFixed(2),
+      passengers: r.passengers,
+      distance_km: Math.round(Number(r.distance_km || 0))
+    };
+  }), 'airportlink-monthly');
+});
+
+/**
+ * O mapa de pagamentos aos motoristas.
+ *
+ * É o ficheiro que se leva ao banco: uma linha por parceiro, com o
+ * IBAN e o valor do mês passado. Só entram os que têm algo a receber.
+ */
+el('finPayoutCsv').addEventListener('click', function () {
+  var owed = fin.partners.filter(function (r) {
+    return Number(r.owed_last_month_eur || 0) > 0;
   });
 
-  var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = prefix + '-' + new Date().toISOString().slice(0, 10) + '.csv';
-  a.click();
-  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
-}
+  if (!owed.length) return alert('Nothing owed for last month.');
+
+  var missingIban = owed.filter(function (r) { return !r.payout_iban; });
+
+  if (missingIban.length) {
+    if (!window.confirm(
+      missingIban.length + ' partner(s) have no IBAN on file and cannot be paid:\n\n' +
+      missingIban.map(function (r) { return '· ' + (r.legal_name || r.email); }).join('\n') +
+      '\n\nExport anyway?')) return;
+  }
+
+  downloadRows(owed.map(function (r) {
+    return {
+      partner: r.legal_name || '',
+      trading_name: r.trading_name || '',
+      email: r.email || '',
+      country: r.country || '',
+      iban: r.payout_iban || 'MISSING',
+      rides_completed: r.completed,
+      amount_eur: Number(r.owed_last_month_eur || 0).toFixed(2)
+    };
+  }), 'airportlink-payment-run');
+});
+
+el('finTxCsv').addEventListener('click', async function () {
+  var btn = el('finTxCsv');
+  btn.disabled = true;
+  btn.textContent = 'Preparing...';
+
+  try {
+    // As transações vêm da bookings e não de uma vista: o CSV
+    // precisa de detalhe por reserva, e uma vista agregada não o tem.
+    var res = await client.from('bookings').select(
+      'booking_reference, booking_id, booking_date, booking_time, created_at, charged_at, ' +
+      'full_name, email, pickup, dropoff, pickup_airport, pickup_city, passengers, ' +
+      'currency, price, price_eur, fx_rate, settled_eur, stripe_fee_eur, ' +
+      'refunded_amount_eur, driver_payout_eur, margin_eur, payment_mode, payment_status, ' +
+      'status, booked_by, agent_reference, country_from, country_to, cross_border'
+    ).order('booking_date', { ascending: false }).limit(5000);
+
+    if (res.error) throw new Error(res.error.message);
+    if (!res.data || !res.data.length) return alert('No bookings to export.');
+
+    downloadRows(res.data.map(function (b) {
+      return {
+        reference: b.booking_reference || b.booking_id || '',
+        pickup_date: b.booking_date || '',
+        pickup_time: String(b.booking_time || '').slice(0, 5),
+        booked_on: String(b.created_at || '').slice(0, 10),
+        charged_on: String(b.charged_at || '').slice(0, 10),
+        customer: b.full_name || '',
+        email: b.email || '',
+        from: b.pickup || '',
+        to: b.dropoff || '',
+        airport: b.pickup_airport || '',
+        country_from: b.country_from || '',
+        country_to: b.country_to || '',
+        cross_border: b.cross_border ? 'yes' : 'no',
+        passengers: b.passengers || '',
+        currency: b.currency || '',
+        charged_amount: b.price || '',
+        fx_rate: b.fx_rate || '',
+        revenue_eur: b.price_eur || '',
+        settled_eur: b.settled_eur || '',
+        stripe_fee_eur: b.stripe_fee_eur || '',
+        refunded_eur: b.refunded_amount_eur || '',
+        driver_cost_eur: b.driver_payout_eur || '',
+        margin_eur: b.margin_eur || '',
+        payment_mode: b.payment_mode || 'now',
+        payment_status: b.payment_status || '',
+        booking_status: b.status || '',
+        agency_booking: b.booked_by ? 'yes' : 'no',
+        agency_reference: b.agent_reference || ''
+      };
+    }), 'airportlink-transactions');
+  } catch (e) {
+    alert(e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Transactions CSV';
+  }
+});
 
 // ============================================================
 // TEMA
@@ -3136,6 +3399,7 @@ el('refreshBtn').addEventListener('click', async function () {
   await loadAgents();
   await loadPartners();
   await loadCharges();
+  await loadFinance();
 });
 
 el('perPageSelect').addEventListener('change', function (e) {
@@ -3215,6 +3479,7 @@ async function init() {
   await loadAgents();
   await loadPartners();
   await loadCharges();
+  await loadFinance();
   subscribeToAllConversations();
   watchLive();
 }
