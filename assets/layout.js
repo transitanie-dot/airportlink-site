@@ -92,9 +92,13 @@
       { href: 'https://drivers.airportlink.app', label: 'Partner portal' }
     ]},
     { title: 'Help', links: [
-      { href: '/support',        label: 'Contact support' },
-      { href: '/forgotpassword', label: 'Forgot password' },
-      { href: '/privacypolicy',  label: 'Privacy policy' }
+      { href: '/support',       label: 'Contact support' },
+      // O /forgotpassword não existe: o formulário vive dentro do
+      // /login, e um link para uma página inexistente é um 404 no
+      // rodapé de todas as páginas.
+      { href: '/login',         label: 'Forgot password' },
+      { href: '/terms',         label: 'Terms' },
+      { href: '/privacypolicy', label: 'Privacy policy' }
     ]}
   ];
 
