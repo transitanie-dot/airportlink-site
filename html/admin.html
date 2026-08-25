@@ -308,6 +308,22 @@
     .num-cell{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
     .pos{color:var(--ok)}
     .neg{color:var(--bad)}
+    /* Vistas rápidas: o que interessa hoje, sem escrever nada. Uma
+       tabela ordenada por data de viagem enterra a reserva feita há
+       cinco minutos no meio de tudo. */
+    .quick-views{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
+    .qv{background:var(--card);border:1px solid var(--border);border-radius:14px;
+      padding:15px 16px;cursor:pointer;text-align:left;transition:border-color .15s ease}
+    .qv:hover{border-color:var(--primary)}
+    .qv.active{border-color:var(--primary);background:var(--primary-soft)}
+    .qv-n{display:block;font-family:var(--mono);font-size:24px;font-weight:600;
+      letter-spacing:-.02em;line-height:1;margin-bottom:7px}
+    .qv-l{display:block;font-family:var(--mono);font-size:9.5px;font-weight:600;
+      letter-spacing:.09em;text-transform:uppercase;color:var(--muted);line-height:1.4}
+    .qv.urgent .qv-n{color:var(--warn)}
+    .qv.bad .qv-n{color:var(--bad)}
+    @media (max-width:1100px){.quick-views{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:620px){.quick-views{grid-template-columns:1fr 1fr}}
     .driver-box{background:var(--card-2);border:1px solid var(--border);border-radius:14px;
       padding:20px;margin:20px 0}
     .driver-box h3{margin:0 0 6px;font-family:var(--display);font-weight:700;font-size:16px;
@@ -444,6 +460,33 @@
     <div class="content">
 
     <div id="bookingsTab" class="panel active">
+      <div class="quick-views" id="quickViews">
+        <button class="qv active" data-view="today-travel" type="button">
+          <span class="qv-n" id="qvTravel">0</span>
+          <span class="qv-l">Travelling today</span>
+        </button>
+        <button class="qv" data-view="tomorrow-travel" type="button">
+          <span class="qv-n" id="qvTomorrow">0</span>
+          <span class="qv-l">Travelling tomorrow</span>
+        </button>
+        <button class="qv" data-view="today-sold" type="button">
+          <span class="qv-n" id="qvSold">0</span>
+          <span class="qv-l">Booked today</span>
+        </button>
+        <button class="qv" data-view="unassigned" type="button">
+          <span class="qv-n" id="qvUnassigned">0</span>
+          <span class="qv-l">No partner yet</span>
+        </button>
+        <button class="qv" data-view="refunds" type="button">
+          <span class="qv-n" id="qvRefunds">0</span>
+          <span class="qv-l">Refunds to handle</span>
+        </button>
+        <button class="qv" data-view="all" type="button">
+          <span class="qv-n" id="qvAll">0</span>
+          <span class="qv-l">Everything</span>
+        </button>
+      </div>
+
       <div class="search-section">
         <h2>Search Bookings</h2>
         <div class="search-grid">
@@ -916,9 +959,18 @@ function escapeHtml(s) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
+/**
+ * Sempre em 24 horas.
+ *
+ * O formato local dá AM/PM em vários países, e num painel de
+ * operações "7:30" sem indicação é a diferença entre um voo da manhã
+ * e um da noite.
+ */
 function formatTime(v) {
   var d = new Date(v);
-  return isNaN(d.getTime()) ? '' : d.toLocaleString([], { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+  return isNaN(d.getTime()) ? '' : d.toLocaleString('en-GB', {
+    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false
+  });
 }
 function money(currency, value) {
   var c = currency ? String(currency).toUpperCase() : 'EUR';
@@ -933,6 +985,10 @@ function bookingRef(b) { return b.booking_id || b.booking_reference || String(b.
 
 var currentAdmin = null;
 var bookingFilters = { bookingId:'', email:'', name:'', pickup:'', dropoff:'', dateFrom:'', dateTo:'', status:'' };
+
+// Qual das vistas rápidas está escolhida. 'today-travel' por
+// omissão: quem abre o painel de manhã quer saber o que sai hoje.
+var quickView = 'today-travel';
 var allBookings = [], bookingPage = 1, bookingPerPage = 50;
 var contacts = [], contactFilters = { search:'', searchId:'' }, contactPage = 1, contactPerPage = 50;
 var selectedContactBookings = [], selectedContactChats = [];
@@ -1145,13 +1201,112 @@ function renderBookingStats() {
   el('totalBookings').textContent = allBookings.length;
 }
 
+var QUICK_VIEWS = {
+  'today-travel': {
+    label: 'travelling today',
+    test: function (b, today) { return b.booking_date === today && b.status !== 'cancelled'; },
+    // Por hora de recolha: quem vai primeiro está primeiro.
+    sort: function (a, b) { return String(a.booking_time || '').localeCompare(String(b.booking_time || '')); }
+  },
+  'tomorrow-travel': {
+    label: 'travelling tomorrow',
+    test: function (b, today, tomorrow) { return b.booking_date === tomorrow && b.status !== 'cancelled'; },
+    sort: function (a, b) { return String(a.booking_time || '').localeCompare(String(b.booking_time || '')); }
+  },
+  'today-sold': {
+    label: 'booked today',
+    test: function (b, today) { return String(b.created_at || '').slice(0, 10) === today; },
+    // Pela hora da compra, a mais recente primeiro: é a que ainda
+    // não viste.
+    sort: function (a, b) { return String(b.created_at || '').localeCompare(String(a.created_at || '')); }
+  },
+  unassigned: {
+    label: 'with no partner',
+    test: function (b, today) {
+      return !b.assigned_partner_id && b.status !== 'cancelled' && b.booking_date >= today;
+    },
+    sort: function (a, b) { return String(a.booking_date || '').localeCompare(String(b.booking_date || '')); }
+  },
+  refunds: {
+    label: 'needing a refund decision',
+    // Canceladas e pagas, sem reembolso registado. É dinheiro do
+    // cliente ainda contigo.
+    test: function (b) {
+      const paid = b.charged_at || b.payment_status === 'paid' || b.status === 'paid';
+      const refunded = Number(b.refunded_amount || 0) > 0;
+      return b.status === 'cancelled' && paid && !refunded;
+    },
+    sort: function (a, b) { return String(b.updated_at || '').localeCompare(String(a.updated_at || '')); }
+  },
+  all: {
+    label: 'in total',
+    test: function () { return true; },
+    sort: function (a, b) { return String(b.created_at || '').localeCompare(String(a.created_at || '')); }
+  }
+};
+
+function todayISO(offset) {
+  var d = new Date();
+  d.setDate(d.getDate() + (offset || 0));
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
+    '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function viewBookings(name) {
+  var view = QUICK_VIEWS[name] || QUICK_VIEWS.all;
+  var today = todayISO(0);
+  var tomorrow = todayISO(1);
+
+  return allBookings
+    .filter(function (b) { return view.test(b, today, tomorrow); })
+    .sort(view.sort);
+}
+
+function paintQuickViews() {
+  var counts = {
+    'today-travel': viewBookings('today-travel').length,
+    'tomorrow-travel': viewBookings('tomorrow-travel').length,
+    'today-sold': viewBookings('today-sold').length,
+    unassigned: viewBookings('unassigned').length,
+    refunds: viewBookings('refunds').length,
+    all: allBookings.length
+  };
+
+  el('qvTravel').textContent = counts['today-travel'];
+  el('qvTomorrow').textContent = counts['tomorrow-travel'];
+  el('qvSold').textContent = counts['today-sold'];
+  el('qvUnassigned').textContent = counts.unassigned;
+  el('qvRefunds').textContent = counts.refunds;
+  el('qvAll').textContent = counts.all;
+
+  // Cor só onde significa alguma coisa a fazer.
+  document.querySelector('[data-view="unassigned"]')
+    .classList.toggle('urgent', counts.unassigned > 0);
+  document.querySelector('[data-view="refunds"]')
+    .classList.toggle('bad', counts.refunds > 0);
+}
+
+qsa('.qv').forEach(function (b) {
+  b.addEventListener('click', function () {
+    qsa('.qv').forEach(function (x) { x.classList.remove('active'); });
+    b.classList.add('active');
+    quickView = b.getAttribute('data-view');
+    bookingPage = 1;
+    renderBookings();
+  });
+});
+
 function renderBookings() {
   var tbody = el('bookingsList');
+  var rows = viewBookings(quickView);
   var start = (bookingPage - 1) * bookingPerPage;
-  var page = allBookings.slice(start, start + bookingPerPage);
+  var page = rows.slice(start, start + bookingPerPage);
+
+  paintQuickViews();
 
   if (!page.length) {
-    tbody.innerHTML = '<tr><td colspan="9"><div class="no-results">No bookings found</div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9"><div class="no-results">Nothing ' +
+      escapeHtml((QUICK_VIEWS[quickView] || QUICK_VIEWS.all).label) + '.</div></td></tr>';
     return;
   }
 
@@ -1180,7 +1335,9 @@ function renderBookings() {
 
 function renderBookingPagination() {
   var p = el('bookingsPagination');
-  var totalPages = Math.ceil(allBookings.length / bookingPerPage);
+  // Conta as linhas da VISTA, não todas: com 'travelling today'
+  // escolhido, paginar sobre o total dava páginas vazias.
+  var totalPages = Math.ceil(viewBookings(quickView).length / bookingPerPage);
   if (totalPages <= 1) { p.innerHTML = ''; return; }
 
   var html = '<button class="pagination-btn" id="bookingPrevBtn">Prev</button>';
@@ -1201,7 +1358,9 @@ function renderBookingPagination() {
 }
 
 function changeBookingPage(page) {
-  var totalPages = Math.ceil(allBookings.length / bookingPerPage);
+  // Conta as linhas da VISTA, não todas: com 'travelling today'
+  // escolhido, paginar sobre o total dava páginas vazias.
+  var totalPages = Math.ceil(viewBookings(quickView).length / bookingPerPage);
   if (page < 1 || page > totalPages) return;
   bookingPage = page;
   renderBookings(); renderBookingPagination();
