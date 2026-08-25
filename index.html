@@ -118,18 +118,6 @@ html[data-theme="dark"] .veh-tyre{fill:#05080D}
   .vehicle{grid-template-columns:1fr;text-align:center;justify-items:center}
 }
 
-/* ---------- a imagem do hero ----------
-   Sem loading="lazy" e com fetchpriority="high": é a única imagem
-   visível ao carregar, e adiá-la deixaria o topo vazio no momento
-   em que a pessoa está a decidir se fica.
-
-   Se o ficheiro não existir, o bloco fica com o gradiente e nada
-   parece partido. */
-.hero-shot{margin:22px 0 18px;border-radius:22px;overflow:hidden;
-  aspect-ratio:16/6.4;background:linear-gradient(120deg,#1E2634 0%,#141A28 58%,#0F766E 190%)}
-.hero-shot img{width:100%;height:100%;object-fit:cover;display:block}
-@media (max-width:700px){.hero-shot{aspect-ratio:16/9;margin:18px 0 16px}}
-
 /* ---------- destinos ----------
    Fotografamos o destino, não o serviço. Um carro numa foto promete
    um modelo que não controlamos; uma cidade promete a viagem, que é
@@ -249,7 +237,14 @@ input[type="time"],input[type="number"],input[type="tel"],select{
    arredondados desaparecem em alguns temas do sistema. Mas tirar a
    aparência nativa a um select tira-lhe também a seta, por isso
    desenhamos uma. */
-input,select,textarea{appearance:none;-webkit-appearance:none}
+/* As caixas de seleção ficam de fora: appearance:none apaga-lhes o
+   desenho nativo por completo, e o que fica é um quadrado em branco
+   que nunca parece marcado. */
+input:not([type="checkbox"]):not([type="radio"]),
+select,textarea{appearance:none;-webkit-appearance:none}
+input[type="checkbox"],input[type="radio"]{accent-color:var(--teal);cursor:pointer}
+html[data-theme="dark"] input[type="checkbox"],
+html[data-theme="dark"] input[type="radio"]{accent-color:var(--amber)}
 select{padding-right:38px;
   background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
     linear-gradient(135deg,var(--muted) 50%,transparent 50%);
@@ -267,16 +262,26 @@ input[readonly]{opacity:.7}
 .suggestion-main{font-size:14px;font-weight:600}
 .suggestion-sub{font-size:12px;color:var(--muted);margin-top:2px}
 
-.return-toggle{display:flex;gap:12px;align-items:flex-start;cursor:pointer;padding:14px 16px;
-  border-radius:16px;background:var(--surface);border:1px solid var(--rule-strong);margin-bottom:14px;
-  transition:border-color .15s ease}
-.return-toggle:hover{border-color:var(--teal)}
-.return-toggle input{width:18px;height:18px;margin-top:2px;flex:0 0 auto}
-.rt-text strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
-  letter-spacing:-.01em;margin-bottom:3px}
-.rt-text span{color:var(--muted);font-size:12.5px;line-height:1.55}
-.return-box{background:var(--surface-2);border:1px solid var(--rule);border-radius:18px;
-  padding:16px;margin-bottom:14px}
+.return-row{display:flex;gap:12px;align-items:center;width:100%;text-align:left;
+  padding:12px 14px;border-radius:15px;background:var(--surface);
+  border:1px solid var(--rule-strong);margin-top:16px;cursor:pointer;
+  transition:border-color .15s ease,background .15s ease}
+.return-row:hover{border-color:var(--teal)}
+.return-row.on{border-color:var(--teal);background:var(--teal-soft)}
+.rr-icon{width:32px;height:32px;border-radius:10px;background:var(--surface-2);
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;color:var(--teal)}
+html[data-theme="dark"] .rr-icon{color:var(--amber)}
+.rr-icon svg{width:16px;height:16px}
+.rr-text{flex:1;min-width:0}
+.rr-text strong{display:block;font-family:var(--display);font-weight:700;font-size:14px;
+  letter-spacing:-.01em;margin-bottom:2px}
+.rr-text span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rr-chev{color:var(--muted);flex:0 0 auto;transition:transform .2s ease}
+.rr-chev svg{width:16px;height:16px;display:block}
+.return-row.on .rr-chev{transform:rotate(180deg)}
+.return-box{background:var(--surface-2);border:1px solid var(--rule);border-radius:16px;
+  padding:16px;margin-top:10px}
 .rt-route{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.7;
   padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--rule)}
 .rt-route b{color:var(--text);font-weight:600}
@@ -437,11 +442,6 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
     <h1 class="rise d1">A driver waiting for you, <em>at a price you already know.</em></h1>
     <p class="lead rise d2">No queues, no meters, no surprises. One vehicle for your group, door to door. Get your fare below in under a minute.</p>
 
-    <div class="hero-shot rise d2" aria-hidden="true">
-      <img src="/assets/img/hero.webp" alt="" width="1600" height="640"
-           fetchpriority="high" decoding="async">
-    </div>
-
     <div class="proofs rise d3">
       <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Fixed price, taxes in</span>
       <span class="proof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Free cancellation, 24h</span>
@@ -514,13 +514,28 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
             <div class="field"><div class="label-row"><label for="travelTime">Pick-up time</label></div><input id="travelTime" type="time" /></div>
           </div>
 
-          <label class="return-toggle" id="returnToggle">
-            <input type="checkbox" id="wantReturn">
-            <span class="rt-text">
-              <strong>Add the return trip</strong>
-              <span id="returnHint">The same route the other way, on a day you choose. One payment, two drivers.</span>
+          <div class="vehicle" id="vehicleCard">
+            <div class="vehicle-art" id="vehicleArt"></div>
+            <div class="vehicle-text">
+              <span class="tag">Vehicle</span>
+              <strong id="vehicleName">Sedan</strong>
+              <span id="vehicleNote">Up to 4 passengers with hand luggage.</span>
+            </div>
+          </div>
+
+
+          <button class="return-row" id="returnRow" type="button" aria-expanded="false" aria-controls="returnBox">
+            <span class="rr-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M21 7H8a4 4 0 0 0-4 4"/><path d="M7 21l-4-4 4-4"/><path d="M3 17h13a4 4 0 0 0 4-4"/></svg>
             </span>
-          </label>
+            <span class="rr-text">
+              <strong>Coming back too?</strong>
+              <span id="returnSummary">Add the return trip and pay for both at once.</span>
+            </span>
+            <span class="rr-chev" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
 
           <div class="return-box hidden" id="returnBox">
             <div class="rt-route" id="returnRoute">&mdash;</div>
@@ -533,15 +548,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
               <div class="field"><div class="label-row"><label for="returnPickup">Return pick-up</label></div><input id="returnPickup" type="text" autocomplete="off" /><div id="returnPickupSuggestions" class="suggestions"></div></div>
               <div class="field"><div class="label-row"><label for="returnDropoff">Return drop-off</label></div><input id="returnDropoff" type="text" autocomplete="off" /><div id="returnDropoffSuggestions" class="suggestions"></div></div>
             </div>
-          </div>
-
-          <div class="vehicle" id="vehicleCard">
-            <div class="vehicle-art" id="vehicleArt"></div>
-            <div class="vehicle-text">
-              <span class="tag">Vehicle</span>
-              <strong id="vehicleName">Sedan</strong>
-              <span id="vehicleNote">Up to 4 passengers with hand luggage.</span>
-            </div>
+            <button class="link-btn" id="dropReturnBtn" type="button">Remove the return trip</button>
           </div>
 
           <div class="mini-grid">
@@ -769,24 +776,12 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
     <div class="band-head">
       <span class="tag">Where we drive</span>
       <h2>The places our passengers land.</h2>
-      <p>We cover the whole country from each of these airports &mdash; city centres, coastal
-      towns, and everywhere in between. If your destination is not obvious, enter it above
-      and you will have a price in seconds.</p>
+      <p>City centres, coastal towns and everywhere in between. If your destination is not
+      listed, enter it above and you will have a price in seconds &mdash; we price any route
+      our partners can drive.</p>
     </div>
 
     <div class="dest-grid">
-      <a class="dest" href="/#book">
-        <div class="dest-img">
-          <img src="/assets/img/lisbon.webp" alt="Lisbon" width="600" height="800"
-               loading="lazy" decoding="async">
-        </div>
-        <div class="dest-body">
-          <div class="k">LIS</div>
-          <h3>Lisbon</h3>
-          <p>City centre, Cascais, Sintra, Setúbal</p>
-        </div>
-      </a>
-
       <a class="dest" href="/#book">
         <div class="dest-img">
           <img src="/assets/img/porto.webp" alt="Porto" width="600" height="800"
@@ -801,21 +796,39 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
 
       <a class="dest" href="/#book">
         <div class="dest-img">
-          <img src="/assets/img/faro.webp" alt="Faro" width="600" height="800"
+          <img src="/assets/img/dublin.webp" alt="Dublin" width="600" height="800"
                loading="lazy" decoding="async">
         </div>
         <div class="dest-body">
-          <div class="k">FAO</div>
-          <h3>Faro</h3>
-          <p>Albufeira, Vilamoura, Lagos, Tavira</p>
+          <div class="k">DUB</div>
+          <h3>Dublin</h3>
+          <p>City centre, Howth, Wicklow, Kildare</p>
         </div>
       </a>
 
-      <div class="dest-more">
-        <span><strong style="display:block;font-family:var(--display);font-size:16px;
-        color:var(--text);margin-bottom:6px">Somewhere else?</strong>
-        We are opening market by market. Enter any route above and we will price it.</span>
-      </div>
+      <a class="dest" href="/#book">
+        <div class="dest-img">
+          <img src="/assets/img/newyork.webp" alt="New York" width="600" height="800"
+               loading="lazy" decoding="async">
+        </div>
+        <div class="dest-body">
+          <div class="k">JFK</div>
+          <h3>New York</h3>
+          <p>Manhattan, Brooklyn, Newark, the Hamptons</p>
+        </div>
+      </a>
+
+      <a class="dest" href="/#book">
+        <div class="dest-img">
+          <img src="/assets/img/rio.webp" alt="Rio de Janeiro" width="600" height="800"
+               loading="lazy" decoding="async">
+        </div>
+        <div class="dest-body">
+          <div class="k">GIG</div>
+          <h3>Rio de Janeiro</h3>
+          <p>Copacabana, Ipanema, Barra, Búzios</p>
+        </div>
+      </a>
     </div>
   </div>
 </section>
@@ -1928,8 +1941,13 @@ function returnLegPayload() {
 
 function paintReturn() {
   $('returnBox').classList.toggle('hidden', !returnOn);
+  $('returnRow').classList.toggle('on', returnOn);
+  $('returnRow').setAttribute('aria-expanded', returnOn ? 'true' : 'false');
 
   if (!returnOn) {
+    // A linha fechada volta ao convite. Deixar lá a data escolhida
+    // faria pensar que a volta continua reservada.
+    $('returnSummary').textContent = 'Add the return trip and pay for both at once.';
     updatePriceDisplayOnly();
     updateCheckoutSummary();
     return;
@@ -1952,6 +1970,14 @@ function paintReturn() {
   $('returnRoute').appendChild(line1);
   $('returnRoute').appendChild(line2);
 
+  // A linha fechada passa a mostrar o que foi escolhido, para não
+  // ser preciso abrir para confirmar.
+  $('returnSummary').textContent = leg.date
+    ? 'Returning ' + new Date(leg.date + 'T12:00:00')
+        .toLocaleDateString(undefined, { day: 'numeric', month: 'long' }) +
+      (leg.time ? ' at ' + leg.time : '')
+    : 'Choose the return date below.';
+
   // A volta não pode ser antes da ida.
   if ($('travelDate').value) {
     $('returnDate').min = $('travelDate').value;
@@ -1964,18 +1990,50 @@ function paintReturn() {
   updateCheckoutSummary();
 }
 
-$('wantReturn').addEventListener('change', function () {
-  returnOn = $('wantReturn').checked;
+var RETURN_AFTER_DAYS = 7;
+var returnDateTouched = false;
 
-  // Sugerir uma semana depois: é o intervalo mais comum e poupa a
-  // maioria das pessoas de escolher.
-  if (returnOn && !$('returnDate').value && $('travelDate').value) {
-    var d = new Date($('travelDate').value + 'T12:00:00');
-    d.setDate(d.getDate() + 7);
-    $('returnDate').value = d.toISOString().slice(0, 10);
+/**
+ * Uma semana depois da ida, à mesma hora.
+ *
+ * Só preenche enquanto a pessoa não tiver mexido no campo. A partir
+ * daí a escolha é dela, e sobrepor-nos a ela seria pior do que não
+ * sugerir nada.
+ */
+function suggestReturnDate() {
+  if (returnDateTouched || !$('travelDate').value) return;
+
+  var d = new Date($('travelDate').value + 'T12:00:00');
+  d.setDate(d.getDate() + RETURN_AFTER_DAYS);
+
+  $('returnDate').value = d.toISOString().slice(0, 10);
+  if (!$('returnTime').value) {
     $('returnTime').value = $('travelTime').value || '10:00';
   }
+}
 
+$('returnRow').addEventListener('click', function () {
+  returnOn = !returnOn;
+  if (returnOn) suggestReturnDate();
+  paintReturn();
+});
+
+// Se a data da ida for escolhida DEPOIS de abrir a linha, a volta
+// acerta-se sozinha. Sem isto, quem abrisse primeiro ficava com o
+// campo vazio e sem saber porquê.
+$('travelDate').addEventListener('change', function () {
+  if (returnOn) { suggestReturnDate(); paintReturn(); }
+});
+
+$('returnDate').addEventListener('input', function () {
+  returnDateTouched = true;
+});
+
+$('dropReturnBtn').addEventListener('click', function () {
+  returnOn = false;
+  returnDateTouched = false;
+  $('returnDate').value = '';
+  $('returnTime').value = '';
   paintReturn();
 });
 
