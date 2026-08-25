@@ -999,7 +999,7 @@ $('forgotBtn').addEventListener('click', async function () {
   var email = $('authEmail').value.trim();
   if (!email) return showMsg($('authError'), $('authOk'), 'Enter your email first.');
   try {
-    await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: SITE_ORIGIN + '/resetpassword' });
+    await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: SITE_ORIGIN + '/login' });
   } catch (e) { console.error(e); }
   // Resposta genérica: não revelamos que emails existem.
   showMsg($('authOk'), $('authError'), 'If an account exists for that email, a reset link has been sent.');
