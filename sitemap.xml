@@ -4,5 +4,6 @@
   <url><loc>https://www.airportlink.app/travelagents</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.airportlink.app/drivers</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.airportlink.app/support</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.airportlink.app/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.airportlink.app/privacypolicy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>
