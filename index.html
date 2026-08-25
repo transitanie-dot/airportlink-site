@@ -150,15 +150,18 @@ html[data-theme="dark"] .veh-tyre{fill:#05080D}
 /* ---------- os três passos, agora em faixa ---------- */
 .steps-band{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
   border:1px solid var(--rule);border-radius:24px;overflow:hidden;background:var(--surface)}
-.step-cell{padding:24px 26px;border-right:1px dashed var(--rule-strong);
+.step-cell{padding:26px 26px 28px;border-right:1px dashed var(--rule-strong);
   display:grid;grid-template-columns:42px 1fr;gap:15px;align-items:start}
 .step-cell:last-child{border-right:0}
 .step-cell .ic{width:42px;height:42px;border-radius:999px;background:var(--teal-soft);
   border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .step-cell .ic svg{width:20px;height:20px;color:var(--teal)}
 html[data-theme="dark"] .step-cell .ic svg{color:var(--amber)}
-.step-cell strong{display:block;font-family:var(--display);font-weight:700;font-size:15.5px;
-  letter-spacing:-.01em;margin-bottom:4px}
+.step-n{display:block;font-family:var(--mono);font-size:9.5px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:6px}
+html[data-theme="dark"] .step-n{color:var(--amber)}
+.step-cell strong{display:block;font-family:var(--display);font-weight:700;font-size:16.5px;
+  letter-spacing:-.02em;margin-bottom:6px;line-height:1.2}
 .step-cell span{color:var(--muted);font-size:13.5px;line-height:1.6}
 
 /* ---------- escolha de pagamento ---------- */
@@ -327,6 +330,8 @@ html[data-theme="dark"] .auth-tab.active{background:var(--amber);color:#141A28}
 .auth-msg{display:none;margin-top:12px;padding:12px 14px;border-radius:14px;font-size:13.5px;line-height:1.5}
 .auth-msg.err{background:var(--err-bg);color:var(--err-text);border:1px solid var(--err-rule)}
 .auth-msg.ok{background:var(--ok-bg);color:var(--ok-text);border:1px solid var(--ok-rule)}
+.msg-inline{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--err-bg);
+  border:1px solid var(--err-rule);color:var(--err-text);font-size:13.5px;line-height:1.55}
 .save-traveller{display:flex;gap:11px;align-items:flex-start;cursor:pointer;
   padding:12px 14px;border-radius:15px;background:var(--surface-2);
   border:1px solid var(--rule);margin-bottom:14px;font-size:13.5px;line-height:1.5}
@@ -721,6 +726,10 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
               <input type="checkbox" id="saveTraveller">
               <span>Save this traveller for next time</span>
             </label>
+            <!-- O aviso fica ao pé do botão, não no topo do formulário:
+                 lá em cima ficava fora do ecrã e a pessoa carregava
+                 outra vez sem perceber porquê. -->
+            <div id="formError" class="msg-inline hidden"></div>
             <button id="confirmBtn" class="btn confirm-btn" type="button">Review booking</button>
           </div>
         </div>
@@ -771,6 +780,51 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
   </div>
 </section>
 
+<section class="band" style="padding-bottom:6px">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="tag">What happens next</span>
+      <h2>From landing to your door.</h2>
+      <p>Three things happen after you book. None of them needs anything from you.</p>
+    </div>
+
+    <div class="steps-band">
+      <div class="step-cell">
+        <span class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M5.5 14.5 4 9.2a.6.6 0 0 1 .8-.7l2 .7 2.6 1.1 2-4.9a1.4 1.4 0 0 1 2.6.2l1.3 5.8 3.2 1.3a1.6 1.6 0 0 1-.5 3.1H7.2a1.8 1.8 0 0 1-1.7-1.3Z"/></svg>
+        </span>
+        <div>
+          <span class="step-n">Step one</span>
+          <strong>Your flight lands</strong>
+          <span>We track it from the flight number you gave us. Land two hours late and the pick-up simply moves with you.</span>
+        </div>
+      </div>
+
+      <div class="step-cell">
+        <span class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/><path d="m18 8 2 2 4-4"/></svg>
+        </span>
+        <div>
+          <span class="step-n">Step two</span>
+          <strong>Your driver is already there</strong>
+          <span>You had their name and phone number the day before. They call you with the exact meeting point. No app, no queue, no waiting.</span>
+        </div>
+      </div>
+
+      <div class="step-cell">
+        <span class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V10l7-5 7 5v11"/><path d="M10 21v-6h4v6"/></svg>
+        </span>
+        <div>
+          <span class="step-n">Step three</span>
+          <strong>Straight to your door</strong>
+          <span>One vehicle for your group, no other stops. The fare you saw is the fare you paid — nothing is added at the end.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="band" style="padding-bottom:0">
   <div class="wrap">
     <div class="band-head">
@@ -784,7 +838,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
     <div class="dest-grid">
       <a class="dest" href="/#book">
         <div class="dest-img">
-          <img src="/assets/img/porto.webp" alt="Porto" width="600" height="800"
+          <img src="/assets/img/porto.svg" alt="Porto" width="600" height="800"
                loading="lazy" decoding="async">
         </div>
         <div class="dest-body">
@@ -796,7 +850,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
 
       <a class="dest" href="/#book">
         <div class="dest-img">
-          <img src="/assets/img/dublin.webp" alt="Dublin" width="600" height="800"
+          <img src="/assets/img/dublin.svg" alt="Dublin" width="600" height="800"
                loading="lazy" decoding="async">
         </div>
         <div class="dest-body">
@@ -808,7 +862,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
 
       <a class="dest" href="/#book">
         <div class="dest-img">
-          <img src="/assets/img/newyork.webp" alt="New York" width="600" height="800"
+          <img src="/assets/img/newyork.svg" alt="New York" width="600" height="800"
                loading="lazy" decoding="async">
         </div>
         <div class="dest-body">
@@ -820,7 +874,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
 
       <a class="dest" href="/#book">
         <div class="dest-img">
-          <img src="/assets/img/rio.webp" alt="Rio de Janeiro" width="600" height="800"
+          <img src="/assets/img/rio.svg" alt="Rio de Janeiro" width="600" height="800"
                loading="lazy" decoding="async">
         </div>
         <div class="dest-body">
@@ -829,25 +883,6 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
           <p>Copacabana, Ipanema, Barra, Búzios</p>
         </div>
       </a>
-    </div>
-  </div>
-</section>
-
-<section class="band" style="padding-top:34px;padding-bottom:0">
-  <div class="wrap">
-    <div class="steps-band">
-      <div class="step-cell">
-        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M5.5 14.5 4 9.2a.6.6 0 0 1 .8-.7l2 .7 2.6 1.1 2-4.9a1.4 1.4 0 0 1 2.6.2l1.3 5.8 3.2 1.3a1.6 1.6 0 0 1-.5 3.1H7.2a1.8 1.8 0 0 1-1.7-1.3Z"/></svg></span>
-        <div><strong>Your flight lands</strong><span>Give us the flight number and we track it.</span></div>
-      </div>
-      <div class="step-cell">
-        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18"/><path d="M4 13V9.5L6 5h12l2 4.5V13"/><path d="M4 13v4h3v-4M17 13v4h3v-4"/><circle cx="7.5" cy="15.5" r="1"/><circle cx="16.5" cy="15.5" r="1"/></svg></span>
-        <div><strong>The driver is already there</strong><span>One vehicle for your group and your luggage. No app to open, no queue, no shared ride.</span></div>
-      </div>
-      <div class="step-cell">
-        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V10l7-5 7 5v11"/><path d="M10 21v-6h4v6"/></svg></span>
-        <div><strong>Straight to the door</strong><span>Hotel, apartment or street address. The fare you saw is the fare you pay.</span></div>
-      </div>
     </div>
   </div>
 </section>
@@ -1409,21 +1444,41 @@ function isPortugalRoute() {
 function pad(n) { return String(n).padStart(2, '0'); }
 
 function setDateConstraints() {
-  var di = $('travelDate'), ti = $('travelTime'), now = new Date();
-  var today = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
-  di.min = today;
-  if (!di.value || di.value < today) di.value = today;
-  if (!ti.value) ti.value = pad(now.getHours()) + ':' + pad(now.getMinutes());
+  var di = $('travelDate'), ti = $('travelTime');
+  var earliest = earliestPickup();
+  var day = earliest.getFullYear() + '-' +
+    pad(earliest.getMonth() + 1) + '-' + pad(earliest.getDate());
+
+  di.min = day;
+  if (!di.value || di.value < day) di.value = day;
+  if (!ti.value) ti.value = pad(earliest.getHours()) + ':' + pad(earliest.getMinutes());
+
   updateTimeConstraint();
 }
 
+// Meia hora de folga: é o tempo mínimo para atribuir a viagem a um
+// parceiro e o motorista chegar. Aceitar uma recolha para daqui a
+// dez minutos era prometer o que não se cumpre.
+var BOOKING_BUFFER_MINUTES = 30;
+
+function earliestPickup() {
+  var d = new Date();
+  d.setMinutes(d.getMinutes() + BOOKING_BUFFER_MINUTES);
+  return d;
+}
+
 function updateTimeConstraint() {
-  var di = $('travelDate'), ti = $('travelTime'), now = new Date();
-  var today = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
-  if (di.value === today) {
-    ti.min = pad(now.getHours()) + ':' + pad(now.getMinutes());
+  var di = $('travelDate'), ti = $('travelTime');
+  var earliest = earliestPickup();
+  var earliestDay = earliest.getFullYear() + '-' +
+    pad(earliest.getMonth() + 1) + '-' + pad(earliest.getDate());
+
+  if (di.value === earliestDay) {
+    ti.min = pad(earliest.getHours()) + ':' + pad(earliest.getMinutes());
     if (!ti.value || ti.value < ti.min) ti.value = ti.min;
-  } else ti.min = '';
+  } else {
+    ti.min = '';
+  }
 }
 
 async function initMap() {
@@ -1557,8 +1612,11 @@ function tryAutoCalculate() {
 
 function calculateRouteAndPrice() {
   var passengers = Math.max(1, Math.min(16, parseInt($('passengers').value, 10) || 1));
-  if (new Date($('travelDate').value + 'T' + $('travelTime').value + ':00') < new Date()) {
-    return setStatus('Please select a future date and time.', true);
+  var when = new Date($('travelDate').value + 'T' + $('travelTime').value + ':00');
+
+  if (when < earliestPickup()) {
+    return setStatus('We need at least ' + BOOKING_BUFFER_MINUTES +
+      ' minutes to arrange a driver. Please pick a later time.', true);
   }
 
   setStatus('Calculating route and fare...');
@@ -2122,15 +2180,25 @@ $('confirmBtn').addEventListener('click', function () {
   var phoneCode = $('phoneCode').value.trim();
   var phoneNumber = $('phoneNumber').value.trim();
   if (!fullName || !phoneCode || !phoneNumber) {
-    return setStatus('Please fill in your name and phone number.', true);
+    $('formError').textContent = 'Please fill in your name and phone number — ' +
+      'the driver calls that number on the day.';
+    $('formError').classList.remove('hidden');
+    return;
   }
 
   // Sem conta, o email é o único caminho até à pessoa: sem ele não
   // há confirmação, nem recibo, nem dados do motorista.
   var email = guestMode ? $('guestEmail').value.trim() : currentUser.email;
 
+  var formError = $('formError');
+  formError.classList.add('hidden');
+
   if (guestMode && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return setStatus('We need a valid email — it is where everything is sent.', true);
+    formError.textContent = 'We need a valid email address — it is where the confirmation, ' +
+      'the receipt and the driver details are sent.';
+    formError.classList.remove('hidden');
+    $('guestEmail').focus();
+    return;
   }
 
   // O aviso do comprimento não bloqueia a reserva — um plano de
