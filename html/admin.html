@@ -270,6 +270,19 @@
     .chg-actions{display:flex;gap:9px;margin-top:11px;flex-wrap:wrap}
     .btn-charge{background:#10b981;color:#fff;border:0;border-radius:9px;padding:9px 15px;font-weight:700;font-size:12.5px;cursor:pointer}
     .btn-charge:disabled{opacity:.5;cursor:not-allowed}
+    .driver-box{background:var(--card-2);border:1px solid var(--border);border-radius:14px;
+      padding:20px;margin:20px 0}
+    .driver-box h3{margin:0 0 6px;font-family:var(--display);font-weight:700;font-size:16px;
+      letter-spacing:-.02em}
+    .driver-box .note{margin:0 0 16px;color:var(--muted);font-size:13.5px;line-height:1.6}
+    .driver-box .note.warn{color:var(--warn)}
+    .driver-box .note.ok{color:var(--ok)}
+    .driver-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+    .driver-fields input{padding:10px 13px;border:1px solid var(--border);border-radius:10px;
+      background:var(--bg);color:var(--text);font-size:14px;outline:none;width:100%}
+    .driver-fields input:focus{border-color:var(--primary)}
+    .driver-actions{display:flex;gap:9px;flex-wrap:wrap}
+    @media (max-width:700px){.driver-fields{grid-template-columns:1fr}}
     .pt-doc.rejected{border-color:#7f1d1d;background:rgba(248,113,113,.06)}
     .pt-doc.approved{border-color:rgba(52,211,153,.35)}
     .doc-state{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.1em;
@@ -735,6 +748,28 @@
       <div><div class="detail-label">Status</div><div class="detail-value"><span id="detailStatus"></span></div></div>
       <div class="detail-full"><div class="detail-label">Notes</div><div class="detail-value" id="detailNotes"></div></div>
     </div>
+    <!-- Quem vai buscar o cliente. Aparece só quando a viagem é
+         nos próximos dias: antes disso é cedo para decidir. -->
+    <div class="driver-box hidden" id="driverBox">
+      <h3>Who is picking them up</h3>
+      <p class="note" id="driverState">&mdash;</p>
+
+      <div class="driver-fields">
+        <input type="text" id="mdName" placeholder="Driver name">
+        <input type="text" id="mdPhone" placeholder="Phone the passenger can call">
+        <input type="text" id="mdVehicle" placeholder="Vehicle, e.g. Mercedes V-Class">
+        <input type="text" id="mdPlate" placeholder="Plate">
+      </div>
+
+      <div class="driver-actions">
+        <button id="mdSaveBtn" class="search-btn" type="button">Save this driver</button>
+        <button id="mdSendBtn" class="export-btn" type="button">Send details to passenger</button>
+        <button id="mdHoldBtn" class="clear-btn" type="button">Hold the email</button>
+      </div>
+
+      <div id="driverMsg" class="gate-msg" style="margin-top:12px"></div>
+    </div>
+
     <div class="refund-box" id="refundBox">
       <h3>Issue a refund</h3>
       <p class="note">For cases outside the automatic cancellation window. The money leaves immediately and cannot be undone from here. Partial refunds are allowed; leave the amount empty to refund everything still outstanding.</p>
@@ -856,7 +891,7 @@ var PARTNER_BUCKET = 'partner-documents';
 var activeConvId = null, renderedAdminMsgIds = new Set();
 var adminChatsChannel = null, adminMessagesChannel = null, adminSelectedFile = null;
 
-var bookingSelect = 'id, booking_id, booking_reference, pickup, dropoff, booking_date, booking_time, passengers, price, status, payment_status, currency, amount_total, receipt_url, payment_method_type, email, phone_number, phone_code, notes, flight_number, full_name, created_at, user_id, booked_by, agent_commission_pct, agent_gross_price, passenger_name, passenger_email, passenger_phone, stripe_payment_intent_id, refunded_amount, refunded_at, refund_reason, payment_mode, charge_at, charged_at, charge_attempts, last_charge_error, pickup_airport, pickup_city, preferred_languages, driver_payout, assigned_partner_id, assigned_at, released_count'
+var bookingSelect = 'id, booking_id, booking_reference, pickup, dropoff, booking_date, booking_time, passengers, price, status, payment_status, currency, amount_total, receipt_url, payment_method_type, email, phone_number, phone_code, notes, flight_number, full_name, created_at, user_id, booked_by, agent_commission_pct, agent_gross_price, passenger_name, passenger_email, passenger_phone, stripe_payment_intent_id, refunded_amount, refunded_at, refund_reason, driver_email_hold, driver_email_hold_reason, driver_details_sent_at, manual_driver_name, manual_driver_phone, manual_vehicle, manual_vehicle_plate, payment_mode, charge_at, charged_at, charge_attempts, last_charge_error, pickup_airport, pickup_city, preferred_languages, driver_payout, assigned_partner_id, assigned_at, released_count'
 var activeBooking = null;
 
 // ============================================================
@@ -1246,8 +1281,146 @@ function openDetails(id) {
   el('detailStatus').className = 'status ' + (b.status || 'pending');
   el('detailNotes').textContent = b.notes || 'No notes';
   renderRefundBox(b);
+  renderDriverBox(b);
   el('detailsModal').classList.remove('hidden');
 }
+
+// ============================================================
+// QUEM VAI BUSCAR O CLIENTE
+//
+// O email com os dados do motorista sai sozinho na véspera. Este
+// bloco existe para os casos em que não deve sair como está: sem
+// motorista, ou com um arranjado à mão fora do sistema.
+// ============================================================
+function renderDriverBox(b) {
+  var box = el('driverBox');
+
+  var pickup = new Date(b.booking_date + 'T' + (b.booking_time || '00:00'));
+  var hours = (pickup.getTime() - Date.now()) / 36e5;
+
+  // Só aparece perto da viagem. Faltando duas semanas, decidir quem
+  // conduz é cedo e o bloco só ocupava espaço.
+  var relevant = isFinite(hours) && hours > -24 && hours < 96 && b.status !== 'cancelled';
+  box.classList.toggle('hidden', !relevant);
+  if (!relevant) return;
+
+  el('mdName').value = b.manual_driver_name || '';
+  el('mdPhone').value = b.manual_driver_phone || '';
+  el('mdVehicle').value = b.manual_vehicle || '';
+  el('mdPlate').value = b.manual_vehicle_plate || '';
+  el('driverMsg').style.display = 'none';
+
+  var state = el('driverState');
+  state.className = 'note';
+
+  if (b.driver_details_sent_at) {
+    state.className = 'note ok';
+    state.textContent = 'The passenger already has the driver details, sent ' +
+      formatTime(b.driver_details_sent_at) + '. Sending again replaces what they know.';
+  } else if (b.driver_email_hold) {
+    state.className = 'note warn';
+    state.textContent = 'The email is on hold' +
+      (b.driver_email_hold_reason ? ' — ' + b.driver_email_hold_reason : '') +
+      '. Nothing goes out until you send it or save a driver here.';
+  } else if (b.manual_driver_name) {
+    state.textContent = 'A driver was added by hand: ' + b.manual_driver_name +
+      '. These details go out the day before, ahead of anything the partner has.';
+  } else if (b.assigned_partner_id) {
+    state.textContent = 'A partner took this ride, so the email uses their driver. ' +
+      'Fill this in only if you need to override that.';
+  } else {
+    state.className = 'note warn';
+    state.textContent = 'Nobody has taken this ride. Unless a partner does, or you add ' +
+      'a driver here, the passenger gets nothing the day before.';
+  }
+
+  el('mdHoldBtn').textContent = b.driver_email_hold ? 'Release the hold' : 'Hold the email';
+}
+
+async function rideDriver(action, extra) {
+  if (!activeBooking) return;
+
+  var box = el('driverMsg');
+  box.style.display = 'none';
+
+  var buttons = [el('mdSaveBtn'), el('mdSendBtn'), el('mdHoldBtn')];
+  buttons.forEach(function (x) { x.disabled = true; });
+
+  try {
+    var res = await fetch(RENDER_URL + '/api/admin/ride-driver', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify(Object.assign({ booking_id: activeBooking.id, action: action }, extra || {}))
+    });
+
+    var result = await res.json();
+    if (!res.ok || result.error) throw new Error(result.error || ('HTTP ' + res.status));
+
+    box.style.background = '#052e22';
+    box.style.color = '#6ee7b7';
+    box.style.border = '1px solid #14532d';
+    box.textContent = {
+      manual: 'Driver saved. These details go to the passenger the day before.',
+      send: 'Sent. The passenger now has the driver name and phone.',
+      hold: 'Held. Nothing goes out until you release it.',
+      release: 'Released. The email goes out the day before as usual.'
+    }[action] || 'Done.';
+    box.style.display = 'block';
+
+    await loadBookings();
+    activeBooking = allBookings.find(function (x) {
+      return String(x.id) === String(activeBooking.id);
+    }) || activeBooking;
+    renderDriverBox(activeBooking);
+  } catch (e) {
+    box.style.background = '#7f1d1d';
+    box.style.color = '#fecaca';
+    box.style.border = '1px solid #991b1b';
+    box.textContent = e.message;
+    box.style.display = 'block';
+  } finally {
+    buttons.forEach(function (x) { x.disabled = false; });
+  }
+}
+
+el('mdSaveBtn').addEventListener('click', function () {
+  var name = el('mdName').value.trim();
+  var phone = el('mdPhone').value.trim();
+
+  if (!name || !phone) {
+    return alert('A name and a phone number are the minimum.\n\n' +
+      'The passenger calls that number if they cannot find the driver.');
+  }
+
+  rideDriver('manual', {
+    driver: {
+      name: name,
+      phone: phone,
+      vehicle: el('mdVehicle').value.trim(),
+      plate: el('mdPlate').value.trim()
+    }
+  });
+});
+
+el('mdSendBtn').addEventListener('click', function () {
+  if (activeBooking && activeBooking.driver_details_sent_at) {
+    if (!window.confirm('The passenger already had the details.\n\n' +
+        'Send again with what is on file now?')) return;
+  }
+  rideDriver('send');
+});
+
+el('mdHoldBtn').addEventListener('click', function () {
+  if (activeBooking && activeBooking.driver_email_hold) {
+    return rideDriver('release');
+  }
+
+  var why = window.prompt(
+    'Why hold this one?\n\nOnly you see this. It shows here so you remember why.');
+  if (why === null) return;
+
+  rideDriver('hold', { reason: why.trim() || null });
+});
 
 // ============================================================
 // CONTACTS
