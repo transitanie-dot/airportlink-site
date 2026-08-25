@@ -64,6 +64,8 @@ html[data-theme="dark"] .btn.line{background:transparent;color:var(--text)}
 html[data-theme="dark"] .linkish{color:var(--amber)}
 .boot{display:flex;align-items:center;justify-content:center;min-height:180px;
   color:var(--muted);font-size:14px;text-align:center}
+.pw-meter{height:4px;border-radius:999px;background:var(--rule);overflow:hidden;margin-top:9px}
+.pw-fill{height:100%;width:0;border-radius:999px;transition:width .3s ease,background .3s ease}
 .hidden{display:none!important}
 </style>
 </head>
@@ -97,6 +99,27 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
         <button class="linkish" id="signupLink" type="button">Create an account</button>
         <button class="linkish" id="forgotLink" type="button">Forgot your password?</button>
       </div>
+    </div>
+
+    <div id="newPwView" class="hidden">
+      <h1>Set a new password</h1>
+      <p class="sub" id="newPwSub">Choose something you will remember. Longer is better than complicated.</p>
+
+      <div class="field">
+        <label for="newPw1">New password</label>
+        <input id="newPw1" type="password" placeholder="At least 8 characters" autocomplete="new-password">
+        <div class="pw-meter"><div class="pw-fill" id="newPwFill"></div></div>
+        <div class="help" id="newPwHint">Use at least 8 characters.</div>
+      </div>
+
+      <div class="field">
+        <label for="newPw2">Repeat it</label>
+        <input id="newPw2" type="password" autocomplete="new-password">
+      </div>
+
+      <button id="newPwBtn" class="btn teal" type="button">Save my password</button>
+      <div id="newPwErr" class="msg err"></div>
+      <div id="newPwOk" class="msg ok"></div>
     </div>
 
     <div id="forgotView" class="hidden">
@@ -133,7 +156,7 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
   var AGENT_PATH = '/travelagents';
   var ADMIN_PATH = '/admin';
   var CREATE_ACCOUNT_PATH = '/createaccount';
-  var RESET_PATH = '/resetpassword';
+  
   var API = 'https://airportlink.onrender.com';
 
   var supabaseClient = window.supabase.createClient(
@@ -143,7 +166,11 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
       auth: {
         persistSession: true,     // a sessão vive aqui, não numa flag manual
         autoRefreshToken: true,
-        detectSessionInUrl: false
+        // A ÚNICA página do site com isto a true. O Supabase manda o
+        // token do link de recuperação depois do #, e é esta opção
+        // que o lê. Sem ela, quem clicasse no email chegava aqui e
+        // não acontecia nada.
+        detectSessionInUrl: true
       }
     }
   );
@@ -249,6 +276,7 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
     bootView.classList.add('hidden');
     loginView.classList.toggle('hidden', view !== 'login');
     forgotView.classList.toggle('hidden', view !== 'forgot');
+    document.getElementById('newPwView').classList.toggle('hidden', view !== 'newpw');
   }
 
   function showLogin() {
@@ -361,7 +389,7 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
 
     try {
       var res = await supabaseClient.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + RESET_PATH
+        redirectTo: window.location.origin + '/login'
       });
 
       if (res.error) {
@@ -400,11 +428,101 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
   });
 
   // =========================================================
+  // NOVA PASSWORD
+  //
+  // O link do email traz o token no fragmento do endereço. O
+  // detectSessionInUrl cria a sessão, e a partir daí o updateUser
+  // muda a password sem precisar da antiga.
+  // =========================================================
+  var newPw1 = document.getElementById('newPw1');
+  var newPw2 = document.getElementById('newPw2');
+  var newPwBtn = document.getElementById('newPwBtn');
+  var newPwErr = document.getElementById('newPwErr');
+  var newPwOk = document.getElementById('newPwOk');
+
+  newPw1.addEventListener('input', function () {
+    var v = newPw1.value;
+    var fill = document.getElementById('newPwFill');
+    fill.style.width = Math.min(100, (v.length / 16) * 100) + '%';
+    fill.style.background = v.length < 8 ? '#F87171' : (v.length < 12 ? 'var(--amber)' : 'var(--teal)');
+    document.getElementById('newPwHint').textContent = v.length < 8
+      ? 'A little longer — at least 8 characters.'
+      : (v.length < 12 ? 'Good. A few more characters would be better.' : 'Strong.');
+  });
+
+  newPw2.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') newPwBtn.click();
+  });
+
+  newPwBtn.addEventListener('click', async function () {
+    newPwErr.style.display = 'none';
+    newPwOk.style.display = 'none';
+
+    if (newPw1.value.length < 8) {
+      return showError(newPwErr, newPwOk, 'Passwords need at least 8 characters.');
+    }
+    if (newPw1.value !== newPw2.value) {
+      return showError(newPwErr, newPwOk, 'The two passwords do not match.');
+    }
+
+    setBusy(newPwBtn, true);
+
+    try {
+      var res = await supabaseClient.auth.updateUser({ password: newPw1.value });
+
+      if (res.error) {
+        return showError(newPwErr, newPwOk, res.error.message);
+      }
+
+      showSuccess(newPwErr, newPwOk, 'Done. Taking you to your account...');
+
+      // A sessão já é válida: entra direto em vez de pedir a
+      // password que a pessoa acabou de escolher.
+      navigateTo(await homeForUser());
+    } catch (e) {
+      showError(newPwErr, newPwOk, 'Something went wrong. Ask for a new link and try again.');
+    } finally {
+      setBusy(newPwBtn, false);
+    }
+  });
+
+  // =========================================================
   // ARRANQUE — se já houver JWT válido, salta o formulário
   // =========================================================
   (async function boot() {
+    // Quem chega pelo link de recuperação traz type=recovery no
+    // fragmento. O detectSessionInUrl é assíncrono, por isso
+    // esperamos um instante antes de decidir.
+    var fromRecovery = /type=recovery/.test(window.location.hash) ||
+                       /type=recovery/.test(window.location.search);
+
+    if (fromRecovery) await new Promise(function (r) { setTimeout(r, 500); });
+
     try {
       var res = await supabaseClient.auth.getSession();
+
+      if (fromRecovery) {
+        if (res.data && res.data.session) {
+          var who = res.data.session.user && res.data.session.user.email;
+          if (who) {
+            document.getElementById('newPwSub').textContent =
+              'For ' + who + '. Choose something you will remember — longer is better ' +
+              'than complicated.';
+          }
+          show('newpw');
+          newPw1.focus();
+          return;
+        }
+
+        // Link gasto ou expirado. Dizê-lo é melhor do que mostrar o
+        // formulário de login sem explicação nenhuma.
+        showLogin();
+        showError(loginErrorEl, loginSuccessEl,
+          'That password link has expired or was already used. Ask for a new one below.');
+        emailEl.focus();
+        return;
+      }
+
       if (res.data && res.data.session) {
         bootView.textContent = 'Already signed in. Taking you to your account...';
         var explicit = /[?&]next=/.test(window.location.search);
