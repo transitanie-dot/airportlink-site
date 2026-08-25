@@ -311,6 +311,68 @@
     /* Vistas rápidas: o que interessa hoje, sem escrever nada. Uma
        tabela ordenada por data de viagem enterra a reserva feita há
        cinco minutos no meio de tudo. */
+    /* ---------- posto de atendimento ---------- */
+    .desk{display:grid;grid-template-columns:340px 1fr;gap:16px;height:calc(100vh - 210px);min-height:520px}
+    .desk-left{display:flex;flex-direction:column;gap:12px;min-height:0}
+    .desk-status{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+    .on-duty{display:flex;gap:11px;align-items:flex-start;cursor:pointer;margin-bottom:14px}
+    .on-duty input{width:18px;height:18px;margin-top:2px;flex:0 0 auto;accent-color:var(--ok)}
+    .on-duty strong{display:block;font-size:14px;margin-bottom:3px}
+    .on-duty small{color:var(--muted);font-size:12px;line-height:1.5}
+    .desk-figs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .desk-figs > div{background:var(--card-2);border-radius:10px;padding:9px 11px}
+    .desk-figs .k{display:block;font-family:var(--mono);font-size:8.5px;font-weight:600;
+      letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+    .desk-figs .v{display:block;font-family:var(--mono);font-size:16px;font-weight:600}
+    .desk-list{flex:1;overflow-y:auto;background:var(--card);border:1px solid var(--border);
+      border-radius:14px;padding:8px;min-height:0}
+    .chat-row{width:100%;text-align:left;background:transparent;border:1px solid transparent;
+      border-radius:11px;padding:12px 13px;cursor:pointer;margin-bottom:5px;color:var(--text)}
+    .chat-row:hover{background:var(--card-2)}
+    .chat-row.active{background:var(--primary-soft);border-color:var(--primary)}
+    .chat-row.mine{border-left:3px solid var(--ok)}
+    .chat-row.urgent{border-left:3px solid var(--bad)}
+    .chat-row .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:5px}
+    .chat-row .nm{font-weight:600;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .chat-row .ago{font-family:var(--mono);font-size:10px;color:var(--muted);flex:0 0 auto}
+    .chat-row .snip{font-size:12.5px;color:var(--muted);line-height:1.45;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .chat-row .tags{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+    .chat-row .tag{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.08em;
+      text-transform:uppercase;padding:2px 7px;border-radius:999px;border:1px solid var(--border);
+      color:var(--muted)}
+    .chat-row .tag.new{background:var(--bad-bg);color:var(--bad);border-color:transparent}
+    .chat-row .tag.wait{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+    .chat-row .tag.mine{background:var(--ok-bg);color:var(--ok);border-color:transparent}
+
+    .desk-right{background:var(--card);border:1px solid var(--border);border-radius:14px;
+      overflow:hidden;min-height:0}
+    .desk-blank{height:100%;display:flex;flex-direction:column;align-items:center;
+      justify-content:center;text-align:center;padding:40px;gap:9px}
+    .desk-blank strong{font-size:16px}
+    .desk-blank span{color:var(--muted);font-size:13.5px;line-height:1.6;max-width:38ch}
+    .desk-head{display:flex;justify-content:space-between;gap:14px;align-items:center;
+      padding:15px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap;flex:0 0 auto}
+    .desk-head strong{display:block;font-size:15px;margin-bottom:3px}
+    .desk-head span{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+    .desk-actions{display:flex;gap:7px;flex-wrap:wrap}
+    .desk-body{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px;min-height:0}
+    .desk-foot{display:flex;gap:9px;padding:14px 16px;border-top:1px solid var(--border);flex:0 0 auto}
+    .desk-foot textarea{flex:1;resize:none;max-height:120px;padding:11px 13px;
+      border:1px solid var(--border);border-radius:11px;background:var(--bg);color:var(--text);
+      font-family:inherit;font-size:14px;line-height:1.5;outline:none}
+    .desk-foot textarea:focus{border-color:var(--primary)}
+    .d-row{display:flex}
+    .d-row.mine{justify-content:flex-end}
+    .d-bub{max-width:74%;padding:11px 14px;border-radius:15px;font-size:14px;line-height:1.55;
+      white-space:pre-wrap;word-break:break-word}
+    .d-row.mine .d-bub{background:var(--primary);color:#fff;border-bottom-right-radius:5px}
+    .d-row.theirs .d-bub{background:var(--card-2);border:1px solid var(--border);
+      border-bottom-left-radius:5px}
+    .d-meta{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:4px}
+    .d-row.mine .d-meta{text-align:right}
+    @media (max-width:900px){.desk{grid-template-columns:1fr;height:auto}
+      .desk-left{max-height:340px}.desk-right{min-height:420px}}
     .quick-views{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
     .qv{background:var(--card);border:1px solid var(--border);border-radius:14px;
       padding:15px 16px;cursor:pointer;text-align:left;transition:border-color .15s ease}
@@ -444,6 +506,7 @@
       <div class="tab-group">Operations</div>
       <button class="tab-btn active" data-tab="bookingsTab">Bookings</button>
       <button class="tab-btn" data-tab="supportTab">Support</button>
+      <button class="tab-btn" data-tab="chatTab">Partner chat <span id="chatBadge"></span></button>
 
       <div class="tab-group">Money</div>
       <button class="tab-btn" data-tab="financeTab">Finance</button>
@@ -710,7 +773,7 @@
 
       <div class="stats">
         <div class="stat-card"><h3>Waiting on you</h3><p class="value" id="ptWaiting">0</p></div>
-        <div class="stat-card"><h3>Verified</h3><p class="value" id="ptVerified">0</p></div>
+        <div class="stat-card"><h3>Signed up, not finished</h3><p class="value" id="ptVerified">0</p></div>
         <div class="stat-card"><h3>Live</h3><p class="value" id="ptLive">0</p></div>
         <div class="stat-card"><h3>Total</h3><p class="value" id="ptTotal">0</p></div>
       </div>
@@ -747,6 +810,62 @@
 
       <div id="agentList"><div class="loading-row">Loading...</div></div>
       <div id="agentError" class="gate-msg" style="margin-top:14px"></div>
+    </div>
+
+    <div id="chatTab" class="panel">
+      <div class="desk">
+        <div class="desk-left">
+          <div class="desk-status">
+            <label class="on-duty">
+              <input type="checkbox" id="onDuty">
+              <span>
+                <strong>I am at the desk</strong>
+                <small id="dutyNote">Partners see whether anyone is here before they write.</small>
+              </span>
+            </label>
+
+            <div class="desk-figs">
+              <div><span class="k">Mine</span><span class="v" id="capMine">0/2</span></div>
+              <div><span class="k">Waiting</span><span class="v" id="capWaiting">0</span></div>
+              <div><span class="k">Agents</span><span class="v" id="capAgents">0</span></div>
+            </div>
+          </div>
+
+          <div class="desk-list" id="chatList">
+            <div class="no-results">Loading...</div>
+          </div>
+        </div>
+
+        <div class="desk-right" id="chatPane">
+          <div class="desk-blank" id="chatBlank">
+            <strong>Nobody selected</strong>
+            <span>Pick a conversation on the left. You can have two open at a time &mdash;
+            the limit is there so each one gets a real answer.</span>
+          </div>
+
+          <div class="hidden" id="chatOpen" style="display:flex;flex-direction:column;height:100%">
+            <div class="desk-head">
+              <div>
+                <strong id="chatWho">&mdash;</strong>
+                <span id="chatMeta">&mdash;</span>
+              </div>
+              <div class="desk-actions">
+                <button class="doc-no" id="chatUrgentBtn" type="button">Flag urgent</button>
+                <button class="doc-ok" id="chatCloseBtn" type="button">Close chat</button>
+                <button class="clear-btn" id="chatReleaseBtn" type="button">Hand back</button>
+              </div>
+            </div>
+
+            <div class="desk-body" id="chatThread"></div>
+
+            <div class="desk-foot">
+              <textarea id="chatReply" rows="2" placeholder="Write your reply" maxlength="4000"></textarea>
+              <button class="search-btn" id="chatSendBtn" type="button">Send</button>
+            </div>
+            <div class="gate-msg" id="chatErr" style="margin:0 16px 16px"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="supportTab" class="panel">
@@ -1495,6 +1614,348 @@ function openDetails(id) {
   renderRefundBox(b);
   renderDriverBox(b);
   el('detailsModal').classList.remove('hidden');
+}
+
+// ============================================================
+// POSTO DE ATENDIMENTO
+//
+// Duas conversas por agente. O limite é imposto no Postgres, não
+// aqui — mas a interface tem de o explicar antes de alguém bater
+// contra ele.
+// ============================================================
+var desk = {
+  chats: [], current: null, messages: [],
+  capacity: {}, onDuty: false, heartbeat: null, channel: null
+};
+
+function agoLabel(minutes) {
+  var m = Math.round(Number(minutes) || 0);
+  if (m < 1) return 'now';
+  if (m < 60) return m + 'm';
+  if (m < 1440) return Math.round(m / 60) + 'h';
+  return Math.round(m / 1440) + 'd';
+}
+
+async function deskFetch(path, body) {
+  var res = await fetch(DRIVERS_URL + path, {
+    method: body ? 'POST' : 'GET',
+    headers: await authHeaders(),
+    body: body ? JSON.stringify(body) : undefined
+  });
+
+  var text = await res.text();
+  var data;
+
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    throw new Error('The drivers service returned an unexpected response (HTTP ' +
+      res.status + '). It may be starting up.');
+  }
+
+  if (!res.ok || data.error) throw new Error(data.error || ('HTTP ' + res.status));
+  return data;
+}
+
+async function loadDesk() {
+  try {
+    var [queue, cap] = await Promise.all([
+      deskFetch('/api/admin/chats'),
+      deskFetch('/api/admin/capacity')
+    ]);
+
+    desk.chats = queue.chats || [];
+    desk.capacity = cap || {};
+    renderDesk();
+    subscribeDesk();
+  } catch (e) {
+    el('chatList').innerHTML = '<div class="no-results">' + escapeHtml(e.message) + '</div>';
+  }
+}
+
+function renderDesk() {
+  var cap = desk.capacity;
+  var mine = cap.my_open_chats || 0;
+  var limit = 2;
+
+  el('capMine').textContent = mine + '/' + limit;
+  el('capWaiting').textContent = cap.waiting || 0;
+  el('capAgents').textContent = cap.agents_online || 0;
+
+  // O contador da navegação conta quem espera, não quem está a ser
+  // atendido: é o número que exige acção.
+  var waiting = desk.chats.filter(function (c) {
+    return c.unread_for_admin > 0 && !c.assigned_to;
+  }).length;
+
+  var badge = el('chatBadge');
+  badge.textContent = waiting || '';
+  badge.className = waiting ? 'badge bad' : '';
+
+  if (!desk.chats.length) {
+    el('chatList').innerHTML = '<div class="no-results">No conversations yet.</div>';
+    return;
+  }
+
+  el('chatList').innerHTML = desk.chats.map(function (c) {
+    var isMine = c.assigned_to === (currentAdmin && currentAdmin.id);
+    var taken = c.assigned_to && !isMine;
+
+    var tags = [];
+    if (c.urgent) tags.push('<span class="tag" style="background:var(--bad-bg);color:var(--bad);border-color:transparent">urgent</span>');
+    if (c.unread_for_admin > 0) tags.push('<span class="tag new">' + c.unread_for_admin + ' new</span>');
+    if (c.waiting_minutes >= 10) tags.push('<span class="tag wait">waiting ' + agoLabel(c.waiting_minutes) + '</span>');
+    if (isMine) tags.push('<span class="tag mine">mine</span>');
+    if (taken) tags.push('<span class="tag">taken</span>');
+
+    return '<button class="chat-row' +
+      (desk.current === c.chat_id ? ' active' : '') +
+      (isMine ? ' mine' : '') + (c.urgent ? ' urgent' : '') +
+      '" data-chat="' + escapeHtml(c.chat_id) + '" type="button">' +
+      '<div class="top"><span class="nm">' +
+      escapeHtml(c.trading_name || c.legal_name || c.email) + '</span>' +
+      '<span class="ago">' + escapeHtml(agoLabel(c.minutes_since)) + '</span></div>' +
+      '<div class="snip">' + escapeHtml(c.last_message_text || 'No messages yet') + '</div>' +
+      (tags.length ? '<div class="tags">' + tags.join('') + '</div>' : '') +
+      '</button>';
+  }).join('');
+
+  qsa('[data-chat]').forEach(function (b) {
+    b.addEventListener('click', function () { openDeskChat(b.getAttribute('data-chat')); });
+  });
+}
+
+async function openDeskChat(chatId) {
+  var chat = desk.chats.find(function (c) { return c.chat_id === chatId; });
+  if (!chat) return;
+
+  var mine = chat.assigned_to === (currentAdmin && currentAdmin.id);
+
+  // Pegar antes de abrir. Ler sem pegar deixaria a conversa na fila
+  // a parecer não atendida enquanto alguém já lá está.
+  if (!chat.assigned_to) {
+    try {
+      await deskFetch('/api/admin/chat/claim', { chat_id: chatId });
+    } catch (e) {
+      alert(e.message);
+      await loadDesk();
+      return;
+    }
+  } else if (!mine) {
+    if (!window.confirm('Someone else is handling this one.\n\nOpen it read-only?')) return;
+  }
+
+  desk.current = chatId;
+
+  try {
+    var data = await deskFetch('/api/admin/chat/' + encodeURIComponent(chatId));
+    desk.messages = data.messages || [];
+  } catch (e) {
+    alert(e.message);
+    return;
+  }
+
+  el('chatBlank').classList.add('hidden');
+  el('chatOpen').classList.remove('hidden');
+
+  el('chatWho').textContent = chat.trading_name || chat.legal_name || chat.email;
+  el('chatMeta').textContent = [
+    chat.email, chat.contact_phone, chat.country, chat.partner_status
+  ].filter(Boolean).join('  ·  ');
+
+  el('chatUrgentBtn').textContent = chat.urgent ? 'Remove urgent' : 'Flag urgent';
+
+  renderThread();
+  await loadDesk();
+  el('chatReply').focus();
+}
+
+function renderThread() {
+  var box = el('chatThread');
+
+  box.innerHTML = desk.messages.map(function (m) {
+    var mine = m.sender === 'admin';
+    return '<div class="d-row ' + (mine ? 'mine' : 'theirs') + '"><div>' +
+      '<div class="d-bub">' + escapeHtml(m.body || '[attachment]') + '</div>' +
+      '<div class="d-meta">' +
+      escapeHtml(mine ? (m.sender_name || 'you') : (m.sender_name || 'partner')) + ' · ' +
+      escapeHtml(formatTime(m.created_at)) + '</div></div></div>';
+  }).join('');
+
+  box.scrollTop = box.scrollHeight;
+}
+
+el('chatSendBtn').addEventListener('click', async function () {
+  var body = el('chatReply').value.trim();
+  if (!body || !desk.current) return;
+
+  el('chatErr').style.display = 'none';
+  el('chatSendBtn').disabled = true;
+
+  try {
+    var res = await deskFetch('/api/admin/chat/send', {
+      chat_id: desk.current,
+      body: body,
+      sender_name: currentAdmin && currentAdmin.email
+        ? currentAdmin.email.split('@')[0] : 'Airportlink'
+    });
+
+    desk.messages.push(res.message);
+    renderThread();
+    el('chatReply').value = '';
+    await loadDesk();
+  } catch (e) {
+    el('chatErr').textContent = e.message;
+    el('chatErr').style.display = 'block';
+  } finally {
+    el('chatSendBtn').disabled = false;
+    el('chatReply').focus();
+  }
+});
+
+el('chatReply').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); el('chatSendBtn').click(); }
+});
+
+el('chatCloseBtn').addEventListener('click', async function () {
+  if (!desk.current) return;
+  if (!window.confirm('Close this conversation?\n\nIt frees your slot. The partner can ' +
+      'write again any time and it reopens.')) return;
+
+  await deskFetch('/api/admin/chat/release', { chat_id: desk.current, close: true });
+  desk.current = null;
+  el('chatOpen').classList.add('hidden');
+  el('chatBlank').classList.remove('hidden');
+  await loadDesk();
+});
+
+el('chatReleaseBtn').addEventListener('click', async function () {
+  if (!desk.current) return;
+
+  await deskFetch('/api/admin/chat/release', { chat_id: desk.current, close: false });
+  desk.current = null;
+  el('chatOpen').classList.add('hidden');
+  el('chatBlank').classList.remove('hidden');
+  await loadDesk();
+});
+
+el('chatUrgentBtn').addEventListener('click', async function () {
+  var chat = desk.chats.find(function (c) { return c.chat_id === desk.current; });
+  if (!chat) return;
+
+  await deskFetch('/api/admin/chat/flag', { chat_id: desk.current, urgent: !chat.urgent });
+  await loadDesk();
+  el('chatUrgentBtn').textContent = chat.urgent ? 'Flag urgent' : 'Remove urgent';
+});
+
+/**
+ * Ao serviço, com batida de dois em dois minutos.
+ *
+ * Sem a batida, a presença expira sozinha ao fim de três. É de
+ * propósito: um separador esquecido aberto diria "online" a noite
+ * inteira, e um parceiro escreveria à espera de resposta imediata.
+ */
+el('onDuty').addEventListener('change', async function () {
+  desk.onDuty = el('onDuty').checked;
+
+  try {
+    await deskFetch('/api/admin/presence', {
+      online: desk.onDuty,
+      display_name: currentAdmin && currentAdmin.email
+        ? currentAdmin.email.split('@')[0] : null
+    });
+  } catch (e) {
+    alert(e.message);
+    el('onDuty').checked = !desk.onDuty;
+    desk.onDuty = !desk.onDuty;
+    return;
+  }
+
+  el('dutyNote').textContent = desk.onDuty
+    ? 'Partners see that someone is here. Leaving? Untick this.'
+    : 'Partners see that nobody is at the desk right now.';
+
+  if (desk.heartbeat) { clearInterval(desk.heartbeat); desk.heartbeat = null; }
+
+  if (desk.onDuty) {
+    desk.heartbeat = setInterval(function () {
+      deskFetch('/api/admin/presence', { online: true }).catch(function () {});
+    }, 120000);
+  }
+
+  await loadDesk();
+});
+
+// Fechar o separador não deve deixar-te marcado como presente.
+//
+// Não uso sendBeacon: ele não leva cabeçalhos de autenticação, e a
+// rota exige o token. A batida de dois em dois minutos resolve o
+// resto — ao fim de três, a presença expira sozinha. É por isso que
+// a expiração existe: nem sempre há oportunidade de dizer adeus.
+window.addEventListener('beforeunload', function () {
+  if (!desk.onDuty || !desk.heartbeat) return;
+  clearInterval(desk.heartbeat);
+});
+
+/**
+ * O aviso de chat é mais insistente do que o das reservas.
+ *
+ * Uma reserva nova é uma boa notícia que pode esperar cinco minutos.
+ * Uma mensagem de parceiro é alguém a olhar para um ecrã à espera —
+ * por isso o som repete-se de trinta em trinta segundos até alguém
+ * abrir o separador.
+ */
+var chatAlert = null;
+
+function chatWaitingAlert() {
+  var fire = function () {
+    var waiting = desk.chats.filter(function (c) {
+      return c.unread_for_admin > 0 && !c.assigned_to;
+    }).length;
+
+    // Já não há ninguém à espera, ou o separador está aberto.
+    if (!waiting || activeTab === 'chatTab') {
+      if (chatAlert) { clearInterval(chatAlert); chatAlert = null; }
+      document.title = 'Airportlink operations';
+      return;
+    }
+
+    beep();
+    document.title = '(' + waiting + ') Partner waiting';
+  };
+
+  toast('Partner chat', 'A partner is waiting for a reply.', 'chatTab');
+  fire();
+
+  if (!chatAlert) chatAlert = setInterval(fire, 30000);
+}
+
+function subscribeDesk() {
+  if (desk.channel) return;
+
+  desk.channel = client.channel('admin-partner-chat')
+    .on('postgres_changes', {
+      event: 'INSERT', schema: 'public', table: 'partner_messages'
+    }, function (payload) {
+      var m = payload.new;
+      if (m.sender !== 'partner') return;
+
+      // Se é a conversa aberta, entra na janela. Se não, é um aviso.
+      if (m.chat_id === desk.current) {
+        desk.messages.push(m);
+        renderThread();
+        loadDesk();
+        return;
+      }
+
+      loadDesk();
+
+      // Alguém está à espera de uma resposta agora. Um ponto
+      // silencioso não chega para isso — este aviso repete-se até
+      // alguém abrir o separador, ao contrário do das reservas.
+      chatWaitingAlert();
+    })
+    .subscribe();
 }
 
 // ============================================================
@@ -2850,10 +3311,15 @@ async function loadPartners() {
   box.innerHTML = '<div class="loading-row">Loading...</div>';
   showPtError('');
 
+  // Sem o filtro de 'draft'. Uma conta registada mas por submeter
+  // ficava invisível aqui — o que dava zero parceiros com contas
+  // reais na base de dados, e nenhuma forma de perceber porquê.
+  //
+  // São precisamente essas que interessa ver: alguém registou-se e
+  // ficou a meio. Um telefonema resolve o que o silêncio não resolve.
   var res = await client.from('driver_partners')
     .select('*')
-    .neq('status', 'draft')
-    .order('submitted_at', { ascending: false, nullsFirst: false });
+    .order('created_at', { ascending: false });
 
   if (res.error) {
     box.innerHTML = '<div class="error-row">' + escapeHtml(res.error.message) + '</div>';
@@ -2896,8 +3362,16 @@ async function loadPartners() {
   });
 
   var waiting = partners.filter(needsAction).length;
+
+  // O 'verified' desapareceu quando a revisão passou a ser única.
+  // Este número passa a contar quem se registou e ficou a meio — que
+  // é o que realmente pede uma acção da tua parte.
+  var stalled = partners.filter(function (p) {
+    return p.status === 'draft' || p.status === 'action_required';
+  }).length;
+
   el('ptWaiting').textContent = waiting;
-  el('ptVerified').textContent = partners.filter(function (p) { return p.status === 'verified'; }).length;
+  el('ptVerified').textContent = stalled;
   el('ptLive').textContent = partners.filter(function (p) { return p.status === 'approved'; }).length;
   el('ptTotal').textContent = partners.length;
   el('partnersBadge').textContent = waiting ? ' (' + waiting + ')' : '';
@@ -3508,9 +3982,15 @@ qsa('.modal-tab').forEach(function (tab) {
   });
 });
 
+// Qual está aberto. O aviso de chat precisa de saber, para se calar
+// quando alguém já está a olhar para ele.
+var activeTab = 'bookingsTab';
+
 function switchTab(name) {
   var btn = document.querySelector('.tab-btn[data-tab="' + name + '"]');
   if (!btn) return;
+
+  activeTab = name;
 
   qsa('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
   qsa('.panel').forEach(function (p) { p.classList.remove('active'); });
@@ -3519,6 +3999,12 @@ function switchTab(name) {
 
   // Abrir o separador é o mesmo que dizer "já vi": o ponto desaparece.
   clearAlerts(name);
+
+  if (name === 'chatTab') {
+    if (chatAlert) { clearInterval(chatAlert); chatAlert = null; }
+    document.title = 'Airportlink operations';
+    loadDesk();
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
   reportHeight();
 }
@@ -3639,6 +4125,7 @@ async function init() {
   await loadPartners();
   await loadCharges();
   await loadFinance();
+  await loadDesk();
   subscribeToAllConversations();
   watchLive();
 }
