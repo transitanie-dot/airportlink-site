@@ -135,6 +135,12 @@ html[data-theme="dark"] .route-marker.dropoff{background:#e7ebf2;color:#11161D}
 .trip-meta-label{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
 .trip-meta-value{font-size:14px;font-weight:700;color:var(--text);word-break:break-word}
 .field-note{margin:7px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5}
+.agency-figs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.agency-fig{background:var(--neutral-bg);border:1px solid var(--border);border-radius:14px;padding:13px 15px}
+.agency-fig .k{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.agency-fig .v{font-family:var(--mono);font-size:19px;font-weight:600;letter-spacing:-.02em}
+@media (max-width:640px){.agency-figs{grid-template-columns:1fr}}
 .pay-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;
   padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted);line-height:1.5}
 .pay-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;
@@ -199,6 +205,7 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
     <span class="side-title">My account</span>
     <button class="side-item active" id="profileTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
     <button class="side-item" id="tripsTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18"/><path d="M4 13V9.5L6 5h12l2 4.5V13"/><path d="M4 13v4h3v-4M17 13v4h3v-4"/></svg>My trips</button>
+    <button class="side-item hidden" id="agencyTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01"/></svg>Agency</button>
     <button class="side-item" id="helpTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 3.3 2.4c-.6.2-.9.8-.9 1.4v.4"/><path d="M12 17h.01"/></svg>Help</button>
     <div class="side-actions">
       <button id="newBookingBtn" class="side-btn teal" type="button">New booking</button>
@@ -319,6 +326,64 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
       </div>
     </div>
 
+    <!-- ---------- agência ---------- -->
+    <div class="tab-content" id="agencyTab">
+      <div class="grid">
+        <div class="card">
+          <h2 id="agencyName">Your agency</h2>
+          <p class="sub" id="agencyTerms">&mdash;</p>
+          <div class="agency-figs">
+            <div class="agency-fig"><div class="k">Trade rate</div><div class="v" id="agRate">&mdash;</div></div>
+            <div class="agency-fig"><div class="k">Cancellation</div><div class="v" id="agWindow">&mdash;</div></div>
+            <div class="agency-fig"><div class="k">Bookings</div><div class="v" id="agCount">&mdash;</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>This month</h2>
+          <p class="sub">What you have booked and what it cost you, in the month selected.</p>
+          <div class="field">
+            <label for="agMonth">Month</label>
+            <input id="agMonth" type="month">
+          </div>
+          <div class="agency-figs">
+            <div class="agency-fig"><div class="k">Transfers</div><div class="v" id="agStTrips">&mdash;</div></div>
+            <div class="agency-fig"><div class="k">You paid</div><div class="v" id="agStPaid">&mdash;</div></div>
+            <div class="agency-fig"><div class="k">You saved</div><div class="v" id="agStSaved">&mdash;</div></div>
+          </div>
+          <button class="btn btn-secondary" id="agCsvBtn" type="button" style="width:100%;margin-top:14px">Download statement CSV</button>
+          <div id="agStMsg" class="msg err"></div>
+        </div>
+      </div>
+
+      <div class="card full" style="margin-top:18px">
+        <h2>Agency bookings</h2>
+        <p class="sub">Transfers you booked for your travellers. Trips you booked for yourself
+        are under &ldquo;My trips&rdquo;.</p>
+        <div class="field" style="max-width:340px">
+          <label for="agSearch">Search</label>
+          <input id="agSearch" type="text" placeholder="Passenger, reference or city">
+        </div>
+        <div id="agList" class="trip-list"></div>
+      </div>
+
+      <div class="card full" style="margin-top:18px">
+        <h2>Agency details</h2>
+        <p class="sub">What appears on your monthly statement and on the paperwork we issue.</p>
+        <div class="grid">
+          <div class="field"><label for="agLegal">Registered name</label><input id="agLegal" type="text"></div>
+          <div class="field"><label for="agTrading">Agency name</label><input id="agTrading" type="text"></div>
+          <div class="field"><label for="agVat">VAT number</label><input id="agVat" type="text"></div>
+          <div class="field"><label for="agPhone">Phone</label><input id="agPhone" type="tel"></div>
+          <div class="field"><label for="agRep">Contact name</label><input id="agRep" type="text"></div>
+          <div class="field"><label for="agRole">Role</label><input id="agRole" type="text"></div>
+        </div>
+        <button class="btn btn-secondary" id="agSaveBtn" type="button" style="width:100%">Save agency details</button>
+        <div id="agSaveErr" class="msg err"></div>
+        <div id="agSaveOk" class="msg ok"></div>
+      </div>
+    </div>
+
     <div class="tab-content" id="helpTab">
       <div class="card full" style="margin-bottom:16px;"><h2>Help center</h2><p class="sub" style="margin:0;">Find answers or talk to our support team.</p></div>
       <div class="help-card">
@@ -393,6 +458,7 @@ var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KE
 var $ = function (id) { return document.getElementById(id); };
 var currentUser = null, currentReceipt = null, pendingCancel = null;
 var phoneField = null;
+var agentInfo = null, agencyBookings = [], agencyStatement = null;
 var tripsByKey = Object.create(null);
 
 // ============================================================
@@ -500,13 +566,16 @@ function paymentLine(trip) {
 // TABS
 // ============================================================
 function activateTab(btn, tab) {
-  [$('profileTabBtn'), $('tripsTabBtn'), $('helpTabBtn')].forEach(function (b) { b.classList.remove('active'); });
-  [$('profileTab'), $('tripsTab'), $('helpTab')].forEach(function (t) { t.classList.remove('active'); });
+  [$('profileTabBtn'), $('tripsTabBtn'), $('agencyTabBtn'), $('helpTabBtn')]
+    .forEach(function (b) { b.classList.remove('active'); });
+  [$('profileTab'), $('tripsTab'), $('agencyTab'), $('helpTab')]
+    .forEach(function (t) { t.classList.remove('active'); });
   btn.classList.add('active'); tab.classList.add('active');
 }
 $('profileTabBtn').addEventListener('click', function () { activateTab($('profileTabBtn'), $('profileTab')); });
 $('tripsTabBtn').addEventListener('click', function () { activateTab($('tripsTabBtn'), $('tripsTab')); });
 $('helpTabBtn').addEventListener('click', function () { activateTab($('helpTabBtn'), $('helpTab')); });
+$('agencyTabBtn').addEventListener('click', function () { activateTab($('agencyTabBtn'), $('agencyTab')); });
 
 // ============================================================
 // RECIBO
@@ -871,6 +940,241 @@ $('saveProfileBtn').addEventListener('click', async function () {
   }
 });
 
+// ============================================================
+// A AGÊNCIA
+//
+// Tudo aqui dentro em vez de noutra página. Um agente que também
+// viaja tinha a conta dividida em dois sítios, e ninguém percebia
+// onde estava o quê.
+// ============================================================
+function setupAgency(info) {
+  $('agencyName').textContent = info.agency_name || 'Your agency';
+  $('agencyTerms').textContent =
+    'Your rate comes off automatically whenever you book while signed in. ' +
+    'Your travellers deal with the driver directly, and the booking stays invoiced to you.';
+
+  $('agRate').textContent = (info.commission || 12) + '%';
+  $('agWindow').textContent = (info.cancellation_hours || 12) + 'h';
+
+  var now = new Date();
+  $('agMonth').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+
+  fillAgencyForm(info);
+  loadAgencyBookings();
+  loadAgencyStatement();
+}
+
+function fillAgencyForm(info) {
+  $('agLegal').value = info.legal_name || '';
+  $('agTrading').value = info.agency_name || '';
+  $('agVat').value = info.vat_number || '';
+  $('agPhone').value = info.phone || '';
+  $('agRep').value = info.contact_name || '';
+  $('agRole').value = info.representative_role || '';
+}
+
+/**
+ * As reservas da agência estão ligadas ao booked_by, não ao email do
+ * viajante — é por isso que nunca apareceriam em "My trips".
+ */
+async function loadAgencyBookings() {
+  $('agList').innerHTML = '<div class="trip-empty">Loading...</div>';
+
+  var res = await supabaseClient.from('bookings')
+    .select('id, booking_id, booking_reference, pickup, dropoff, booking_date, booking_time, ' +
+            'passengers, price, agent_gross_price, currency, status, flight_number, ' +
+            'passenger_name, passenger_phone, agent_reference, booked_by')
+    .eq('booked_by', currentUser.id)
+    .order('booking_date', { ascending: false });
+
+  if (res.error) {
+    $('agList').innerHTML = '<div class="trip-empty">' + esc(res.error.message) + '</div>';
+    return;
+  }
+
+  agencyBookings = res.data || [];
+  $('agCount').textContent = agencyBookings.length;
+  renderAgencyBookings();
+}
+
+function renderAgencyBookings() {
+  var q = ($('agSearch').value || '').toLowerCase().trim();
+
+  var rows = agencyBookings.filter(function (b) {
+    if (!q) return true;
+    return [b.passenger_name, b.booking_reference, b.booking_id, b.pickup, b.dropoff,
+            b.agent_reference].join(' ').toLowerCase().indexOf(q) !== -1;
+  });
+
+  if (!rows.length) {
+    $('agList').innerHTML = '<div class="trip-empty">' +
+      (agencyBookings.length ? 'Nothing matches that.' : 'No agency bookings yet.') + '</div>';
+    return;
+  }
+
+  var today = iso(new Date());
+
+  $('agList').innerHTML = rows.map(function (b) {
+    var status = normalizeStatus(b.status);
+    var saved = b.agent_gross_price
+      ? Number(b.agent_gross_price) - Number(b.price || 0)
+      : 0;
+
+    return '<article class="trip-card">' +
+      '<div class="trip-top">' +
+      '<span class="trip-label">' + (b.booking_date >= today ? 'Upcoming' : 'Past') + '</span>' +
+      '<div class="trip-top-right"><span class="trip-status ' + esc(status) + '">' +
+      esc(b.status || 'pending') + '</span></div></div>' +
+
+      '<div class="trip-route">' +
+      '<div class="route-stop"><span class="route-marker pickup">P</span><div>' +
+      '<div class="route-caption">Pick-up</div><div class="route-value">' +
+      esc(b.pickup || '\u2014') + '</div></div></div>' +
+      '<div class="route-stop"><span class="route-marker dropoff">D</span><div>' +
+      '<div class="route-caption">Drop-off</div><div class="route-value">' +
+      esc(b.dropoff || '\u2014') + '</div></div></div></div>' +
+
+      '<div class="trip-meta-grid">' +
+      '<div class="trip-meta-item"><div class="trip-meta-label">Passenger</div>' +
+      '<div class="trip-meta-value">' + esc(b.passenger_name || '\u2014') +
+      (b.passenger_phone ? '<br><small style="color:var(--muted)">' +
+        esc(b.passenger_phone) + '</small>' : '') + '</div></div>' +
+      '<div class="trip-meta-item"><div class="trip-meta-label">When</div>' +
+      '<div class="trip-meta-value">' + esc(formatTripDate(b.booking_date)) +
+      '<br><small style="color:var(--muted)">' + esc(formatTripTime(b)) + '</small></div></div>' +
+      '<div class="trip-meta-item"><div class="trip-meta-label">You paid</div>' +
+      '<div class="trip-meta-value">' + esc(formatPrice(b.price, b.currency)) +
+      (saved > 0.005 ? '<br><small style="color:var(--muted)">saved ' +
+        esc(formatPrice(saved, b.currency)) + '</small>' : '') + '</div></div>' +
+      '</div>' +
+
+      (b.agent_reference
+        ? '<div class="pay-line"><span class="pay-tag">Your ref</span><span>' +
+          esc(b.agent_reference) + '</span></div>'
+        : '') +
+      '</article>';
+  }).join('');
+}
+
+$('agSearch').addEventListener('input', renderAgencyBookings);
+
+async function loadAgencyStatement() {
+  var month = $('agMonth').value;
+  if (!month) return;
+
+  $('agStMsg').style.display = 'none';
+
+  try {
+    var session = await supabaseClient.auth.getSession();
+    var token = session.data && session.data.session && session.data.session.access_token;
+    if (!token) throw new Error('Your session expired.');
+
+    var res = await fetch(RENDER_URL + '/api/agent/statement?month=' + encodeURIComponent(month), {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+
+    var data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || ('HTTP ' + res.status));
+
+    agencyStatement = data;
+
+    var rows = data.bookings || data.rows || [];
+    var paid = rows.reduce(function (t, b) { return t + Number(b.price || 0); }, 0);
+    var gross = rows.reduce(function (t, b) {
+      return t + Number(b.agent_gross_price || b.price || 0);
+    }, 0);
+
+    $('agStTrips').textContent = rows.length;
+    $('agStPaid').textContent = formatPrice(paid, data.currency || 'EUR');
+    $('agStSaved').textContent = formatPrice(gross - paid, data.currency || 'EUR');
+  } catch (e) {
+    $('agStMsg').textContent = e.message;
+    $('agStMsg').style.display = 'block';
+    ['agStTrips', 'agStPaid', 'agStSaved'].forEach(function (id) {
+      $(id).textContent = '\u2014';
+    });
+  }
+}
+
+$('agMonth').addEventListener('change', loadAgencyStatement);
+
+$('agCsvBtn').addEventListener('click', function () {
+  var rows = agencyStatement && (agencyStatement.bookings || agencyStatement.rows);
+  if (!rows || !rows.length) return window.alert('Nothing in that month.');
+
+  var headers = ['reference', 'your_reference', 'date', 'time', 'passenger',
+                 'pickup', 'dropoff', 'passengers', 'you_paid', 'public_price', 'currency', 'status'];
+
+  // BOM e aspas em tudo: sem isso o Excel estraga os acentos e
+  // transforma referências como AL-2K93 em datas.
+  var lines = [headers.join(',')].concat(rows.map(function (b) {
+    return [
+      b.booking_reference || b.booking_id || '',
+      b.agent_reference || '',
+      b.booking_date || '',
+      String(b.booking_time || '').slice(0, 5),
+      b.passenger_name || '',
+      b.pickup || '',
+      b.dropoff || '',
+      b.passengers || '',
+      b.price || '',
+      b.agent_gross_price || '',
+      b.currency || '',
+      b.status || ''
+    ].map(function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
+  }));
+
+  var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'airportlink-statement-' + $('agMonth').value + '.csv';
+  a.click();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+});
+
+$('agSaveBtn').addEventListener('click', async function () {
+  $('agSaveErr').style.display = 'none';
+  $('agSaveOk').style.display = 'none';
+  $('agSaveBtn').disabled = true;
+
+  try {
+    var session = await supabaseClient.auth.getSession();
+    var token = session.data && session.data.session && session.data.session.access_token;
+    if (!token) throw new Error('Your session expired.');
+
+    var res = await fetch(RENDER_URL + '/api/agent/profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({
+        legal_name: $('agLegal').value.trim(),
+        agency_name: $('agTrading').value.trim(),
+        vat_number: $('agVat').value.trim(),
+        phone: $('agPhone').value.trim(),
+        contact_name: $('agRep').value.trim(),
+        representative_role: $('agRole').value.trim()
+      })
+    });
+
+    var data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || ('HTTP ' + res.status));
+
+    $('agencyName').textContent = $('agTrading').value.trim() || 'Your agency';
+    $('agSaveOk').textContent = 'Saved.';
+    $('agSaveOk').style.display = 'block';
+  } catch (e) {
+    $('agSaveErr').textContent = e.message;
+    $('agSaveErr').style.display = 'block';
+  } finally {
+    $('agSaveBtn').disabled = false;
+  }
+});
+
+function iso(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
+    '-' + String(d.getDate()).padStart(2, '0');
+}
+
 /**
  * Um agente aprovado também pode viajar como cliente particular, por
  * isso não bloqueamos o acesso a esta página. Apenas indicamos onde
@@ -914,16 +1218,18 @@ async function checkAgentAccount() {
       box.classList.add('active');
 
       $('agentRedirectTitle').textContent = info.agency_name
-        ? (info.agency_name + ' \u00b7 partner account')
-        : 'Partner account';
+        ? (info.agency_name + ' \u00b7 trade account active')
+        : 'Trade account active';
       $('agentRedirectText').textContent =
-        'Your agency bookings, the monthly statement and the vouchers are in the partner ' +
-        'dashboard, along with the ' + (info.cancellation_hours || 12) +
-        '-hour cancellation window. This page only shows trips you booked for yourself.';
-      $('agentRedirectBtn').textContent = 'Go to partner dashboard';
+        'Your rate is applied automatically on every booking you make while signed in. ' +
+        'Agency bookings, the statement and your details are in the Agency tab.';
+      $('agentRedirectBtn').textContent = 'Open Agency';
 
-      // O cabeçalho passa a apontar lá também.
-      try { localStorage.setItem('airportlink-role-hint', 'agent'); } catch (e) {}
+      // Tudo aqui dentro: mandar o agente para outra página era
+      // dividir a conta dele em dois sítios sem razão nenhuma.
+      $('agencyTabBtn').classList.remove('hidden');
+      agentInfo = info;
+      setupAgency(info);
     }
 
     box.classList.remove('hidden');
@@ -932,7 +1238,14 @@ async function checkAgentAccount() {
   }
 }
 
-$('agentRedirectBtn').addEventListener('click', function () { navigateTo('/travelagents'); });
+$('agentRedirectBtn').addEventListener('click', function () {
+  // Aprovado abre o separador; pendente ou recusado ainda vai à
+  // página pública, onde está a candidatura.
+  if (agentInfo && agentInfo.status === 'approved') {
+    return activateTab($('agencyTabBtn'), $('agencyTab'));
+  }
+  navigateTo('/travelagents');
+});
 
 $('supportLink').addEventListener('click', function () { navigateTo('/support'); });
 $('supportSideBtn').addEventListener('click', function () { navigateTo('/support'); });
