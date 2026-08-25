@@ -55,7 +55,7 @@
       { "@type": "Question", "name": "Can I cancel my booking?", "acceptedAnswer": { "@type": "Answer",
         "text": "Yes. Cancellation is free until 24 hours before your pick-up time and the refund is issued in full, automatically. Open My trips in your account and press cancel. Within 24 hours of pick-up the driver is already assigned, so contact support." } },
       { "@type": "Question", "name": "What if my flight is delayed?", "acceptedAnswer": { "@type": "Answer",
-        "text": "Add your flight number when booking. We monitor the arrival and move the pick-up to match it. You are not charged for the waiting time." } },
+        "text": "Add your flight number when booking. We track the arrival and adjust the pick-up to match it. You are not charged for the waiting time." } },
       { "@type": "Question", "name": "Is the vehicle just for us?", "acceptedAnswer": { "@type": "Answer",
         "text": "Yes. Every transfer is private. You never share the vehicle with other passengers and there are no extra stops." } },
       { "@type": "Question", "name": "Do you go all the way to my address?", "acceptedAnswer": { "@type": "Answer",
@@ -688,7 +688,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
     <div class="steps-band">
       <div class="step-cell">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M5.5 14.5 4 9.2a.6.6 0 0 1 .8-.7l2 .7 2.6 1.1 2-4.9a1.4 1.4 0 0 1 2.6.2l1.3 5.8 3.2 1.3a1.6 1.6 0 0 1-.5 3.1H7.2a1.8 1.8 0 0 1-1.7-1.3Z"/></svg></span>
-        <div><strong>Your flight lands</strong><span>Give us the flight number and we follow it. A delay moves the pick-up, never the price.</span></div>
+        <div><strong>Your flight lands</strong><span>Give us the flight number and we track it.</span></div>
       </div>
       <div class="step-cell">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18"/><path d="M4 13V9.5L6 5h12l2 4.5V13"/><path d="M4 13v4h3v-4M17 13v4h3v-4"/><circle cx="7.5" cy="15.5" r="1"/><circle cx="16.5" cy="15.5" r="1"/></svg></span>
@@ -739,7 +739,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
       </article>
       <article class="faq-item" data-category="service" data-search="flight number tracking delay late airport waiting">
         <button class="faq-question" type="button"><div><p class="faq-question-title">What if my flight is delayed?</p><span class="faq-question-tag">Service</span></div><span class="faq-icon">+</span></button>
-        <div class="faq-answer"><div class="faq-answer-inner"><p>Add your flight number when booking. We monitor the arrival and move the pick-up to match it. You are not charged for the waiting time.</p></div></div>
+        <div class="faq-answer"><div class="faq-answer-inner"><p>Add your flight number when booking. We track the arrival and adjust the pick-up to match it. You are not charged for the waiting time.</p></div></div>
       </article>
       <article class="faq-item" data-category="service" data-search="private transfer shared vehicle only for me">
         <button class="faq-question" type="button"><div><p class="faq-question-title">Is the vehicle just for us?</p><span class="faq-question-tag">Service</span></div><span class="faq-icon">+</span></button>
@@ -1679,7 +1679,7 @@ $('forgotBtn').addEventListener('click', async function () {
   var email = $('authEmail').value.trim();
   if (!email) return showAuthMsg($('authError'), $('authSuccess'), 'Enter your email first.');
   try {
-    await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: SITE_ORIGIN + '/resetpassword' });
+    await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: SITE_ORIGIN + '/login' });
   } catch (e) { console.error(e); }
   // Resposta genérica: não revelamos que emails existem.
   showAuthMsg($('authSuccess'), $('authError'), 'If an account exists for that email, a reset link has been sent.');
