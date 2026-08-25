@@ -272,6 +272,13 @@ html[data-theme="dark"] .auth-tab.active{background:var(--amber);color:#141A28}
   padding:12px 14px;border-radius:15px;background:var(--surface-2);
   border:1px solid var(--rule);margin-bottom:14px;font-size:13.5px;line-height:1.5}
 .save-traveller input{width:17px;height:17px;margin-top:1px;flex:0 0 auto}
+.guest-split{display:flex;align-items:center;gap:12px;margin:18px 0 14px;
+  color:var(--muted);font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+.guest-split::before,.guest-split::after{content:"";flex:1;height:1px;background:var(--rule)}
+.guest-note{margin:10px 0 0;font-size:12.5px;line-height:1.6;color:var(--muted)}
+.guest-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 14px;border-radius:15px;background:var(--warn-bg);border:1px solid var(--warn-rule);
+  color:var(--warn-text);font-size:13px;line-height:1.5;margin-bottom:14px;flex-wrap:wrap}
 .signed-in-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;
   border-radius:15px;background:var(--surface-2);border:1px solid var(--rule);font-size:13px;margin-bottom:14px}
 
@@ -507,14 +514,33 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
               <input id="authPassword" type="password" autocomplete="current-password" /></div>
             <button id="authSubmitBtn" class="btn auth-btn" type="button">Sign in and continue</button>
             <button id="forgotBtn" class="link-btn" type="button">Forgot your password?</button>
+
+            <div class="guest-split">
+              <span>or</span>
+            </div>
+
+            <button id="guestBtn" class="btn ghost-btn" type="button" style="width:100%;margin-top:0">Book without an account</button>
+            <p class="guest-note">Faster now. We still email you everything, and you can set a
+            password later from that email if you want the cancel button and your trip history.</p>
             <div id="authError" class="auth-msg err"></div>
             <div id="authSuccess" class="auth-msg ok"></div>
           </div>
 
           <div id="finalForm" class="final-form hidden">
-            <div class="signed-in-chip">
+            <div class="signed-in-chip" id="signedInChip">
               <span>Booking as <strong id="signedInEmail">&mdash;</strong></span>
               <button id="signOutBtn" class="link-btn" type="button" style="margin:0">Not you?</button>
+            </div>
+
+            <div class="guest-chip hidden" id="guestChip">
+              <span>Booking without an account. We email everything to the address below.</span>
+              <button id="guestBackBtn" class="link-btn" type="button" style="margin:0">Sign in instead</button>
+            </div>
+
+            <div class="field hidden" id="guestEmailField">
+              <div class="label-row"><label for="guestEmail">Email</label><span class="hint">Required</span></div>
+              <input id="guestEmail" type="email" placeholder="you@email.com" autocomplete="email">
+              <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)">Your confirmation, the receipt and the driver details all go here.</div>
             </div>
             <div class="field"><div class="label-row"><label for="fullName" id="fullNameLabel">Full name</label><span class="hint">Required</span></div><input id="fullName" type="text" placeholder="Your full name" /></div>
             <div class="field"><div class="label-row"><label for="email" id="emailLabel">Email</label><span class="hint" id="emailHint">From your account</span></div><input id="email" type="email" readonly /></div>
@@ -780,6 +806,7 @@ var $ = function (id) { return document.getElementById(id); };
 var currentUser = null, authMode = 'signin', agentInfo = null;
 var payMode = 'now', payOptions = { pay_later: false, reason: null, charge_lead_hours: 48 };
 var phoneField = null;
+var guestMode = false;
 
 // ============================================================
 // ALTURA E TEMA
@@ -1701,6 +1728,43 @@ async function onSignedIn(user) {
 }
 
 // ============================================================
+// RESERVAR SEM CONTA
+//
+// Obrigar a registar a meio de uma compra é onde se perdem
+// clientes. A conta é criada na mesma, em silêncio, com o email da
+// reserva — e no email de confirmação vai um link para escolher
+// password. Quem voltar encontra o histórico à espera.
+// ============================================================
+function setGuestMode(on) {
+  guestMode = on;
+
+  $('authCard').classList.toggle('hidden', on);
+  $('finalForm').classList.toggle('hidden', !on && !currentUser);
+
+  $('guestChip').classList.toggle('hidden', !on);
+  $('signedInChip').classList.toggle('hidden', on);
+  $('guestEmailField').classList.toggle('hidden', !on);
+
+  // O campo do email da conta não faz sentido sem conta.
+  var accountEmail = $('email').closest('.field');
+  if (accountEmail) accountEmail.classList.toggle('hidden', on);
+
+  if (on) {
+    $('finalForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    setStatus('Fill in your details and we will email you everything.');
+  }
+}
+
+$('guestBtn').addEventListener('click', function () { setGuestMode(true); });
+
+$('guestBackBtn').addEventListener('click', function () {
+  setGuestMode(false);
+  $('finalForm').classList.add('hidden');
+  $('authCard').classList.remove('hidden');
+  setAuthMode('signin');
+});
+
+// ============================================================
 // FLUXO DE RESERVA
 // ============================================================
 $('proceedBtn').addEventListener('click', function () {
@@ -1708,7 +1772,7 @@ $('proceedBtn').addEventListener('click', function () {
   if (!$('travelDate').value || !$('travelTime').value) return setStatus('Select date and time first.', true);
   if (!$('priceValue').dataset.basePrice) return setStatus('Wait for the fare to be calculated.', true);
 
-  if (currentUser) {
+  if (currentUser || guestMode) {
     $('finalForm').classList.remove('hidden');
     $('finalForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     setStatus('Complete your booking details below.');
@@ -1721,13 +1785,21 @@ $('proceedBtn').addEventListener('click', function () {
 });
 
 $('confirmBtn').addEventListener('click', function () {
-  if (!currentUser) return setStatus('Please sign in first.', true);
+  if (!currentUser && !guestMode) return setStatus('Please sign in first.', true);
 
   var fullName = $('fullName').value.trim();
   var phoneCode = $('phoneCode').value.trim();
   var phoneNumber = $('phoneNumber').value.trim();
   if (!fullName || !phoneCode || !phoneNumber) {
     return setStatus('Please fill in your name and phone number.', true);
+  }
+
+  // Sem conta, o email é o único caminho até à pessoa: sem ele não
+  // há confirmação, nem recibo, nem dados do motorista.
+  var email = guestMode ? $('guestEmail').value.trim() : currentUser.email;
+
+  if (guestMode && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return setStatus('We need a valid email — it is where everything is sent.', true);
   }
 
   // O aviso do comprimento não bloqueia a reserva — um plano de
@@ -1742,13 +1814,13 @@ $('confirmBtn').addEventListener('click', function () {
   // a agência. Os campos passenger_* guardam o contacto do viajante
   // de forma explícita, para o admin não ter de adivinhar.
   var booking = {
-    user_id: currentUser.id,
+    user_id: currentUser ? currentUser.id : null,
     full_name: fullName,
-    email: currentUser.email,
+    email: email,
     phone_code: phoneCode, phone_number: phoneNumber,
     passenger_name: fullName,
     passenger_phone: '+' + phoneCode + ' ' + phoneNumber,
-    passenger_email: isAgent() ? $('passengerEmail').value.trim() : currentUser.email,
+    passenger_email: isAgent() ? $('passengerEmail').value.trim() : email,
     agent_reference: isAgent() ? $('agentReference').value.trim() : '',
     flight_number: $('flightNumber').value.trim(),
     notes: $('notes').value.trim(),
