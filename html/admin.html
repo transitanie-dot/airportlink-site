@@ -270,6 +270,20 @@
     .chg-actions{display:flex;gap:9px;margin-top:11px;flex-wrap:wrap}
     .btn-charge{background:#10b981;color:#fff;border:0;border-radius:9px;padding:9px 15px;font-weight:700;font-size:12.5px;cursor:pointer}
     .btn-charge:disabled{opacity:.5;cursor:not-allowed}
+    .pt-doc.rejected{border-color:#7f1d1d;background:rgba(248,113,113,.06)}
+    .pt-doc.approved{border-color:rgba(52,211,153,.35)}
+    .doc-state{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.1em;
+      text-transform:uppercase;padding:2px 7px;border-radius:999px;margin-left:7px;
+      border:1px solid var(--border);color:var(--muted);vertical-align:1px}
+    .doc-state.approved{background:var(--ok-bg);color:var(--ok);border-color:transparent}
+    .doc-state.rejected{background:var(--bad-bg);color:var(--bad);border-color:transparent}
+    .doc-state.pending{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+    .doc-ok,.doc-no{border:1px solid var(--border);background:transparent;border-radius:8px;
+      padding:6px 11px;font-family:var(--mono);font-size:10px;font-weight:600;
+      letter-spacing:.07em;text-transform:uppercase;cursor:pointer;margin-left:6px}
+    .doc-ok{color:var(--ok);border-color:rgba(52,211,153,.4)}
+    .doc-no{color:var(--bad);border-color:rgba(248,113,113,.4)}
+    .doc-ok:disabled,.doc-no:disabled{opacity:.5;cursor:not-allowed}
     .pt-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:18px;margin-bottom:12px}
     .pt-card.needs{border-color:#f59e0b}
     .pt-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
@@ -2409,12 +2423,30 @@ function renderPartners() {
           '<div class="pt-missing">Not uploaded</div></div></div>';
       }
       var expired = d.expires_on && new Date(d.expires_on) < new Date();
-      return '<div class="pt-doc"><div><div class="n">' + escapeHtml(r.label) + '</div>' +
+      var rejected = d.status === 'rejected';
+
+      return '<div class="pt-doc' + (rejected ? ' rejected' : '') +
+        (d.status === 'approved' ? ' approved' : '') + '"><div>' +
+        '<div class="n">' + escapeHtml(r.label) +
+        ' <span class="doc-state ' + escapeHtml(d.status || 'pending') + '">' +
+        escapeHtml(d.status === 'pending' ? 'to review' : (d.status || '')) + '</span></div>' +
         '<div class="m">' + escapeHtml(d.file_name || 'file') +
         (d.expires_on ? ' &middot; valid until ' + escapeHtml(d.expires_on) : '') +
-        (expired ? ' &middot; <span style="color:#fca5a5">EXPIRED</span>' : '') + '</div></div>' +
-        '<div class="r"><button class="doc-open" data-doc="' + escapeHtml(d.file_path) + '" type="button">Open</button></div>' +
-        '</div>';
+        (expired ? ' &middot; <span style="color:#fca5a5">EXPIRED</span>' : '') + '</div>' +
+        (rejected && d.rejection_reason
+          ? '<div class="pt-missing" style="margin-top:6px">Told them: ' +
+            escapeHtml(d.rejection_reason) + '</div>'
+          : '') +
+        '</div>' +
+        '<div class="r">' +
+        '<button class="doc-open" data-doc="' + escapeHtml(d.file_path) + '" type="button">Open</button>' +
+        (d.status !== 'approved'
+          ? '<button class="doc-ok" data-docok="' + escapeHtml(d.id) + '" type="button">Accept</button>'
+          : '') +
+        (rejected
+          ? ''
+          : '<button class="doc-no" data-docno="' + escapeHtml(d.id) + '" type="button">Reject</button>') +
+        '</div></div>';
     }).join('');
 
     // Documentos de ativação, agrupados por motorista e veículo.
@@ -2447,11 +2479,10 @@ function renderPartners() {
     var actions = '<div class="pt-actions">' +
       '<input type="text" placeholder="Reason (shown to the partner if rejected)" data-reason="' + escapeHtml(p.id) + '">';
 
-    if (p.status === 'submitted' || p.status === 'in_review') {
-      actions += '<button class="btn-verify" data-decide="verified|' + escapeHtml(p.id) + '">Verify documents</button>';
-    }
-    if (p.status === 'verified') {
-      actions += '<button class="btn-activate" data-decide="approved|' + escapeHtml(p.id) + '">Go live</button>';
+    // Uma só decisão. O 'Verify documents' desapareceu: os
+    // documentos aceitam-se um a um acima, e aqui decide-se a conta.
+    if (['submitted', 'in_review', 'verified', 'action_required'].indexOf(p.status) !== -1) {
+      actions += '<button class="btn-activate" data-decide="approved|' + escapeHtml(p.id) + '">Approve and go live</button>';
     }
     if (p.status === 'approved') {
       actions += '<button class="btn-suspend" data-decide="suspended|' + escapeHtml(p.id) + '">Suspend</button>';
@@ -2512,6 +2543,27 @@ function renderPartners() {
     });
   });
 
+  qsa('[data-docok]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      decideDocument(b.getAttribute('data-docok'), 'approved', null, b);
+    });
+  });
+
+  qsa('[data-docno]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      // O motivo é escrito ali mesmo e vai literalmente para o
+      // parceiro. Pedi-lo aqui é mais barato do que responder
+      // depois ao email dele a perguntar o que estava errado.
+      var why = window.prompt(
+        'Why can we not accept this document?\n\n' +
+        'The partner reads exactly what you write. Be specific:\n' +
+        '"The insurance expired in March" beats "wrong document".');
+
+      if (!why || !why.trim()) return;
+      decideDocument(b.getAttribute('data-docno'), 'rejected', why.trim(), b);
+    });
+  });
+
   reportHeight();
 }
 
@@ -2533,6 +2585,47 @@ async function openPartnerDoc(path, button) {
 // A revisão de parceiros vive no serviço dos motoristas, não na API
 // principal. Apontar para o sítio errado dava 404.
 var DRIVERS_URL = 'https://drivers.airportlink.app';
+
+/**
+ * Aceitar ou recusar um documento.
+ *
+ * Recusar põe a conta em action_required — não em rejected. O
+ * parceiro não foi recusado: tem uma coisa para corrigir, e todo o
+ * resto do trabalho dele fica intacto.
+ */
+async function decideDocument(documentId, decision, reason, button) {
+  button.disabled = true;
+  var original = button.textContent;
+  button.textContent = '...';
+
+  try {
+    var headers = await authHeaders();
+
+    var res = await fetch(DRIVERS_URL + '/api/admin/partner/document', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ document_id: documentId, decision: decision, reason: reason })
+    });
+
+    var text = await res.text();
+    var result;
+
+    try {
+      result = JSON.parse(text);
+    } catch (e) {
+      throw new Error('The drivers service returned an unexpected response (HTTP ' +
+        res.status + '). It may be starting up.');
+    }
+
+    if (!res.ok || result.error) throw new Error(result.error || ('HTTP ' + res.status));
+
+    await loadPartners();
+  } catch (e) {
+    alert(e.message);
+    button.disabled = false;
+    button.textContent = original;
+  }
+}
 
 async function decidePartner(partnerId, decision, button) {
   showPtError('');
