@@ -6,6 +6,10 @@
     "Google Maps, de carro, não em linha reta) e o parágrafo 'about'.",
     "",
     "O 'about' é o que faz a página existir aos olhos do Google. Tem",
+    "O 'slug' é o que aparece no endereço: /transfers/faro-to-albufeira.",
+    "Usa o nome da cidade em inglês, minúsculas, sem acentos. As pessoas",
+    "pesquisam 'faro airport transfer', não 'FAO'.",
+    "",
     "de dizer algo que só sirva para ESTA rota. Uma frase que também",
     "funcionaria para outra rota não conta como conteúdo.",
     "",
@@ -15,14 +19,13 @@
     "       os motoristas conhecem as duas zonas — vale a pena dar o",
     "       nome do hotel e não só o da cidade.'"
   ],
-
   "country": "Portugal",
   "countryCode": "PT",
   "currency": "EUR",
-
   "airports": [
     {
       "iata": "LIS",
+      "slug": "lisbon",
       "name": "Lisbon Airport",
       "official": "Humberto Delgado Airport",
       "city": "Lisbon",
@@ -32,24 +35,60 @@
         "Terminal 2 has no arrivals. If you booked a pick-up there, it is wrong — tell us and we move it."
       ],
       "destinations": [
-        { "slug": "lisbon-city-centre", "name": "Lisbon city centre", "km": 8, "minutes": 20,
-          "about": "The centre is fifteen to twenty-five minutes away depending on traffic on the Segunda Circular. If you are staying in Alfama or Bairro Alto, give the driver the exact street: many are too narrow for a car and they will know the closest point to drop you." },
-        { "slug": "cascais", "name": "Cascais", "km": 32, "minutes": 35,
-          "about": "Cascais is about 35 minutes on the A5, which is the fast route and avoids the coast road. In August the last two kilometres into town can add fifteen minutes. Most hotels are along the Estoril–Cascais seafront." },
-        { "slug": "sintra", "name": "Sintra", "km": 30, "minutes": 40,
-          "about": "Sintra is close in kilometres but slow in practice: the road up to the historic centre is narrow and winds. Cars cannot reach Pena Palace itself. Ask to be dropped at your hotel and use the local shuttle for the palaces." },
-        { "slug": "estoril", "name": "Estoril", "km": 28, "minutes": 32,
-          "about": "Estoril is a few minutes before Cascais on the same coast road, and the two are often booked together by mistake. Check which one your hotel is actually in — they are 3 km apart." },
-        { "slug": "setubal", "name": "Setúbal", "km": 50, "minutes": 45,
-          "about": "Setúbal is across the Tagus over the Ponte 25 de Abril. The bridge is the whole journey: outside rush hour it is 45 minutes, at 6pm on a Friday it can be an hour and a half. Book earlier rather than later." },
-        { "slug": "ericeira", "name": "Ericeira", "km": 55, "minutes": 50,
-          "about": "Ericeira is the surf town north of Lisbon, about fifty minutes on the A21. Boards travel free but tell us the length when you book — anything over 7 foot needs a van rather than a sedan." },
-        { "slug": "obidos", "name": "Óbidos", "km": 85, "minutes": 60,
-          "about": "Óbidos is an hour north on the A8. The walled town has no car access, so the drop-off is at the Porta da Vila gate and it is a short walk in. Worth telling your hotel you are arriving by car — some have parking outside the walls." }
+        {
+          "slug": "city-centre",
+          "name": "Lisbon city centre",
+          "km": 8,
+          "minutes": 20,
+          "about": "The centre is fifteen to twenty-five minutes away depending on traffic on the Segunda Circular. If you are staying in Alfama or Bairro Alto, give the driver the exact street: many are too narrow for a car and they will know the closest point to drop you."
+        },
+        {
+          "slug": "cascais",
+          "name": "Cascais",
+          "km": 32,
+          "minutes": 35,
+          "about": "Cascais is about 35 minutes on the A5, which is the fast route and avoids the coast road. In August the last two kilometres into town can add fifteen minutes. Most hotels are along the Estoril–Cascais seafront."
+        },
+        {
+          "slug": "sintra",
+          "name": "Sintra",
+          "km": 30,
+          "minutes": 40,
+          "about": "Sintra is close in kilometres but slow in practice: the road up to the historic centre is narrow and winds. Cars cannot reach Pena Palace itself. Ask to be dropped at your hotel and use the local shuttle for the palaces."
+        },
+        {
+          "slug": "estoril",
+          "name": "Estoril",
+          "km": 28,
+          "minutes": 32,
+          "about": "Estoril is a few minutes before Cascais on the same coast road, and the two are often booked together by mistake. Check which one your hotel is actually in — they are 3 km apart."
+        },
+        {
+          "slug": "setubal",
+          "name": "Setúbal",
+          "km": 50,
+          "minutes": 45,
+          "about": "Setúbal is across the Tagus over the Ponte 25 de Abril. The bridge is the whole journey: outside rush hour it is 45 minutes, at 6pm on a Friday it can be an hour and a half. Book earlier rather than later."
+        },
+        {
+          "slug": "ericeira",
+          "name": "Ericeira",
+          "km": 55,
+          "minutes": 50,
+          "about": "Ericeira is the surf town north of Lisbon, about fifty minutes on the A21. Boards travel free but tell us the length when you book — anything over 7 foot needs a van rather than a sedan."
+        },
+        {
+          "slug": "obidos",
+          "name": "Óbidos",
+          "km": 85,
+          "minutes": 60,
+          "about": "Óbidos is an hour north on the A8. The walled town has no car access, so the drop-off is at the Porta da Vila gate and it is a short walk in. Worth telling your hotel you are arriving by car — some have parking outside the walls."
+        }
       ]
     },
     {
       "iata": "OPO",
+      "slug": "porto",
       "name": "Porto Airport",
       "official": "Francisco Sá Carneiro Airport",
       "city": "Porto",
@@ -59,22 +98,53 @@
         "The metro goes to the centre but takes 35 minutes with luggage and a change. With two or more people a transfer usually costs less than the fares."
       ],
       "destinations": [
-        { "slug": "porto-city-centre", "name": "Porto city centre", "km": 17, "minutes": 25,
-          "about": "Twenty-five minutes on the VCI. If you are staying in the Ribeira, the streets down by the river are steep and mostly pedestrian — the driver will get as close as the car allows, usually a two-minute walk." },
-        { "slug": "vila-nova-de-gaia", "name": "Vila Nova de Gaia", "km": 20, "minutes": 30,
-          "about": "Gaia is across the Douro from Porto and is where the port wine cellars are. It is a separate city, so give the driver the cellar or hotel name — 'Porto' would take you to the wrong side of the river." },
-        { "slug": "douro-valley", "name": "Douro Valley", "km": 120, "minutes": 90,
-          "about": "The Douro quintas are ninety minutes east on the A4. The last stretch is narrow valley road and some quintas are down unpaved tracks — send us the exact location when you book, because several have the same name." },
-        { "slug": "braga", "name": "Braga", "km": 55, "minutes": 45,
-          "about": "Braga is 45 minutes north on the A3. If you are going to Bom Jesus do Monte, that is 6 km outside the city up a hill — worth saying, because the historic centre and the sanctuary are different drop-offs." },
-        { "slug": "guimaraes", "name": "Guimarães", "km": 70, "minutes": 55,
-          "about": "Guimarães is under an hour on the A7. The medieval centre is pedestrian, so the drop-off is at the edge — usually Largo do Toural or your hotel if it has access." },
-        { "slug": "aveiro", "name": "Aveiro", "km": 75, "minutes": 55,
-          "about": "Aveiro is 55 minutes south on the A1. If you are heading to Costa Nova for the striped houses, that is another 15 minutes past the city — tell us, because it changes the price and the time." }
+        {
+          "slug": "city-centre",
+          "name": "Porto city centre",
+          "km": 17,
+          "minutes": 25,
+          "about": "Twenty-five minutes on the VCI. If you are staying in the Ribeira, the streets down by the river are steep and mostly pedestrian — the driver will get as close as the car allows, usually a two-minute walk."
+        },
+        {
+          "slug": "vila-nova-de-gaia",
+          "name": "Vila Nova de Gaia",
+          "km": 20,
+          "minutes": 30,
+          "about": "Gaia is across the Douro from Porto and is where the port wine cellars are. It is a separate city, so give the driver the cellar or hotel name — 'Porto' would take you to the wrong side of the river."
+        },
+        {
+          "slug": "douro-valley",
+          "name": "Douro Valley",
+          "km": 120,
+          "minutes": 90,
+          "about": "The Douro quintas are ninety minutes east on the A4. The last stretch is narrow valley road and some quintas are down unpaved tracks — send us the exact location when you book, because several have the same name."
+        },
+        {
+          "slug": "braga",
+          "name": "Braga",
+          "km": 55,
+          "minutes": 45,
+          "about": "Braga is 45 minutes north on the A3. If you are going to Bom Jesus do Monte, that is 6 km outside the city up a hill — worth saying, because the historic centre and the sanctuary are different drop-offs."
+        },
+        {
+          "slug": "guimaraes",
+          "name": "Guimarães",
+          "km": 70,
+          "minutes": 55,
+          "about": "Guimarães is under an hour on the A7. The medieval centre is pedestrian, so the drop-off is at the edge — usually Largo do Toural or your hotel if it has access."
+        },
+        {
+          "slug": "aveiro",
+          "name": "Aveiro",
+          "km": 75,
+          "minutes": 55,
+          "about": "Aveiro is 55 minutes south on the A1. If you are heading to Costa Nova for the striped houses, that is another 15 minutes past the city — tell us, because it changes the price and the time."
+        }
       ]
     },
     {
       "iata": "FAO",
+      "slug": "faro",
       "name": "Faro Airport",
       "official": "Faro Airport",
       "city": "Faro",
@@ -84,20 +154,55 @@
         "The A22 has electronic tolls only. Our price includes them, which is not always the case with local taxis — worth checking if you compare."
       ],
       "destinations": [
-        { "slug": "albufeira", "name": "Albufeira", "km": 45, "minutes": 40,
-          "about": "Forty minutes west on the A22. Most hotels are in one of three areas — the old town, Praia da Oura, or Olhos de Água — and they are several kilometres apart. Give the hotel name, not just 'Albufeira'." },
-        { "slug": "vilamoura", "name": "Vilamoura", "km": 32, "minutes": 30,
-          "about": "Half an hour from the airport. Vilamoura is built around the marina and the golf courses, and the resorts spread out for a few kilometres — the marina itself is the reference point most drivers use." },
-        { "slug": "lagos", "name": "Lagos", "km": 90, "minutes": 65,
-          "about": "About an hour and five minutes on the A22, right to the western end of the Algarve. If you are staying in Praia da Luz or Burgau, add another ten to fifteen minutes past Lagos." },
-        { "slug": "tavira", "name": "Tavira", "km": 38, "minutes": 30,
-          "about": "Half an hour east, the opposite direction to most Algarve traffic — which makes it one of the quicker transfers even in August. The old town is compact and the drop-off is usually right at the door." },
-        { "slug": "carvoeiro", "name": "Carvoeiro", "km": 62, "minutes": 50,
-          "about": "Fifty minutes west. Carvoeiro is small and built on a hill above a cove, so the streets are steep and narrow — the driver will get you as close as the car goes." },
-        { "slug": "portimao", "name": "Portimão", "km": 70, "minutes": 55,
-          "about": "Just under an hour on the A22. If you are going to Praia da Rocha, that is the beach side of Portimão, five minutes further and where most of the hotels are." },
-        { "slug": "sagres", "name": "Sagres", "km": 115, "minutes": 85,
-          "about": "The far southwest corner, about an hour and a half. The last twenty kilometres are single carriageway past Vila do Bispo. Worth booking a slightly later pick-up than you think if you are catching an early flight back." }
+        {
+          "slug": "albufeira",
+          "name": "Albufeira",
+          "km": 45,
+          "minutes": 40,
+          "about": "Forty minutes west on the A22. Most hotels are in one of three areas — the old town, Praia da Oura, or Olhos de Água — and they are several kilometres apart. Give the hotel name, not just 'Albufeira'."
+        },
+        {
+          "slug": "vilamoura",
+          "name": "Vilamoura",
+          "km": 32,
+          "minutes": 30,
+          "about": "Half an hour from the airport. Vilamoura is built around the marina and the golf courses, and the resorts spread out for a few kilometres — the marina itself is the reference point most drivers use."
+        },
+        {
+          "slug": "lagos",
+          "name": "Lagos",
+          "km": 90,
+          "minutes": 65,
+          "about": "About an hour and five minutes on the A22, right to the western end of the Algarve. If you are staying in Praia da Luz or Burgau, add another ten to fifteen minutes past Lagos."
+        },
+        {
+          "slug": "tavira",
+          "name": "Tavira",
+          "km": 38,
+          "minutes": 30,
+          "about": "Half an hour east, the opposite direction to most Algarve traffic — which makes it one of the quicker transfers even in August. The old town is compact and the drop-off is usually right at the door."
+        },
+        {
+          "slug": "carvoeiro",
+          "name": "Carvoeiro",
+          "km": 62,
+          "minutes": 50,
+          "about": "Fifty minutes west. Carvoeiro is small and built on a hill above a cove, so the streets are steep and narrow — the driver will get you as close as the car goes."
+        },
+        {
+          "slug": "portimao",
+          "name": "Portimão",
+          "km": 70,
+          "minutes": 55,
+          "about": "Just under an hour on the A22. If you are going to Praia da Rocha, that is the beach side of Portimão, five minutes further and where most of the hotels are."
+        },
+        {
+          "slug": "sagres",
+          "name": "Sagres",
+          "km": 115,
+          "minutes": 85,
+          "about": "The far southwest corner, about an hour and a half. The last twenty kilometres are single carriageway past Vila do Bispo. Worth booking a slightly later pick-up than you think if you are catching an early flight back."
+        }
       ]
     }
   ]
