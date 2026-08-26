@@ -1221,7 +1221,7 @@ $('printStatementBtn').addEventListener('click', function () {
     '.totals div{display:flex;justify-content:space-between;padding:4px 0}' +
     '.totals .big{font-size:17px;font-weight:800}' +
     '.foot{margin-top:28px;color:#666;font-size:11.5px;line-height:1.6}</style></head><body>' +
-    '<h1>Airportlink &mdash; partner statement</h1>' +
+    '<h2>>Airportlink &mdash; partner statement</h2>' +
     '<div class="meta"><strong>' + esc(d.agency_name || d.agent_email) + '</strong><br>' +
     esc(d.agent_email) + '<br>Period: ' + esc(d.month) + '<br>Partner rate: ' + esc(d.commission) + '%</div>' +
     '<table><thead><tr><th>Reference</th><th>Passenger</th><th>Route</th><th>Date &amp; time</th>' +
@@ -1475,7 +1475,7 @@ function printVoucher(id) {
     '.route{border:1px solid #E2E4E0;border-radius:10px;padding:16px;margin-bottom:16px}' +
     '.foot{margin-top:26px;padding-top:16px;border-top:1px solid #E2E4E0;color:#606A7B;font-size:11.5px;line-height:1.7}' +
     '</style></head><body>' +
-    '<div class="head"><div><h1>Airportlink &mdash; transfer voucher</h1>' +
+    '<div class="head"><div><h2>>Airportlink &mdash; transfer voucher</h2>' +
     '<div style="color:#606A7B;font-size:12px;margin-top:5px">Booked by ' +
     esc((agentInfo && agentInfo.agency_name) || 'partner agency') + '</div></div>' +
     '<div class="ref">' + esc(bookingRef(b)) + '</div></div>' +
