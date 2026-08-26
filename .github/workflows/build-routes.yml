@@ -1,0 +1,81 @@
+# .github/workflows/build-routes.yml
+#
+# Gera as páginas de rota sempre que um ficheiro de dados muda.
+#
+# O QUE ISTO FAZ
+#
+# Quando fizeres push de um seo/routes-XX.json — ou editares um no
+# próprio site do GitHub — este trabalho corre o gerador, cria as
+# páginas em transfers/ e airports/, reescreve o sitemap, e faz
+# commit disso de volta ao repositório.
+#
+# O Render vê o commit novo e publica. Tu nunca abres um terminal.
+#
+# PORQUÊ ISTO E NÃO O TEU COMPUTADOR
+#
+# O gerador tem de correr em algum lado. Aqui corre numa máquina do
+# GitHub, gratuita, e o resultado fica no repositório — que é a
+# fonte da verdade do site. No teu computador ficaria dependente de
+# teres o Node instalado e de te lembrares de correr o comando.
+
+name: Build route pages
+
+on:
+  push:
+    paths:
+      # Só quando os dados ou o gerador mudam. Sem isto, correria a
+      # cada commit — incluindo os que ele próprio faz, e ficava em
+      # ciclo.
+      - 'seo/routes-*.json'
+      - 'seo/build-routes.js'
+
+  # Um botão no separador Actions, para correr à mão quando quiseres.
+  workflow_dispatch:
+
+# Permissão para escrever de volta no repositório. Sem isto o
+# trabalho corre, gera as páginas, e não as consegue guardar.
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate the pages
+        run: node seo/build-routes.js
+
+      - name: Commit what changed
+        run: |
+          git config user.name "Airportlink bot"
+          git config user.email "bot@airportlink.app"
+
+          git add transfers airports sitemap.xml
+
+          # Sem alterações, não há nada a fazer. Sem esta verificação
+          # o commit falha e o trabalho aparece a vermelho sem razão.
+          if git diff --staged --quiet; then
+            echo "Nothing changed."
+            exit 0
+          fi
+
+          COUNT=$(ls transfers/*.html 2>/dev/null | wc -l)
+          git commit -m "Route pages: ${COUNT} transfers [skip ci]"
+          git push
+
+      - name: Summary
+        run: |
+          echo "### Route pages built" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Transfers: $(ls transfers/*.html 2>/dev/null | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "- Airports: $(ls airports/*.html 2>/dev/null | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Render will publish these in a moment." >> $GITHUB_STEP_SUMMARY
