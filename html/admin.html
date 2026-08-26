@@ -318,10 +318,34 @@
     /* Barra do posto: o estado à vista de qualquer separador, como
        num call centre a sério. Quem está a atender não deve ter de
        procurar onde se marca como presente. */
+    /* Um ponto que pisca em cada separador com trabalho à espera.
+       Só onde há acção: se tudo piscasse, nada chamaria a atenção. */
+    .tab-btn .dot{display:inline-block;width:8px;height:8px;border-radius:999px;
+      background:var(--warn);margin-left:7px;vertical-align:middle;
+      animation:tabPulse 1.5s ease-in-out infinite}
+    .tab-btn .dot.hot{background:var(--bad)}
+    @keyframes tabPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.8)}}
+    .tab-btn .count{display:inline-block;min-width:19px;padding:1px 6px;margin-left:7px;
+      border-radius:999px;background:var(--warn);color:#241703;
+      font-family:var(--mono);font-size:10px;font-weight:600;vertical-align:middle}
+    .tab-btn .count.hot{background:var(--bad);color:#fff}
+
     .deskbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
       padding:10px 20px;background:var(--card);border-bottom:1px solid var(--border);
       position:sticky;top:0;z-index:40}
     .deskbar .states{margin-bottom:0;flex:0 0 auto}
+    .deskbar-label{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.14em;
+      text-transform:uppercase;color:var(--muted);flex:0 0 auto}
+    /* Ficaste offline porque não atendeste. Dizê-lo é o que impede
+       alguém de passar uma hora sem perceber que parou de receber. */
+    .went-off{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+      padding:11px 20px;background:var(--bad-bg);border-bottom:1px solid var(--bad);
+      color:var(--bad);font-size:13.5px;line-height:1.5}
+    .went-off strong{font-weight:700}
+    .went-off button{margin-left:auto;border:1px solid var(--bad);background:transparent;
+      border-radius:10px;padding:7px 15px;color:var(--bad);font-size:12.5px;
+      font-weight:600;cursor:pointer;flex:0 0 auto}
+    .went-off button.back{background:var(--ok);border-color:transparent;color:#04231A}
     .deskbar-mine{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
     /* O nome que o parceiro lê. Sem ele, responde "Airportlink" — e
        falar com uma pessoa é diferente de falar com uma marca. */
@@ -645,7 +669,16 @@
   </div>
 </div>
 
+<div class="went-off hidden" id="wentOffline">
+  <span><strong>You were set to offline.</strong>
+  A chat rang for 30 seconds and nothing was pressed, so it went to someone else.
+  This is recorded in your activity.</span>
+  <button class="back" id="backOnline" type="button">I am back — go live</button>
+  <button id="stayOffline" type="button">Stay offline</button>
+</div>
+
 <div class="deskbar">
+  <span class="deskbar-label">Status</span>
   <div class="states" id="states">
     <button class="st live" data-state="live" type="button">
       <span class="dot"></span>Live</button>
@@ -680,18 +713,20 @@
 <div class="body-wrap">
     <nav class="tabs" aria-label="Sections">
       <div class="tab-group">Operations</div>
-      <button class="tab-btn active" data-tab="bookingsTab">Bookings</button>
-      <button class="tab-btn" data-tab="supportTab">Support</button>
+      <button class="tab-btn active" data-tab="bookingsTab">Bookings <span id="bookingsBadge"></span></button>
+
+      <div class="tab-group">Conversations</div>
       <button class="tab-btn" data-tab="chatTab">Partner chat <span id="chatBadge"></span></button>
-      <button class="tab-btn" data-tab="shiftTab">Agent activity</button>
+      <button class="tab-btn" data-tab="supportTab">Customer support <span id="supportBadge"></span></button>
 
       <div class="tab-group">Money</div>
       <button class="tab-btn" data-tab="financeTab">Finance</button>
       <button class="tab-btn" data-tab="moneyTab">Payments <span id="moneyBadge"></span></button>
 
-      <div class="tab-group">Network</div>
+      <div class="tab-group">People</div>
       <button class="tab-btn" data-tab="partnersTab">Driver partners <span id="partnersBadge"></span></button>
       <button class="tab-btn" data-tab="agentsTab">Travel agents <span id="agentsBadge"></span></button>
+      <button class="tab-btn" data-tab="shiftTab">Agent activity</button>
 
       <div class="tab-group">People</div>
       <button class="tab-btn" data-tab="accountsTab">Accounts</button>
@@ -1333,6 +1368,24 @@ function bookingWhen(b) {
 function bookingRef(b) { return b.booking_id || b.booking_reference || String(b.id || '').slice(0, 8); }
 
 var currentAdmin = null;
+
+/**
+ * O id e o nome de quem está autenticado.
+ *
+ * O currentAdmin guarda { user, contact } — não o utilizador
+ * diretamente. Ler currentAdmin.id dava undefined, e todas as
+ * comparações de "esta conversa é minha?" davam falso: com um só
+ * administrador, o painel dizia que outra pessoa tinha pegado a
+ * conversa.
+ */
+function adminId() {
+  return (currentAdmin && currentAdmin.user && currentAdmin.user.id) || null;
+}
+
+function adminName() {
+  var email = currentAdmin && currentAdmin.user && currentAdmin.user.email;
+  return email ? email.split('@')[0] : 'Airportlink';
+}
 var bookingFilters = { bookingId:'', email:'', name:'', pickup:'', dropoff:'', dateFrom:'', dateTo:'', status:'' };
 
 // Qual das vistas rápidas está escolhida. 'today-travel' por
@@ -1652,6 +1705,7 @@ function renderBookings() {
   var page = rows.slice(start, start + bookingPerPage);
 
   paintQuickViews();
+  paintTabAlerts();
 
   if (!page.length) {
     tbody.innerHTML = '<tr><td colspan="9"><div class="no-results">Nothing ' +
@@ -1991,6 +2045,7 @@ function renderDesk() {
 
   // A barra do topo, visível de qualquer separador.
   el('deskbarMine').textContent = mine + '/' + limit + ' chats';
+  paintTabAlerts();
 
   var alert = el('deskAlert');
 
@@ -2008,7 +2063,7 @@ function renderDesk() {
   }
 
   el('chatList').innerHTML = desk.chats.map(function (c) {
-    var isMine = c.assigned_to === (currentAdmin && currentAdmin.id);
+    var isMine = c.assigned_to === (adminId());
     var taken = c.assigned_to && !isMine;
 
     var tags = [];
@@ -2039,7 +2094,7 @@ async function openDeskChat(chatId) {
   var chat = desk.chats.find(function (c) { return c.chat_id === chatId; });
   if (!chat) return;
 
-  var mine = chat.assigned_to === (currentAdmin && currentAdmin.id);
+  var mine = chat.assigned_to === (adminId());
 
   // Pegar antes de abrir. Ler sem pegar deixaria a conversa na fila
   // a parecer não atendida enquanto alguém já lá está.
@@ -2214,7 +2269,7 @@ el('deskFile').addEventListener('change', async function () {
 
   try {
     var ext = (file.name.split('.').pop() || 'bin').toLowerCase();
-    var path = currentAdmin.id + '/chat/' + Date.now() + '.' + ext;
+    var path = adminId() + '/chat/' + Date.now() + '.' + ext;
 
     var up = await client.storage.from('chat-attachments').upload(path, file, {
       contentType: file.type || 'application/octet-stream'
@@ -2281,7 +2336,7 @@ async function loadDisplayName() {
   try {
     var team = await deskFetch('/api/admin/team');
     var me = (team.team || []).find(function (t) {
-      return t.user_id === (currentAdmin && currentAdmin.id);
+      return t.user_id === (adminId());
     });
 
     deskDisplayName = (me && me.display_name) || null;
@@ -2368,6 +2423,8 @@ async function setDeskState(state) {
   var previous = desk.state;
   desk.state = state;
 
+  if (state !== 'offline') el('wentOffline').classList.add('hidden');
+
   qsa('.st').forEach(function (b) {
     b.classList.toggle('active', b.getAttribute('data-state') === state);
   });
@@ -2377,8 +2434,7 @@ async function setDeskState(state) {
   try {
     await deskFetch('/api/admin/presence', {
       state: state,
-      display_name: currentAdmin && currentAdmin.email
-        ? currentAdmin.email.split('@')[0] : null
+      display_name: adminName()
     });
   } catch (e) {
     alert(e.message);
@@ -2684,13 +2740,40 @@ async function passRing(declined) {
   if (!chatId) return;
 
   try {
-    await deskFetch('/api/admin/chat/pass', { chat_id: chatId, declined: declined === true });
+    var r = await deskFetch('/api/admin/chat/pass', {
+      chat_id: chatId, declined: declined === true
+    });
+
+    // Não atendeu por silêncio: o servidor põe offline. Dizê-lo é o
+    // que impede alguém de passar uma hora sem perceber que parou
+    // de receber chamadas.
+    if (r && r.went_offline) {
+      desk.state = 'offline';
+      qsa('.st').forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-state') === 'offline');
+      });
+      el('dutyNote').textContent = STATE_NOTES.offline;
+
+      if (desk.heartbeat) { clearInterval(desk.heartbeat); desk.heartbeat = null; }
+
+      el('wentOffline').classList.remove('hidden');
+      ringTone();
+    }
   } catch (e) {
     console.error('pass:', e.message);
   }
 
   await loadDesk();
 }
+
+el('backOnline').addEventListener('click', function () {
+  el('wentOffline').classList.add('hidden');
+  setDeskState('live');
+});
+
+el('stayOffline').addEventListener('click', function () {
+  el('wentOffline').classList.add('hidden');
+});
 
 function subscribeDesk() {
   if (desk.channel) return;
@@ -2702,7 +2785,7 @@ function subscribeDesk() {
       var offer = payload.new;
 
       // Só as minhas, e só as que ainda estão a tocar.
-      if (offer.agent_id !== (currentAdmin && currentAdmin.id)) return;
+      if (offer.agent_id !== (adminId())) return;
       if (offer.outcome !== 'ringing') return;
 
       loadDesk();
@@ -4235,6 +4318,7 @@ async function loadPartners() {
   el('partnersBadge').textContent = waiting ? ' (' + waiting + ')' : '';
 
   renderPartners();
+  paintTabAlerts();
 }
 
 // "À espera de ti" cobre dois casos: uma candidatura por rever, e um
@@ -4597,6 +4681,7 @@ async function decidePartner(partnerId, decision, button) {
 el('ptSearchBtn').addEventListener('click', function () {
   ptFilters = { search: el('ptSearch').value.trim(), status: el('ptStatusFilter').value };
   renderPartners();
+  paintTabAlerts();
 });
 el('ptResetBtn').addEventListener('click', function () {
   el('ptSearch').value = '';
@@ -4607,6 +4692,7 @@ el('ptResetBtn').addEventListener('click', function () {
 el('ptStatusFilter').addEventListener('change', function () {
   ptFilters.status = el('ptStatusFilter').value;
   renderPartners();
+  paintTabAlerts();
 });
 
 // ============================================================
@@ -4670,6 +4756,7 @@ async function loadAgents() {
   el('agentBookingsCount').textContent = (bookingRes.data || []).length;
 
   renderAgents();
+  paintTabAlerts();
 }
 
 function renderAgents() {
@@ -4795,6 +4882,7 @@ async function reviewAgent(agentId, decision, commission, button) {
 el('agentSearchBtn').addEventListener('click', function () {
   agentFilters = { search: el('agentSearch').value.trim(), status: el('agentStatusFilter').value };
   renderAgents();
+  paintTabAlerts();
 });
 
 el('agentRefreshBtn').addEventListener('click', function () {
@@ -4807,6 +4895,7 @@ el('agentRefreshBtn').addEventListener('click', function () {
 el('agentStatusFilter').addEventListener('change', function () {
   agentFilters.status = el('agentStatusFilter').value;
   renderAgents();
+  paintTabAlerts();
 });
 
 // ============================================================
@@ -4843,6 +4932,61 @@ qsa('.modal-tab').forEach(function (tab) {
 // Qual está aberto. O aviso de chat precisa de saber, para se calar
 // quando alguém já está a olhar para ele.
 var activeTab = 'bookingsTab';
+
+/**
+ * O que está à espera em cada separador.
+ *
+ * Um ponto a piscar onde há acção, um número quando o número
+ * importa. Só onde há trabalho: se tudo piscasse, nada chamaria a
+ * atenção — e o objetivo é exatamente esse, chamar a atenção.
+ */
+function paintTabAlerts() {
+  var set = function (id, count, hot) {
+    var badge = el(id);
+    if (!badge || badge.__missing) return;
+
+    if (!count) { badge.innerHTML = ''; return; }
+
+    badge.innerHTML = count === true
+      ? '<span class="dot' + (hot ? ' hot' : '') + '"></span>'
+      : '<span class="count' + (hot ? ' hot' : '') + '">' + count + '</span>';
+  };
+
+  var today = todayISO(0);
+
+  // Reservas: as de hoje sem parceiro, e os reembolsos por tratar.
+  var noPartner = allBookings.filter(function (b) {
+    return !b.assigned_partner_id && b.status !== 'cancelled' && b.booking_date >= today;
+  }).length;
+
+  var refunds = allBookings.filter(function (b) {
+    var paid = b.charged_at || b.payment_status === 'paid' || b.status === 'paid';
+    return b.status === 'cancelled' && paid && !(Number(b.refunded_amount || 0) > 0);
+  }).length;
+
+  set('bookingsBadge', noPartner + refunds, refunds > 0);
+
+  // Parceiros à espera de decisão.
+  set('partnersBadge', (typeof partners !== 'undefined'
+    ? partners.filter(needsAction).length : 0), false);
+
+  // Agências à espera.
+  set('agentsBadge', (typeof agents !== 'undefined'
+    ? agents.filter(function (a) { return a.status === 'pending'; }).length : 0), false);
+
+  // Cobranças agendadas e viagens que ninguém pegou.
+  set('moneyBadge',
+    (typeof charges !== 'undefined' ? charges.length : 0) +
+    (typeof unclaimed !== 'undefined' ? unclaimed.length : 0), false);
+
+  // Conversas de cliente por responder. O apoio ao cliente usa outra
+  // tabela, e o contador dele já existia com outro nome.
+  var waitingSupport = (typeof conversations !== 'undefined')
+    ? conversations.filter(function (c) { return c.unread_for_admin > 0; }).length
+    : 0;
+
+  set('supportBadge', waitingSupport, waitingSupport > 0);
+}
 
 function switchTab(name) {
   var btn = document.querySelector('.tab-btn[data-tab="' + name + '"]');
