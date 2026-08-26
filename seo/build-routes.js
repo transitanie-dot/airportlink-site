@@ -26,8 +26,15 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const SEO_DIR = path.join(ROOT, 'seo');
-const OUT_TRANSFERS = path.join(ROOT, 'transfers');
-const OUT_AIRPORTS = path.join(ROOT, 'airports');
+// Dentro de seo/, e uma subpasta por país.
+//
+// O país entra também no endereço público, e isso resolve um
+// problema real: com uma pasta por país mas endereços planos, seria
+// preciso acrescentar duas regras de reescrita no Render por cada
+// país aberto. Com o país no endereço, duas regras servem para
+// sempre.
+const OUT_TRANSFERS = path.join(ROOT, 'seo', 'transfers');
+const OUT_AIRPORTS = path.join(ROOT, 'seo', 'airports');
 const SITE = 'https://www.airportlink.app';
 
 /**
@@ -66,6 +73,15 @@ const money = (v) => '€' + Math.round(v);
  * sem acentos — mas vale a pena escrevê-lo, para não haver surpresas
  * com cidades de nome composto.
  */
+/** O país no endereço: 'Portugal' vira 'portugal'. */
+function countrySlug(country) {
+  return String(country.country)
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 function slugOf(airport) {
   if (airport.slug) return airport.slug;
 
@@ -200,7 +216,8 @@ function routePage(country, airport, dest, siblings) {
   const p5 = priceEUR(dest.km, 5, isPT);
 
   const slug = slugOf(airport);
-  const url = `${SITE}/transfers/${slug}-to-${dest.slug}`;
+  const cslug = countrySlug(country);
+  const url = `${SITE}/transfers/${cslug}/${slug}-to-${dest.slug}`;
   const title = `${airport.city} Airport to ${dest.name} Transfer | From ${money(p1)} | Airportlink`;
   const description =
     `Private transfer from ${airport.name} to ${dest.name}: ${dest.minutes} minutes, ` +
@@ -260,7 +277,7 @@ function routePage(country, airport, dest, siblings) {
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
           { '@type': 'ListItem', position: 2, name: airport.name,
-            item: `${SITE}/airports/${slug}` },
+            item: `${SITE}/airports/${cslug}/${slug}` },
           { '@type': 'ListItem', position: 3, name: dest.name, item: url }
         ]
       }
@@ -272,14 +289,14 @@ function routePage(country, airport, dest, siblings) {
     .slice(0, 6)
     .map((d) => {
       const price = priceEUR(d.km, 1, isPT);
-      return `<a class="other" href="/transfers/${slug}-to-${d.slug}">` +
+      return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}">` +
         `<b>${esc(d.name)}</b><span>from ${money(price)}</span></a>`;
     }).join('\n      ');
 
   return head({ title, description, canonical: url, schema }) + `
   <div class="crumb">
     <a href="/">Airportlink</a> &rsaquo;
-    <a href="/airports/${slug}">${esc(airport.name)}</a> &rsaquo;
+    <a href="/airports/${cslug}/${slug}">${esc(airport.name)}</a> &rsaquo;
     ${esc(dest.name)}
   </div>
 
@@ -331,7 +348,7 @@ function routePage(country, airport, dest, siblings) {
   <div class="others">
       ${others}
   </div>
-  <p style="margin-top:16px"><a href="/airports/${slug}">All
+  <p style="margin-top:16px"><a href="/airports/${cslug}/${slug}">All
   ${esc(airport.city)} Airport transfers &rsaquo;</a></p>
 ` + foot;
 }
@@ -343,7 +360,8 @@ function routePage(country, airport, dest, siblings) {
 function airportPage(country, airport) {
   const isPT = country.countryCode === 'PT';
   const slug = slugOf(airport);
-  const url = `${SITE}/airports/${slug}`;
+  const cslug = countrySlug(country);
+  const url = `${SITE}/airports/${cslug}/${slug}`;
 
   const cheapest = Math.min(...airport.destinations.map((d) => priceEUR(d.km, 1, isPT)));
 
@@ -371,7 +389,7 @@ function airportPage(country, airport) {
           '@type': 'ListItem',
           position: i + 1,
           name: `${airport.city} Airport to ${d.name}`,
-          url: `${SITE}/transfers/${slug}-to-${d.slug}`
+          url: `${SITE}/transfers/${cslug}/${slug}-to-${d.slug}`
         }))
       },
       {
@@ -389,7 +407,7 @@ function airportPage(country, airport) {
     .sort((a, b) => a.km - b.km)
     .map((d) => {
       const price = priceEUR(d.km, 1, isPT);
-      return `<a class="other" href="/transfers/${slug}-to-${d.slug}">` +
+      return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}">` +
         `<b>${esc(d.name)}</b>` +
         `<span>${esc(d.minutes)} min &middot; from ${money(price)}</span></a>`;
     }).join('\n      ');
@@ -451,18 +469,26 @@ let routeCount = 0;
 for (const file of files) {
   const country = JSON.parse(fs.readFileSync(path.join(SEO_DIR, file), 'utf8'));
 
+  const cslug = countrySlug(country);
+
+  // Uma pasta por país, dos dois lados.
+  const transfersDir = path.join(OUT_TRANSFERS, cslug);
+  const airportsDir = path.join(OUT_AIRPORTS, cslug);
+  ensure(transfersDir);
+  ensure(airportsDir);
+
   for (const airport of country.airports) {
     const slug = slugOf(airport);
 
-    fs.writeFileSync(path.join(OUT_AIRPORTS, slug + '.html'), airportPage(country, airport));
-    urls.push({ loc: `${SITE}/airports/${slug}`, priority: '0.8', freq: 'weekly' });
+    fs.writeFileSync(path.join(airportsDir, slug + '.html'), airportPage(country, airport));
+    urls.push({ loc: `${SITE}/airports/${cslug}/${slug}`, priority: '0.8', freq: 'weekly' });
 
     for (const dest of airport.destinations) {
       const name = `${slug}-to-${dest.slug}.html`;
-      fs.writeFileSync(path.join(OUT_TRANSFERS, name),
+      fs.writeFileSync(path.join(transfersDir, name),
         routePage(country, airport, dest, airport.destinations));
 
-      urls.push({ loc: `${SITE}/transfers/${slug}-to-${dest.slug}`,
+      urls.push({ loc: `${SITE}/transfers/${cslug}/${slug}-to-${dest.slug}`,
                   priority: '0.7', freq: 'monthly' });
       routeCount += 1;
     }
