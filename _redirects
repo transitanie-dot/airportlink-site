@@ -19,9 +19,15 @@
 /terms            /terms.html            200
 
 # Páginas de rota e de aeroporto, geradas por seo/build-routes.js.
-# O :splat apanha tudo o que vier a seguir à barra.
-/transfers/*      /transfers/:splat.html   200
-/airports/*       /airports/:splat.html    200
+#
+# O ficheiro vive em seo/transfers/portugal/faro-to-albufeira.html e
+# o endereço público é /transfers/portugal/faro-to-albufeira.
+#
+# O país está no endereço de propósito: assim o :splat apanha país e
+# rota de uma vez, e estas duas regras servem para sempre. Sem o
+# país no endereço, seriam duas regras novas por cada país aberto.
+/transfers/*      /seo/transfers/:splat.html   200
+/airports/*       /seo/airports/:splat.html    200
 
 # O /forgotpassword nunca foi construído: o formulário vive dentro
 # do /login. Um 301 em vez de um 404 para quem tiver o link antigo.
