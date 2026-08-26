@@ -157,79 +157,6 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
 .other b{font-weight:600;font-size:14.5px}
 .other span{font-family:var(--mono);font-size:12.5px;color:var(--muted);flex:0 0 auto}
 
-/* Imagem da cidade. Sem ficheiro, fica um gradiente — a página
-   nunca mostra um quadrado partido. */
-.hero{position:relative;border-radius:24px;overflow:hidden;margin:0 0 26px;
-  background:linear-gradient(140deg,var(--ink),#2A3348 60%,var(--teal))}
-.hero img{display:block;width:100%;height:clamp(190px,26vw,300px);object-fit:cover}
-.hero .veil{position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(12,16,26,.86),rgba(12,16,26,.25) 60%,transparent)}
-.hero .on{position:absolute;left:0;right:0;bottom:0;padding:24px}
-.hero .on .tag{color:var(--amber)}
-.hero .on h1{color:#fff;margin:0}
-.hero.blank{height:clamp(190px,26vw,300px)}
-
-/* Navegação dentro da página, colada ao topo. */
-.jump{position:sticky;top:0;z-index:20;margin:0 -20px 26px;padding:11px 20px;
-  background:color-mix(in srgb,var(--surface) 92%,transparent);
-  border-bottom:1px solid var(--rule);overflow-x:auto;white-space:nowrap;
-  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.jump a{display:inline-block;padding:7px 14px;margin-right:5px;border-radius:999px;
-  font-size:12.5px;font-weight:600;color:var(--muted);text-decoration:none}
-.jump a:hover{color:var(--text);background:var(--surface-2)}
-.jump a.now{background:var(--ink);color:#fff}
-html[data-theme="dark"] .jump a.now{background:var(--amber);color:#141A28}
-
-/* Calculador. Os preços estão na página, não vêm da rede: a
-   resposta é instantânea e funciona sem JavaScript pesado. */
-.calc{background:var(--surface);border:1px solid var(--rule);border-radius:22px;
-  padding:24px;margin:0 0 30px}
-.calc h2{margin:0 0 6px;padding:0;border:0}
-.calc .note{color:var(--muted);font-size:13.5px;line-height:1.6;margin:0 0 18px}
-.pax{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.pax button{border:1px solid var(--rule-strong);background:var(--field);border-radius:13px;
-  padding:11px 16px;cursor:pointer;font-size:13.5px;color:var(--text);text-align:left}
-.pax button:hover{border-color:var(--teal)}
-.pax button.on{border-color:var(--teal);background:var(--teal-soft)}
-html[data-theme="dark"] .pax button.on{border-color:var(--amber);
-  background:rgba(232,163,61,.12)}
-.pax button b{display:block;font-family:var(--display);font-weight:700;font-size:14.5px}
-.pax button span{color:var(--muted);font-size:11.5px}
-.quote{display:flex;align-items:center;justify-content:space-between;gap:20px;
-  flex-wrap:wrap;background:var(--ink);color:#fff;border-radius:18px;padding:20px 22px}
-.quote .k{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.11em;
-  text-transform:uppercase;color:var(--amber);margin-bottom:5px}
-.quote .v{font-family:var(--mono);font-size:32px;font-weight:600;letter-spacing:-.03em;
-  line-height:1}
-.quote small{display:block;color:#9AA5B6;font-size:12px;margin-top:6px}
-.quote .btn{flex:0 0 auto;display:inline-flex;align-items:center;height:48px;padding:0 24px;
-  border-radius:13px;background:var(--amber);color:#141A28;text-decoration:none;
-  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.09em;
-  text-transform:uppercase}
-
-/* Comparação com as alternativas. */
-.cmp{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 10px}
-.cmp th{text-align:left;font-family:var(--mono);font-size:9.5px;font-weight:600;
-  letter-spacing:.11em;text-transform:uppercase;color:var(--muted);
-  padding:0 14px 10px 0;border-bottom:1px solid var(--rule)}
-.cmp td{padding:14px 14px 14px 0;border-bottom:1px solid var(--rule);
-  vertical-align:top;line-height:1.6;color:var(--slate)}
-html[data-theme="dark"] .cmp td{color:#C3CBD8}
-.cmp tr.us td{background:var(--teal-soft);color:var(--text);font-weight:500}
-html[data-theme="dark"] .cmp tr.us td{background:rgba(232,163,61,.1)}
-.cmp tr.us td:first-child{border-top-left-radius:12px;border-bottom-left-radius:12px;
-  padding-left:14px}
-.cmp tr.us td:last-child{border-top-right-radius:12px;border-bottom-right-radius:12px}
-.cmp .mode{font-weight:600;color:var(--text)}
-.cmp .pick{display:inline-block;margin-left:8px;font-family:var(--mono);font-size:8.5px;
-  font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--teal);
-  color:#fff;border-radius:999px;padding:3px 8px;vertical-align:middle}
-html[data-theme="dark"] .cmp .pick{background:var(--amber);color:#141A28}
-.cmp-wrap{overflow-x:auto;margin:0 -4px}
-@media (max-width:700px){.cmp{min-width:640px}}
-
-.updated{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin:0 0 22px}
-
 .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);
   margin-bottom:18px}
 .crumb a{color:var(--muted);text-decoration:none}
@@ -247,28 +174,11 @@ html[data-theme="dark"] .cmp .pick{background:var(--amber);color:#141A28}
 <article class="rt">
   <div class="crumb"><a href="/">Airportlink</a> &rsaquo; Faro Airport</div>
 
-  <div class="hero"><img src="/assets/img/cities/faro.webp" alt="Faro" width="820" height="300" loading="eager"><div class="veil"></div><div class="on"><span class="tag">FAO · Portugal</span><h1>Faro Airport transfers</h1></div></div>
-
-  <nav class="jump" aria-label="On this page"><a href="#routes" class="now">Routes and prices</a><a href="#compare">Compare</a><a href="#local">Before you land</a><a href="#airport">The airport</a></nav>
-
-  <p class="updated">Checked 2026-08-26</p>
-
+  <span class="tag">FAO &middot; Portugal</span>
+  <h1>Faro Airport transfers</h1>
   <p class="lead">A private car from Faro Airport to anywhere you are staying,
   at a price agreed before you fly. 7 routes below, and
-  the calculator on the home page prices any address.</p>
-
-  <h2 id="routes">Where people go</h2>
-  <p>Prices are for one to four passengers, for the whole car. Larger groups travel in a van
-  or minibus, which costs more but is still one fixed price for the group.</p>
-  <div class="others">
-      <a class="other" href="/transfers/portugal/faro-to-vilamoura"><b>Vilamoura</b><span>30 min &middot; from €91</span></a>
-      <a class="other" href="/transfers/portugal/faro-to-tavira"><b>Tavira</b><span>30 min &middot; from €101</span></a>
-      <a class="other" href="/transfers/portugal/faro-to-albufeira"><b>Albufeira</b><span>40 min &middot; from €112</span></a>
-      <a class="other" href="/transfers/portugal/faro-to-carvoeiro"><b>Carvoeiro</b><span>50 min &middot; from €139</span></a>
-      <a class="other" href="/transfers/portugal/faro-to-portimao"><b>Portimão</b><span>55 min &middot; from €152</span></a>
-      <a class="other" href="/transfers/portugal/faro-to-lagos"><b>Lagos</b><span>65 min &middot; from €184</span></a>
-      <a class="other" href="/transfers/portugal/faro-to-sagres"><b>Sagres</b><span>85 min &middot; from €224</span></a>
-  </div>
+  the calculator prices any address.</p>
 
   <div class="cta">
     <div>
@@ -279,44 +189,21 @@ html[data-theme="dark"] .cmp .pick{background:var(--amber);color:#141A28}
     <a class="btn" href="/#book">Get a price</a>
   </div>
 
-  <h2 id="compare">Getting there without us</h2>
-  <p>Every option, with what it actually costs and where it hurts. We think the transfer
-  wins for most people arriving with luggage — but not for everyone, and the table says why.</p>
-  <div class="cmp-wrap"><table class="cmp">
-    <thead><tr><th>How</th><th>Time</th><th>Cost</th><th>Good</th><th>Not so good</th></tr></thead>
-    <tbody>
-      <tr><td class="mode">Bus line 16</td><td>20 min to Faro</td><td>€2.70</td><td>Cheapest way into Faro itself.</td><td>Cash only. Stops before 20:00. Goes to Faro only — no use for the resorts.</td></tr><tr><td class="mode">Official taxi rank</td><td>15 min to Faro</td><td>€10–15 metered</td><td>No booking needed.</td><td>Long queues on summer Saturdays. 20% more after 21:00 and at weekends. To Albufeira expect €60–70 on the meter.</td></tr><tr><td class="mode">Train via Faro station</td><td>15 min taxi, then rail</td><td>€2–6</td><td>Cheap for onward journeys east.</td><td>No airport link. Two transfers with luggage. Slow and infrequent.</td></tr><tr><td class="mode">Hire car</td><td>Queue plus paperwork</td><td>€30–90 a day</td><td>Freedom to move around.</td><td>Desk queues of an hour in August. Fuel, parking and the deposit on top.</td></tr>
-      <tr class="us">
-        <td class="mode">Airportlink<span class="pick">Our take</span></td>
-        <td>Direct</td>
-        <td>€91 fixed</td>
-        <td>Driver waiting with your name, one price for the whole car, flight tracked,
-        free cancellation.</td>
-        <td>You have to book it before you fly.</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <p style="font-size:13px;color:var(--muted)">Public transport fares and taxi estimates are
-  for reference and change. Our price is the one you pay.</p>
-
-  <h2 id="local">Before you land</h2>
-  <h3>One terminal, and the busiest Saturdays in Portugal</h3>
-  <p>Peak summer Saturdays at Faro are the busiest arrivals in the country. The terminal is single and simple, but the hall gets full. Your driver waits with your name at the arrivals exit.</p>
-  <h3>The A22 is toll-free since January 2025</h3>
-  <p>The Via do Infante carries no tolls, which makes the whole Algarve quicker and cheaper to reach than it was. Any remaining road charge is inside your fixed price.</p>
-  <h3>Portuguese TVDE and taxi licensing</h3>
-  <p>Every driver holds a TVDE or taxi licence issued by IMT. We check the licence and the insurance before a company takes its first ride.</p>
-  <h3>Most passengers are not going to Faro</h3>
-  <p>Almost everything is west on the A22 — Albufeira, Vilamoura, Lagos. Resorts spread over several kilometres, so give the hotel name and not just the town. It is the single most common cause of a late arrival.</p>
-
-  <h2 id="airport">The airport</h2>
+  <h2>The airport</h2>
   <p>Faro Airport serves the whole Algarve, and most passengers are not going to Faro itself. Everything west — Albufeira, Vilamoura, Lagos — is on the A22 motorway. Arrivals is a single hall and the meeting point is straight through customs.</p>
   <ul><li>Peak summer Saturdays are the busiest arrivals in Portugal. Allow extra time and expect the terminal to be full.</li><li>The A22 has electronic tolls only. Our price includes them, which is not always the case with local taxis — worth checking if you compare.</li></ul>
 
-  <h2>Other airports in Portugal</h2>
+  <h2>Where people go</h2>
+  <p>Prices are for one to four passengers. Larger groups travel in a van, which costs more
+  but still one fixed price for the whole group.</p>
   <div class="others">
-      <a class="other" href="/airports/portugal/lisbon"><b>Lisbon Airport</b><span>from €53</span></a>
-      <a class="other" href="/airports/portugal/porto"><b>Porto Airport</b><span>from €67</span></a>
+      <a class="other" href="/transfers/portugal/faro-to-vilamoura"><b>Vilamoura</b><span>30 min &middot; from €91</span></a>
+      <a class="other" href="/transfers/portugal/faro-to-tavira"><b>Tavira</b><span>30 min &middot; from €101</span></a>
+      <a class="other" href="/transfers/portugal/faro-to-albufeira"><b>Albufeira</b><span>40 min &middot; from €112</span></a>
+      <a class="other" href="/transfers/portugal/faro-to-carvoeiro"><b>Carvoeiro</b><span>50 min &middot; from €139</span></a>
+      <a class="other" href="/transfers/portugal/faro-to-portimao"><b>Portimão</b><span>55 min &middot; from €152</span></a>
+      <a class="other" href="/transfers/portugal/faro-to-lagos"><b>Lagos</b><span>65 min &middot; from €184</span></a>
+      <a class="other" href="/transfers/portugal/faro-to-sagres"><b>Sagres</b><span>85 min &middot; from €224</span></a>
   </div>
 </article>
 </main>
