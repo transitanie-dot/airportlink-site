@@ -315,10 +315,24 @@
     .desk{display:grid;grid-template-columns:340px 1fr;gap:16px;height:calc(100vh - 210px);min-height:520px}
     .desk-left{display:flex;flex-direction:column;gap:12px;min-height:0}
     .desk-status{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
-    .on-duty{display:flex;gap:11px;align-items:flex-start;cursor:pointer;margin-bottom:14px}
-    .on-duty input{width:18px;height:18px;margin-top:2px;flex:0 0 auto;accent-color:var(--ok)}
-    .on-duty strong{display:block;font-size:14px;margin-bottom:3px}
-    .on-duty small{color:var(--muted);font-size:12px;line-height:1.5}
+    /* Três estados, não um interruptor. Quem vai almoçar não fica
+       offline — fica em pausa, e a diferença importa para quem
+       espera do outro lado. */
+    .states{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
+      background:var(--card-2);padding:4px;border-radius:12px;margin-bottom:11px}
+    .st{display:flex;align-items:center;justify-content:center;gap:7px;padding:9px 6px;
+      border:0;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer;
+      font-size:12.5px;font-weight:600}
+    .st .dot{width:8px;height:8px;border-radius:999px;background:currentColor;opacity:.45}
+    .st:hover{color:var(--text)}
+    .st.active{background:var(--card);box-shadow:inset 0 0 0 1px var(--border)}
+    .st.live.active{color:var(--ok)}
+    .st.brk.active{color:var(--warn)}
+    .st.off.active{color:var(--muted)}
+    .st.active .dot{opacity:1}
+    .st.live.active .dot{animation:pulse 2s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+    .state-note{margin:0 0 14px;color:var(--muted);font-size:12px;line-height:1.5}
     .desk-figs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
     .desk-figs > div{background:var(--card-2);border-radius:10px;padding:9px 11px}
     .desk-figs .k{display:block;font-family:var(--mono);font-size:8.5px;font-weight:600;
@@ -816,18 +830,20 @@
       <div class="desk">
         <div class="desk-left">
           <div class="desk-status">
-            <label class="on-duty">
-              <input type="checkbox" id="onDuty">
-              <span>
-                <strong>I am at the desk</strong>
-                <small id="dutyNote">Partners see whether anyone is here before they write.</small>
-              </span>
-            </label>
+            <div class="states" id="states">
+              <button class="st live" data-state="live" type="button">
+                <span class="dot"></span>Live</button>
+              <button class="st brk" data-state="break" type="button">
+                <span class="dot"></span>Break</button>
+              <button class="st off active" data-state="offline" type="button">
+                <span class="dot"></span>Offline</button>
+            </div>
+            <p class="state-note" id="dutyNote">Offline. You will not be given new chats.</p>
 
             <div class="desk-figs">
               <div><span class="k">Mine</span><span class="v" id="capMine">0/2</span></div>
               <div><span class="k">Waiting</span><span class="v" id="capWaiting">0</span></div>
-              <div><span class="k">Agents</span><span class="v" id="capAgents">0</span></div>
+              <div><span class="k">Live</span><span class="v" id="capAgents">0</span></div>
             </div>
           </div>
 
@@ -1625,7 +1641,7 @@ function openDetails(id) {
 // ============================================================
 var desk = {
   chats: [], current: null, messages: [],
-  capacity: {}, onDuty: false, heartbeat: null, channel: null
+  capacity: {}, state: 'offline', heartbeat: null, channel: null
 };
 
 function agoLabel(minutes) {
@@ -1680,7 +1696,8 @@ function renderDesk() {
 
   el('capMine').textContent = mine + '/' + limit;
   el('capWaiting').textContent = cap.waiting || 0;
-  el('capAgents').textContent = cap.agents_online || 0;
+  el('capAgents').textContent = (cap.agents_live || 0) +
+    (cap.agents_break ? ' +' + cap.agents_break : '');
 
   // O contador da navegação conta quem espera, não quem está a ser
   // atendido: é o número que exige acção.
@@ -1855,35 +1872,56 @@ el('chatUrgentBtn').addEventListener('click', async function () {
  * propósito: um separador esquecido aberto diria "online" a noite
  * inteira, e um parceiro escreveria à espera de resposta imediata.
  */
-el('onDuty').addEventListener('change', async function () {
-  desk.onDuty = el('onDuty').checked;
+var STATE_NOTES = {
+  live: 'You are taking chats. New ones can be assigned to you.',
+  break: 'On a break. The chats you already have still work, but no new ones ' +
+    'come to you — and you still count as being on shift.',
+  offline: 'Offline. You will not be given new chats.'
+};
+
+async function setDeskState(state) {
+  var previous = desk.state;
+  desk.state = state;
+
+  qsa('.st').forEach(function (b) {
+    b.classList.toggle('active', b.getAttribute('data-state') === state);
+  });
+
+  el('dutyNote').textContent = STATE_NOTES[state];
 
   try {
     await deskFetch('/api/admin/presence', {
-      online: desk.onDuty,
+      state: state,
       display_name: currentAdmin && currentAdmin.email
         ? currentAdmin.email.split('@')[0] : null
     });
   } catch (e) {
     alert(e.message);
-    el('onDuty').checked = !desk.onDuty;
-    desk.onDuty = !desk.onDuty;
+    desk.state = previous;
+    qsa('.st').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-state') === previous);
+    });
+    el('dutyNote').textContent = STATE_NOTES[previous];
     return;
   }
 
-  el('dutyNote').textContent = desk.onDuty
-    ? 'Partners see that someone is here. Leaving? Untick this.'
-    : 'Partners see that nobody is at the desk right now.';
-
   if (desk.heartbeat) { clearInterval(desk.heartbeat); desk.heartbeat = null; }
 
-  if (desk.onDuty) {
+  // A batida mantém a presença viva sem mexer no estado: quem está
+  // em pausa continua em pausa, não volta sozinho a live.
+  if (state !== 'offline') {
     desk.heartbeat = setInterval(function () {
-      deskFetch('/api/admin/presence', { online: true }).catch(function () {});
+      deskFetch('/api/admin/presence', {}).catch(function () {});
     }, 120000);
   }
 
   await loadDesk();
+}
+
+qsa('.st').forEach(function (b) {
+  b.addEventListener('click', function () {
+    setDeskState(b.getAttribute('data-state'));
+  });
 });
 
 // Fechar o separador não deve deixar-te marcado como presente.
@@ -1893,8 +1931,7 @@ el('onDuty').addEventListener('change', async function () {
 // resto — ao fim de três, a presença expira sozinha. É por isso que
 // a expiração existe: nem sempre há oportunidade de dizer adeus.
 window.addEventListener('beforeunload', function () {
-  if (!desk.onDuty || !desk.heartbeat) return;
-  clearInterval(desk.heartbeat);
+  if (desk.heartbeat) clearInterval(desk.heartbeat);
 });
 
 /**
