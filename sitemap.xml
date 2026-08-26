@@ -38,139 +38,139 @@
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/airports/lisbon</loc>
+    <loc>https://www.airportlink.app/airports/portugal/lisbon</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/lisbon-to-city-centre</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/lisbon-to-city-centre</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/lisbon-to-cascais</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/lisbon-to-cascais</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/lisbon-to-sintra</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/lisbon-to-sintra</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/lisbon-to-estoril</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/lisbon-to-estoril</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/lisbon-to-setubal</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/lisbon-to-setubal</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/lisbon-to-ericeira</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/lisbon-to-ericeira</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/lisbon-to-obidos</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/lisbon-to-obidos</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/airports/porto</loc>
+    <loc>https://www.airportlink.app/airports/portugal/porto</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/porto-to-city-centre</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/porto-to-city-centre</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/porto-to-vila-nova-de-gaia</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/porto-to-vila-nova-de-gaia</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/porto-to-douro-valley</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/porto-to-douro-valley</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/porto-to-braga</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/porto-to-braga</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/porto-to-guimaraes</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/porto-to-guimaraes</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/porto-to-aveiro</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/porto-to-aveiro</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/airports/faro</loc>
+    <loc>https://www.airportlink.app/airports/portugal/faro</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/faro-to-albufeira</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/faro-to-albufeira</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/faro-to-vilamoura</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/faro-to-vilamoura</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/faro-to-lagos</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/faro-to-lagos</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/faro-to-tavira</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/faro-to-tavira</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/faro-to-carvoeiro</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/faro-to-carvoeiro</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/faro-to-portimao</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/faro-to-portimao</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.airportlink.app/transfers/faro-to-sagres</loc>
+    <loc>https://www.airportlink.app/transfers/portugal/faro-to-sagres</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
