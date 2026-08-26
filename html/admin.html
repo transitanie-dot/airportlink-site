@@ -385,21 +385,77 @@
     .desk-head strong{display:block;font-size:15px;margin-bottom:3px}
     .desk-head span{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
     .desk-actions{display:flex;gap:7px;flex-wrap:wrap}
-    .desk-body{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px;min-height:0}
+    .desk-body{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:0;min-height:0}
+    /* Quem deixou passar esta conversa, e quanto tempo demorou. */
+    .desk-log{flex:0 0 auto;padding:12px 18px;border-top:1px solid var(--border);
+      background:var(--card-2);font-family:var(--mono);font-size:10.5px;color:var(--muted);
+      line-height:1.7;max-height:96px;overflow-y:auto}
+    .desk-log b{color:var(--text);font-weight:600}
+    .desk-log .miss{color:var(--warn)}
+    .desk-log .took{color:var(--ok)}
     .desk-foot{display:flex;gap:9px;padding:14px 16px;border-top:1px solid var(--border);flex:0 0 auto}
     .desk-foot textarea{flex:1;resize:none;max-height:120px;padding:11px 13px;
       border:1px solid var(--border);border-radius:11px;background:var(--bg);color:var(--text);
       font-family:inherit;font-size:14px;line-height:1.5;outline:none}
     .desk-foot textarea:focus{border-color:var(--primary)}
+    /* O filho do flex encolhia até à largura da letra mais larga e o
+       texto saía uma letra por linha. A largura máxima passa para o
+       contentor, e o filho leva min-width:0. */
     .d-row{display:flex}
     .d-row.mine{justify-content:flex-end}
-    .d-bub{max-width:74%;padding:11px 14px;border-radius:15px;font-size:14px;line-height:1.55;
-      white-space:pre-wrap;word-break:break-word}
-    .d-row.mine .d-bub{background:var(--primary);color:#fff;border-bottom-right-radius:5px}
+    .d-row > div{max-width:76%;min-width:0}
+    .d-row.mine > div{margin-left:auto}
+    .d-row + .d-row{margin-top:3px}
+    .d-row.turn{margin-top:14px}
+    .d-bub{max-width:100%;width:fit-content;padding:11px 15px;border-radius:18px;
+      font-size:14.5px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+    .d-row.mine .d-bub{background:var(--primary);color:#fff;margin-left:auto;
+      border-bottom-right-radius:6px}
     .d-row.theirs .d-bub{background:var(--card-2);border:1px solid var(--border);
-      border-bottom-left-radius:5px}
-    .d-meta{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:4px}
+      border-bottom-left-radius:6px}
+    .d-row.mine:not(.last) .d-bub{border-bottom-right-radius:18px}
+    .d-row.theirs:not(.last) .d-bub{border-bottom-left-radius:18px}
+    .d-meta{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin:5px 2px 0}
     .d-row.mine .d-meta{text-align:right}
+    .d-day{display:flex;align-items:center;gap:12px;margin:18px 0 10px;
+      font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.14em;
+      text-transform:uppercase;color:var(--muted)}
+    .d-day::before,.d-day::after{content:"";flex:1;height:1px;background:var(--border)}
+
+    /* ---------- chamada a entrar ----------
+       Como num call centre: um destinatário, um relógio, e uma
+       decisão. Com a oferta aberta a todos ninguém se sente
+       responsável — cada um assume que outro pega. */
+    .ring{position:fixed;right:24px;bottom:24px;width:min(360px,calc(100vw - 32px));
+      background:var(--card);border:1px solid var(--warn);border-radius:20px;
+      box-shadow:0 26px 60px rgba(0,0,0,.4);z-index:200;overflow:hidden;
+      animation:ringIn .3s cubic-bezier(.22,1.2,.36,1)}
+    @keyframes ringIn{from{opacity:0;transform:translateY(18px) scale(.95)}to{opacity:1;transform:none}}
+    .ring-bar{height:4px;background:var(--warn-bg)}
+    .ring-bar i{display:block;height:100%;background:var(--warn);width:100%;
+      transition:width 1s linear}
+    .ring-body{padding:20px}
+    .ring-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);
+      font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--warn);margin-bottom:12px}
+    .ring-tag i{width:8px;height:8px;border-radius:999px;background:var(--warn);
+      animation:blink 1s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+    .ring-who{font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.02em;
+      margin-bottom:5px}
+    .ring-where{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:12px}
+    .ring-msg{background:var(--card-2);border-radius:12px;padding:12px 14px;font-size:13.5px;
+      line-height:1.55;color:var(--text);margin-bottom:16px;
+      display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    .ring-acts{display:grid;grid-template-columns:1fr auto;gap:9px}
+    .ring-take{border:0;border-radius:12px;background:var(--ok);color:#04231A;
+      font-size:14px;font-weight:700;padding:13px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:9px}
+    .ring-take b{font-family:var(--mono);font-size:13px;opacity:.75}
+    .ring-pass{border:1px solid var(--border);border-radius:12px;background:transparent;
+      color:var(--muted);font-size:13px;padding:13px 16px;cursor:pointer}
+    .ring-pass:hover{color:var(--bad);border-color:var(--bad)}
+    @media (max-width:620px){.ring{right:10px;left:10px;width:auto}}
     @media (max-width:900px){.desk{grid-template-columns:1fr;height:auto}
       .desk-left{max-height:340px}.desk-right{min-height:420px}}
     .quick-views{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
@@ -530,7 +586,23 @@
       </div>
     </div>
 
-    <div class="deskbar">
+    <div class="ring hidden" id="ring" role="alertdialog" aria-live="assertive">
+  <div class="ring-bar"><i id="ringBar"></i></div>
+  <div class="ring-body">
+    <div class="ring-tag"><i></i>Incoming chat</div>
+    <div class="ring-who" id="ringWho">&mdash;</div>
+    <div class="ring-where" id="ringWhere">&mdash;</div>
+    <div class="ring-msg" id="ringMsg">&mdash;</div>
+    <div class="ring-acts">
+      <button class="ring-take" id="ringTake" type="button">
+        Answer <b id="ringCount">30</b>
+      </button>
+      <button class="ring-pass" id="ringPass" type="button">Pass</button>
+    </div>
+  </div>
+</div>
+
+<div class="deskbar">
   <div class="states" id="states">
     <button class="st live" data-state="live" type="button">
       <span class="dot"></span>Live</button>
@@ -898,6 +970,7 @@
             </div>
 
             <div class="desk-body" id="chatThread"></div>
+      <div class="desk-log hidden" id="chatLog"></div>
 
             <div class="desk-foot">
               <textarea id="chatReply" rows="2" placeholder="Write your reply" maxlength="4000"></textarea>
@@ -1677,6 +1750,43 @@ function agoLabel(minutes) {
   return Math.round(m / 1440) + 'd';
 }
 
+/**
+ * O historial de quem deixou passar esta conversa.
+ *
+ * Fica visível a quem a atender, para não haver surpresas: se o
+ * parceiro disser "já estou à espera há dez minutos", vê-se aqui
+ * porquê.
+ */
+async function renderChatLog(chatId) {
+  var box = el('chatLog');
+  box.classList.add('hidden');
+
+  try {
+    var data = await deskFetch('/api/admin/chat-log');
+    var mine = (data.log || []).filter(function (o) { return o.chat_id === chatId; });
+
+    if (!mine.length) return;
+
+    box.innerHTML = mine.slice(0, 6).map(function (o) {
+      var label = {
+        accepted: '<span class="took">answered</span>',
+        missed: '<span class="miss">did not answer</span>',
+        declined: '<span class="miss">passed</span>',
+        cancelled: 'cancelled',
+        ringing: 'ringing'
+      }[o.outcome] || o.outcome;
+
+      return '<b>' + escapeHtml(o.agent_name) + '</b> ' + label +
+        (o.seconds_taken ? ' · ' + o.seconds_taken + 's' : '') +
+        ' · ' + escapeHtml(formatTime(o.offered_at));
+    }).join('<br>');
+
+    box.classList.remove('hidden');
+  } catch (e) {
+    console.error('chat log:', e.message);
+  }
+}
+
 async function deskFetch(path, body) {
   var res = await fetch(DRIVERS_URL + path, {
     method: body ? 'POST' : 'GET',
@@ -1709,6 +1819,11 @@ async function loadDesk() {
     desk.capacity = cap || {};
     renderDesk();
     subscribeDesk();
+
+    // Uma oferta a tocar neste agente. Vem no mesmo pedido para não
+    // haver um segundo caminho por onde possa falhar.
+    if (queue.ringing) showRing(queue.ringing);
+    else if (ring.offer) stopRing();
   } catch (e) {
     el('chatList').innerHTML = '<div class="no-results">' + escapeHtml(e.message) + '</div>';
   }
@@ -1822,22 +1937,65 @@ async function openDeskChat(chatId) {
   el('chatUrgentBtn').textContent = chat.urgent ? 'Remove urgent' : 'Flag urgent';
 
   renderThread();
+  renderChatLog(chatId);
   await loadDesk();
   el('chatReply').focus();
 }
 
+function deskDay(when) {
+  var d = new Date(when);
+  if (isNaN(d.getTime())) return '';
+
+  var today = new Date();
+  var yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+
+  if (d.toDateString() === today.toDateString()) return 'Today';
+  if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+}
+
+function deskClock(when) {
+  var d = new Date(when);
+  return isNaN(d.getTime()) ? ''
+    : d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
 function renderThread() {
   var box = el('chatThread');
+  var all = desk.messages;
+  var html = '';
+  var lastDay = '';
 
-  box.innerHTML = desk.messages.map(function (m) {
+  all.forEach(function (m, i) {
+    var previous = all[i - 1];
+    var next = all[i + 1];
     var mine = m.sender === 'admin';
-    return '<div class="d-row ' + (mine ? 'mine' : 'theirs') + '"><div>' +
-      '<div class="d-bub">' + escapeHtml(m.body || '[attachment]') + '</div>' +
-      '<div class="d-meta">' +
-      escapeHtml(mine ? (m.sender_name || 'you') : (m.sender_name || 'partner')) + ' · ' +
-      escapeHtml(formatTime(m.created_at)) + '</div></div></div>';
-  }).join('');
 
+    var day = deskDay(m.created_at);
+    if (day && day !== lastDay) {
+      html += '<div class="d-day">' + escapeHtml(day) + '</div>';
+      lastDay = day;
+    }
+
+    // Agrupar o que é da mesma pessoa: só a última de uma sequência
+    // leva a hora e o canto cortado.
+    var turn = !previous || previous.sender !== m.sender || deskDay(previous.created_at) !== day;
+    var last = !next || next.sender !== m.sender || deskDay(next.created_at) !== day;
+
+    html += '<div class="d-row ' + (mine ? 'mine' : 'theirs') +
+      (turn ? ' turn' : '') + (last ? ' last' : '') + '"><div>' +
+      '<div class="d-bub">' + escapeHtml(m.body || '[attachment]') + '</div>' +
+      (last
+        ? '<div class="d-meta">' +
+          escapeHtml(mine ? (m.sender_name || 'you') : (m.sender_name || 'partner')) + ' · ' +
+          escapeHtml(deskClock(m.created_at)) + '</div>'
+        : '') +
+      '</div></div>';
+  });
+
+  box.innerHTML = html;
   box.scrollTop = box.scrollHeight;
 }
 
@@ -2017,10 +2175,123 @@ function chatWaitingAlert() {
   if (!chatAlert) chatAlert = setInterval(fire, 30000);
 }
 
+// ============================================================
+// CHAMADA A ENTRAR
+//
+// Trinta segundos para atender. Se não atender, passa ao seguinte e
+// fica registado — não para castigar, mas para saber ao fim de um
+// mês se há um turno onde as chamadas ficam por atender.
+// ============================================================
+var RING_SECONDS = 30;
+var ring = { offer: null, chat: null, timer: null, left: 0, alarm: null };
+
+function showRing(offer) {
+  // Já está a tocar esta, ou estou a olhar para a conversa.
+  if (ring.offer && ring.offer.id === offer.id) return;
+
+  var chat = desk.chats.find(function (c) { return c.chat_id === offer.chat_id; });
+  if (!chat) return;
+
+  ring.offer = offer;
+  ring.chat = chat;
+
+  el('ringWho').textContent = chat.trading_name || chat.legal_name || chat.email;
+  el('ringWhere').textContent = [chat.country, chat.partner_status].filter(Boolean).join('  ·  ');
+  el('ringMsg').textContent = chat.last_message_text || 'No message yet';
+  el('ring').classList.remove('hidden');
+
+  // Quanto falta de verdade, não trinta fixos: se o painel esteve
+  // fechado, a oferta já pode ter dez segundos.
+  var expires = new Date(offer.expires_at).getTime();
+  ring.left = Math.max(1, Math.round((expires - Date.now()) / 1000));
+
+  startAlarm();
+  tickRing();
+
+  if (ring.timer) clearInterval(ring.timer);
+  ring.timer = setInterval(tickRing, 1000);
+}
+
+function tickRing() {
+  el('ringCount').textContent = ring.left;
+  el('ringBar').style.width = Math.max(0, (ring.left / RING_SECONDS) * 100) + '%';
+
+  if (ring.left <= 0) {
+    // O tempo acabou: passa ao seguinte sozinho.
+    passRing(false);
+    return;
+  }
+
+  ring.left -= 1;
+}
+
+function stopRing() {
+  if (ring.timer) { clearInterval(ring.timer); ring.timer = null; }
+  stopAlarm();
+  ring.offer = null;
+  ring.chat = null;
+  el('ring').classList.add('hidden');
+}
+
+/**
+ * O alarme repete até alguém decidir.
+ *
+ * Um som único perde-se se a pessoa estiver noutro separador. Aqui
+ * há alguém à espera com um relógio a correr, e é a única coisa no
+ * painel que justifica insistir.
+ */
+function startAlarm() {
+  stopAlarm();
+  beep();
+  ring.alarm = setInterval(beep, 3000);
+  document.title = 'Incoming chat — Airportlink';
+}
+
+function stopAlarm() {
+  if (ring.alarm) { clearInterval(ring.alarm); ring.alarm = null; }
+  document.title = 'Airportlink operations';
+}
+
+el('ringTake').addEventListener('click', async function () {
+  var chatId = ring.offer && ring.offer.chat_id;
+  if (!chatId) return;
+
+  stopRing();
+  switchTab('chatTab');
+  await openDeskChat(chatId);
+});
+
+el('ringPass').addEventListener('click', function () { passRing(true); });
+
+async function passRing(declined) {
+  var chatId = ring.offer && ring.offer.chat_id;
+  stopRing();
+  if (!chatId) return;
+
+  try {
+    await deskFetch('/api/admin/chat/pass', { chat_id: chatId, declined: declined === true });
+  } catch (e) {
+    console.error('pass:', e.message);
+  }
+
+  await loadDesk();
+}
+
 function subscribeDesk() {
   if (desk.channel) return;
 
   desk.channel = client.channel('admin-partner-chat')
+    .on('postgres_changes', {
+      event: 'INSERT', schema: 'public', table: 'chat_offers'
+    }, function (payload) {
+      var offer = payload.new;
+
+      // Só as minhas, e só as que ainda estão a tocar.
+      if (offer.agent_id !== (currentAdmin && currentAdmin.id)) return;
+      if (offer.outcome !== 'ringing') return;
+
+      loadDesk();
+    })
     .on('postgres_changes', {
       event: 'INSERT', schema: 'public', table: 'partner_messages'
     }, function (payload) {
