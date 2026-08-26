@@ -312,7 +312,38 @@
        tabela ordenada por data de viagem enterra a reserva feita há
        cinco minutos no meio de tudo. */
     /* ---------- posto de atendimento ---------- */
-    .desk{display:grid;grid-template-columns:340px 1fr;gap:16px;height:calc(100vh - 210px);min-height:520px}
+    .desk{display:grid;grid-template-columns:320px 1fr;gap:16px;height:calc(100vh - 250px);min-height:520px}
+    /* A conversa e o contexto lado a lado. Responder obrigava a
+       abrir outro separador para saber quem é a empresa e o que tem
+       em aberto — e a voltar. */
+    .desk-split{flex:1;display:grid;grid-template-columns:1fr 262px;min-height:0}
+    .desk-ctx{border-left:1px solid var(--border);overflow-y:auto;padding:16px;
+      background:var(--card-2);min-height:0}
+    .ctx-h{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.14em;
+      text-transform:uppercase;color:var(--muted);margin:18px 0 9px}
+    .ctx-h:first-child{margin-top:0}
+    .ctx-row{display:flex;justify-content:space-between;gap:10px;align-items:baseline;
+      padding:6px 0;font-size:12.5px;border-bottom:1px solid var(--border)}
+    .ctx-row:last-child{border-bottom:0}
+    .ctx-row span:first-child{color:var(--muted);flex:0 0 auto}
+    .ctx-row span:last-child,.ctx-row button{text-align:right;font-weight:600;min-width:0;
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .ctx-row .bad{color:var(--bad)}
+    .ctx-row .ok{color:var(--ok)}
+    .ctx-big{background:var(--card);border:1px solid var(--border);border-radius:12px;
+      padding:12px 14px;margin-bottom:10px}
+    .ctx-big .k{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+    .ctx-big .v{font-family:var(--mono);font-size:19px;font-weight:600;letter-spacing:-.02em}
+    .ctx-ride{background:var(--card);border:1px solid var(--border);border-radius:11px;
+      padding:10px 12px;margin-bottom:7px;font-size:12px;line-height:1.5}
+    .ctx-ride b{display:block;font-family:var(--mono);font-size:11px;margin-bottom:3px}
+    .ctx-ride span{color:var(--muted);display:block;overflow:hidden;text-overflow:ellipsis;
+      white-space:nowrap}
+    .ctx-copy{background:transparent;border:0;padding:0;color:var(--primary);cursor:pointer;
+      font:inherit}
+    .ctx-copy:hover{text-decoration:underline}
+    @media (max-width:1300px){.desk-split{grid-template-columns:1fr}.desk-ctx{display:none}}
     .desk-left{display:flex;flex-direction:column;gap:12px;min-height:0}
     .desk-status{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
     /* Barra do posto: o estado à vista de qualquer separador, como
@@ -427,6 +458,16 @@
     .desk-head strong{display:block;font-size:15px;margin-bottom:3px}
     .desk-head span{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
     .desk-actions{display:flex;gap:7px;flex-wrap:wrap}
+    /* Ler sem pegar é o normal. Pegar é uma decisão, e uma decisão
+       precisa de um botão. */
+    .desk-claim{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+      padding:12px 18px;background:var(--warn-bg);border-bottom:1px solid var(--warn);
+      color:var(--warn);font-size:13px;line-height:1.5;flex:0 0 auto}
+    .claim-btn{margin-left:auto;border:0;border-radius:11px;background:var(--ok);
+      color:#04231A;font-size:13px;font-weight:700;padding:9px 18px;cursor:pointer;flex:0 0 auto}
+    .claim-btn:disabled{opacity:.5;cursor:not-allowed}
+    .desk-foot.locked,.desk-mode.locked{opacity:.45;pointer-events:none}
+    .chat-row .tag.busy{background:var(--primary-soft);color:var(--primary);border-color:transparent}
     .desk-body{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:0;min-height:0}
     /* Quem deixou passar esta conversa, e quanto tempo demorou. */
     .desk-log{flex:0 0 auto;padding:12px 18px;border-top:1px solid var(--border);
@@ -1105,14 +1146,22 @@
                 <span id="chatMeta">&mdash;</span>
               </div>
               <div class="desk-actions">
-                <button class="doc-no" id="chatUrgentBtn" type="button">Flag urgent</button>
-                <button class="doc-ok" id="chatCloseBtn" type="button">Close chat</button>
-                <button class="clear-btn" id="chatReleaseBtn" type="button">Hand back</button>
+                <button class="doc-no hidden" id="chatUrgentBtn" type="button">Flag urgent</button>
+                <button class="doc-ok hidden" id="chatCloseBtn" type="button">Close chat</button>
+                <button class="clear-btn hidden" id="chatReleaseBtn" type="button">Hand back</button>
               </div>
             </div>
 
-            <div class="desk-body" id="chatThread"></div>
-      <div class="desk-log hidden" id="chatLog"></div>
+            <div class="desk-claim hidden" id="chatClaimBar">
+              <span id="chatClaimText">Reading only. Take it to reply.</span>
+              <button class="claim-btn" id="chatTakeBtn" type="button">Take this chat</button>
+            </div>
+
+            <div class="desk-split">
+              <div class="desk-body" id="chatThread"></div>
+              <aside class="desk-ctx" id="chatCtx"></aside>
+            </div>
+            <div class="desk-log hidden" id="chatLog"></div>
 
             <div class="desk-mode">
               <button class="dm active" data-mode="reply" type="button">Reply to partner</button>
@@ -1927,6 +1976,98 @@ function agoLabel(minutes) {
  * parceiro disser "já estou à espera há dez minutos", vê-se aqui
  * porquê.
  */
+/**
+ * Quem é a empresa e o que tem em aberto.
+ *
+ * Ao lado da conversa, não noutro separador: responder a "quando
+ * recebo" ou "porque não tenho viagens" exigia sair da conversa,
+ * procurar, e voltar — e o parceiro fica à espera todo esse tempo.
+ */
+async function renderChatCtx(chatId) {
+  var box = el('chatCtx');
+  box.innerHTML = '<div class="ctx-h">Loading</div>';
+
+  try {
+    var data = await deskFetch('/api/admin/chat/' + encodeURIComponent(chatId) + '/context');
+    var c = data.context;
+
+    if (!c) { box.innerHTML = '<div class="ctx-h">No details</div>'; return; }
+
+    var money = function (v) { return 'EUR ' + Number(v || 0).toFixed(0); };
+    var since = c.joined_at ? String(c.joined_at).slice(0, 10) : '—';
+
+    var docsLine = c.docs_rejected
+      ? '<span class="bad">' + c.docs_rejected + ' rejected</span>'
+      : (c.docs_expired
+          ? '<span class="bad">' + c.docs_expired + ' expired</span>'
+          : '<span class="ok">' + c.docs_approved + ' approved</span>');
+
+    box.innerHTML =
+      '<div class="ctx-big"><div class="k">Owed to them</div>' +
+      '<div class="v">' + escapeHtml(money(c.owed_eur)) + '</div></div>' +
+
+      '<div class="ctx-h">Company</div>' +
+      '<div class="ctx-row"><span>Status</span><span class="' +
+        (c.status === 'approved' ? 'ok' : 'bad') + '">' + escapeHtml(c.status) + '</span></div>' +
+      '<div class="ctx-row"><span>Country</span><span>' + escapeHtml(c.country || '—') + '</span></div>' +
+      '<div class="ctx-row"><span>Partner since</span><span>' + escapeHtml(since) + '</span></div>' +
+      '<div class="ctx-row"><span>Contact</span><span>' +
+        escapeHtml(c.contact_name || '—') + '</span></div>' +
+      // Clicável: copia o número em vez de obrigar a transcrevê-lo.
+      '<div class="ctx-row"><span>Phone</span>' +
+        (c.contact_phone
+          ? '<button class="ctx-copy" data-copy="' + escapeHtml(c.contact_phone) + '">' +
+            escapeHtml(c.contact_phone) + '</button>'
+          : '<span>—</span>') + '</div>' +
+      '<div class="ctx-row"><span>Email</span>' +
+        '<button class="ctx-copy" data-copy="' + escapeHtml(c.email || '') + '">' +
+        escapeHtml(c.email || '—') + '</button></div>' +
+
+      '<div class="ctx-h">Setup</div>' +
+      '<div class="ctx-row"><span>Documents</span>' + docsLine + '</div>' +
+      '<div class="ctx-row"><span>Drivers</span><span class="' +
+        (c.drivers ? '' : 'bad') + '">' + c.drivers + '</span></div>' +
+      '<div class="ctx-row"><span>Vehicles</span><span class="' +
+        (c.vehicles ? '' : 'bad') + '">' + c.vehicles + '</span></div>' +
+      '<div class="ctx-row"><span>Airports</span><span>' +
+        escapeHtml((c.operating_airports || []).join(', ') || '—') + '</span></div>' +
+      '<div class="ctx-row"><span>Payout details</span><span class="' +
+        (c.has_payout ? 'ok' : 'bad') + '">' + (c.has_payout ? 'on file' : 'missing') + '</span></div>' +
+
+      '<div class="ctx-h">Rides</div>' +
+      '<div class="ctx-row"><span>Completed</span><span>' + c.rides_total + '</span></div>' +
+      '<div class="ctx-row"><span>Upcoming</span><span>' + c.rides_upcoming + '</span></div>' +
+      '<div class="ctx-row"><span>Last ride</span><span>' +
+        escapeHtml(c.last_ride_on || '—') + '</span></div>' +
+      '<div class="ctx-row"><span>Released</span><span class="' +
+        (Number(c.times_released) > 2 ? 'bad' : '') + '">' + (c.times_released || 0) + '</span></div>' +
+
+      ((data.upcoming || []).length
+        ? '<div class="ctx-h">Next up</div>' +
+          data.upcoming.map(function (r) {
+            return '<div class="ctx-ride"><b>' +
+              escapeHtml(r.booking_reference || r.booking_id || '') + '</b>' +
+              '<span>' + escapeHtml(r.booking_date) +
+              (r.booking_time ? ' · ' + escapeHtml(String(r.booking_time).slice(0, 5)) : '') +
+              '</span><span>' + escapeHtml(String(r.pickup || '').slice(0, 30)) + '</span></div>';
+          }).join('')
+        : '');
+
+    qsa('#chatCtx [data-copy]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var original = b.textContent;
+        navigator.clipboard.writeText(b.getAttribute('data-copy')).then(function () {
+          b.textContent = 'Copied';
+          setTimeout(function () { b.textContent = original; }, 1200);
+        }).catch(function () {});
+      });
+    });
+  } catch (e) {
+    box.innerHTML = '<div class="ctx-h">Could not load</div>';
+    console.error('chat context:', e.message);
+  }
+}
+
 async function renderChatLog(chatId) {
   var box = el('chatLog');
   box.classList.add('hidden');
@@ -2071,7 +2212,10 @@ function renderDesk() {
     if (c.unread_for_admin > 0) tags.push('<span class="tag new">' + c.unread_for_admin + ' new</span>');
     if (c.waiting_minutes >= 10) tags.push('<span class="tag wait">waiting ' + agoLabel(c.waiting_minutes) + '</span>');
     if (isMine) tags.push('<span class="tag mine">mine</span>');
-    if (taken) tags.push('<span class="tag">taken</span>');
+    if (taken) {
+      tags.push('<span class="tag busy">live &middot; ' +
+        escapeHtml(c.assigned_agent_name || 'another agent') + '</span>');
+    }
 
     return '<button class="chat-row' +
       (desk.current === c.chat_id ? ' active' : '') +
@@ -2090,25 +2234,20 @@ function renderDesk() {
   });
 }
 
+/**
+ * Abrir é ler. Pegar é um botão.
+ *
+ * Antes, abrir pegava automaticamente — o que impedia de espreitar
+ * antes de decidir, e prendia um lugar a quem só queria ver do que
+ * se tratava.
+ *
+ * Toda a gente lê todas as conversas, incluindo as que estão a
+ * decorrer com outro agente: quem cobre um turno precisa de saber o
+ * que já foi dito.
+ */
 async function openDeskChat(chatId) {
   var chat = desk.chats.find(function (c) { return c.chat_id === chatId; });
   if (!chat) return;
-
-  var mine = chat.assigned_to === (adminId());
-
-  // Pegar antes de abrir. Ler sem pegar deixaria a conversa na fila
-  // a parecer não atendida enquanto alguém já lá está.
-  if (!chat.assigned_to) {
-    try {
-      await deskFetch('/api/admin/chat/claim', { chat_id: chatId });
-    } catch (e) {
-      alert(e.message);
-      await loadDesk();
-      return;
-    }
-  } else if (!mine) {
-    if (!window.confirm('Someone else is handling this one.\n\nOpen it read-only?')) return;
-  }
 
   desk.current = chatId;
 
@@ -2128,9 +2267,9 @@ async function openDeskChat(chatId) {
     chat.email, chat.contact_phone, chat.country, chat.partner_status
   ].filter(Boolean).join('  ·  ');
 
-  el('chatUrgentBtn').textContent = chat.urgent ? 'Remove urgent' : 'Flag urgent';
-
+  paintChatOwnership(chat);
   renderThread();
+  renderChatCtx(chatId);
   renderChatLog(chatId);
   await loadDesk();
   el('chatReply').focus();
@@ -2155,6 +2294,77 @@ function deskClock(when) {
   return isNaN(d.getTime()) ? ''
     : d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
+
+/**
+ * Quem manda nesta conversa, e o que posso fazer.
+ *
+ * Três situações: é minha, é de outro agente, ou não é de ninguém.
+ * Cada uma permite coisas diferentes, e a barra diz qual é sem
+ * obrigar a adivinhar pelos botões que aparecem.
+ */
+function paintChatOwnership(chat) {
+  var mine = chat.assigned_to === adminId();
+  var free = !chat.assigned_to;
+  var bar = el('chatClaimBar');
+
+  el('chatUrgentBtn').classList.toggle('hidden', !mine);
+  el('chatCloseBtn').classList.toggle('hidden', !mine);
+  el('chatReleaseBtn').classList.toggle('hidden', !mine);
+  el('chatUrgentBtn').textContent = chat.urgent ? 'Remove urgent' : 'Flag urgent';
+
+  document.querySelector('.desk-foot').classList.toggle('locked', !mine);
+  document.querySelector('.desk-mode').classList.toggle('locked', !mine);
+
+  if (mine) {
+    bar.classList.add('hidden');
+    return;
+  }
+
+  el('chatClaimText').textContent = free
+    ? 'Nobody has taken this one. Read it, then take it if it is yours to answer.'
+    : 'Live with ' + (chat.assigned_agent_name || 'another agent') +
+      '. You can read along — take it over only if they have stepped away.';
+
+  el('chatTakeBtn').textContent = free ? 'Take this chat' : 'Take it over';
+  el('chatTakeBtn').disabled = false;
+  bar.classList.remove('hidden');
+}
+
+el('chatTakeBtn').addEventListener('click', async function () {
+  if (!desk.current) return;
+
+  var chat = desk.chats.find(function (c) { return c.chat_id === desk.current; });
+
+  if (chat && chat.assigned_to && chat.assigned_to !== adminId()) {
+    if (!window.confirm('Take this over from ' +
+        (chat.assigned_agent_name || 'the other agent') + '?\n\n' +
+        'They lose it from their list. Only do this if they have stepped away.')) return;
+
+    // Largar a de outro exige tirá-la primeiro: o claim só pega
+    // conversas livres, e isso é de propósito.
+    try {
+      await deskFetch('/api/admin/chat/release', { chat_id: desk.current, close: false });
+    } catch (e) {
+      alert(e.message);
+      return;
+    }
+  }
+
+  el('chatTakeBtn').disabled = true;
+
+  try {
+    await deskFetch('/api/admin/chat/claim', { chat_id: desk.current });
+    await loadDesk();
+
+    var updated = desk.chats.find(function (c) { return c.chat_id === desk.current; });
+    if (updated) paintChatOwnership(updated);
+
+    el('chatReply').focus();
+  } catch (e) {
+    alert(e.message);
+    el('chatTakeBtn').disabled = false;
+  }
+});
 
 function renderThread() {
   var box = el('chatThread');
