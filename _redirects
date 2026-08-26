@@ -1,0 +1,68 @@
+# ============================================================
+# URLs LIMPOS
+#
+# Os ficheiros chamam-se login.html mas o URL público é /login.
+# O código 200 é uma REESCRITA, não um redirecionamento: a barra de
+# endereço continua a mostrar /login e o Google indexa um só URL.
+# Com 301 aqui, cada página teria dois endereços e o SEO dividia-se.
+# ============================================================
+
+/                 /index.html            200
+/drivers          /drivers.html          200
+/travelagents     /travelagents.html     200
+/myaccount        /myaccount.html        200
+/support          /support.html          200
+/login            /login.html            200
+/createaccount    /createaccount.html    200
+/success          /success.html          200
+/privacypolicy    /privacypolicy.html    200
+/terms            /terms.html            200
+
+# Páginas de rota e de aeroporto, geradas por seo/build-routes.js.
+# O :splat apanha tudo o que vier a seguir à barra.
+/transfers/*      /transfers/:splat.html   200
+/airports/*       /airports/:splat.html    200
+
+# O /forgotpassword nunca foi construído: o formulário vive dentro
+# do /login. Um 301 em vez de um 404 para quem tiver o link antigo.
+#
+# Havia aqui uma segunda regra a apontar para forgotpassword.html,
+# que não existe. Duas regras para o mesmo caminho é sempre um erro:
+# a primeira ganha e a segunda nunca corre, mas quem lê o ficheiro
+# não sabe qual das duas está em vigor.
+/forgotpassword   /login                 301
+
+# Estas quatro páginas ainda não existem. Ficam comentadas até
+# existirem: uma reescrita para um ficheiro que falta dá 404 na
+# mesma, mas esconde a razão — parece regra a funcionar e não está.
+# /thankyou         /thankyou.html         200
+# /cancel           /cancel.html           200
+# /failedpayment    /failedpayment.html    200
+
+# O painel de administração ainda não vive aqui. Comentado pela
+# mesma razão: melhor um 404 honesto do que uma regra que parece
+# funcionar e não funciona.
+# /admin            /admin.html            200
+
+# ============================================================
+# ENDEREÇOS ANTIGOS
+#
+# Estes são 301 de propósito: o endereço mudou mesmo, e o 301 diz ao
+# Google para transferir o posicionamento do antigo para o novo.
+# Sem eles, quem tiver um link guardado apanha um 404 e o valor que
+# esse URL já tinha perde-se.
+#
+# Acrescenta aqui todos os URLs que a Wix tinha e que mudaram.
+# ============================================================
+
+/travelagents.html   /travelagents   301
+/drivers.html        /drivers        301
+/login.html          /login          301
+/agents              /travelagents   301
+/partners            /drivers        301
+/home                /               301
+
+# Página não encontrada: serve a homepage com o código certo.
+# 404 e não 200 — dizer "está tudo bem" numa página que não existe
+# faz o Google indexar lixo.
+/*                /index.html            404
