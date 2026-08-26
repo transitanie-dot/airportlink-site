@@ -322,7 +322,17 @@
       padding:10px 20px;background:var(--card);border-bottom:1px solid var(--border);
       position:sticky;top:0;z-index:40}
     .deskbar .states{margin-bottom:0;flex:0 0 auto}
-    .deskbar-mine{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+    .deskbar-mine{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+    .deskbar-locked{margin-left:auto;display:inline-flex;align-items:center;gap:8px;
+      background:var(--bad-bg);border:1px solid var(--bad);border-radius:999px;
+      padding:7px 14px;color:var(--bad);font-size:12.5px;font-weight:600;cursor:pointer}
+    .deskbar-locked svg{width:15px;height:15px}
+    .deskbar-locked.hidden + .deskbar-test{margin-left:auto}
+    .deskbar-test{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);
+      background:transparent;color:var(--muted);cursor:pointer;display:flex;
+      align-items:center;justify-content:center;flex:0 0 auto}
+    .deskbar-test:hover{color:var(--text);border-color:var(--primary)}
+    .deskbar-test svg{width:16px;height:16px}
     .deskbar-alert{display:inline-flex;align-items:center;gap:9px;background:var(--warn-bg);
       border:1px solid var(--warn);border-radius:999px;padding:7px 15px 7px 12px;
       color:var(--warn);cursor:pointer;font-size:13px;font-weight:600;
@@ -615,6 +625,15 @@
   <button class="deskbar-alert hidden" id="deskAlert" type="button">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.9 9.9 0 0 1-3.6-.7L3 21l1.9-5a8.2 8.2 0 0 1-.9-3.8 8.4 8.4 0 0 1 9-8.4 8.4 8.4 0 0 1 8 8.2Z"/></svg>
     <span id="deskAlertText">1 waiting</span>
+  </button>
+
+  <button class="deskbar-locked" id="soundLocked" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m23 9-6 6M17 9l6 6"/></svg>
+    Click to enable sound
+  </button>
+
+  <button class="deskbar-test" id="testSound" type="button" title="Test the ring">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
   </button>
 
   <span class="deskbar-mine" id="deskbarMine">0/2 chats</span>
@@ -1822,8 +1841,31 @@ async function loadDesk() {
 
     // Uma oferta a tocar neste agente. Vem no mesmo pedido para não
     // haver um segundo caminho por onde possa falhar.
-    if (queue.ringing) showRing(queue.ringing);
-    else if (ring.offer) stopRing();
+    if (queue.ringing) {
+      showRing(queue.ringing);
+      return;
+    }
+
+    if (ring.offer) stopRing();
+
+    // Ninguém a tocar, mas há quem espere e eu estou livre. Pede
+    // para tocar: a oferta é criada quando a mensagem chega, e se
+    // nessa altura ninguém estava em Live, ninguém a recebeu.
+    var mineOpen = (desk.capacity.my_open_chats || 0);
+    var waiting = (desk.capacity.waiting || 0);
+
+    if (desk.state === 'live' && waiting > 0 && mineOpen < 2) {
+      try {
+        var asked = await deskFetch('/api/admin/chat/ring', {});
+        if (asked && asked.ok) {
+          // Voltar a carregar traz a oferta acabada de criar.
+          var again = await deskFetch('/api/admin/chats');
+          if (again.ringing) showRing(again.ringing);
+        }
+      } catch (e) {
+        console.error('ring request:', e.message);
+      }
+    }
   } catch (e) {
     el('chatList').innerHTML = '<div class="no-results">' + escapeHtml(e.message) + '</div>';
   }
@@ -2121,6 +2163,11 @@ qsa('.st').forEach(function (b) {
   });
 });
 
+el('testSound').addEventListener('click', function () {
+  unlockAudio();
+  ringTone();
+});
+
 // O aviso laranja leva ao separador e à conversa mais antiga.
 el('deskAlert').addEventListener('click', function () {
   switchTab('chatTab');
@@ -2159,7 +2206,7 @@ function chatWaitingAlert() {
     }).length;
 
     // Já não há ninguém à espera, ou o separador está aberto.
-    if (!waiting || activeTab === 'chatTab') {
+    if (!waiting || activeTab === 'chatTab' || ring.offer) {
       if (chatAlert) { clearInterval(chatAlert); chatAlert = null; }
       document.title = 'Airportlink operations';
       return;
@@ -2169,7 +2216,9 @@ function chatWaitingAlert() {
     document.title = '(' + waiting + ') Partner waiting';
   };
 
-  toast('Partner chat', 'A partner is waiting for a reply.', 'chatTab');
+  // Sem toast quando a janela de chamada está aberta: dois avisos
+  // ao mesmo tempo para a mesma coisa é ruído.
+  if (!ring.offer) toast('Partner chat', 'A partner is waiting for a reply.', 'chatTab');
   fire();
 
   if (!chatAlert) chatAlert = setInterval(fire, 30000);
@@ -2242,9 +2291,11 @@ function stopRing() {
  */
 function startAlarm() {
   stopAlarm();
-  beep();
-  ring.alarm = setInterval(beep, 3000);
-  document.title = 'Incoming chat — Airportlink';
+  ringTone();
+  // De quatro em quatro: o toque dura quase um segundo, e mais
+  // frequente do que isto sobrepõe-se a si próprio.
+  ring.alarm = setInterval(ringTone, 4000);
+  document.title = '\u260E Incoming chat';
 }
 
 function stopAlarm() {
@@ -3380,26 +3431,111 @@ el('soundBtn').addEventListener('click', function () {
 
 /** Duas notas curtas geradas na hora. Sem ficheiro de som para
  *  carregar, e impossível de bloquear por um adblocker. */
+/**
+ * O som dos avisos.
+ *
+ * Dois tipos, porque são coisas diferentes: um "tlim" curto para
+ * uma reserva nova, e um toque de telefone insistente para uma
+ * conversa à espera de resposta.
+ *
+ * Um contexto de áudio partilhado, criado uma vez: criar um por cada
+ * som esgota o limite do browser ao fim de umas dezenas.
+ */
+var audioCtx = null;
+
+function audio() {
+  if (audioCtx) return audioCtx;
+
+  var Ctx = window.AudioContext || window.webkitAudioContext;
+  if (!Ctx) return null;
+
+  audioCtx = new Ctx();
+  return audioCtx;
+}
+
+/**
+ * Os browsers bloqueiam áudio até haver um gesto na página.
+ *
+ * Sem isto, o painel pode estar aberto uma manhã inteira sem nunca
+ * conseguir tocar — e ninguém percebe porquê, porque não há erro
+ * nenhum. Um clique em qualquer sítio desbloqueia.
+ */
+var audioReady = false;
+
+function unlockAudio() {
+  var ctx = audio();
+  if (!ctx) return;
+
+  if (ctx.state === 'suspended') ctx.resume();
+  audioReady = ctx.state === 'running';
+
+  if (audioReady) {
+    document.removeEventListener('click', unlockAudio);
+    document.removeEventListener('keydown', unlockAudio);
+    el('soundLocked').classList.add('hidden');
+  }
+}
+
+document.addEventListener('click', unlockAudio);
+document.addEventListener('keydown', unlockAudio);
+
+function tone(freq, startAt, length, volume, shape) {
+  var ctx = audio();
+  if (!ctx) return;
+
+  var osc = ctx.createOscillator();
+  var gain = ctx.createGain();
+
+  osc.type = shape || 'sine';
+  osc.frequency.value = freq;
+
+  var t = ctx.currentTime + startAt;
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(volume, t + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + length);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + length + 0.02);
+}
+
+/** Aviso discreto: uma reserva nova, uma mensagem numa conversa já atendida. */
 function beep() {
   if (!soundOn) return;
+  var ctx = audio();
+  if (!ctx) return;
+  if (ctx.state === 'suspended') ctx.resume();
+
   try {
-    var Ctx = window.AudioContext || window.webkitAudioContext;
-    if (!Ctx) return;
-    var ctx = new Ctx();
-    [880, 1180].forEach(function (freq, i) {
-      var osc = ctx.createOscillator();
-      var gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0.0001, ctx.currentTime + i * 0.13);
-      gain.gain.exponentialRampToValueAtTime(0.14, ctx.currentTime + i * 0.13 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + i * 0.13 + 0.16);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(ctx.currentTime + i * 0.13);
-      osc.stop(ctx.currentTime + i * 0.13 + 0.18);
+    tone(880, 0, 0.16, 0.18);
+    tone(1180, 0.13, 0.2, 0.16);
+  } catch (e) {
+    console.error('beep:', e);
+  }
+}
+
+/**
+ * Toque de chamada: alguém está à espera com um relógio a correr.
+ *
+ * Três notas a subir, repetidas duas vezes, bem mais alto do que o
+ * aviso comum. É a única coisa no painel que justifica insistir.
+ */
+function ringTone() {
+  if (!soundOn) return;
+  var ctx = audio();
+  if (!ctx) return;
+  if (ctx.state === 'suspended') ctx.resume();
+
+  try {
+    [0, 0.62].forEach(function (offset) {
+      tone(784, offset, 0.14, 0.42, 'triangle');
+      tone(988, offset + 0.15, 0.14, 0.42, 'triangle');
+      tone(1319, offset + 0.30, 0.26, 0.38, 'triangle');
     });
-    setTimeout(function () { try { ctx.close(); } catch (e) {} }, 900);
-  } catch (e) {}
+  } catch (e) {
+    console.error('ringTone:', e);
+  }
 }
 
 function paintAlerts() {
