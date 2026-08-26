@@ -323,6 +323,14 @@
       position:sticky;top:0;z-index:40}
     .deskbar .states{margin-bottom:0;flex:0 0 auto}
     .deskbar-mine{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+    /* O nome que o parceiro lê. Sem ele, responde "Airportlink" — e
+       falar com uma pessoa é diferente de falar com uma marca. */
+    .deskbar-name{display:inline-flex;align-items:center;gap:8px;background:transparent;
+      border:1px solid var(--border);border-radius:999px;padding:6px 14px;
+      color:var(--muted);font-size:12.5px;cursor:pointer;flex:0 0 auto}
+    .deskbar-name:hover{color:var(--text);border-color:var(--primary)}
+    .deskbar-name svg{width:14px;height:14px}
+    .deskbar-name.unset{color:var(--warn);border-color:var(--warn)}
     .deskbar-locked{margin-left:auto;display:inline-flex;align-items:center;gap:8px;
       background:var(--bad-bg);border:1px solid var(--bad);border-radius:999px;
       padding:7px 14px;color:var(--bad);font-size:12.5px;font-weight:600;cursor:pointer}
@@ -403,6 +411,31 @@
     .desk-log b{color:var(--text);font-weight:600}
     .desk-log .miss{color:var(--warn)}
     .desk-log .took{color:var(--ok)}
+    /* Responder ou anotar. Duas caixas separadas seria pior: a nota
+       escreve-se a meio de uma conversa, no mesmo sítio. */
+    .desk-mode{display:flex;align-items:center;gap:6px;padding:12px 16px 0;flex:0 0 auto}
+    .dm{border:1px solid var(--border);background:transparent;border-radius:999px;
+      padding:6px 14px;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer}
+    .dm:hover{color:var(--text)}
+    .dm.active{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+    .dm[data-mode="note"].active{background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
+    .dm-clip{margin-left:auto;width:32px;height:32px;border-radius:9px;border:1px solid var(--border);
+      background:transparent;color:var(--muted);cursor:pointer;display:flex;
+      align-items:center;justify-content:center}
+    .dm-clip:hover{color:var(--primary);border-color:var(--primary)}
+    .dm-clip svg{width:15px;height:15px}
+    .desk-foot.note textarea{border-color:var(--warn);background:var(--warn-bg)}
+
+    /* Notas internas: amarelas, ao centro, sem lado. Não são de
+       ninguém para ninguém — são sobre a conversa. */
+    .d-note{align-self:center;max-width:88%;background:var(--warn-bg);
+      border:1px dashed var(--warn);border-radius:12px;padding:10px 14px;margin:10px 0;
+      font-size:13px;line-height:1.55;color:var(--warn)}
+    .d-note .who{display:block;font-family:var(--mono);font-size:9px;font-weight:600;
+      letter-spacing:.12em;text-transform:uppercase;opacity:.8;margin-bottom:5px}
+    .d-note.sys{border-style:solid;background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+    .d-file{display:flex;align-items:center;gap:9px;text-decoration:none;color:inherit}
+    .d-file svg{width:17px;height:17px;flex:0 0 auto;opacity:.8}
     .desk-foot{display:flex;gap:9px;padding:14px 16px;border-top:1px solid var(--border);flex:0 0 auto}
     .desk-foot textarea{flex:1;resize:none;max-height:120px;padding:11px 13px;
       border:1px solid var(--border);border-radius:11px;background:var(--bg);color:var(--text);
@@ -636,6 +669,11 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
   </button>
 
+  <button class="deskbar-name" id="deskName" type="button" title="The name partners see">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>
+    <span id="deskNameText">Set your name</span>
+  </button>
+
   <span class="deskbar-mine" id="deskbarMine">0/2 chats</span>
 </div>
 
@@ -645,6 +683,7 @@
       <button class="tab-btn active" data-tab="bookingsTab">Bookings</button>
       <button class="tab-btn" data-tab="supportTab">Support</button>
       <button class="tab-btn" data-tab="chatTab">Partner chat <span id="chatBadge"></span></button>
+      <button class="tab-btn" data-tab="shiftTab">Agent activity</button>
 
       <div class="tab-group">Money</div>
       <button class="tab-btn" data-tab="financeTab">Finance</button>
@@ -950,6 +989,55 @@
       <div id="agentError" class="gate-msg" style="margin-top:14px"></div>
     </div>
 
+    <div id="shiftTab" class="panel">
+      <div class="search-section">
+        <h2>Agent activity</h2>
+        <p style="margin:0 0 14px;color:var(--muted);font-size:13.5px;line-height:1.6">
+          Who was at the desk, for how long, and what happened to the chats that rang for
+          them. Updates as the day goes &mdash; time in a state counts up to right now,
+          not only when someone switches.
+        </p>
+        <div class="fin-periods" id="shiftDays">
+          <button class="fin-period active" data-days="1" type="button">Today</button>
+          <button class="fin-period" data-days="7" type="button">Last 7 days</button>
+          <button class="fin-period" data-days="30" type="button">Last 30 days</button>
+        </div>
+        <div class="search-actions">
+          <button id="shiftRefresh" class="search-btn">Refresh</button>
+          <button id="shiftCsv" class="export-btn">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card"><h3>Time live</h3><p class="value" id="shLive">&mdash;</p>
+          <p class="stat-sub" id="shLiveSub">&mdash;</p></div>
+        <div class="stat-card"><h3>Chats answered</h3><p class="value" id="shAnswered">&mdash;</p>
+          <p class="stat-sub" id="shAnsweredSub">&mdash;</p></div>
+        <div class="stat-card"><h3>Not answered</h3><p class="value" id="shMissed">&mdash;</p>
+          <p class="stat-sub" id="shMissedSub">&mdash;</p></div>
+        <div class="stat-card"><h3>Resolved</h3><p class="value" id="shResolved">&mdash;</p>
+          <p class="stat-sub" id="shResolvedSub">&mdash;</p></div>
+      </div>
+
+      <div class="table-box table-scroll">
+        <table><thead><tr>
+          <th>Day</th><th>Agent</th>
+          <th style="text-align:right">Live</th>
+          <th style="text-align:right">Break</th>
+          <th style="text-align:right">Rang</th>
+          <th style="text-align:right">Answered</th>
+          <th style="text-align:right">Missed</th>
+          <th style="text-align:right">Passed</th>
+          <th style="text-align:right">Avg answer</th>
+          <th style="text-align:right">Resolved</th>
+          <th style="text-align:right">Answer rate</th>
+        </tr></thead><tbody id="shiftBody">
+          <tr><td colspan="11" class="loading-row">Loading...</td></tr>
+        </tbody></table>
+      </div>
+      <div id="shiftNote" style="margin-top:12px;color:var(--muted);font-size:12.5px;line-height:1.6"></div>
+    </div>
+
     <div id="chatTab" class="panel">
       <div class="desk">
         <div class="desk-left">
@@ -990,6 +1078,15 @@
 
             <div class="desk-body" id="chatThread"></div>
       <div class="desk-log hidden" id="chatLog"></div>
+
+            <div class="desk-mode">
+              <button class="dm active" data-mode="reply" type="button">Reply to partner</button>
+              <button class="dm" data-mode="note" type="button">Internal note</button>
+              <input type="file" id="deskFile" accept=".pdf,.jpg,.jpeg,.png,.webp" hidden>
+              <button class="dm-clip" id="deskAttach" type="button" title="Attach a file">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.05 12.3 20.2a5.5 5.5 0 0 1-7.8-7.8l9.2-9.1a3.7 3.7 0 0 1 5.2 5.2l-9.2 9.1a1.8 1.8 0 0 1-2.6-2.6l8.5-8.4"/></svg>
+              </button>
+            </div>
 
             <div class="desk-foot">
               <textarea id="chatReply" rows="2" placeholder="Write your reply" maxlength="4000"></textarea>
@@ -2023,12 +2120,33 @@ function renderThread() {
 
     // Agrupar o que é da mesma pessoa: só a última de uma sequência
     // leva a hora e o canto cortado.
-    var turn = !previous || previous.sender !== m.sender || deskDay(previous.created_at) !== day;
-    var last = !next || next.sender !== m.sender || deskDay(next.created_at) !== day;
+    var turn = !previous || previous.sender !== m.sender || previous.internal ||
+      deskDay(previous.created_at) !== day;
+    var last = !next || next.sender !== m.sender || next.internal ||
+      deskDay(next.created_at) !== day;
+
+    // As notas não têm lado: não são de ninguém para ninguém, são
+    // sobre a conversa.
+    if (m.internal) {
+      html += '<div class="d-note' + (m.system ? ' sys' : '') + '">' +
+        '<span class="who">' + escapeHtml(m.system ? 'System' : (m.sender_name || 'note')) +
+        ' · ' + escapeHtml(deskClock(m.created_at)) + '</span>' +
+        escapeHtml(m.body || '') + '</div>';
+      return;
+    }
 
     html += '<div class="d-row ' + (mine ? 'mine' : 'theirs') +
       (turn ? ' turn' : '') + (last ? ' last' : '') + '"><div>' +
-      '<div class="d-bub">' + escapeHtml(m.body || '[attachment]') + '</div>' +
+      '<div class="d-bub">' +
+      (m.attachment_path
+        ? '<a class="d-file" href="#" data-dfile="' + escapeHtml(m.attachment_path) + '">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
+          'stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>' +
+          '<path d="M14 2v6h6"/></svg><span>' +
+          escapeHtml(m.attachment_name || 'attachment') + '</span></a>' +
+          (m.body ? '<div style="margin-top:8px">' + escapeHtml(m.body) + '</div>' : '')
+        : escapeHtml(m.body || '')) + '</div>' +
       (last
         ? '<div class="d-meta">' +
           escapeHtml(mine ? (m.sender_name || 'you') : (m.sender_name || 'partner')) + ' · ' +
@@ -2039,7 +2157,91 @@ function renderThread() {
 
   box.innerHTML = html;
   box.scrollTop = box.scrollHeight;
+
+  // Endereço assinado, válido um minuto. O balde é privado: um link
+  // permanente seria um ficheiro exposto para sempre a quem o
+  // apanhasse.
+  qsa('#chatThread [data-dfile]').forEach(function (a) {
+    a.addEventListener('click', async function (e) {
+      e.preventDefault();
+
+      try {
+        var r = await client.storage.from('chat-attachments')
+          .createSignedUrl(a.getAttribute('data-dfile'), 60);
+
+        if (r.error) throw new Error(r.error.message);
+        window.open(r.data.signedUrl, '_blank', 'noopener');
+      } catch (err) {
+        alert('Could not open that file: ' + err.message);
+      }
+    });
+  });
 }
+
+// Responder ou anotar.
+var deskMode = 'reply';
+
+qsa('.dm').forEach(function (b) {
+  b.addEventListener('click', function () {
+    qsa('.dm').forEach(function (x) { x.classList.remove('active'); });
+    b.classList.add('active');
+    deskMode = b.getAttribute('data-mode');
+
+    el('chatReply').placeholder = deskMode === 'note'
+      ? 'Internal note — the partner never sees this'
+      : 'Write your reply';
+
+    document.querySelector('.desk-foot').classList.toggle('note', deskMode === 'note');
+    el('chatSendBtn').textContent = deskMode === 'note' ? 'Save note' : 'Send';
+    el('chatReply').focus();
+  });
+});
+
+el('deskAttach').addEventListener('click', function () { el('deskFile').click(); });
+
+el('deskFile').addEventListener('change', async function () {
+  var file = this.files && this.files[0];
+  if (!file || !desk.current) return;
+
+  if (file.size > 10 * 1024 * 1024) {
+    el('chatErr').textContent = 'That file is over the 10 MB limit.';
+    el('chatErr').style.display = 'block';
+    this.value = '';
+    return;
+  }
+
+  el('deskAttach').disabled = true;
+
+  try {
+    var ext = (file.name.split('.').pop() || 'bin').toLowerCase();
+    var path = currentAdmin.id + '/chat/' + Date.now() + '.' + ext;
+
+    var up = await client.storage.from('chat-attachments').upload(path, file, {
+      contentType: file.type || 'application/octet-stream'
+    });
+
+    if (up.error) throw new Error(up.error.message);
+
+    var res = await deskFetch('/api/admin/chat/send', {
+      chat_id: desk.current,
+      body: el('chatReply').value.trim() || file.name,
+      attachment_path: path,
+      attachment_name: file.name,
+      internal: deskMode === 'note'
+    });
+
+    desk.messages.push(res.message);
+    renderThread();
+    el('chatReply').value = '';
+    await loadDesk();
+  } catch (e) {
+    el('chatErr').textContent = e.message;
+    el('chatErr').style.display = 'block';
+  } finally {
+    el('deskAttach').disabled = false;
+    el('deskFile').value = '';
+  }
+});
 
 el('chatSendBtn').addEventListener('click', async function () {
   var body = el('chatReply').value.trim();
@@ -2052,8 +2254,8 @@ el('chatSendBtn').addEventListener('click', async function () {
     var res = await deskFetch('/api/admin/chat/send', {
       chat_id: desk.current,
       body: body,
-      sender_name: currentAdmin && currentAdmin.email
-        ? currentAdmin.email.split('@')[0] : 'Airportlink'
+      internal: deskMode === 'note',
+      sender_name: deskMode === 'note' ? (deskDisplayName || 'note') : deskDisplayName
     });
 
     desk.messages.push(res.message);
@@ -2066,6 +2268,50 @@ el('chatSendBtn').addEventListener('click', async function () {
   } finally {
     el('chatSendBtn').disabled = false;
     el('chatReply').focus();
+  }
+});
+
+// ---------- o nome que o parceiro lê ----------
+//
+// Guardado no servidor, não no browser: tem de ser o mesmo em todas
+// as conversas e em qualquer computador onde este agente entre.
+var deskDisplayName = null;
+
+async function loadDisplayName() {
+  try {
+    var team = await deskFetch('/api/admin/team');
+    var me = (team.team || []).find(function (t) {
+      return t.user_id === (currentAdmin && currentAdmin.id);
+    });
+
+    deskDisplayName = (me && me.display_name) || null;
+  } catch (e) {}
+
+  paintDisplayName();
+}
+
+function paintDisplayName() {
+  el('deskNameText').textContent = deskDisplayName || 'Set your name';
+  el('deskName').classList.toggle('unset', !deskDisplayName);
+}
+
+el('deskName').addEventListener('click', async function () {
+  var name = window.prompt(
+    'What name should partners see when you reply?\n\n' +
+    'A first name works well. They are talking to a person, not to a brand.',
+    deskDisplayName || '');
+
+  if (name === null) return;
+  name = name.trim();
+
+  if (name.length < 2) return alert('Use at least two characters.');
+
+  try {
+    await deskFetch('/api/admin/display-name', { display_name: name });
+    deskDisplayName = name;
+    paintDisplayName();
+  } catch (e) {
+    alert(e.message);
   }
 });
 
@@ -2223,6 +2469,124 @@ function chatWaitingAlert() {
 
   if (!chatAlert) chatAlert = setInterval(fire, 30000);
 }
+
+// ============================================================
+// O DIA DE CADA AGENTE
+//
+// Tempo em cada estado e o que aconteceu às chamadas. Não é para
+// castigar: é para saber, ao fim de um mês, se há um turno onde as
+// chamadas ficam por atender.
+// ============================================================
+var shift = { rows: [], days: 1 };
+
+function hhmm(seconds) {
+  var s = Math.max(0, Math.round(Number(seconds) || 0));
+  var h = Math.floor(s / 3600);
+  var m = Math.round((s % 3600) / 60);
+  return h ? h + 'h ' + String(m).padStart(2, '0') + 'm' : m + 'm';
+}
+
+async function loadShifts() {
+  el('shiftBody').innerHTML = '<tr><td colspan="11" class="loading-row">Loading...</td></tr>';
+
+  try {
+    var data = await deskFetch('/api/admin/agent-day?days=' + shift.days);
+    shift.rows = data.rows || [];
+    renderShifts();
+  } catch (e) {
+    el('shiftBody').innerHTML = '<tr><td colspan="11"><div class="no-results">' +
+      escapeHtml(e.message) + '</div></td></tr>';
+  }
+}
+
+function renderShifts() {
+  var rows = shift.rows;
+
+  var totalLive = rows.reduce(function (t, r) { return t + Number(r.live_seconds || 0); }, 0);
+  var totalBreak = rows.reduce(function (t, r) { return t + Number(r.break_seconds || 0); }, 0);
+  var answered = rows.reduce(function (t, r) { return t + Number(r.answered || 0); }, 0);
+  var missed = rows.reduce(function (t, r) { return t + Number(r.missed || 0); }, 0);
+  var passed = rows.reduce(function (t, r) { return t + Number(r.passed || 0); }, 0);
+  var resolved = rows.reduce(function (t, r) { return t + Number(r.resolved || 0); }, 0);
+  var people = new Set(rows.map(function (r) { return r.user_id; })).size;
+
+  el('shLive').textContent = hhmm(totalLive);
+  el('shLiveSub').textContent = people + ' agent' + (people === 1 ? '' : 's') +
+    ' · ' + hhmm(totalBreak) + ' on break';
+
+  el('shAnswered').textContent = answered;
+  el('shAnsweredSub').textContent = (answered + missed + passed)
+    ? Math.round(100 * answered / (answered + missed + passed)) + '% of chats that rang'
+    : 'Nothing rang yet';
+
+  el('shMissed').textContent = missed + passed;
+  el('shMissedSub').textContent = missed + ' timed out · ' + passed + ' passed on';
+
+  el('shResolved').textContent = resolved;
+  el('shResolvedSub').textContent = 'Closed by an agent';
+
+  if (!rows.length) {
+    el('shiftBody').innerHTML = '<tr><td colspan="11"><div class="no-results">' +
+      'Nobody has been at the desk in this period.</div></td></tr>';
+    el('shiftNote').textContent = '';
+    return;
+  }
+
+  el('shiftBody').innerHTML = rows.map(function (r) {
+    var rang = Number(r.answered || 0) + Number(r.missed || 0) + Number(r.passed || 0);
+    var rate = r.answer_rate_pct;
+
+    return '<tr>' +
+      '<td>' + escapeHtml(r.day) + '</td>' +
+      '<td><strong>' + escapeHtml(r.agent_name || 'unknown') + '</strong></td>' +
+      '<td class="num-cell">' + escapeHtml(hhmm(r.live_seconds)) + '</td>' +
+      '<td class="num-cell">' + escapeHtml(hhmm(r.break_seconds)) + '</td>' +
+      '<td class="num-cell">' + rang + '</td>' +
+      '<td class="num-cell pos">' + Number(r.answered || 0) + '</td>' +
+      '<td class="num-cell' + (Number(r.missed) ? ' neg' : '') + '">' + Number(r.missed || 0) + '</td>' +
+      '<td class="num-cell">' + Number(r.passed || 0) + '</td>' +
+      '<td class="num-cell">' + (r.avg_answer_seconds ? r.avg_answer_seconds + 's' : '—') + '</td>' +
+      '<td class="num-cell pos">' + Number(r.resolved || 0) + '</td>' +
+      '<td class="num-cell' + (rate !== null && rate < 70 ? ' neg' : '') + '">' +
+      (rate === null || rate === undefined ? '—' : rate + '%') + '</td>' +
+      '</tr>';
+  }).join('');
+
+  el('shiftNote').textContent = 'Answer rate below 70% usually means the shift was ' +
+    'understaffed, not that someone was slow — check how many agents were live at the ' +
+    'same time before drawing a conclusion.';
+}
+
+qsa('#shiftDays .fin-period').forEach(function (b) {
+  b.addEventListener('click', function () {
+    qsa('#shiftDays .fin-period').forEach(function (x) { x.classList.remove('active'); });
+    b.classList.add('active');
+    shift.days = Number(b.getAttribute('data-days'));
+    loadShifts();
+  });
+});
+
+el('shiftRefresh').addEventListener('click', loadShifts);
+
+el('shiftCsv').addEventListener('click', function () {
+  if (!shift.rows.length) return alert('Nothing to export.');
+
+  downloadRows(shift.rows.map(function (r) {
+    return {
+      day: r.day,
+      agent: r.agent_name || '',
+      live_minutes: r.live_minutes,
+      break_minutes: r.break_minutes,
+      chats_rang: Number(r.answered || 0) + Number(r.missed || 0) + Number(r.passed || 0),
+      answered: r.answered,
+      missed: r.missed,
+      passed: r.passed,
+      avg_answer_seconds: r.avg_answer_seconds || '',
+      resolved: r.resolved,
+      answer_rate_pct: r.answer_rate_pct === null ? '' : r.answer_rate_pct
+    };
+  }), 'airportlink-agent-activity');
+});
 
 // ============================================================
 // CHAMADA A ENTRAR
@@ -4494,6 +4858,8 @@ function switchTab(name) {
   // Abrir o separador é o mesmo que dizer "já vi": o ponto desaparece.
   clearAlerts(name);
 
+  if (name === 'shiftTab') loadShifts();
+
   if (name === 'chatTab') {
     if (chatAlert) { clearInterval(chatAlert); chatAlert = null; }
     document.title = 'Airportlink operations';
@@ -4620,6 +4986,7 @@ async function init() {
   await loadCharges();
   await loadFinance();
   await loadDesk();
+  await loadDisplayName();
   subscribeToAllConversations();
   watchLive();
 }
