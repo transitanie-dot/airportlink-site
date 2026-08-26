@@ -1,5 +1,5 @@
 {
-  "_lleia_me": [ 
+  "_leia_me": [
     "Um ficheiro destes por país. Copia, muda o país, preenche.",
     "",
     "Só duas coisas exigem trabalho teu: a distância em km (tira do",
@@ -84,6 +84,55 @@
           "minutes": 60,
           "about": "Óbidos is an hour north on the A8. The walled town has no car access, so the drop-off is at the Porta da Vila gate and it is a short walk in. Worth telling your hotel you are arriving by car — some have parking outside the walls."
         }
+      ],
+      "image": "lisbon",
+      "local": [
+        [
+          "Two terminals, arrivals only at T1",
+          "Terminal 2 handles low-cost departures and has no arrivals hall. If your booking says T2 for a pick-up, it is wrong — tell us and we move it at no cost. Your driver waits in the T1 arrivals hall after customs."
+        ],
+        [
+          "Tolls on the A5 and the bridges are included",
+          "The A5 to Cascais and the Ponte 25 de Abril both carry tolls. They are inside your fixed price. Portuguese hire cars often get billed weeks later for these — with a transfer that does not happen."
+        ],
+        [
+          "Portuguese TVDE and taxi licensing",
+          "Every driver holds a TVDE or taxi licence issued by IMT, the Portuguese transport regulator. We check the licence and the insurance before a company takes its first ride."
+        ],
+        [
+          "Passport control is the real bottleneck",
+          "Non-EU arrivals in July and August regularly queue 40 minutes at Lisbon. Your driver tracks the flight and waits — the 60 free minutes start when the plane lands, not when you booked."
+        ]
+      ],
+      "compare": [
+        [
+          "Metro (red line)",
+          "35–45 min",
+          "€1.80",
+          "Cheapest by far. Runs 06:30 to 01:00.",
+          "One change at Alameda or Saldanha. Steps and crowds with luggage. No service after 01:00."
+        ],
+        [
+          "Aerobus",
+          "30–40 min",
+          "€4.00",
+          "Direct to the centre, luggage space.",
+          "Fixed stops only, so you still walk or take a taxi to the hotel."
+        ],
+        [
+          "Official taxi rank",
+          "20–30 min",
+          "€15–25 metered",
+          "Available 24/7, no booking needed.",
+          "Queues in summer. Meter, so traffic costs you. Luggage supplement per bag."
+        ],
+        [
+          "Uber or Bolt",
+          "20–30 min",
+          "€12–30",
+          "App-based, usually available.",
+          "Surge pricing on busy arrivals. Pick-up is in the car park, not at arrivals."
+        ]
       ]
     },
     {
@@ -140,6 +189,48 @@
           "minutes": 55,
           "about": "Aveiro is 55 minutes south on the A1. If you are heading to Costa Nova for the striped houses, that is another 15 minutes past the city — tell us, because it changes the price and the time."
         }
+      ],
+      "image": "porto",
+      "local": [
+        [
+          "One terminal, and a fast one",
+          "Porto is small and efficient. Twenty minutes from landing to car is normal, against forty in Lisbon. Your driver meets you in the arrivals hall, straight ahead from baggage reclaim."
+        ],
+        [
+          "No tolls on the way into Porto",
+          "The VCI into the city is toll-free. Going to Braga or the Douro means motorway tolls, and those are inside your fixed price."
+        ],
+        [
+          "Portuguese TVDE and taxi licensing",
+          "Every driver holds a TVDE or taxi licence issued by IMT. Licence and insurance are checked before a company takes its first ride."
+        ],
+        [
+          "The Ribeira is steeper than it looks",
+          "If your hotel is down by the river, the last streets are narrow and often pedestrian. The driver gets as close as the car allows, usually a two-minute walk."
+        ]
+      ],
+      "compare": [
+        [
+          "Metro (line E)",
+          "35 min",
+          "€2.60",
+          "Direct to Trindade in the centre.",
+          "Every 20–30 minutes. Steps at several stations. Awkward with two suitcases."
+        ],
+        [
+          "Official taxi rank",
+          "20–25 min",
+          "€25–30 metered",
+          "No booking needed, 24/7.",
+          "Night and weekend surcharges. Luggage supplement. Meter, so traffic costs you."
+        ],
+        [
+          "Uber or Bolt",
+          "20–25 min",
+          "€15–25",
+          "Usually cheaper than the taxi rank.",
+          "Surge on busy arrivals. Pick-up point is away from the terminal door."
+        ]
       ]
     },
     {
@@ -203,6 +294,55 @@
           "minutes": 85,
           "about": "The far southwest corner, about an hour and a half. The last twenty kilometres are single carriageway past Vila do Bispo. Worth booking a slightly later pick-up than you think if you are catching an early flight back."
         }
+      ],
+      "image": "faro",
+      "local": [
+        [
+          "One terminal, and the busiest Saturdays in Portugal",
+          "Peak summer Saturdays at Faro are the busiest arrivals in the country. The terminal is single and simple, but the hall gets full. Your driver waits with your name at the arrivals exit."
+        ],
+        [
+          "The A22 is toll-free since January 2025",
+          "The Via do Infante carries no tolls, which makes the whole Algarve quicker and cheaper to reach than it was. Any remaining road charge is inside your fixed price."
+        ],
+        [
+          "Portuguese TVDE and taxi licensing",
+          "Every driver holds a TVDE or taxi licence issued by IMT. We check the licence and the insurance before a company takes its first ride."
+        ],
+        [
+          "Most passengers are not going to Faro",
+          "Almost everything is west on the A22 — Albufeira, Vilamoura, Lagos. Resorts spread over several kilometres, so give the hotel name and not just the town. It is the single most common cause of a late arrival."
+        ]
+      ],
+      "compare": [
+        [
+          "Bus line 16",
+          "20 min to Faro",
+          "€2.70",
+          "Cheapest way into Faro itself.",
+          "Cash only. Stops before 20:00. Goes to Faro only — no use for the resorts."
+        ],
+        [
+          "Official taxi rank",
+          "15 min to Faro",
+          "€10–15 metered",
+          "No booking needed.",
+          "Long queues on summer Saturdays. 20% more after 21:00 and at weekends. To Albufeira expect €60–70 on the meter."
+        ],
+        [
+          "Train via Faro station",
+          "15 min taxi, then rail",
+          "€2–6",
+          "Cheap for onward journeys east.",
+          "No airport link. Two transfers with luggage. Slow and infrequent."
+        ],
+        [
+          "Hire car",
+          "Queue plus paperwork",
+          "€30–90 a day",
+          "Freedom to move around.",
+          "Desk queues of an hour in August. Fuel, parking and the deposit on top."
+        ]
       ]
     }
   ]
