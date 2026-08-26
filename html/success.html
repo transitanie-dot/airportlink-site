@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Booking confirmed | Airportlink</title>
+<meta name="description" content="Your Airportlink transfer is confirmed. Here is what happens next and how to reach your driver.">
+<link rel="canonical" href="https://www.airportlink.app/success">
+<meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
 <script>
@@ -18,6 +21,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/layout.js" defer></script>
 <style>
@@ -78,6 +85,43 @@ html[data-theme="dark"] .btn.line{background:transparent;color:var(--text)}
   </div>
 </div>
 </main>
+
+<script>
+(function () {
+  'use strict';
+
+  /**
+   * Avisar o servidor de que o cliente voltou do Stripe.
+   *
+   * O webhook é quem cria a reserva. Mas um webhook pode falhar —
+   * endereço errado, serviço a acordar, evento perdido — e nesse
+   * caso o cliente pagou e não recebe confirmação nenhuma.
+   *
+   * Esta chamada dá ao servidor uma segunda oportunidade: se a
+   * reserva estiver em falta ou incompleta, ele completa-a e envia o
+   * email. Se o webhook já tiver feito o trabalho, não faz nada.
+   *
+   * A página não espera pela resposta nem mostra erros: o cliente já
+   * pagou e a mensagem de sucesso está correta de qualquer forma.
+   */
+  var params = new URLSearchParams(window.location.search);
+  var sessionId = params.get('session_id');
+
+  if (!sessionId || sessionId.indexOf('cs_') !== 0) return;
+
+  fetch('https://airportlink.onrender.com/api/confirm-payment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ session_id: sessionId })
+  }).then(function (r) {
+    return r.json();
+  }).then(function (data) {
+    console.log('Booking confirmed:', data.payment_status);
+  }).catch(function (e) {
+    console.log('Confirmation check skipped:', e.message);
+  });
+})();
+</script>
 
 </body>
 </html>
