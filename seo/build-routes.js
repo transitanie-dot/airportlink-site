@@ -55,6 +55,27 @@ function priceEUR(km, passengers, isPortugal) {
 
 const money = (v) => '€' + Math.round(v);
 
+/**
+ * O que aparece no endereço.
+ *
+ * O nome da cidade, não o código IATA: as pessoas pesquisam
+ * "faro airport transfer to albufeira" e não "FAO to albufeira".
+ * O endereço bate certo com o que elas escrevem.
+ *
+ * Se o slug faltar no ficheiro de dados, cai para o nome da cidade
+ * sem acentos — mas vale a pena escrevê-lo, para não haver surpresas
+ * com cidades de nome composto.
+ */
+function slugOf(airport) {
+  if (airport.slug) return airport.slug;
+
+  return String(airport.city || airport.iata)
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 function esc(v) {
   return String(v === null || v === undefined ? '' : v)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -178,7 +199,8 @@ function routePage(country, airport, dest, siblings) {
   const p1 = priceEUR(dest.km, 1, isPT);
   const p5 = priceEUR(dest.km, 5, isPT);
 
-  const url = `${SITE}/transfers/${airport.iata.toLowerCase()}-to-${dest.slug}`;
+  const slug = slugOf(airport);
+  const url = `${SITE}/transfers/${slug}-to-${dest.slug}`;
   const title = `${airport.city} Airport to ${dest.name} Transfer | From ${money(p1)} | Airportlink`;
   const description =
     `Private transfer from ${airport.name} to ${dest.name}: ${dest.minutes} minutes, ` +
@@ -238,7 +260,7 @@ function routePage(country, airport, dest, siblings) {
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
           { '@type': 'ListItem', position: 2, name: airport.name,
-            item: `${SITE}/airports/${airport.iata.toLowerCase()}` },
+            item: `${SITE}/airports/${slug}` },
           { '@type': 'ListItem', position: 3, name: dest.name, item: url }
         ]
       }
@@ -250,14 +272,14 @@ function routePage(country, airport, dest, siblings) {
     .slice(0, 6)
     .map((d) => {
       const price = priceEUR(d.km, 1, isPT);
-      return `<a class="other" href="/transfers/${airport.iata.toLowerCase()}-to-${d.slug}">` +
+      return `<a class="other" href="/transfers/${slug}-to-${d.slug}">` +
         `<b>${esc(d.name)}</b><span>from ${money(price)}</span></a>`;
     }).join('\n      ');
 
   return head({ title, description, canonical: url, schema }) + `
   <div class="crumb">
     <a href="/">Airportlink</a> &rsaquo;
-    <a href="/airports/${airport.iata.toLowerCase()}">${esc(airport.name)}</a> &rsaquo;
+    <a href="/airports/${slug}">${esc(airport.name)}</a> &rsaquo;
     ${esc(dest.name)}
   </div>
 
@@ -309,7 +331,7 @@ function routePage(country, airport, dest, siblings) {
   <div class="others">
       ${others}
   </div>
-  <p style="margin-top:16px"><a href="/airports/${airport.iata.toLowerCase()}">All
+  <p style="margin-top:16px"><a href="/airports/${slug}">All
   ${esc(airport.city)} Airport transfers &rsaquo;</a></p>
 ` + foot;
 }
@@ -320,7 +342,8 @@ function routePage(country, airport, dest, siblings) {
 
 function airportPage(country, airport) {
   const isPT = country.countryCode === 'PT';
-  const url = `${SITE}/airports/${airport.iata.toLowerCase()}`;
+  const slug = slugOf(airport);
+  const url = `${SITE}/airports/${slug}`;
 
   const cheapest = Math.min(...airport.destinations.map((d) => priceEUR(d.km, 1, isPT)));
 
@@ -348,7 +371,7 @@ function airportPage(country, airport) {
           '@type': 'ListItem',
           position: i + 1,
           name: `${airport.city} Airport to ${d.name}`,
-          url: `${SITE}/transfers/${airport.iata.toLowerCase()}-to-${d.slug}`
+          url: `${SITE}/transfers/${slug}-to-${d.slug}`
         }))
       },
       {
@@ -366,7 +389,7 @@ function airportPage(country, airport) {
     .sort((a, b) => a.km - b.km)
     .map((d) => {
       const price = priceEUR(d.km, 1, isPT);
-      return `<a class="other" href="/transfers/${airport.iata.toLowerCase()}-to-${d.slug}">` +
+      return `<a class="other" href="/transfers/${slug}-to-${d.slug}">` +
         `<b>${esc(d.name)}</b>` +
         `<span>${esc(d.minutes)} min &middot; from ${money(price)}</span></a>`;
     }).join('\n      ');
@@ -429,17 +452,17 @@ for (const file of files) {
   const country = JSON.parse(fs.readFileSync(path.join(SEO_DIR, file), 'utf8'));
 
   for (const airport of country.airports) {
-    const iata = airport.iata.toLowerCase();
+    const slug = slugOf(airport);
 
-    fs.writeFileSync(path.join(OUT_AIRPORTS, iata + '.html'), airportPage(country, airport));
-    urls.push({ loc: `${SITE}/airports/${iata}`, priority: '0.8', freq: 'weekly' });
+    fs.writeFileSync(path.join(OUT_AIRPORTS, slug + '.html'), airportPage(country, airport));
+    urls.push({ loc: `${SITE}/airports/${slug}`, priority: '0.8', freq: 'weekly' });
 
     for (const dest of airport.destinations) {
-      const name = `${iata}-to-${dest.slug}.html`;
+      const name = `${slug}-to-${dest.slug}.html`;
       fs.writeFileSync(path.join(OUT_TRANSFERS, name),
         routePage(country, airport, dest, airport.destinations));
 
-      urls.push({ loc: `${SITE}/transfers/${iata}-to-${dest.slug}`,
+      urls.push({ loc: `${SITE}/transfers/${slug}-to-${dest.slug}`,
                   priority: '0.7', freq: 'monthly' });
       routeCount += 1;
     }
