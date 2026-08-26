@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>My trips | Airportlink</title>
+<meta name="description" content="Your Airportlink trips, receipts and account details.">
+<link rel="canonical" href="https://www.airportlink.app/myaccount">
+<meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
 <script>
@@ -186,6 +189,13 @@ html[data-agency="on"] .agency-crest{display:block}
   text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .agency-fig .v{font-family:var(--mono);font-size:19px;font-weight:600;letter-spacing:-.02em}
 @media (max-width:640px){.agency-figs{grid-template-columns:1fr}}
+.trip-ref{display:inline-flex;align-items:center;gap:7px;background:var(--neutral-bg);
+  border:1px solid var(--border);border-radius:999px;padding:6px 12px;margin-bottom:14px;
+  font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.06em;
+  color:var(--muted);cursor:pointer;transition:color .15s ease,border-color .15s ease}
+.trip-ref:hover{color:var(--text);border-color:var(--link)}
+.trip-ref svg{width:13px;height:13px;opacity:.7}
+.trip-ref.copied{color:var(--success);border-color:var(--success)}
 .pay-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;
   padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted);line-height:1.5}
 .pay-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;
@@ -252,7 +262,7 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
       <div class="n" id="crestName">&mdash;</div>
       <div class="r" id="crestRate">&mdash;</div>
     </div>
-    <span class="side-title">My account</span>
+    <h1 class="side-title">My account</h1>
     <button class="side-item active" id="profileTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
     <button class="side-item" id="tripsTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18"/><path d="M4 13V9.5L6 5h12l2 4.5V13"/><path d="M4 13v4h3v-4M17 13v4h3v-4"/></svg>My trips</button>
     <button class="side-item hidden" id="agencyTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01"/></svg>Agency</button>
@@ -545,6 +555,40 @@ function formatTripDate(v) {
 function formatTripTime(t) {
   return (t && t.booking_time) ? String(t.booking_time).slice(0, 5) : '\u2014';
 }
+/**
+ * Copiar a referência com um toque.
+ *
+ * Quem escreve ao apoio a partir do telemóvel não vai transcrever
+ * "AL-2K93F" à mão sem se enganar.
+ */
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest('[data-copy]');
+  if (!btn) return;
+
+  var value = btn.getAttribute('data-copy');
+  var done = function () {
+    var original = btn.lastChild.nodeValue;
+    btn.classList.add('copied');
+    btn.lastChild.nodeValue = 'Copied';
+    setTimeout(function () {
+      btn.classList.remove('copied');
+      btn.lastChild.nodeValue = original;
+    }, 1400);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(value).then(done).catch(function () {});
+  } else {
+    // Safari antigo e páginas sem HTTPS não têm a API moderna.
+    var tmp = document.createElement('textarea');
+    tmp.value = value;
+    document.body.appendChild(tmp);
+    tmp.select();
+    try { document.execCommand('copy'); done(); } catch (err) {}
+    document.body.removeChild(tmp);
+  }
+});
+
 function tripReference(t) {
   if (!t) return '\u2014';
   return t.booking_reference || t.booking_id || (t.id ? String(t.id).slice(0, 8).toUpperCase() : '\u2014');
@@ -801,6 +845,15 @@ function renderTripCard(trip, key, type) {
     : '';
 
   return '<article class="trip-card">' +
+    // A referência é o que o cliente tem de dizer quando escreve ao
+    // apoio. Estava só no recibo, e o recibo só existe depois da
+    // viagem — exatamente ao contrário de quando é precisa.
+    '<button class="trip-ref" data-copy="' + esc(tripReference(trip)) + '" type="button" ' +
+    'title="Copy this reference">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+    'stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/>' +
+    '<path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>' +
+    esc(tripReference(trip)) + '</button>' +
     '<div class="trip-top"><span class="trip-label">' + esc(badge) + '</span>' +
     '<div class="trip-top-right"><span class="trip-status ' + esc(status) + '">' + esc(statusText) + '</span>' +
     receiptButton + '</div></div>' +
