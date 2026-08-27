@@ -289,19 +289,33 @@ html[data-theme="dark"] .ca-pay .v{color:var(--amber)}
 html[data-theme="dark"] .ca-later{color:var(--amber)}
 .ca-later.off{display:none}
 
-/* O botão diz o que faz, e nada mais. Verde cheio: é a única ação
-   da secção e não precisa de competir com nada. */
-.ca-book{display:inline-flex;align-items:center;justify-content:center;height:46px;
+/* O botão diz o que faz, e nada mais.
+
+   O seletor leva o .rt à frente de propósito: a regra .rt a pinta
+   todas as ligações de verde, e com menos especificidade o texto do
+   botão ficava verde sobre verde — invisível. */
+.rt a.ca-book{display:inline-flex;align-items:center;justify-content:center;height:46px;
   padding:0 26px;margin-top:9px;border-radius:13px;background:var(--teal);color:#fff;
   text-decoration:none;font-family:var(--body);font-size:15px;font-weight:600;
   letter-spacing:-.01em;white-space:nowrap;
   transition:transform .14s ease,box-shadow .14s ease;
   box-shadow:0 6px 18px rgba(15,118,110,.28)}
-.ca-book:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,118,110,.34)}
-html[data-theme="dark"] .ca-book{background:var(--amber);color:#141A28;
+.rt a.ca-book:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,118,110,.34)}
+html[data-theme="dark"] .rt a.ca-book{background:var(--amber);color:#141A28;
   box-shadow:0 6px 18px rgba(232,163,61,.26)}
-html[data-theme="dark"] .ca-book:hover{box-shadow:0 10px 24px rgba(232,163,61,.32)}
-.ca-book.off{display:none}
+html[data-theme="dark"] .rt a.ca-book:hover{box-shadow:0 10px 24px rgba(232,163,61,.32)}
+.rt a.ca-book.off{display:none}
+/* As garantias, em linha por baixo do preço. */
+.ca-trust{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.tr{display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);
+  border-radius:13px;padding:12px 14px}
+.tr svg{width:17px;height:17px;flex:0 0 auto;margin-top:1px;color:var(--teal)}
+html[data-theme="dark"] .tr svg{color:var(--amber)}
+.tr strong{display:block;font-size:12.5px;font-weight:600;margin-bottom:2px}
+.tr span{display:block;color:var(--muted);font-size:11.5px;line-height:1.45}
+@media (max-width:900px){.ca-trust{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.ca-trust{grid-template-columns:1fr}}
+
 .ca-n{margin:10px 4px 0;color:var(--muted);font-size:12.5px;line-height:1.55}
 .ca-n:empty{margin:0}
 
@@ -523,9 +537,30 @@ function calculator(airport, current, isPT, mapsKey) {
 
         <!-- A promessa fica por cima do botão, com a data do
              pagamento. O botão diz só o que faz. -->
-        <span class="ca-later off" id="cl">Book now, pay later</span>
+        <span class="ca-later" id="cl">Book now, pay later</span>
         <a class="ca-book off" id="cb" href="/#book">Continue &rarr;</a>
       </div>
+    </div>
+
+    <!-- As condições, por baixo do preço. Quem reserva daqui não
+         desce a página a ler o resto — o que decide a compra tem de
+         estar onde a compra se faz. -->
+    <div class="ca-trust">
+      ${[
+        ['M9 14l2 2 4-5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+         'Free cancellation', 'Until 24 hours before, refunded in full'],
+        ['M2 9h20M2 9V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2M2 9v8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9M6 15h4',
+         'No card today', 'Charged 48 hours before you travel'],
+        ['M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.4-2.1 2.1-2.4-.6a.5.5 0 0 0-.5.8L5 16l1.3 2.2a.5.5 0 0 0 .8-.1l.6-2.4 2.1-2.1 4.4 3.9a.5.5 0 0 0 .8-.5Z',
+         'Flight tracked', 'Land late and the driver waits, free'],
+        ['M12 2 4 6v6c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V6l-8-4Z',
+         'Licensed drivers', 'Insurance and licence checked by us']
+      ].map(([d, t, sub]) => `<div class="tr">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="${d}"/></svg>
+        <div><strong>${t}</strong><span>${sub}</span></div>
+      </div>`).join('')}
     </div>
 
     <p class="ca-n" id="cn"></p>
@@ -710,21 +745,21 @@ function calculator(airport, current, isPT, mapsKey) {
       drawCar(pax);
       chips();
 
+      // A promessa aparece SEMPRE, com ou sem preço: é uma condição
+      // da reserva, não um resultado do cálculo.
+      var later = laterLine();
+      cl.textContent = later;
+      cl.classList.toggle('off', !later);
+
       if (!price) {
         cv.textContent = '\u2014';
         cs.textContent = 'Whole car \u00b7 tolls and taxes in';
         cb.classList.add('off');
-        cl.classList.add('off');
         return;
       }
 
       cv.textContent = '\u20ac' + Math.round(price);
       cs.textContent = 'Whole car \u00b7 tolls and taxes in';
-
-      var later = laterLine();
-      cl.textContent = later;
-      cl.classList.toggle('off', !later);
-
       cb.classList.remove('off');
       cb.href = '/?from=' + encodeURIComponent(cf.value.trim()) +
         '&to=' + encodeURIComponent(ct.value.trim()) +
@@ -758,7 +793,6 @@ function calculator(airport, current, isPT, mapsKey) {
           ? 'That is a lot of routes in one minute. Give it a moment.'
           : 'You have priced plenty of routes. Reload the page to start again.';
         cb.classList.add('off');
-        cl.classList.add('off');
         return;
       }
 
