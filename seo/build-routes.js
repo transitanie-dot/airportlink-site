@@ -43,6 +43,11 @@ const OUT_TRANSFERS = path.join(ROOT, 'transfers');
 const OUT_AIRPORTS = path.join(ROOT, 'airports');
 const SITE = 'https://www.airportlink.app';
 
+// A mesma chave que o index.html usa. É pública por natureza — vive
+// no browser — e a protecção faz-se no painel do Google, limitando-a
+// ao domínio airportlink.app.
+const MAPS_KEY = 'AIzaSyBWH1TXxWhFmFo7fMB8NXE4swU2idCc_0M';
+
 /**
  * A mesma fórmula do servidor.
  *
@@ -206,61 +211,80 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
 .hero .on h1{color:#fff;margin:0;font-size:clamp(24px,3.4vw,34px)}
 
 /* ---------- a calculadora ----------
-   Pergunta em cima, campos ao meio, preço em baixo. A ordem é a da
-   leitura: o que é preciso fazer, onde se faz, e o que se recebe. */
-.calc{margin:0 0 30px}
-.calc-h{font-family:var(--display);font-weight:700;font-size:clamp(20px,2.6vw,25px);
-  letter-spacing:-.025em;margin:0 0 8px;padding:0;border:0}
-.calc-p{margin:0 0 18px;color:var(--muted);font-size:14.5px;line-height:1.6;max-width:56ch}
-
-.calc-box{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:10px;margin-bottom:12px}
-.calc-f{display:flex;flex-direction:column;min-width:0}
-.calc-f label{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.13em;
-  text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-
-.calc-lock{display:flex;align-items:center;gap:9px;height:56px;padding:0 16px;
-  border-radius:16px;background:var(--surface-2);font-size:15px;font-weight:600;min-width:0}
-.calc-lock svg{width:16px;height:16px;flex:0 0 auto;color:var(--teal);opacity:.8}
-html[data-theme="dark"] .calc-lock svg{color:var(--amber)}
-.calc-lock span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
-.calc-f select,.calc-f input{height:56px;padding:0 16px;border-radius:16px;
+   Compacta, como as barras de pesquisa de voos: campos de 46px, sem
+   caixas dentro de caixas, tudo numa linha. */
+.ca{margin:0 0 28px}
+.ca-box{display:grid;grid-template-columns:1fr 34px 1fr 88px auto;gap:8px;
+  align-items:end;margin-bottom:10px}
+.ca-f{display:flex;flex-direction:column;min-width:0}
+.ca-f label{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.ca-f input,.ca-f select{height:46px;padding:0 13px;border-radius:12px;
   border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
-  font-family:inherit;font-size:15px;font-weight:600;outline:none;width:100%;
-  transition:border-color .15s ease,box-shadow .15s ease}
-.calc-f select{-webkit-appearance:none;appearance:none;cursor:pointer;padding-right:40px;
+  font-family:inherit;font-size:14.5px;font-weight:500;outline:none;width:100%;
+  text-overflow:ellipsis;transition:border-color .14s ease,box-shadow .14s ease}
+.ca-f input::placeholder{color:var(--muted);font-weight:400}
+.ca-f input:focus,.ca-f select:focus{border-color:var(--teal);
+  box-shadow:0 0 0 3px rgba(15,118,110,.14)}
+html[data-theme="dark"] .ca-f input:focus,html[data-theme="dark"] .ca-f select:focus{
+  border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,163,61,.16)}
+.ca-f select{-webkit-appearance:none;appearance:none;cursor:pointer;padding-right:28px;
   background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
     linear-gradient(135deg,var(--muted) 50%,transparent 50%);
-  background-position:calc(100% - 20px) 26px,calc(100% - 15px) 26px;
-  background-size:5px 5px,5px 5px;background-repeat:no-repeat}
-.calc-f select:focus,.calc-f input:focus{border-color:var(--teal);
-  box-shadow:0 0 0 3px rgba(15,118,110,.15)}
-html[data-theme="dark"] .calc-f select:focus,html[data-theme="dark"] .calc-f input:focus{
-  border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,163,61,.18)}
-.calc-f input{margin-top:9px}
-.calc-f input.off{display:none}
+  background-position:calc(100% - 14px) 21px,calc(100% - 10px) 21px;
+  background-size:4px 4px,4px 4px;background-repeat:no-repeat}
 
-/* O preço. Escuro, para se ler como resposta e não como mais um
-   campo por preencher. */
-.calc-res{display:flex;align-items:center;justify-content:space-between;gap:22px;
-  flex-wrap:wrap;background:var(--ink);border-radius:20px;padding:20px 24px}
-.calc-price{min-width:0}
-.calc-price .k{display:block;font-family:var(--mono);font-size:9px;font-weight:600;
-  letter-spacing:.13em;text-transform:uppercase;color:var(--amber);margin-bottom:7px}
-.calc-price .v{display:block;font-family:var(--mono);font-size:clamp(30px,4.4vw,38px);
-  font-weight:600;letter-spacing:-.035em;line-height:1;color:#fff}
-.calc-price .s{display:block;font-size:12.5px;color:#8C97A8;margin-top:8px}
-.calc-go{flex:0 0 auto;display:inline-flex;align-items:center;height:54px;padding:0 30px;
-  border-radius:16px;background:var(--amber);color:#141A28;text-decoration:none;
-  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.08em;
-  text-transform:uppercase;white-space:nowrap;transition:transform .15s ease}
-.calc-go:hover{transform:translateY(-2px)}
-.calc-n{margin:13px 4px 0;color:var(--muted);font-size:12.5px;line-height:1.6}
+.ca-swap{height:46px;width:34px;border:1px solid var(--rule);border-radius:12px;
+  background:var(--surface);color:var(--muted);cursor:pointer;display:flex;
+  align-items:center;justify-content:center;transition:color .14s ease,border-color .14s ease}
+.ca-swap:hover{color:var(--teal);border-color:var(--teal)}
+html[data-theme="dark"] .ca-swap:hover{color:var(--amber);border-color:var(--amber)}
+.ca-swap svg{width:15px;height:15px}
 
-@media (max-width:860px){
-  .calc-box{grid-template-columns:1fr}
-  .calc-res{padding:18px 20px}
-  .calc-go{width:100%;justify-content:center}
+.ca-go{height:46px;padding:0 24px;border:0;border-radius:12px;background:var(--ink);
+  color:#fff;cursor:pointer;font-family:var(--mono);font-size:11.5px;font-weight:600;
+  letter-spacing:.09em;text-transform:uppercase;white-space:nowrap;
+  transition:background .14s ease}
+.ca-go:hover{background:var(--teal)}
+html[data-theme="dark"] .ca-go{background:var(--amber);color:#141A28}
+html[data-theme="dark"] .ca-go:hover{background:#F0B95C}
+
+/* O resultado. Uma linha, não um cartaz. */
+.ca-res{display:flex;align-items:center;justify-content:space-between;gap:18px;
+  flex-wrap:wrap;background:var(--surface);border:1px solid var(--rule);
+  border-radius:14px;padding:14px 18px}
+.ca-out{min-width:0;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.ca-out .k{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);width:100%}
+.ca-out .v{font-family:var(--mono);font-size:27px;font-weight:600;letter-spacing:-.03em;
+  line-height:1.1}
+.ca-out .s{font-size:12.5px;color:var(--muted);line-height:1.5}
+.ca-book{flex:0 0 auto;display:inline-flex;align-items:center;height:44px;padding:0 22px;
+  border-radius:12px;background:var(--teal);color:#fff;text-decoration:none;
+  font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;white-space:nowrap;transition:transform .14s ease}
+.ca-book:hover{transform:translateY(-1px)}
+html[data-theme="dark"] .ca-book{background:var(--amber);color:#141A28}
+.ca-book.off{display:none}
+.ca-n{margin:10px 4px 0;color:var(--muted);font-size:12px;line-height:1.55}
+
+/* A lista de sugestões do Google, com o aspeto do site. */
+.pac-container{border-radius:12px;border:1px solid var(--rule-strong);
+  box-shadow:0 12px 30px rgba(20,26,40,.16);font-family:var(--body);margin-top:4px;
+  background:var(--surface)}
+.pac-item{padding:9px 13px;border-top:1px solid var(--rule);font-size:13.5px;
+  color:var(--muted);cursor:pointer}
+.pac-item:first-child{border-top:0}
+.pac-item:hover,.pac-item-selected{background:var(--surface-2)}
+.pac-item-query{font-size:14px;color:var(--text)}
+.pac-icon{display:none}
+.hdpi .pac-logo:after,.pac-logo:after{margin:3px 8px}
+
+@media (max-width:820px){
+  .ca-box{grid-template-columns:1fr 1fr;gap:8px}
+  .ca-f:first-child,.ca-f:nth-child(3){grid-column:span 2}
+  .ca-swap{display:none}
+  .ca-go{grid-column:span 1}
 }
 
 .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);
@@ -305,151 +329,197 @@ function hero(airport, tag, title) {
 
 
 /**
- * A calculadora.
+ * A calculadora, a sério.
  *
- * O destino e o número de passageiros dão o preço na hora. Os
- * valores são calculados AQUI, ao gerar a página, e ficam no HTML:
- * a resposta é instantânea e não depende da API estar acordada.
+ * Morada livre nos dois campos, com sugestões do Google, distância
+ * real da rota e preço calculado com a mesma fórmula do site. Não há
+ * preços fixos por rota: há o preço daquela morada.
  *
- * O Render adormece os serviços gratuitos, e um preço que demora
- * dez segundos a aparecer perde a venda.
+ * O Google Maps só carrega quando alguém toca num campo. Numa página
+ * que vive de pesquisa, a maioria das visitas nunca chega a usar a
+ * calculadora — carregar o mapa a todos custaria dinheiro por cada
+ * visita e atrasaria a página para toda a gente.
  */
-function calculator(airport, current, isPT) {
-  const TIERS = [
-    [1, '1 passenger'], [2, '2 passengers'], [3, '3 passengers'],
-    [4, '4 passengers'], [5, '5 passengers'], [6, '6 passengers'],
-    [7, '7 passengers'], [8, '8 passengers'], [10, '9 to 10 passengers'],
-    [13, '11 to 13 passengers'], [16, '14 to 16 passengers']
-  ];
+function calculator(airport, current, isPT, mapsKey) {
+  const to = current ? current.name : '';
 
-  const CAR = (pax) => pax <= 4 ? 'Sedan' : pax <= 8 ? 'Van'
-    : pax <= 13 ? 'Minibus' : 'Coach';
-
-  // Destinos vezes escalões. Uma tabela pequena que cabe no HTML.
-  const table = {};
-  airport.destinations.forEach((d) => {
-    table[d.name] = {
-      km: d.km,
-      min: d.minutes,
-      p: TIERS.map(([pax]) => Math.round(priceEUR(d.km, pax, isPT)))
-    };
-  });
-
-  const startName = current ? current.name : airport.destinations[0].name;
-  const start = table[startName];
-  const startPax = 2;
-  const startIdx = TIERS.findIndex(([p]) => p === startPax);
-
-  return `<section class="calc" id="price">
-    <h2 class="calc-h">Where are you going?</h2>
-    <p class="calc-p">Tell us the drop-off and how many of you there are. You get the price
-    right here, before you go any further.</p>
-
-    <div class="calc-box">
-      <div class="calc-f">
-        <label>Pick-up</label>
-        <div class="calc-lock">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
-               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.4-2.1 2.1-2.4-.6a.5.5 0 0 0-.5.8L5 16l1.3 2.2a.5.5 0 0 0 .8-.1l.6-2.4 2.1-2.1 4.4 3.9a.5.5 0 0 0 .8-.5Z"/>
-          </svg>
-          <span>${esc(airport.name)}</span>
-        </div>
+  return `<section class="ca" id="price">
+    <div class="ca-box">
+      <div class="ca-f">
+        <label for="cf">From</label>
+        <input id="cf" type="text" value="${esc(airport.name)}" autocomplete="off"
+               placeholder="Airport, hotel or address">
       </div>
 
-      <div class="calc-f">
-        <label for="to">Drop-off</label>
-        <select id="to">
-          ${airport.destinations.map((d) =>
-            `<option value="${esc(d.name)}"${d.name === startName ? ' selected' : ''}>${
-              esc(d.name)}</option>`).join('')}
-          <option value="_x">Somewhere else&hellip;</option>
-        </select>
-        <input id="other" type="text" class="off" autocomplete="off"
-               placeholder="Hotel name or address">
+      <button class="ca-swap" id="swap" type="button" aria-label="Swap pick-up and drop-off">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 20l-3-3M17 20V4M17 4l3 3"/></svg>
+      </button>
+
+      <div class="ca-f">
+        <label for="ct">To</label>
+        <input id="ct" type="text" value="${esc(to)}" autocomplete="off"
+               placeholder="Hotel, address or town">
       </div>
 
-      <div class="calc-f">
-        <label for="pax">Passengers</label>
-        <select id="pax">
-          ${TIERS.map(([pax, label], i) =>
-            `<option value="${pax}" data-i="${i}"${i === startIdx ? ' selected' : ''}>${
-              esc(label)}</option>`).join('')}
+      <div class="ca-f">
+        <label for="cp">Passengers</label>
+        <select id="cp">
+          ${[1,2,3,4,5,6,7,8,9,10,12,14,16].map((n) =>
+            `<option value="${n}"${n === 2 ? ' selected' : ''}>${n}</option>`).join('')}
         </select>
       </div>
+
+      <button class="ca-go" id="cg" type="button">Get price</button>
     </div>
 
-    <div class="calc-res" id="res">
-      <div class="calc-price">
-        <span class="k" id="rk">Your price</span>
-        <span class="v" id="rv">&euro;${start.p[startIdx]}</span>
-        <span class="s" id="rs">${esc(CAR(startPax))} &middot; ${start.km} km &middot; ${start.min} min &middot; whole car</span>
+    <div class="ca-res" id="cr">
+      <div class="ca-out">
+        <span class="k" id="ck">Your price</span>
+        <span class="v" id="cv">&mdash;</span>
+        <span class="s" id="cs">Enter your drop-off and press Get price</span>
       </div>
-      <a class="calc-go" id="go" href="#">Book now, pay later</a>
+      <a class="ca-book off" id="cb" href="/#book">Book now, pay later</a>
     </div>
 
-    <p class="calc-n" id="rn">No card needed today. We charge it 48 hours before you travel,
-    and you can cancel free until 24 hours before.</p>
+    <p class="ca-n">No card today. We charge it 48 hours before you travel, and you can
+    cancel free up to 24 hours before pick-up.</p>
   </section>
 
   <script>
   (function () {
-    var T = ${JSON.stringify(table)};
-    var CARS = ${JSON.stringify(TIERS.map(([p]) => CAR(p)))};
-    var FROM = ${JSON.stringify(airport.name)};
+    var KEY = ${JSON.stringify(mapsKey)};
+    var PT = ${JSON.stringify(isPT)};
 
-    var to = document.getElementById('to');
-    var other = document.getElementById('other');
-    var pax = document.getElementById('pax');
-    var rv = document.getElementById('rv');
-    var rk = document.getElementById('rk');
-    var rs = document.getElementById('rs');
-    var rn = document.getElementById('rn');
-    var go = document.getElementById('go');
-    if (!to || !pax) return;
+    var cf = document.getElementById('cf');
+    var ct = document.getElementById('ct');
+    var cp = document.getElementById('cp');
+    var cg = document.getElementById('cg');
+    var cv = document.getElementById('cv');
+    var ck = document.getElementById('ck');
+    var cs = document.getElementById('cs');
+    var cb = document.getElementById('cb');
+    if (!cf || !ct) return;
 
-    var PAY_LATER = 'No card needed today. We charge it 48 hours before you travel, and ' +
-      'you can cancel free until 24 hours before.';
+    // ---------- a mesma fórmula do site ----------
+    //
+    // Se mudares os valores no server.js, muda aqui e no index.html.
+    function fare(km, pax) {
+      var p = PT ? { base: 40, perKm: 1.60, min: 25, up: 1.0 }
+                 : { base: 20, perKm: 3.5, min: 25, up: 1.3 };
 
-    function draw() {
-      var i = Number(pax.options[pax.selectedIndex].getAttribute('data-i')) || 0;
-      var custom = to.value === '_x';
-
-      other.classList.toggle('off', !custom);
-
-      if (custom) {
-        // Sem quilómetros não há preço exato. O intervalo do
-        // aeroporto é honesto e não trava a reserva.
-        var all = Object.keys(T).map(function (k) { return T[k].p[i]; });
-        rk.textContent = 'Roughly';
-        rv.textContent = '\u20ac' + Math.min.apply(null, all) + '\u2013' + Math.max.apply(null, all);
-        rs.textContent = CARS[i] + ' \u00b7 exact price on the next page';
-        rn.textContent = 'Type the hotel or street and we price the exact address in ' +
-          'seconds. Still no card today, still free to cancel.';
-      } else {
-        var r = T[to.value];
-        rk.textContent = 'Your price';
-        rv.textContent = '\u20ac' + r.p[i];
-        rs.textContent = CARS[i] + ' \u00b7 ' + r.km + ' km \u00b7 ' + r.min +
-          ' min \u00b7 whole car';
-        rn.textContent = PAY_LATER;
-      }
-
-      var dest = custom ? (other.value.trim() || '') : to.value;
-      go.href = '/?from=' + encodeURIComponent(FROM) +
-        (dest ? '&to=' + encodeURIComponent(dest) : '') +
-        '&pax=' + pax.value + '#book';
+      var mult = pax <= 4 ? 1 : pax <= 8 ? 1.7 : pax <= 13 ? 2.5 : 3.2;
+      return Math.max(p.min, (p.base + km * p.perKm) * p.up * mult);
     }
 
-    to.addEventListener('change', function () {
-      draw();
-      if (to.value === '_x') other.focus();
+    function car(pax) {
+      return pax <= 4 ? 'Sedan' : pax <= 8 ? 'Van' : pax <= 13 ? 'Minibus' : 'Coach';
+    }
+
+    // ---------- o Google, só quando fizer falta ----------
+    var loading = false, ready = false, waiting = null;
+
+    function loadMaps(then) {
+      if (ready) return then && then();
+      if (then) waiting = then;
+      if (loading) return;
+
+      loading = true;
+      window.alCalcReady = function () {
+        ready = true;
+        attach();
+        if (waiting) { var f = waiting; waiting = null; f(); }
+      };
+
+      var s = document.createElement('script');
+      s.src = 'https://maps.googleapis.com/maps/api/js?key=' + KEY +
+        '&loading=async&libraries=places&callback=alCalcReady&language=en';
+      s.async = true;
+      document.head.appendChild(s);
+    }
+
+    function attach() {
+      if (!window.google || !google.maps || !google.maps.places) return;
+      [cf, ct].forEach(function (el) {
+        var ac = new google.maps.places.Autocomplete(el, { fields: ['formatted_address', 'name'] });
+        ac.addListener('place_changed', function () {
+          var p = ac.getPlace();
+          if (p && (p.formatted_address || p.name)) el.value = p.formatted_address || p.name;
+        });
+      });
+    }
+
+    // Ao tocar num campo, o mapa começa a carregar em segundo plano.
+    // Quando a pessoa acabar de escrever já está pronto.
+    [cf, ct].forEach(function (el) {
+      el.addEventListener('focus', function () { loadMaps(); }, { once: true });
     });
 
-    pax.addEventListener('change', draw);
-    other.addEventListener('input', draw);
-    other.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { e.preventDefault(); draw(); go.click(); }
+    // ---------- o preço ----------
+    function show(k, v, s2, book) {
+      ck.textContent = k;
+      cv.textContent = v;
+      cs.textContent = s2;
+      cb.classList.toggle('off', !book);
+    }
+
+    function quote() {
+      var from = cf.value.trim();
+      var to = ct.value.trim();
+      var pax = Number(cp.value) || 1;
+
+      if (!from || !to) {
+        show('Your price', '\u2014', 'Fill in both ends first', false);
+        (from ? ct : cf).focus();
+        return;
+      }
+
+      show('Working it out', '\u2026', 'Measuring the route', false);
+
+      loadMaps(function () {
+        new google.maps.DirectionsService().route({
+          origin: from, destination: to,
+          travelMode: google.maps.TravelMode.DRIVING
+        }, function (res, status) {
+          if (status !== 'OK' || !res.routes.length) {
+            show('No route', '\u2014',
+              'We could not find a road between those two. Check the spelling, or try the ' +
+              'town name.', false);
+            return;
+          }
+
+          var leg = res.routes[0].legs[0];
+          var km = leg.distance.value / 1000;
+          var price = Math.round(fare(km, pax));
+
+          show('Your price', '\u20ac' + price,
+            car(pax) + ' \u00b7 ' + km.toFixed(0) + ' km \u00b7 ' + leg.duration.text +
+            ' \u00b7 whole car', true);
+
+          cb.href = '/?from=' + encodeURIComponent(from) + '&to=' + encodeURIComponent(to) +
+            '&pax=' + pax + '#book';
+        });
+      });
+    }
+
+    cg.addEventListener('click', quote);
+    cp.addEventListener('change', function () { if (cb.href.indexOf('to=') > -1) quote(); });
+
+    [cf, ct].forEach(function (el) {
+      el.addEventListener('focus', function () { this.select(); });
+      el.addEventListener('keydown', function (e) {
+        // O Enter enquanto a lista de sugestões está aberta escolhe a
+        // sugestão; só o segundo Enter é que pede o preço.
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          setTimeout(quote, 120);
+        }
+      });
+    });
+
+    document.getElementById('swap').addEventListener('click', function () {
+      var t = cf.value; cf.value = ct.value; ct.value = t;
+      if (cb.href.indexOf('to=') > -1) quote();
     });
   })();
   </script>`;
@@ -621,7 +691,7 @@ function routePage(country, airport, dest, siblings) {
          `${airport.city} Airport to ${dest.name}`)}
 
 
-  ${calculator(airport, dest, isPT)}
+  ${calculator(airport, dest, isPT, MAPS_KEY)}
 
   <h2 id="included">What is included</h2>
   <ul>
