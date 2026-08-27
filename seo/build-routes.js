@@ -449,11 +449,58 @@ function calculator(airport, current, isPT, mapsKey) {
       });
     }
 
-    // Ao tocar num campo, o mapa começa a carregar em segundo plano.
-    // Quando a pessoa acabar de escrever já está pronto.
+    /**
+     * Ao tocar num campo, o mapa começa a carregar em segundo plano.
+     * Quando a pessoa acabar de escrever já está pronto.
+     *
+     * Mas só depois de um gesto real. Um programa que abra a página
+     * mil vezes não toca em campo nenhum, e assim não gasta um único
+     * carregamento do Maps — que é a parte mais cara de todas.
+     */
     [cf, ct].forEach(function (el) {
       el.addEventListener('focus', function () { loadMaps(); }, { once: true });
     });
+
+    // O botão também, para quem escreve com o teclado e nunca clica
+    // dentro de um campo.
+    cg.addEventListener('mouseenter', function () { loadMaps(); }, { once: true });
+
+    /**
+     * Um travão contra abuso.
+     *
+     * Cada pedido de rota custa dinheiro. Uma pessoa normal faz
+     * meia dúzia por visita; um programa a repetir faria milhares.
+     *
+     * Os limites são generosos de propósito — quem está mesmo a
+     * comparar destinos nunca lhes toca. E vivem no sessionStorage,
+     * que se apaga ao fechar o separador: se alguém contornar isto,
+     * já está a esforçar-se, e aí a defesa a sério é do lado do
+     * servidor, não daqui.
+     */
+    var CAP_BURST = 8;     // por minuto
+    var CAP_TOTAL = 40;    // por sessão
+
+    function quota() {
+      try {
+        var raw = sessionStorage.getItem('al-quote-log');
+        var log = raw ? JSON.parse(raw) : [];
+        var now = Date.now();
+
+        var minute = log.filter(function (t) { return now - t < 60000; });
+
+        if (log.length >= CAP_TOTAL) return 'total';
+        if (minute.length >= CAP_BURST) return 'burst';
+
+        log.push(now);
+        sessionStorage.setItem('al-quote-log', JSON.stringify(log.slice(-CAP_TOTAL)));
+        return null;
+      } catch (e) {
+        // Sem sessionStorage — navegação privada em alguns browsers.
+        // Deixamos passar: é mais provável ser alguém legítimo do
+        // que um atacante a desligar o armazenamento.
+        return null;
+      }
+    }
 
     // ---------- o preço ----------
     function show(k, v, s2, book) {
@@ -471,6 +518,27 @@ function calculator(airport, current, isPT, mapsKey) {
       if (!from || !to) {
         show('Your price', '\u2014', 'Fill in both ends first', false);
         (from ? ct : cf).focus();
+        return;
+      }
+
+      var stop = quota();
+
+      if (stop === 'burst') {
+        show('Slow down', '\u2014',
+          'That is a lot of routes in one minute. Wait a moment and try again.', false);
+        return;
+      }
+
+      if (stop === 'total') {
+        // Não é um beco sem saída: o calculador da página inicial
+        // continua a funcionar, e é lá que se reserva na mesma.
+        show('Enough for now', '\u2014',
+          'You have priced plenty of routes. Use the calculator on the home page, or ' +
+          'reload this one to start again.', false);
+
+        cb.classList.remove('off');
+        cb.href = '/#book';
+        cb.textContent = 'Open the full calculator';
         return;
       }
 
