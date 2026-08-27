@@ -171,6 +171,96 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
 .other b{font-weight:600;font-size:14.5px}
 .other span{font-family:var(--mono);font-size:12.5px;color:var(--muted);flex:0 0 auto}
 
+/* Imagem da cidade. Sem ficheiro, fica um gradiente — a página
+   nunca mostra um quadrado partido. */
+.hero{position:relative;border-radius:24px;overflow:hidden;margin:0 0 26px;
+  background:linear-gradient(140deg,var(--ink),#2A3348 60%,var(--teal))}
+.hero img{display:block;width:100%;height:clamp(190px,26vw,300px);object-fit:cover}
+.hero .veil{position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(12,16,26,.86),rgba(12,16,26,.25) 60%,transparent)}
+.hero .on{position:absolute;left:0;right:0;bottom:0;padding:24px}
+.hero .on .tag{color:var(--amber)}
+.hero .on h1{color:#fff;margin:0}
+.hero.blank{height:clamp(190px,26vw,300px)}
+
+/* Navegação dentro da página, colada ao topo. */
+.jump{position:sticky;top:0;z-index:20;margin:0 -20px 26px;padding:11px 20px;
+  background:color-mix(in srgb,var(--surface) 92%,transparent);
+  border-bottom:1px solid var(--rule);overflow-x:auto;white-space:nowrap;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.jump a{display:inline-block;padding:7px 14px;margin-right:5px;border-radius:999px;
+  font-size:12.5px;font-weight:600;color:var(--muted);text-decoration:none}
+.jump a:hover{color:var(--text);background:var(--surface-2)}
+.jump a.now{background:var(--ink);color:#fff}
+html[data-theme="dark"] .jump a.now{background:var(--amber);color:#141A28}
+
+/* Calculador. Os preços estão na página, não vêm da rede: a
+   resposta é instantânea e funciona sem JavaScript pesado. */
+.calc{background:var(--surface);border:1px solid var(--rule);border-radius:22px;
+  padding:24px;margin:0 0 30px}
+.calc h2{margin:0 0 6px;padding:0;border:0}
+.calc .note{color:var(--muted);font-size:13.5px;line-height:1.6;margin:0 0 18px}
+.pax{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.pax button{border:1px solid var(--rule-strong);background:var(--field);border-radius:13px;
+  padding:11px 16px;cursor:pointer;font-size:13.5px;color:var(--text);text-align:left}
+.pax button:hover{border-color:var(--teal)}
+.pax button.on{border-color:var(--teal);background:var(--teal-soft)}
+html[data-theme="dark"] .pax button.on{border-color:var(--amber);
+  background:rgba(232,163,61,.12)}
+.pax button b{display:block;font-family:var(--display);font-weight:700;font-size:14.5px}
+.pax button span{color:var(--muted);font-size:11.5px}
+.quote{display:flex;align-items:center;justify-content:space-between;gap:20px;
+  flex-wrap:wrap;background:var(--ink);color:#fff;border-radius:18px;padding:20px 22px}
+.quote .k{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--amber);margin-bottom:5px}
+.quote .v{font-family:var(--mono);font-size:32px;font-weight:600;letter-spacing:-.03em;
+  line-height:1}
+.quote small{display:block;color:#9AA5B6;font-size:12px;margin-top:6px}
+.quote .btn{flex:0 0 auto;display:inline-flex;align-items:center;height:48px;padding:0 24px;
+  border-radius:13px;background:var(--amber);color:#141A28;text-decoration:none;
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase}
+
+/* Morada exata. O preço da porta faz-se no calculador da página
+   inicial, que já tem o mapa — aqui só se recolhe o destino. */
+.addr{margin-top:20px;padding-top:20px;border-top:1px solid var(--rule)}
+.addr label{display:block;font-family:var(--mono);font-size:10px;font-weight:600;
+  letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.addr-row{display:flex;gap:9px}
+.addr-row input{flex:1;min-width:0;height:50px;padding:0 15px;border-radius:13px;
+  border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
+  font-family:inherit;font-size:15px;outline:none}
+.addr-row input:focus{border-color:var(--teal)}
+.addr-row button{flex:0 0 auto;height:50px;padding:0 22px;border:0;border-radius:13px;
+  background:var(--ink);color:#fff;cursor:pointer;font-family:var(--mono);font-size:11.5px;
+  font-weight:600;letter-spacing:.09em;text-transform:uppercase}
+html[data-theme="dark"] .addr-row button{background:#E9EDF3;color:#141A28}
+.addr-note{margin:10px 0 0;color:var(--muted);font-size:12.5px;line-height:1.55}
+@media (max-width:520px){.addr-row{flex-direction:column}.addr-row button{width:100%}}
+
+/* Comparação com as alternativas. */
+.cmp{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 10px}
+.cmp th{text-align:left;font-family:var(--mono);font-size:9.5px;font-weight:600;
+  letter-spacing:.11em;text-transform:uppercase;color:var(--muted);
+  padding:0 14px 10px 0;border-bottom:1px solid var(--rule)}
+.cmp td{padding:14px 14px 14px 0;border-bottom:1px solid var(--rule);
+  vertical-align:top;line-height:1.6;color:var(--slate)}
+html[data-theme="dark"] .cmp td{color:#C3CBD8}
+.cmp tr.us td{background:var(--teal-soft);color:var(--text);font-weight:500}
+html[data-theme="dark"] .cmp tr.us td{background:rgba(232,163,61,.1)}
+.cmp tr.us td:first-child{border-top-left-radius:12px;border-bottom-left-radius:12px;
+  padding-left:14px}
+.cmp tr.us td:last-child{border-top-right-radius:12px;border-bottom-right-radius:12px}
+.cmp .mode{font-weight:600;color:var(--text)}
+.cmp .pick{display:inline-block;margin-left:8px;font-family:var(--mono);font-size:8.5px;
+  font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--teal);
+  color:#fff;border-radius:999px;padding:3px 8px;vertical-align:middle}
+html[data-theme="dark"] .cmp .pick{background:var(--amber);color:#141A28}
+.cmp-wrap{overflow-x:auto;margin:0 -4px}
+@media (max-width:700px){.cmp{min-width:640px}}
+
+.updated{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin:0 0 22px}
+
 .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);
   margin-bottom:18px}
 .crumb a{color:var(--muted);text-decoration:none}
@@ -192,35 +282,140 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
     Estoril
   </div>
 
-  <span class="tag">LIS &middot; Portugal</span>
-  <h1>Lisbon Airport to Estoril</h1>
+  <div class="hero"><img src="/assets/img/cities/lisbon.webp" alt="Lisbon" width="820" height="300" loading="eager"><div class="veil"></div><div class="on"><span class="tag">LIS · Portugal</span><h1>Lisbon Airport to Estoril</h1></div></div>
+
+  <nav class="jump" aria-label="On this page"><a href="#price" class="now">Price</a><a href="#journey">The journey</a><a href="#compare">Compare</a><a href="#local">Before you land</a><a href="#included">What is included</a><a href="#faq">Questions</a><a href="#more">Other routes</a></nav>
+
+  <p class="updated">Checked 2026-08-27</p>
+
   <p class="lead">A private car waiting for you in arrivals, at a price agreed before you
   fly. 28 km, about 32 minutes, no meter and no surprises.</p>
 
   <div class="facts">
-    <div class="fact hero"><div class="k">1&ndash;4 people</div><div class="v">€85</div></div>
-    <div class="fact"><div class="k">5&ndash;8 people</div><div class="v">€144</div></div>
+    <div class="fact hero"><div class="k">From</div><div class="v">€85</div></div>
     <div class="fact"><div class="k">Journey</div><div class="v">32 min</div></div>
     <div class="fact"><div class="k">Distance</div><div class="v">28 km</div></div>
+    <div class="fact"><div class="k">Free wait</div><div class="v">60 min</div></div>
   </div>
 
-  <div class="cta">
-    <div>
-      <strong>See your exact price</strong>
-      <span>Enter your hotel address and the number of passengers &mdash; the price you see
-      is the price you pay.</span>
+  <section class="calc" id="price">
+    <h2>What it costs</h2>
+    <p class="note">One fixed price for the whole car, not per person. Tolls, taxes and
+    60 minutes of airport waiting are in. Nothing is added at the end.</p>
+
+    <div class="pax" role="group" aria-label="Number of passengers">
+      <button type="button" data-price="85" class="on" data-pax="4"><b>Up to 4</b><span>Sedan · 3 bags</span></button><button type="button" data-price="144" data-pax="8"><b>5 to 8</b><span>Van · 8 bags</span></button><button type="button" data-price="212" data-pax="13"><b>9 to 13</b><span>Minibus</span></button><button type="button" data-price="271" data-pax="16"><b>14 to 16</b><span>Coach</span></button>
     </div>
-    <a class="btn" href="/#book">Get a price</a>
-  </div>
 
-  <h2>The journey</h2>
+    <div class="quote">
+      <div>
+        <div class="k">Fixed price</div>
+        <div class="v" id="q">€85</div>
+        <small>Free cancellation up to 24 hours before pick-up</small>
+      </div>
+      <a class="btn" id="go" href="/?from=Lisbon%20Airport&amp;to=Estoril&amp;pax=1#book">Book this transfer</a>
+    </div>
+
+    <div class="addr">
+      <label for="hotel">Going to a specific hotel or address?</label>
+      <div class="addr-row">
+        <input id="hotel" type="text" autocomplete="off"
+               placeholder="Hotel name or street in Estoril">
+        <button type="button" id="exact">Price it</button>
+      </div>
+      <p class="addr-note">The price above covers Estoril. A specific address is priced
+      to the door on the next page &mdash; usually the same, sometimes a few euros either way.</p>
+    </div>
+  </section>
+
+  <script>
+  (function () {
+    // Sem rede: os valores já vieram no HTML.
+    var box = document.querySelector('.pax');
+    var out = document.getElementById('q');
+    if (!box || !out) return;
+
+    var pax = 1;
+
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-price]');
+      if (!b) return;
+
+      box.querySelectorAll('button').forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      out.textContent = '€' + b.getAttribute('data-price');
+      pax = Number(b.getAttribute('data-pax')) || 1;
+      link();
+    });
+
+    /**
+     * O botão leva a rota consigo.
+     *
+     * A morada exata é calculada no calculador da página inicial,
+     * que já tem o mapa e a ligação ao servidor. Repetir essa
+     * lógica aqui seria manter o mesmo preço em dois sítios — e
+     * mais cedo ou mais tarde eles divergiam.
+     */
+    var go = document.getElementById('go');
+    var hotel = document.getElementById('hotel');
+
+    function link() {
+      if (!go) return;
+      var to = (hotel && hotel.value.trim()) || "Estoril";
+      go.href = '/?from=' + encodeURIComponent("Lisbon Airport") +
+        '&to=' + encodeURIComponent(to) + '&pax=' + pax + '#book';
+    }
+
+    if (hotel) {
+      hotel.addEventListener('input', link);
+      hotel.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); link(); go.click(); }
+      });
+    }
+
+    var exact = document.getElementById('exact');
+    if (exact) exact.addEventListener('click', function () { link(); go.click(); });
+  })();
+  </script>
+
+  <h2 id="journey">The journey</h2>
   <p>Estoril is a few minutes before Cascais on the same coast road, and the two are often booked together by mistake. Check which one your hotel is actually in — they are 3 km apart.</p>
 
   <h2>Arriving at Lisbon Airport</h2>
   <p>Lisbon Airport sits inside the city, seven kilometres from the centre, which is unusual for a European capital. Arrivals is on the ground floor of Terminal 1; Terminal 2 handles low-cost departures only, so you will almost certainly land at T1. The meeting point is the arrivals hall after customs — your driver waits there with your name.</p>
   <ul><li>Passport control can take 40 minutes in summer at peak arrival times. Your driver tracks the flight and waits.</li><li>Terminal 2 has no arrivals. If you booked a pick-up there, it is wrong — tell us and we move it.</li></ul>
 
-  <h2>What is included</h2>
+  <h2 id="compare">Getting there without us</h2>
+  <p>Every option, with what it actually costs and where it hurts. We think the transfer
+  wins for most people arriving with luggage — but not for everyone, and the table says why.</p>
+  <div class="cmp-wrap"><table class="cmp">
+    <thead><tr><th>How</th><th>Time</th><th>Cost</th><th>Good</th><th>Not so good</th></tr></thead>
+    <tbody>
+      <tr><td class="mode">Metro (red line)</td><td>35–45 min</td><td>€1.80</td><td>Cheapest by far. Runs 06:30 to 01:00.</td><td>One change at Alameda or Saldanha. Steps and crowds with luggage. No service after 01:00.</td></tr><tr><td class="mode">Aerobus</td><td>30–40 min</td><td>€4.00</td><td>Direct to the centre, luggage space.</td><td>Fixed stops only, so you still walk or take a taxi to the hotel.</td></tr><tr><td class="mode">Official taxi rank</td><td>20–30 min</td><td>€15–25 metered</td><td>Available 24/7, no booking needed.</td><td>Queues in summer. Meter, so traffic costs you. Luggage supplement per bag.</td></tr><tr><td class="mode">Uber or Bolt</td><td>20–30 min</td><td>€12–30</td><td>App-based, usually available.</td><td>Surge pricing on busy arrivals. Pick-up is in the car park, not at arrivals.</td></tr>
+      <tr class="us">
+        <td class="mode">Airportlink<span class="pick">Our take</span></td>
+        <td>32 min</td>
+        <td>€85 fixed</td>
+        <td>Driver waiting with your name, one price for the whole car, flight tracked,
+        free cancellation.</td>
+        <td>You have to book it before you fly.</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:13px;color:var(--muted)">Public transport fares and taxi estimates are
+  for reference and change. Our price is the one you pay.</p>
+
+  <h2 id="local">Before you land</h2>
+  <h3>Two terminals, arrivals only at T1</h3>
+  <p>Terminal 2 handles low-cost departures and has no arrivals hall. If your booking says T2 for a pick-up, it is wrong — tell us and we move it at no cost. Your driver waits in the T1 arrivals hall after customs.</p>
+  <h3>Tolls on the A5 and the bridges are included</h3>
+  <p>The A5 to Cascais and the Ponte 25 de Abril both carry tolls. They are inside your fixed price. Portuguese hire cars often get billed weeks later for these — with a transfer that does not happen.</p>
+  <h3>Portuguese TVDE and taxi licensing</h3>
+  <p>Every driver holds a TVDE or taxi licence issued by IMT, the Portuguese transport regulator. We check the licence and the insurance before a company takes its first ride.</p>
+  <h3>Passport control is the real bottleneck</h3>
+  <p>Non-EU arrivals in July and August regularly queue 40 minutes at Lisbon. Your driver tracks the flight and waits — the 60 free minutes start when the plane lands, not when you booked.</p>
+
+  <h2 id="included">What is included</h2>
   <ul>
     <li><strong>A private vehicle</strong> for your group. No sharing, no other stops.</li>
     <li><strong>A fixed price</strong> with tolls and taxes in. Nothing is added at the end.</li>
@@ -231,7 +426,7 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
     More than that, tell us when you book.</li>
   </ul>
 
-  <h2>Questions</h2>
+  <h2 id="faq">Questions</h2>
   <h3>How long does it take to get from Lisbon Airport to Estoril?</h3>
   <p>About 32 minutes for the 28 km, outside peak traffic. Your driver knows the route and follows the flight, so a delayed landing moves the pick-up rather than costing you the transfer.</p>
   <h3>How much is a transfer from Lisbon Airport to Estoril?</h3>
@@ -243,7 +438,7 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
   <h3>Can I cancel?</h3>
   <p>Free up to 24 hours before pick-up, refunded in full and automatically. On many routes you can also book without paying and we only charge the card 48 hours before you travel.</p>
 
-  <h2>Other transfers from Lisbon Airport</h2>
+  <h2 id="more">Other transfers from Lisbon Airport</h2>
   <div class="others">
       <a class="other" href="/transfers/portugal/lisbon-to-city-centre"><b>Lisbon city centre</b><span>from €53</span></a>
       <a class="other" href="/transfers/portugal/lisbon-to-cascais"><b>Cascais</b><span>from €91</span></a>
