@@ -205,75 +205,62 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
 .hero .on .tag{color:var(--amber);margin-bottom:6px}
 .hero .on h1{color:#fff;margin:0;font-size:clamp(24px,3.4vw,34px)}
 
-/* ---------- a barra de reserva ----------
-   Uma linha só, como as barras de pesquisa de viagens. Tudo à vista
-   e nada para descer: quem chega de uma pesquisa decide nos
-   primeiros segundos. */
-.quote{background:var(--surface);border:1px solid var(--rule-strong);border-radius:20px;
-  padding:10px;margin:0 0 26px;box-shadow:0 10px 30px rgba(20,26,40,.07)}
-html[data-theme="dark"] .quote{box-shadow:0 10px 30px rgba(0,0,0,.3)}
+/* ---------- a calculadora ----------
+   Pergunta em cima, campos ao meio, preço em baixo. A ordem é a da
+   leitura: o que é preciso fazer, onde se faz, e o que se recebe. */
+.calc{margin:0 0 30px}
+.calc-h{font-family:var(--display);font-weight:700;font-size:clamp(20px,2.6vw,25px);
+  letter-spacing:-.025em;margin:0 0 8px;padding:0;border:0}
+.calc-p{margin:0 0 18px;color:var(--muted);font-size:14.5px;line-height:1.6;max-width:56ch}
 
-.q-form{display:grid;grid-template-columns:1.15fr 1.25fr 1.05fr auto auto;gap:0;
-  align-items:stretch}
-.q-field{display:flex;flex-direction:column;justify-content:center;min-width:0;
-  padding:11px 16px;position:relative}
-/* Um traço fino a separar, como nas barras de voos. */
-.q-field + .q-field::before{content:"";position:absolute;left:0;top:14px;bottom:14px;
-  width:1px;background:var(--rule)}
-.q-field label{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.calc-box{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:10px;margin-bottom:12px}
+.calc-f{display:flex;flex-direction:column;min-width:0}
+.calc-f label{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:8px}
 
-.q-locked{display:flex;align-items:center;gap:8px;min-width:0;font-size:15px;font-weight:600}
-.q-locked svg{width:15px;height:15px;flex:0 0 auto;color:var(--teal);opacity:.8}
-html[data-theme="dark"] .q-locked svg{color:var(--amber)}
-.q-locked span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.calc-lock{display:flex;align-items:center;gap:9px;height:56px;padding:0 16px;
+  border-radius:16px;background:var(--surface-2);font-size:15px;font-weight:600;min-width:0}
+.calc-lock svg{width:16px;height:16px;flex:0 0 auto;color:var(--teal);opacity:.8}
+html[data-theme="dark"] .calc-lock svg{color:var(--amber)}
+.calc-lock span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-.q-field select,.q-field input{width:100%;border:0;background:transparent;padding:0;
-  outline:none;font-family:inherit;font-size:15px;font-weight:600;color:var(--text);
-  text-overflow:ellipsis}
-.q-field select{-webkit-appearance:none;appearance:none;cursor:pointer;padding-right:20px;
+.calc-f select,.calc-f input{height:56px;padding:0 16px;border-radius:16px;
+  border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
+  font-family:inherit;font-size:15px;font-weight:600;outline:none;width:100%;
+  transition:border-color .15s ease,box-shadow .15s ease}
+.calc-f select{-webkit-appearance:none;appearance:none;cursor:pointer;padding-right:40px;
   background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
     linear-gradient(135deg,var(--muted) 50%,transparent 50%);
-  background-position:calc(100% - 9px) 8px,calc(100% - 5px) 8px;
-  background-size:4px 4px,4px 4px;background-repeat:no-repeat}
-.q-field input.hidden{display:none}
-.q-field:focus-within label{color:var(--teal)}
-html[data-theme="dark"] .q-field:focus-within label{color:var(--amber)}
+  background-position:calc(100% - 20px) 26px,calc(100% - 15px) 26px;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.calc-f select:focus,.calc-f input:focus{border-color:var(--teal);
+  box-shadow:0 0 0 3px rgba(15,118,110,.15)}
+html[data-theme="dark"] .calc-f select:focus,html[data-theme="dark"] .calc-f input:focus{
+  border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,163,61,.18)}
+.calc-f input{margin-top:9px}
+.calc-f input.off{display:none}
 
-/* O preço vive dentro da barra, não num bloco à parte. */
-.q-out{display:contents}
-.q-price{display:flex;flex-direction:column;justify-content:center;padding:11px 20px;
-  border-left:1px solid var(--rule);min-width:0}
-.q-price .k{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--muted);margin-bottom:5px}
-.q-price .v{font-family:var(--mono);font-size:26px;font-weight:600;letter-spacing:-.035em;
-  line-height:1;white-space:nowrap}
-.q-price .s{font-size:11px;color:var(--muted);margin-top:5px;overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap}
+/* O preço. Escuro, para se ler como resposta e não como mais um
+   campo por preencher. */
+.calc-res{display:flex;align-items:center;justify-content:space-between;gap:22px;
+  flex-wrap:wrap;background:var(--ink);border-radius:20px;padding:20px 24px}
+.calc-price{min-width:0}
+.calc-price .k{display:block;font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--amber);margin-bottom:7px}
+.calc-price .v{display:block;font-family:var(--mono);font-size:clamp(30px,4.4vw,38px);
+  font-weight:600;letter-spacing:-.035em;line-height:1;color:#fff}
+.calc-price .s{display:block;font-size:12.5px;color:#8C97A8;margin-top:8px}
+.calc-go{flex:0 0 auto;display:inline-flex;align-items:center;height:54px;padding:0 30px;
+  border-radius:16px;background:var(--amber);color:#141A28;text-decoration:none;
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;white-space:nowrap;transition:transform .15s ease}
+.calc-go:hover{transform:translateY(-2px)}
+.calc-n{margin:13px 4px 0;color:var(--muted);font-size:12.5px;line-height:1.6}
 
-.q-go{display:flex;align-items:center;justify-content:center;margin:4px;padding:0 30px;
-  border-radius:15px;background:var(--ink);color:#fff;text-decoration:none;
-  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.09em;
-  text-transform:uppercase;white-space:nowrap;transition:background .15s ease}
-.q-go:hover{background:var(--teal)}
-html[data-theme="dark"] .q-go{background:var(--amber);color:#141A28}
-html[data-theme="dark"] .q-go:hover{background:#F0B95C}
-
-.q-note{margin:12px 6px 0;color:var(--muted);font-size:12.5px;line-height:1.55}
-
-@media (max-width:1000px){
-  .q-form{grid-template-columns:1fr 1fr}
-  .q-field + .q-field::before{display:none}
-  .q-field{border-top:1px solid var(--rule)}
-  .q-field:nth-child(-n+2){border-top:0}
-  .q-price{grid-column:span 2;border-left:0;border-top:1px solid var(--rule)}
-  .q-go{grid-column:span 2;padding:17px 30px}
-}
-@media (max-width:560px){
-  .q-form{grid-template-columns:1fr}
-  .q-field:nth-child(-n+2){border-top:1px solid var(--rule)}
-  .q-field:first-child{border-top:0}
-  .q-price,.q-go{grid-column:span 1}
+@media (max-width:860px){
+  .calc-box{grid-template-columns:1fr}
+  .calc-res{padding:18px 20px}
+  .calc-go{width:100%;justify-content:center}
 }
 
 .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);
@@ -318,45 +305,51 @@ function hero(airport, tag, title) {
 
 
 /**
- * O calculador.
+ * A calculadora.
  *
- * Interativo a sério: o destino é uma lista com TODAS as rotas
- * daquele aeroporto, e trocar de destino muda o preço de verdade —
- * os quilómetros de cada uma estão nos dados.
+ * O destino e o número de passageiros dão o preço na hora. Os
+ * valores são calculados AQUI, ao gerar a página, e ficam no HTML:
+ * a resposta é instantânea e não depende da API estar acordada.
  *
- * Os preços são calculados AQUI, ao gerar a página. A resposta é
- * instantânea e não depende da API estar acordada: o Render adormece
- * os serviços gratuitos, e um preço que demora dez segundos a
- * aparecer perde a venda.
+ * O Render adormece os serviços gratuitos, e um preço que demora
+ * dez segundos a aparecer perde a venda.
  */
 function calculator(airport, current, isPT) {
   const TIERS = [
-    [4, '1–4 people', 'Sedan'],
-    [8, '5–8 people', 'Van'],
-    [13, '9–13 people', 'Minibus'],
-    [16, '14–16 people', 'Coach']
+    [1, '1 passenger'], [2, '2 passengers'], [3, '3 passengers'],
+    [4, '4 passengers'], [5, '5 passengers'], [6, '6 passengers'],
+    [7, '7 passengers'], [8, '8 passengers'], [10, '9 to 10 passengers'],
+    [13, '11 to 13 passengers'], [16, '14 to 16 passengers']
   ];
 
-  // Uma matriz pequena: destinos vezes quatro escalões.
+  const CAR = (pax) => pax <= 4 ? 'Sedan' : pax <= 8 ? 'Van'
+    : pax <= 13 ? 'Minibus' : 'Coach';
+
+  // Destinos vezes escalões. Uma tabela pequena que cabe no HTML.
   const table = {};
   airport.destinations.forEach((d) => {
-    table[d.slug] = {
-      name: d.name,
-      min: d.minutes,
+    table[d.name] = {
       km: d.km,
+      min: d.minutes,
       p: TIERS.map(([pax]) => Math.round(priceEUR(d.km, pax, isPT)))
     };
   });
 
-  const startSlug = current ? current.slug : airport.destinations[0].slug;
-  const start = table[startSlug];
+  const startName = current ? current.name : airport.destinations[0].name;
+  const start = table[startName];
+  const startPax = 2;
+  const startIdx = TIERS.findIndex(([p]) => p === startPax);
 
-  return `<section class="quote" id="price">
-    <div class="q-form">
-      <div class="q-field">
+  return `<section class="calc" id="price">
+    <h2 class="calc-h">Where are you going?</h2>
+    <p class="calc-p">Tell us the drop-off and how many of you there are. You get the price
+    right here, before you go any further.</p>
+
+    <div class="calc-box">
+      <div class="calc-f">
         <label>Pick-up</label>
-        <div class="q-locked">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        <div class="calc-lock">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.4-2.1 2.1-2.4-.6a.5.5 0 0 0-.5.8L5 16l1.3 2.2a.5.5 0 0 0 .8-.1l.6-2.4 2.1-2.1 4.4 3.9a.5.5 0 0 0 .8-.5Z"/>
           </svg>
@@ -364,95 +357,93 @@ function calculator(airport, current, isPT) {
         </div>
       </div>
 
-      <div class="q-field">
-        <label for="dest">Drop-off</label>
-        <select id="dest">
+      <div class="calc-f">
+        <label for="to">Drop-off</label>
+        <select id="to">
           ${airport.destinations.map((d) =>
-            `<option value="${esc(d.slug)}"${d.slug === startSlug ? ' selected' : ''}>${
+            `<option value="${esc(d.name)}"${d.name === startName ? ' selected' : ''}>${
               esc(d.name)}</option>`).join('')}
-          <option value="_other">Somewhere else&hellip;</option>
+          <option value="_x">Somewhere else&hellip;</option>
         </select>
-        <input id="other" type="text" class="hidden" autocomplete="off"
+        <input id="other" type="text" class="off" autocomplete="off"
                placeholder="Hotel name or address">
       </div>
 
-      <div class="q-field">
+      <div class="calc-f">
         <label for="pax">Passengers</label>
         <select id="pax">
           ${TIERS.map(([pax, label], i) =>
-            `<option value="${pax}" data-i="${i}"${i === 0 ? ' selected' : ''}>${
+            `<option value="${pax}" data-i="${i}"${i === startIdx ? ' selected' : ''}>${
               esc(label)}</option>`).join('')}
         </select>
       </div>
-
-      <div class="q-price">
-        <span class="k">Fixed price</span>
-        <span class="v" id="qv">&euro;${start.p[0]}</span>
-        <span class="s" id="qs">Sedan &middot; ${start.km} km &middot; ${start.min} min</span>
-      </div>
-
-      <a class="q-go" id="go" href="/?from=${encodeURIComponent(airport.name)}&amp;to=${
-        encodeURIComponent(start.name)}&amp;pax=1#book">Book</a>
     </div>
 
-    <p class="q-note" id="note">Tolls, taxes and 60 minutes of airport waiting included.
-    Free cancellation up to 24 hours before pick-up.</p>
+    <div class="calc-res" id="res">
+      <div class="calc-price">
+        <span class="k" id="rk">Your price</span>
+        <span class="v" id="rv">&euro;${start.p[startIdx]}</span>
+        <span class="s" id="rs">${esc(CAR(startPax))} &middot; ${start.km} km &middot; ${start.min} min &middot; whole car</span>
+      </div>
+      <a class="calc-go" id="go" href="#">Book now, pay later</a>
+    </div>
+
+    <p class="calc-n" id="rn">No card needed today. We charge it 48 hours before you travel,
+    and you can cancel free until 24 hours before.</p>
   </section>
 
   <script>
   (function () {
     var T = ${JSON.stringify(table)};
-    var KIND = ${JSON.stringify(TIERS.map((t) => t[2]))};
+    var CARS = ${JSON.stringify(TIERS.map(([p]) => CAR(p)))};
     var FROM = ${JSON.stringify(airport.name)};
-    var SLUGS = ${JSON.stringify(Object.keys(table))};
 
-    var dest = document.getElementById('dest');
+    var to = document.getElementById('to');
     var other = document.getElementById('other');
     var pax = document.getElementById('pax');
-    var qv = document.getElementById('qv');
-    var qs = document.getElementById('qs');
-    var note = document.getElementById('note');
+    var rv = document.getElementById('rv');
+    var rk = document.getElementById('rk');
+    var rs = document.getElementById('rs');
+    var rn = document.getElementById('rn');
     var go = document.getElementById('go');
-    if (!dest || !pax) return;
+    if (!to || !pax) return;
 
-    var HERE = 'Tolls, taxes and 60 minutes of airport waiting included. Free cancellation ' +
-      'up to 24 hours before pick-up.';
+    var PAY_LATER = 'No card needed today. We charge it 48 hours before you travel, and ' +
+      'you can cancel free until 24 hours before.';
 
     function draw() {
       var i = Number(pax.options[pax.selectedIndex].getAttribute('data-i')) || 0;
-      var custom = dest.value === '_other';
+      var custom = to.value === '_x';
 
-      other.classList.toggle('hidden', !custom);
+      other.classList.toggle('off', !custom);
 
       if (custom) {
         // Sem quilómetros não há preço exato. O intervalo do
         // aeroporto é honesto e não trava a reserva.
-        var all = SLUGS.map(function (k) { return T[k].p[i]; });
-        qv.textContent = '\u20ac' + Math.min.apply(null, all) + '\u2013' +
-          Math.max.apply(null, all);
-        qs.textContent = KIND[i] + ' \u00b7 priced to the door on the next page';
-        note.textContent = 'Type the hotel or street and we price the exact address on the ' +
-          'next page. Everything else stays the same \u2014 fixed price, no meter.';
+        var all = Object.keys(T).map(function (k) { return T[k].p[i]; });
+        rk.textContent = 'Roughly';
+        rv.textContent = '\u20ac' + Math.min.apply(null, all) + '\u2013' + Math.max.apply(null, all);
+        rs.textContent = CARS[i] + ' \u00b7 exact price on the next page';
+        rn.textContent = 'Type the hotel or street and we price the exact address in ' +
+          'seconds. Still no card today, still free to cancel.';
       } else {
-        var r = T[dest.value];
-        qv.textContent = '\u20ac' + r.p[i];
-        qs.textContent = KIND[i] + ' \u00b7 ' + r.km + ' km \u00b7 ' + r.min + ' min';
-        note.textContent = HERE;
+        var r = T[to.value];
+        rk.textContent = 'Your price';
+        rv.textContent = '\u20ac' + r.p[i];
+        rs.textContent = CARS[i] + ' \u00b7 ' + r.km + ' km \u00b7 ' + r.min +
+          ' min \u00b7 whole car';
+        rn.textContent = PAY_LATER;
       }
 
-      if (go) {
-        var to = custom
-          ? (other.value.trim() || 'Address')
-          : T[dest.value].name;
-
-        go.href = '/?from=' + encodeURIComponent(FROM) + '&to=' + encodeURIComponent(to) +
-          '&pax=' + pax.value + '#book';
-      }
+      var dest = custom ? (other.value.trim() || '') : to.value;
+      go.href = '/?from=' + encodeURIComponent(FROM) +
+        (dest ? '&to=' + encodeURIComponent(dest) : '') +
+        '&pax=' + pax.value + '#book';
     }
 
-    dest.addEventListener('change', function () {
+    to.addEventListener('change', function () {
       draw();
-      if (dest.value === '_other') other.focus();
+      if (to.value === '_x') other.focus();
     });
 
     pax.addEventListener('change', draw);
@@ -460,10 +451,6 @@ function calculator(airport, current, isPT) {
     other.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { e.preventDefault(); draw(); go.click(); }
     });
-
-    // Trocar de destino NÃO muda de página. O preço aparece aqui, e
-    // levar a pessoa para outro lado a meio de uma decisão é a forma
-    // mais rápida de a perder.
   })();
   </script>`;
 }
