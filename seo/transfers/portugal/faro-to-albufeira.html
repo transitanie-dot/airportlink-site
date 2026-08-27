@@ -173,15 +173,19 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
 
 /* Imagem da cidade. Sem ficheiro, fica um gradiente — a página
    nunca mostra um quadrado partido. */
-.hero{position:relative;border-radius:24px;overflow:hidden;margin:0 0 26px;
-  background:linear-gradient(140deg,var(--ink),#2A3348 60%,var(--teal))}
-.hero img{display:block;width:100%;height:clamp(190px,26vw,300px);object-fit:cover}
+.hero{position:relative;border-radius:22px;overflow:hidden;margin:0 0 24px;
+  background:linear-gradient(140deg,var(--ink),#2A3348 60%,var(--teal));
+  height:clamp(150px,20vw,230px)}
+/* O site.css tem img{max-width:100%} e isso encolhia a foto dentro
+   do bloco, deixando o fundo à vista em cima e em baixo. Preencher
+   o contentor por inteiro resolve. */
+.hero img{position:absolute;inset:0;width:100%;height:100%;max-width:none;
+  object-fit:cover;object-position:center 45%}
 .hero .veil{position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(12,16,26,.86),rgba(12,16,26,.25) 60%,transparent)}
-.hero .on{position:absolute;left:0;right:0;bottom:0;padding:24px}
-.hero .on .tag{color:var(--amber)}
-.hero .on h1{color:#fff;margin:0}
-.hero.blank{height:clamp(190px,26vw,300px)}
+  background:linear-gradient(to top,rgba(12,16,26,.88),rgba(12,16,26,.2) 65%,transparent)}
+.hero .on{position:absolute;left:0;right:0;bottom:0;padding:20px 22px}
+.hero .on .tag{color:var(--amber);margin-bottom:6px}
+.hero .on h1{color:#fff;margin:0;font-size:clamp(24px,3.4vw,34px)}
 
 /* Navegação dentro da página, colada ao topo. */
 .jump{position:sticky;top:0;z-index:20;margin:0 -20px 26px;padding:11px 20px;
@@ -282,7 +286,7 @@ html[data-theme="dark"] .cmp .pick{background:var(--amber);color:#141A28}
     Albufeira
   </div>
 
-  <div class="hero"><img src="/assets/img/cities/faro.webp" alt="Faro" width="820" height="300" loading="eager"><div class="veil"></div><div class="on"><span class="tag">FAO · Portugal</span><h1>Faro Airport to Albufeira</h1></div></div>
+  <div class="hero"><img src="/assets/img/cities/faro.webp" alt="Faro" width="1600" height="600" loading="eager" fetchpriority="high"><div class="veil"></div><div class="on"><span class="tag">FAO · Portugal</span><h1>Faro Airport to Albufeira</h1></div></div>
 
   <nav class="jump" aria-label="On this page"><a href="#price" class="now">Price</a><a href="#journey">The journey</a><a href="#compare">Compare</a><a href="#local">Before you land</a><a href="#included">What is included</a><a href="#faq">Questions</a><a href="#more">Other routes</a></nav>
 
