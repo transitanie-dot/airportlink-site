@@ -81,20 +81,13 @@ img{max-width:100%;display:block}
   max-width:1180px;margin:0 auto;padding:0 20px}
 .logo{display:inline-flex;align-items:center;gap:1px;font-family:var(--display);font-weight:800;
   font-size:19px;letter-spacing:-.03em;text-decoration:none;color:var(--text);white-space:nowrap}
-/* O ícone antes do nome. Sem fundo: as três formas assentam sobre o
-   que estiver por trás.
-
-   A primeira barra herda a cor do texto — escura no tema claro,
-   clara no escuro e no rodapé. Sem isso, uma barra branca sobre
-   fundo branco desaparecia. */
-.logo .mark{width:19px;height:24px;flex:0 0 auto;margin-right:9px}
-.logo .mark .m1{fill:currentColor}
-.logo .mark .m2{fill:var(--teal)}
-.logo .mark .m3{fill:#fd8a2b}
-html[data-theme="dark"] .logo .mark .m2{fill:var(--amber)}
+/* O ícone existe só no rodapé — ver .footer-brand mais abaixo. */
 .logo b{color:var(--teal);font-weight:800}
-html[data-theme="dark"] .logo b{color:var(--amber)}
-.logo .dot{width:6px;height:6px;border-radius:999px;background:var(--amber);
+/* No tema escuro o LINK continua verde, não âmbar: são as mesmas
+   cores do logótipo oficial. Só o tom clareia — o #0F766E tem
+   contraste 3.2:1 sobre o fundo escuro e ficaria a desaparecer. */
+html[data-theme="dark"] .logo b{color:#17A398}
+.logo .dot{width:6px;height:6px;border-radius:999px;background:#fd8a2b;
   margin-left:3px;align-self:center;flex:0 0 auto}
 .site-nav{display:flex;align-items:center;gap:4px;margin-left:14px}
 .site-nav a{padding:9px 13px;border-radius:11px;text-decoration:none;color:var(--muted);
@@ -154,12 +147,16 @@ html[data-theme="dark"] .hbtn{background:#E9EDF3;color:#141A28}
    aplicada ao fundo que ali existe. */
 /* span e não <a>: sem cursor de mão nem sublinhado ao passar. */
 .footer-brand .logo{color:#fff;font-size:21px;margin-bottom:14px;cursor:default}
-.footer-brand .logo b{color:var(--amber)}
-/* No rodapé o texto é branco, por isso a primeira barra também.
-   O teal daria pouco contraste sobre o escuro: fica âmbar, como o
-   LINK ao lado. */
-.footer-brand .logo .mark{width:21px;height:27px}
-.footer-brand .logo .mark .m2{fill:var(--amber)}
+/* O ícone, grande e antes do nome. Sem fundo: as formas assentam
+   sobre o escuro do rodapé. As cores são as do logótipo — barra
+   branca, barra verde, ponto laranja. */
+.footer-brand .logo{align-items:center}
+.footer-brand .logo .mark{width:30px;height:38px;flex:0 0 auto;margin-right:14px}
+.footer-brand .logo .mark .m1{fill:#FBFBF8}
+.footer-brand .logo .mark .m2{fill:#17A398}
+.footer-brand .logo .mark .m3{fill:#fd8a2b}
+/* O LINK do rodapé segue a mesma regra do tema escuro. */
+.footer-brand .logo b{color:#17A398}
 .footer-brand p{margin:0;color:#8C97A8;font-size:14px;line-height:1.7;max-width:38ch}
 .footer-bottom{margin-top:40px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);
   display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
