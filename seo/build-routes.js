@@ -205,65 +205,75 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
 .hero .on .tag{color:var(--amber);margin-bottom:6px}
 .hero .on h1{color:#fff;margin:0;font-size:clamp(24px,3.4vw,34px)}
 
-/* ---------- o calculador ----------
-   Duas partes: o que se escolhe em cima, o resultado em baixo. A
-   separação é de propósito — a pessoa vê logo onde mexer e onde
-   aparece a resposta. */
-.quote{background:var(--surface);border:1px solid var(--rule);border-radius:24px;
-  padding:26px;margin:0 0 30px}
-.q-head h2{margin:0 0 7px;padding:0;border:0;font-size:22px}
-.q-head p{margin:0 0 22px;color:var(--muted);font-size:14px;line-height:1.6;max-width:52ch}
+/* ---------- a barra de reserva ----------
+   Uma linha só, como as barras de pesquisa de viagens. Tudo à vista
+   e nada para descer: quem chega de uma pesquisa decide nos
+   primeiros segundos. */
+.quote{background:var(--surface);border:1px solid var(--rule-strong);border-radius:20px;
+  padding:10px;margin:0 0 26px;box-shadow:0 10px 30px rgba(20,26,40,.07)}
+html[data-theme="dark"] .quote{box-shadow:0 10px 30px rgba(0,0,0,.3)}
 
-.q-form{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
-.q-field{display:flex;flex-direction:column;min-width:0}
-.q-field label{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.13em;
-  text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.q-form{display:grid;grid-template-columns:1.15fr 1.25fr 1.05fr auto auto;gap:0;
+  align-items:stretch}
+.q-field{display:flex;flex-direction:column;justify-content:center;min-width:0;
+  padding:11px 16px;position:relative}
+/* Um traço fino a separar, como nas barras de voos. */
+.q-field + .q-field::before{content:"";position:absolute;left:0;top:14px;bottom:14px;
+  width:1px;background:var(--rule)}
+.q-field label{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 
-/* A recolha não se escolhe: a página é sobre este aeroporto. */
-.q-locked{display:flex;align-items:center;gap:9px;height:54px;padding:0 15px;
-  border-radius:15px;background:var(--surface-2);border:1px solid transparent;
-  font-size:14.5px;font-weight:600;min-width:0}
-.q-locked svg{width:17px;height:17px;flex:0 0 auto;color:var(--teal)}
+.q-locked{display:flex;align-items:center;gap:8px;min-width:0;font-size:15px;font-weight:600}
+.q-locked svg{width:15px;height:15px;flex:0 0 auto;color:var(--teal);opacity:.8}
 html[data-theme="dark"] .q-locked svg{color:var(--amber)}
 .q-locked span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-.q-field select,.q-field input{height:54px;padding:0 15px;border-radius:15px;
-  border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
-  font-family:inherit;font-size:14.5px;font-weight:600;outline:none;width:100%;
-  transition:border-color .15s ease,box-shadow .15s ease}
-.q-field select{-webkit-appearance:none;appearance:none;cursor:pointer;padding-right:38px;
+.q-field select,.q-field input{width:100%;border:0;background:transparent;padding:0;
+  outline:none;font-family:inherit;font-size:15px;font-weight:600;color:var(--text);
+  text-overflow:ellipsis}
+.q-field select{-webkit-appearance:none;appearance:none;cursor:pointer;padding-right:20px;
   background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
     linear-gradient(135deg,var(--muted) 50%,transparent 50%);
-  background-position:calc(100% - 19px) 25px,calc(100% - 14px) 25px;
-  background-size:5px 5px,5px 5px;background-repeat:no-repeat}
-.q-field select:focus,.q-field input:focus{border-color:var(--teal);
-  box-shadow:0 0 0 3px rgba(15,118,110,.14)}
-html[data-theme="dark"] .q-field select:focus,html[data-theme="dark"] .q-field input:focus{
-  border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,163,61,.16)}
-.q-field input{margin-top:9px}
+  background-position:calc(100% - 9px) 8px,calc(100% - 5px) 8px;
+  background-size:4px 4px,4px 4px;background-repeat:no-repeat}
 .q-field input.hidden{display:none}
+.q-field:focus-within label{color:var(--teal)}
+html[data-theme="dark"] .q-field:focus-within label{color:var(--amber)}
 
-/* O resultado. Escuro, para se distinguir do que é para preencher. */
-.q-out{display:flex;align-items:center;justify-content:space-between;gap:22px;
-  flex-wrap:wrap;background:var(--ink);border-radius:18px;padding:20px 24px}
-.q-price{min-width:0}
-.q-price .k{display:block;font-family:var(--mono);font-size:9px;font-weight:600;
-  letter-spacing:.13em;text-transform:uppercase;color:var(--amber);margin-bottom:6px}
-.q-price .v{display:block;font-family:var(--mono);font-size:34px;font-weight:600;
-  letter-spacing:-.035em;line-height:1;color:#fff}
-.q-price .s{display:block;font-size:12.5px;color:#8C97A8;margin-top:7px}
-.q-go{flex:0 0 auto;display:inline-flex;align-items:center;height:52px;padding:0 28px;
-  border-radius:15px;background:var(--amber);color:#141A28;text-decoration:none;
+/* O preço vive dentro da barra, não num bloco à parte. */
+.q-out{display:contents}
+.q-price{display:flex;flex-direction:column;justify-content:center;padding:11px 20px;
+  border-left:1px solid var(--rule);min-width:0}
+.q-price .k{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.q-price .v{font-family:var(--mono);font-size:26px;font-weight:600;letter-spacing:-.035em;
+  line-height:1;white-space:nowrap}
+.q-price .s{font-size:11px;color:var(--muted);margin-top:5px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+
+.q-go{display:flex;align-items:center;justify-content:center;margin:4px;padding:0 30px;
+  border-radius:15px;background:var(--ink);color:#fff;text-decoration:none;
   font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.09em;
-  text-transform:uppercase;transition:transform .14s ease}
-.q-go:hover{transform:translateY(-2px)}
-.q-note{margin:14px 4px 0;color:var(--muted);font-size:12.5px;line-height:1.6}
+  text-transform:uppercase;white-space:nowrap;transition:background .15s ease}
+.q-go:hover{background:var(--teal)}
+html[data-theme="dark"] .q-go{background:var(--amber);color:#141A28}
+html[data-theme="dark"] .q-go:hover{background:#F0B95C}
 
-@media (max-width:820px){
-  .quote{padding:20px}
+.q-note{margin:12px 6px 0;color:var(--muted);font-size:12.5px;line-height:1.55}
+
+@media (max-width:1000px){
+  .q-form{grid-template-columns:1fr 1fr}
+  .q-field + .q-field::before{display:none}
+  .q-field{border-top:1px solid var(--rule)}
+  .q-field:nth-child(-n+2){border-top:0}
+  .q-price{grid-column:span 2;border-left:0;border-top:1px solid var(--rule)}
+  .q-go{grid-column:span 2;padding:17px 30px}
+}
+@media (max-width:560px){
   .q-form{grid-template-columns:1fr}
-  .q-out{padding:18px 20px}
-  .q-go{width:100%;justify-content:center}
+  .q-field:nth-child(-n+2){border-top:1px solid var(--rule)}
+  .q-field:first-child{border-top:0}
+  .q-price,.q-go{grid-column:span 1}
 }
 
 .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);
@@ -321,10 +331,10 @@ function hero(airport, tag, title) {
  */
 function calculator(airport, current, isPT) {
   const TIERS = [
-    [4, '1 to 4 passengers', 'Sedan'],
-    [8, '5 to 8 passengers', 'Van'],
-    [13, '9 to 13 passengers', 'Minibus'],
-    [16, '14 to 16 passengers', 'Coach']
+    [4, '1–4 people', 'Sedan'],
+    [8, '5–8 people', 'Van'],
+    [13, '9–13 people', 'Minibus'],
+    [16, '14–16 people', 'Coach']
   ];
 
   // Uma matriz pequena: destinos vezes quatro escalões.
@@ -342,15 +352,9 @@ function calculator(airport, current, isPT) {
   const start = table[startSlug];
 
   return `<section class="quote" id="price">
-    <div class="q-head">
-      <h2>Your price</h2>
-      <p>Pick where you are going and how many of you there are. The price is for the whole
-      car, fixed before you travel.</p>
-    </div>
-
     <div class="q-form">
       <div class="q-field">
-        <label>Picking you up at</label>
+        <label>Pick-up</label>
         <div class="q-locked">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -361,7 +365,7 @@ function calculator(airport, current, isPT) {
       </div>
 
       <div class="q-field">
-        <label for="dest">Where are you going?</label>
+        <label for="dest">Drop-off</label>
         <select id="dest">
           ${airport.destinations.map((d) =>
             `<option value="${esc(d.slug)}"${d.slug === startSlug ? ' selected' : ''}>${
@@ -373,24 +377,22 @@ function calculator(airport, current, isPT) {
       </div>
 
       <div class="q-field">
-        <label for="pax">How many of you?</label>
+        <label for="pax">Passengers</label>
         <select id="pax">
           ${TIERS.map(([pax, label], i) =>
             `<option value="${pax}" data-i="${i}"${i === 0 ? ' selected' : ''}>${
               esc(label)}</option>`).join('')}
         </select>
       </div>
-    </div>
 
-    <div class="q-out">
       <div class="q-price">
         <span class="k">Fixed price</span>
         <span class="v" id="qv">&euro;${start.p[0]}</span>
         <span class="s" id="qs">Sedan &middot; ${start.km} km &middot; ${start.min} min</span>
       </div>
+
       <a class="q-go" id="go" href="/?from=${encodeURIComponent(airport.name)}&amp;to=${
-        encodeURIComponent(start.name)}&amp;pax=1#book">
-        Book this transfer</a>
+        encodeURIComponent(start.name)}&amp;pax=1#book">Book</a>
     </div>
 
     <p class="q-note" id="note">Tolls, taxes and 60 minutes of airport waiting included.
