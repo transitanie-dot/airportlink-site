@@ -118,7 +118,8 @@
     '<path class="m2" d="M26.2 4.1h3.2a1.7 1.7 0 0 1 1.7 2.1l-6.4 36.6a2.7 2.7 0 0 1-2.7 2.3h-3.2a1.7 1.7 0 0 1-1.7-2.1l6.4-36.6a2.7 2.7 0 0 1 2.7-2.3Z"/>' +
     '<circle class="m3" cx="36.4" cy="41.5" r="3.6"/></svg>';
 
-  var LOGO = MARK + 'AIRPORT<b>LINK</b><span class="dot"></span>';
+  // O cabeçalho leva só o nome. O ícone é do rodapé.
+  var LOGO = 'AIRPORT<b>LINK</b><span class="dot"></span>';
 
   var MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
     'stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
@@ -194,7 +195,9 @@
       // Sem ligação: o rodapé é onde se está no fim da página, e um
       // logótipo clicável ali leva de volta ao topo de onde já se
       // veio. No cabeçalho faz sentido; aqui não.
-      '<div class="footer-brand"><span class="logo">' + LOGO + '</span>' +
+      // O ícone ANTES do nome e em grande, só aqui. O cabeçalho
+      // leva o nome sozinho.
+      '<div class="footer-brand"><span class="logo">' + MARK + LOGO + '</span>' +
       '<p>Private airport transfers with a fixed price agreed before you pay. ' +
       'Door to door, flight tracked, driven by licensed local companies.</p></div>' +
       FOOTER.map(function (col) {
