@@ -231,49 +231,51 @@ html[data-theme="dark"] .strip svg{color:var(--amber)}
 .strip-ends b{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:-.015em}
 .strip-ends .to{text-align:right}
 
-/* Calculador. Os preços estão na página, não vêm da rede: a
-   resposta é instantânea e funciona sem JavaScript pesado. */
-.calc{background:var(--surface);border:1px solid var(--rule);border-radius:22px;
-  padding:24px;margin:0 0 30px}
-.calc h2{margin:0 0 6px;padding:0;border:0}
-.calc .note{color:var(--muted);font-size:13.5px;line-height:1.6;margin:0 0 18px}
-.pax{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.pax button{border:1px solid var(--rule-strong);background:var(--field);border-radius:13px;
-  padding:11px 16px;cursor:pointer;font-size:13.5px;color:var(--text);text-align:left}
-.pax button:hover{border-color:var(--teal)}
-.pax button.on{border-color:var(--teal);background:var(--teal-soft)}
-html[data-theme="dark"] .pax button.on{border-color:var(--amber);
-  background:rgba(232,163,61,.12)}
-.pax button b{display:block;font-family:var(--display);font-weight:700;font-size:14.5px}
-.pax button span{color:var(--muted);font-size:11.5px}
-.quote{display:flex;align-items:center;justify-content:space-between;gap:20px;
-  flex-wrap:wrap;background:var(--ink);color:#fff;border-radius:18px;padding:20px 22px}
-.quote .k{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.11em;
-  text-transform:uppercase;color:var(--amber);margin-bottom:5px}
-.quote .v{font-family:var(--mono);font-size:32px;font-weight:600;letter-spacing:-.03em;
+/* A barra de reserva. Uma linha no computador, empilhada no
+   telemóvel. Antes eram quatro botões e uma caixa grande — meio
+   ecrã só para dizer um número. */
+.bar{background:var(--surface);border:1px solid var(--rule);border-radius:20px;
+  padding:14px;margin:0 0 26px}
+.bar-grid{display:grid;grid-template-columns:1.1fr 1.3fr .9fr .8fr auto;gap:10px;
+  align-items:stretch}
+.cell{display:flex;flex-direction:column;justify-content:center;min-width:0;
+  background:var(--surface-2);border-radius:14px;padding:11px 14px}
+.cell label{display:block;font-family:var(--mono);font-size:8.5px;font-weight:600;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.cell .fixed{font-size:14.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.cell input,.cell select{width:100%;border:0;background:transparent;padding:0;outline:none;
+  font-family:inherit;font-size:14.5px;font-weight:600;color:var(--text);
+  -webkit-appearance:none;appearance:none;cursor:pointer}
+.cell input{cursor:text;text-overflow:ellipsis}
+.cell select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
+  linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 9px) 8px,calc(100% - 5px) 8px;
+  background-size:4px 4px,4px 4px;background-repeat:no-repeat;padding-right:18px}
+.cell.narrow{min-width:0}
+.cell.out{background:var(--ink);color:#fff}
+.cell.out label{color:var(--amber)}
+.amount{display:flex;align-items:baseline;gap:7px;min-width:0}
+.amount span{font-family:var(--mono);font-size:23px;font-weight:600;letter-spacing:-.03em;
   line-height:1}
-.quote small{display:block;color:#9AA5B6;font-size:12px;margin-top:6px}
-.quote .btn{flex:0 0 auto;display:inline-flex;align-items:center;height:48px;padding:0 24px;
-  border-radius:13px;background:var(--amber);color:#141A28;text-decoration:none;
-  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.09em;
-  text-transform:uppercase}
+.amount em{font-style:normal;font-size:11px;color:#9AA5B6;white-space:nowrap}
+.cell.go{display:flex;align-items:center;justify-content:center;background:var(--teal);
+  color:#fff;text-decoration:none;font-family:var(--mono);font-size:12px;font-weight:600;
+  letter-spacing:.09em;text-transform:uppercase;padding:11px 22px;white-space:nowrap;
+  transition:transform .14s ease}
+.cell.go:hover{transform:translateY(-1px)}
+html[data-theme="dark"] .cell.go{background:var(--amber);color:#141A28}
+.bar-note{margin:12px 4px 0;color:var(--muted);font-size:12.5px;line-height:1.55}
 
-/* Morada exata. O preço da porta faz-se no calculador da página
-   inicial, que já tem o mapa — aqui só se recolhe o destino. */
-.addr{margin-top:20px;padding-top:20px;border-top:1px solid var(--rule)}
-.addr label{display:block;font-family:var(--mono);font-size:10px;font-weight:600;
-  letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
-.addr-row{display:flex;gap:9px}
-.addr-row input{flex:1;min-width:0;height:50px;padding:0 15px;border-radius:13px;
-  border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
-  font-family:inherit;font-size:15px;outline:none}
-.addr-row input:focus{border-color:var(--teal)}
-.addr-row button{flex:0 0 auto;height:50px;padding:0 22px;border:0;border-radius:13px;
-  background:var(--ink);color:#fff;cursor:pointer;font-family:var(--mono);font-size:11.5px;
-  font-weight:600;letter-spacing:.09em;text-transform:uppercase}
-html[data-theme="dark"] .addr-row button{background:#E9EDF3;color:#141A28}
-.addr-note{margin:10px 0 0;color:var(--muted);font-size:12.5px;line-height:1.55}
-@media (max-width:520px){.addr-row{flex-direction:column}.addr-row button{width:100%}}
+@media (max-width:900px){
+  .bar-grid{grid-template-columns:1fr 1fr}
+  .cell.out,.cell.go{grid-column:span 2}
+  .cell.go{padding:15px}
+}
+@media (max-width:480px){
+  .bar-grid{grid-template-columns:1fr}
+  .cell.out,.cell.go{grid-column:span 1}
+}
 
 .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);
   margin-bottom:18px}
@@ -357,100 +359,108 @@ function routeStrip(airport, dest) {
 /**
  * O calculador.
  *
+ * Uma barra, não uma lista de blocos. Antes eram quatro botões
+ * empilhados, uma caixa grande com o preço e um campo à parte — meio
+ * ecrã só para dizer um número.
+ *
  * Os preços são calculados AQUI, ao gerar a página, e ficam no HTML.
- * A resposta é instantânea e não depende da API estar acordada — o
+ * A resposta é instantânea e não depende da API estar acordada: o
  * Render adormece os serviços gratuitos, e um preço que demora dez
  * segundos a aparecer perde a venda.
  */
 function calculator(km, isPT, currency, from, to) {
   const tiers = [
-    [4, 'Up to 4', 'Sedan · 3 bags'],
-    [8, '5 to 8', 'Van · 8 bags'],
-    [13, '9 to 13', 'Minibus'],
-    [16, '14 to 16', 'Coach']
-  ].map(([pax, label, sub]) => ({
-    pax, label, sub, price: Math.round(priceEUR(km, pax, isPT))
+    [4, '1–4 passengers', 'Sedan'],
+    [8, '5–8 passengers', 'Van'],
+    [13, '9–13 passengers', 'Minibus'],
+    [16, '14–16 passengers', 'Coach']
+  ].map(([pax, label, kind]) => ({
+    pax, label, kind, price: Math.round(priceEUR(km, pax, isPT))
   }));
 
-  return `<section class="calc" id="price">
-    <h2>What it costs</h2>
-    <p class="note">One fixed price for the whole car, not per person. Tolls, taxes and
-    60 minutes of airport waiting are in. Nothing is added at the end.</p>
-
-    <div class="pax" role="group" aria-label="Number of passengers">
-      ${tiers.map((t, i) => `<button type="button" data-price="${t.price}"${
-        i === 0 ? ' class="on"' : ''} data-pax="${t.pax}"><b>${esc(t.label)}</b><span>${esc(t.sub)}</span></button>`).join('')}
-    </div>
-
-    <div class="quote">
-      <div>
-        <div class="k">Fixed price</div>
-        <div class="v" id="q">${currency === 'EUR' ? '€' : ''}${tiers[0].price}</div>
-        <small>Free cancellation up to 24 hours before pick-up</small>
+  return `<section class="bar" id="price">
+    <div class="bar-grid">
+      <div class="cell">
+        <label>Pick-up</label>
+        <div class="fixed">${esc(from)}</div>
       </div>
-      <a class="btn" id="go" href="/?from=${encodeURIComponent(from)}&amp;to=${
-        encodeURIComponent(to)}&amp;pax=1#book">Book this transfer</a>
+
+      <div class="cell">
+        <label for="hotel">Drop-off</label>
+        <input id="hotel" type="text" autocomplete="off" value="${esc(to)}"
+               placeholder="Hotel or address">
+      </div>
+
+      <div class="cell narrow">
+        <label for="pax">Passengers</label>
+        <select id="pax">
+          ${tiers.map((t, i) => `<option value="${t.pax}" data-price="${t.price}"${
+            i === 0 ? ' selected' : ''}>${esc(t.label)}</option>`).join('')}
+        </select>
+      </div>
+
+      <div class="cell out">
+        <label>Price</label>
+        <div class="amount"><span id="q">&euro;${tiers[0].price}</span>
+        <em id="kind">${esc(tiers[0].kind)}</em></div>
+      </div>
+
+      <a class="cell go" id="go"
+         href="/?from=${encodeURIComponent(from)}&amp;to=${encodeURIComponent(to)}&amp;pax=1#book">
+        Book &rarr;</a>
     </div>
 
-    <div class="addr">
-      <label for="hotel">Going to a specific hotel or address?</label>
-      <div class="addr-row">
-        <input id="hotel" type="text" autocomplete="off"
-               placeholder="Hotel name or street in ${esc(to)}">
-        <button type="button" id="exact">Price it</button>
-      </div>
-      <p class="addr-note">The price above covers ${esc(to)}. A specific address is priced
-      to the door on the next page &mdash; usually the same, sometimes a few euros either way.</p>
-    </div>
+    <p class="bar-note" id="note">Fixed for the whole car. Tolls, taxes and 60 minutes of
+    airport waiting included. Free cancellation up to 24 hours before.</p>
   </section>
 
   <script>
   (function () {
-    // Sem rede: os valores já vieram no HTML.
-    var box = document.querySelector('.pax');
-    var out = document.getElementById('q');
-    if (!box || !out) return;
-
-    var pax = 1;
-
-    box.addEventListener('click', function (e) {
-      var b = e.target.closest('button[data-price]');
-      if (!b) return;
-
-      box.querySelectorAll('button').forEach(function (x) { x.classList.remove('on'); });
-      b.classList.add('on');
-      out.textContent = '\u20ac' + b.getAttribute('data-price');
-      pax = Number(b.getAttribute('data-pax')) || 1;
-      link();
-    });
-
-    /**
-     * O botão leva a rota consigo.
-     *
-     * A morada exata é calculada no calculador da página inicial,
-     * que já tem o mapa e a ligação ao servidor. Repetir essa
-     * lógica aqui seria manter o mesmo preço em dois sítios — e
-     * mais cedo ou mais tarde eles divergiam.
-     */
-    var go = document.getElementById('go');
+    var sel = document.getElementById('pax');
     var hotel = document.getElementById('hotel');
+    var out = document.getElementById('q');
+    var kind = document.getElementById('kind');
+    var note = document.getElementById('note');
+    var go = document.getElementById('go');
+    if (!sel || !out) return;
 
-    function link() {
-      if (!go) return;
-      var to = (hotel && hotel.value.trim()) || ${JSON.stringify(to)};
-      go.href = '/?from=' + encodeURIComponent(${JSON.stringify(from)}) +
-        '&to=' + encodeURIComponent(to) + '&pax=' + pax + '#book';
+    var KINDS = ${JSON.stringify(tiers.map((t) => t.kind))};
+    var TOWN = ${JSON.stringify(to)};
+    var FROM = ${JSON.stringify(from)};
+
+    var HERE = 'Fixed for the whole car. Tolls, taxes and 60 minutes of airport waiting ' +
+      'included. Free cancellation up to 24 hours before.';
+    var ELSEWHERE = 'That address is priced to the door on the next page \u2014 usually the ' +
+      'same as ' + TOWN + ', sometimes a few euros either way.';
+
+    function draw() {
+      var opt = sel.options[sel.selectedIndex];
+      var custom = hotel && hotel.value.trim() &&
+        hotel.value.trim().toLowerCase() !== TOWN.toLowerCase();
+
+      out.textContent = (custom ? 'from \u20ac' : '\u20ac') + opt.getAttribute('data-price');
+      kind.textContent = KINDS[sel.selectedIndex] || '';
+      note.textContent = custom ? ELSEWHERE : HERE;
+
+      // O botão leva a rota consigo. A morada exata é calculada no
+      // calculador da página inicial, que já tem o mapa — repetir
+      // essa lógica aqui seria manter o mesmo preço em dois sítios.
+      if (go) {
+        go.href = '/?from=' + encodeURIComponent(FROM) +
+          '&to=' + encodeURIComponent((hotel && hotel.value.trim()) || TOWN) +
+          '&pax=' + opt.value + '#book';
+      }
     }
+
+    sel.addEventListener('change', draw);
 
     if (hotel) {
-      hotel.addEventListener('input', link);
+      hotel.addEventListener('input', draw);
+      hotel.addEventListener('focus', function () { this.select(); });
       hotel.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') { e.preventDefault(); link(); go.click(); }
+        if (e.key === 'Enter') { e.preventDefault(); draw(); go.click(); }
       });
     }
-
-    var exact = document.getElementById('exact');
-    if (exact) exact.addEventListener('click', function () { link(); go.click(); });
   })();
   </script>`;
 }
