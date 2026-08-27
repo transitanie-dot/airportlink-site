@@ -289,11 +289,9 @@ html[data-theme="dark"] .ca-pay .v{color:var(--amber)}
 html[data-theme="dark"] .ca-later{color:var(--amber)}
 .ca-later.off{display:none}
 
-/* O botão diz o que faz, e nada mais.
-
-   O seletor leva o .rt à frente de propósito: a regra .rt a pinta
-   todas as ligações de verde, e com menos especificidade o texto do
-   botão ficava verde sobre verde — invisível. */
+/* O botao diz o que faz, e nada mais. O seletor leva o .rt a frente
+   de proposito: a regra das ligacoes pinta tudo de verde, e com
+   menos especificidade o texto do botao ficava verde sobre verde. */
 .rt a.ca-book{display:inline-flex;align-items:center;justify-content:center;height:46px;
   padding:0 26px;margin-top:9px;border-radius:13px;background:var(--teal);color:#fff;
   text-decoration:none;font-family:var(--body);font-size:15px;font-weight:600;
