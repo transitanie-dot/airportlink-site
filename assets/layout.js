@@ -102,13 +102,21 @@
     ]}
   ];
 
-  // O ícone antes do nome. Um só desenho para os dois sítios: o
-  // rodapé tinha o texto sem o ponto laranja, e ficavam diferentes.
-  var MARK = '<svg class="mark" viewBox="0 0 64 64" aria-hidden="true">' +
-    '<rect width="64" height="64" rx="14" fill="#0e1c2b"/>' +
-    '<path fill="#fefefe" d="M31.4 12.1h3.2a1.7 1.7 0 0 1 1.7 2.1l-6.4 36.6a2.7 2.7 0 0 1-2.7 2.3h-3.2a1.7 1.7 0 0 1-1.7-2.1l6.4-36.6a2.7 2.7 0 0 1 2.7-2.3Z"/>' +
-    '<path fill="#0c6b6e" d="M46.2 12.1h3.2a1.7 1.7 0 0 1 1.7 2.1l-6.4 36.6a2.7 2.7 0 0 1-2.7 2.3h-3.2a1.7 1.7 0 0 1-1.7-2.1l6.4-36.6a2.7 2.7 0 0 1 2.7-2.3Z"/>' +
-    '<circle cx="52" cy="49.5" r="3.6" fill="#fd8a2b"/></svg>';
+  /**
+   * O ícone antes do nome.
+   *
+   * Sem o quadrado de fundo: as barras assentam diretamente sobre o
+   * que estiver por trás. No cabeçalho claro e no rodapé escuro, o
+   * mesmo desenho funciona nos dois — a barra que era branca passa
+   * a herdar a cor do texto, e é isso que a mantém legível.
+   *
+   * Um só desenho para os dois sítios: o rodapé tinha o texto sem o
+   * ponto laranja e ficavam diferentes.
+   */
+  var MARK = '<svg class="mark" viewBox="0 0 44 56" aria-hidden="true">' +
+    '<path class="m1" d="M11.4 4.1h3.2a1.7 1.7 0 0 1 1.7 2.1L9.9 42.8a2.7 2.7 0 0 1-2.7 2.3H4a1.7 1.7 0 0 1-1.7-2.1L8.7 6.4a2.7 2.7 0 0 1 2.7-2.3Z"/>' +
+    '<path class="m2" d="M26.2 4.1h3.2a1.7 1.7 0 0 1 1.7 2.1l-6.4 36.6a2.7 2.7 0 0 1-2.7 2.3h-3.2a1.7 1.7 0 0 1-1.7-2.1l6.4-36.6a2.7 2.7 0 0 1 2.7-2.3Z"/>' +
+    '<circle class="m3" cx="36.4" cy="41.5" r="3.6"/></svg>';
 
   var LOGO = MARK + 'AIRPORT<b>LINK</b><span class="dot"></span>';
 
@@ -183,7 +191,10 @@
   footer.className = 'site-footer';
   footer.innerHTML =
     '<div class="wrap"><div class="footer-grid">' +
-      '<div class="footer-brand"><a class="logo" href="/">' + LOGO + '</a>' +
+      // Sem ligação: o rodapé é onde se está no fim da página, e um
+      // logótipo clicável ali leva de volta ao topo de onde já se
+      // veio. No cabeçalho faz sentido; aqui não.
+      '<div class="footer-brand"><span class="logo">' + LOGO + '</span>' +
       '<p>Private airport transfers with a fixed price agreed before you pay. ' +
       'Door to door, flight tracked, driven by licensed local companies.</p></div>' +
       FOOTER.map(function (col) {
