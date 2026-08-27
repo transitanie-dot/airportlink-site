@@ -283,13 +283,24 @@ html[data-theme="dark"] .ca-art{color:#8C97A8}
   font-weight:600;letter-spacing:-.035em;line-height:1;color:var(--teal)}
 html[data-theme="dark"] .ca-pay .v{color:var(--amber)}
 .ca-pay .s{display:block;font-size:11.5px;color:var(--muted);margin-top:7px}
-.ca-book{display:inline-flex;align-items:center;height:44px;padding:0 22px;margin-top:13px;
-  border-radius:12px;background:var(--ink);color:#fff;text-decoration:none;
-  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;
-  text-transform:uppercase;white-space:nowrap;transition:background .14s ease}
-.ca-book:hover{background:var(--teal)}
-html[data-theme="dark"] .ca-book{background:var(--amber);color:#141A28}
-html[data-theme="dark"] .ca-book:hover{background:#F0B95C}
+ /* A promessa, por cima do botão. Com a data do pagamento deixa de
+   ser uma frase de marketing e passa a ser um compromisso. */
+.ca-later{display:block;margin-top:14px;font-size:12.5px;font-weight:600;color:var(--teal)}
+html[data-theme="dark"] .ca-later{color:var(--amber)}
+.ca-later.off{display:none}
+
+/* O botão diz o que faz, e nada mais. Verde cheio: é a única ação
+   da secção e não precisa de competir com nada. */
+.ca-book{display:inline-flex;align-items:center;justify-content:center;height:46px;
+  padding:0 26px;margin-top:9px;border-radius:13px;background:var(--teal);color:#fff;
+  text-decoration:none;font-family:var(--body);font-size:15px;font-weight:600;
+  letter-spacing:-.01em;white-space:nowrap;
+  transition:transform .14s ease,box-shadow .14s ease;
+  box-shadow:0 6px 18px rgba(15,118,110,.28)}
+.ca-book:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,118,110,.34)}
+html[data-theme="dark"] .ca-book{background:var(--amber);color:#141A28;
+  box-shadow:0 6px 18px rgba(232,163,61,.26)}
+html[data-theme="dark"] .ca-book:hover{box-shadow:0 10px 24px rgba(232,163,61,.32)}
 .ca-book.off{display:none}
 .ca-n{margin:10px 4px 0;color:var(--muted);font-size:12.5px;line-height:1.55}
 .ca-n:empty{margin:0}
@@ -509,7 +520,11 @@ function calculator(airport, current, isPT, mapsKey) {
         <span class="k" id="ck">Your price</span>
         <span class="v" id="cv">&mdash;</span>
         <span class="s" id="cs">Whole car &middot; tolls and taxes in</span>
-        <a class="ca-book off" id="cb" href="/#book">Book now, pay later</a>
+
+        <!-- A promessa fica por cima do botão, com a data do
+             pagamento. O botão diz só o que faz. -->
+        <span class="ca-later off" id="cl">Book now, pay later</span>
+        <a class="ca-book off" id="cb" href="/#book">Continue &rarr;</a>
       </div>
     </div>
 
@@ -528,6 +543,7 @@ function calculator(airport, current, isPT, mapsKey) {
     var chDate = $$('chDate'), chTime = $$('chTime'), chPax = $$('chPax');
     var chKm = $$('chKm'), chDur = $$('chDur');
     var cv = $$('cv'), ck = $$('ck'), cs = $$('cs'), cn = $$('cn'), cb = $$('cb');
+    var cl = $$('cl');
     if (!cf || !ct) return;
 
     // Amanhã: hoje faria metade das reservas serem para daqui a uma
@@ -640,8 +656,11 @@ function calculator(airport, current, isPT, mapsKey) {
       };
 
       var sc = document.createElement('script');
+      // language=en é obrigatório: sem ele o Google devolve a
+      // duração na língua do browser, e uma página em inglês
+      // acabava a dizer "40 minutos".
       sc.src = 'https://maps.googleapis.com/maps/api/js?key=' + KEY +
-        '&loading=async&libraries=places&callback=alReady';
+        '&loading=async&libraries=places&callback=alReady&language=en&region=PT';
       sc.async = true;
       document.head.appendChild(sc);
     }
@@ -649,17 +668,25 @@ function calculator(airport, current, isPT, mapsKey) {
     // ---------- ao vivo ----------
     var lastKey = '', timer = null, km = 0;
 
-    function payLine(price) {
-      // Quando e quanto. É o que a pessoa quer saber, e é curto.
-      if (!price || !cdate.value) return 'Whole car, tolls and taxes in';
+    /**
+     * A promessa por cima do botão.
+     *
+     * "Book now, pay later" sozinho é uma frase de marketing. Com a
+     * data, passa a ser um compromisso: a pessoa sabe exatamente
+     * quando o cartão é debitado.
+     */
+    function laterLine() {
+      if (!cdate.value) return 'Book now, pay later';
 
       var pick = new Date(cdate.value + 'T' + (ctime.value || '12:00'));
       var at = new Date(pick.getTime() - 48 * 36e5);
 
-      if (isNaN(at.getTime()) || at < new Date()) return 'Charged at checkout';
+      // Menos de 48 horas: não há "depois" nenhum, e prometê-lo
+      // seria mentira.
+      if (isNaN(at.getTime()) || at < new Date()) return '';
 
-      return 'Pay on ' + at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) +
-        ', \u20ac' + Math.round(price);
+      return 'Book now, pay on ' +
+        at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
     }
 
     /** As etiquetas com o que foi escolhido. */
@@ -685,13 +712,19 @@ function calculator(airport, current, isPT, mapsKey) {
 
       if (!price) {
         cv.textContent = '\u2014';
-        cs.textContent = 'Whole car, tolls and taxes in';
+        cs.textContent = 'Whole car \u00b7 tolls and taxes in';
         cb.classList.add('off');
+        cl.classList.add('off');
         return;
       }
 
       cv.textContent = '\u20ac' + Math.round(price);
-      cs.textContent = payLine(price);
+      cs.textContent = 'Whole car \u00b7 tolls and taxes in';
+
+      var later = laterLine();
+      cl.textContent = later;
+      cl.classList.toggle('off', !later);
+
       cb.classList.remove('off');
       cb.href = '/?from=' + encodeURIComponent(cf.value.trim()) +
         '&to=' + encodeURIComponent(ct.value.trim()) +
@@ -725,6 +758,7 @@ function calculator(airport, current, isPT, mapsKey) {
           ? 'That is a lot of routes in one minute. Give it a moment.'
           : 'You have priced plenty of routes. Reload the page to start again.';
         cb.classList.add('off');
+        cl.classList.add('off');
         return;
       }
 
