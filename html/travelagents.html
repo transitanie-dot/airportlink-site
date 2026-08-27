@@ -759,7 +759,38 @@ var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KE
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
 });
 
-var $ = function (id) { return document.getElementById(id); };
+/**
+ * $ que nunca devolve null.
+ *
+ * Um elemento em falta com addEventListener direto mata o script
+ * inteiro, e o sintoma é a página parecer viva com todos os botões
+ * mortos — sem pista de qual foi o elemento. Já aconteceu no portal
+ * de motoristas e custou caro a diagnosticar.
+ */
+var MISSING = { style: {}, dataset: {}, value: '', textContent: '', innerHTML: '',
+  className: '', disabled: false, checked: false, files: null,
+  classList: { add: function () {}, remove: function () {}, toggle: function () {},
+               contains: function () { return false; } },
+  addEventListener: function () {}, setAttribute: function () {},
+  getAttribute: function () { return null; }, focus: function () {},
+  click: function () {}, scrollIntoView: function () {},
+  querySelectorAll: function () { return []; } };
+
+var warned = {};
+
+var $ = function (id) {
+  var el = document.getElementById(id);
+
+  if (!el) {
+    if (!warned[id]) {
+      warned[id] = true;
+      console.warn('[travelagents] element missing:', id);
+    }
+    return MISSING;
+  }
+
+  return el;
+};
 var currentUser = null, authMode = 'signin', agentInfo = null, lastStatement = null;
 var agentBookings = [], bookingScope = 'future', pendingCancel = null;
 
@@ -1567,9 +1598,32 @@ $('saveProfileBtn').addEventListener('click', async function () {
 // ============================================================
 function jumpToAccount(mode) {
   if (!currentUser) setAuthMode(mode);
+
   var target = document.getElementById('accountPanel');
-  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  if (!currentUser) setTimeout(function () { $('authEmail').focus(); }, 420);
+
+  if (!target) {
+    console.warn('[travelagents] accountPanel not found');
+    return;
+  }
+
+  // O scrollIntoView com behavior:'smooth' é ignorado por quem tem
+  // "reduzir movimento" ligado no sistema, e nesses casos não
+  // acontecia nada. O salto direto funciona sempre.
+  try {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (e) {
+    target.scrollIntoView();
+  }
+
+  // Rede de segurança: se meio segundo depois continuarmos no mesmo
+  // sítio, salta sem animação.
+  var before = window.scrollY;
+  setTimeout(function () {
+    if (Math.abs(window.scrollY - before) < 40) {
+      window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - 20);
+    }
+    if (!currentUser) $('authEmail').focus();
+  }, 500);
 }
 
 $('heroApplyBtn').addEventListener('click', function () { jumpToAccount('signup'); });
