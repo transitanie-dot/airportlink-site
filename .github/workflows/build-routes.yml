@@ -58,7 +58,7 @@ jobs:
           git config user.name "Airportlink bot"
           git config user.email "bot@airportlink.app"
 
-          git add seo/transfers seo/airports sitemap.xml
+          git add transfers airports sitemap.xml
 
           # Sem alterações, não há nada a fazer. Sem esta verificação
           # o commit falha e o trabalho aparece a vermelho sem razão.
@@ -67,7 +67,7 @@ jobs:
             exit 0
           fi
 
-          COUNT=$(find seo/transfers -name "*.html" 2>/dev/null | wc -l)
+          COUNT=$(find transfers -name "*.html" 2>/dev/null | wc -l)
           git commit -m "Route pages: ${COUNT} transfers [skip ci]"
           git push
 
@@ -75,7 +75,7 @@ jobs:
         run: |
           echo "### Route pages built" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Transfers: $(find seo/transfers -name '*.html' 2>/dev/null | wc -l)" >> $GITHUB_STEP_SUMMARY
-          echo "- Airports: $(find seo/airports -name '*.html' 2>/dev/null | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "- Transfers: $(find transfers -name '*.html' 2>/dev/null | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "- Airports: $(find airports -name '*.html' 2>/dev/null | wc -l)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Render will publish these in a moment." >> $GITHUB_STEP_SUMMARY
