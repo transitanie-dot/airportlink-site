@@ -250,8 +250,10 @@ html[data-theme="dark"] .ca-in input:focus,html[data-theme="dark"] .ca-in select
   background:var(--ink);border-radius:17px;padding:18px 22px}
 .ca-veh{display:flex;align-items:center;gap:14px;min-width:0}
 .ca-art{flex:0 0 auto;width:78px;color:var(--amber)}
-.ca-art svg{width:100%;height:auto;fill:none;stroke:currentColor;stroke-width:2.4;
-  stroke-linecap:round;stroke-linejoin:round}
+.ca-art svg{width:100%;height:auto;fill:currentColor}
+/* As janelas e o interior das rodas, vazados: distinguem-se da
+   carroçaria sem precisar de uma segunda cor. */
+.ca-art svg .w{fill:var(--ink)}
 .ca-vt{min-width:0}
 .ca-vt strong{display:block;font-family:var(--display);font-weight:700;font-size:16px;
   letter-spacing:-.02em;color:#fff;margin-bottom:3px}
@@ -276,6 +278,28 @@ html[data-theme="dark"] .ca-in input:focus,html[data-theme="dark"] .ca-in select
 .ca-book:hover{transform:translateY(-1px)}
 .ca-book.off{display:none}
 .ca-n{margin:12px 4px 0;color:var(--muted);font-size:12.5px;line-height:1.55}
+
+/* Título por cima da calculadora. */
+.ca-top{margin-bottom:16px}
+.ca-top h2{font-family:var(--display);font-weight:700;font-size:clamp(19px,2.4vw,23px);
+  letter-spacing:-.025em;margin:0 0 5px;padding:0;border:0}
+.ca-top p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.55}
+.ca-f label .hint{font-family:var(--body);font-size:10px;font-weight:400;letter-spacing:0;
+  text-transform:none;color:var(--muted);opacity:.7;margin-left:5px}
+
+/* O que está incluído, com um ícone por ponto: seis linhas de texto
+   seguidas não se leem, seis blocos com ícone leem-se de relance. */
+.inc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 8px}
+.inc-i{display:flex;gap:13px;align-items:flex-start;background:var(--surface);
+  border:1px solid var(--rule);border-radius:15px;padding:15px 17px}
+.inc-ic{flex:0 0 auto;width:34px;height:34px;border-radius:11px;display:flex;
+  align-items:center;justify-content:center;background:var(--teal-soft);color:var(--teal)}
+html[data-theme="dark"] .inc-ic{background:rgba(232,163,61,.12);color:var(--amber)}
+.inc-ic svg{width:18px;height:18px}
+.inc-i strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.015em;margin-bottom:4px}
+.inc-i span{display:block;color:var(--muted);font-size:12.5px;line-height:1.55}
+@media (max-width:700px){.inc{grid-template-columns:1fr}}
 
 /* A lista de sugestões do Google, com o aspeto do site. */
 .pac-container{border-radius:12px;border:1px solid var(--rule-strong);
@@ -357,6 +381,11 @@ function calculator(airport, current, isPT, mapsKey) {
   const to = current ? current.name : '';
 
   return `<section class="ca" id="price">
+    <div class="ca-top">
+      <h2>Your ride, in a few clicks</h2>
+      <p>Price, vehicle and journey time as you type. No account, no card today.</p>
+    </div>
+
     <div class="ca-grid">
       <div class="ca-f wide">
         <label for="cf">Pick-up</label>
@@ -383,11 +412,10 @@ function calculator(airport, current, isPT, mapsKey) {
       </div>
 
       <div class="ca-f">
-        <label for="cp">Passengers</label>
-        <div class="ca-in"><select id="cp">
-          ${[1,2,3,4,5,6,7,8,9,10,12,14,16].map((n) =>
-            `<option value="${n}"${n === 2 ? ' selected' : ''}>${n}</option>`).join('')}
-        </select></div>
+        <label for="cp">Passengers <span class="hint">1 to 16</span></label>
+        <div class="ca-in">
+          <input id="cp" type="number" min="1" max="16" step="1" value="2">
+        </div>
       </div>
     </div>
 
@@ -403,7 +431,6 @@ function calculator(airport, current, isPT, mapsKey) {
       <div class="ca-nums">
         <div class="ca-s"><span class="k">Distance</span><span class="v" id="cd">&mdash;</span></div>
         <div class="ca-s"><span class="k">Journey</span><span class="v" id="cu">&mdash;</span></div>
-        <div class="ca-s"><span class="k">Free wait</span><span class="v">60 min</span></div>
       </div>
 
       <div class="ca-pay">
@@ -445,19 +472,50 @@ function calculator(airport, current, isPT, mapsKey) {
       return Math.max(p.min, (p.base + km * p.perKm) * p.up * mult);
     }
 
+    /**
+     * Os veículos, de perfil.
+     *
+     * Preenchidos e não em traço: a esta escala, um contorno fino
+     * lê-se como um rabisco. As rodas são círculos vazados para se
+     * distinguirem da carroçaria sem precisar de mais uma cor.
+     */
     var VEHICLES = {
       Sedan: ['Up to 4 passengers with hand luggage.',
-        '<svg viewBox="0 0 120 46"><path d="M8 34h104M18 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0M88 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0"/>' +
-        '<path d="M12 34V24l10-12h50l16 12h14a6 6 0 0 1 6 6v4"/><path d="M40 12v12M12 24h100"/></svg>'],
+        '<svg viewBox="0 0 132 52">' +
+        '<path d="M9 40V31c0-2 1-4 3-4l9-1 10-11c2-2 4-3 7-3h25c3 0 5 1 7 3l9 11 25 3c5 1 8 4 8 8v3c0 2-2 4-4 4H13c-2 0-4-2-4-4Z"/>' +
+        '<path class="w" d="M38 27 46 17c1-1 2-2 4-2h11v12H38Z"/>' +
+        '<path class="w" d="M67 15h11c2 0 3 1 4 2l9 10H67V15Z"/>' +
+        '<circle cx="35" cy="41" r="8"/><circle class="w" cx="35" cy="41" r="3.4"/>' +
+        '<circle cx="98" cy="41" r="8"/><circle class="w" cx="98" cy="41" r="3.4"/>' +
+        '</svg>'],
+
       Van: ['Up to 8 passengers with a suitcase each.',
-        '<svg viewBox="0 0 120 46"><path d="M8 34h104M20 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0M86 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0"/>' +
-        '<path d="M10 34V14a2 2 0 0 1 2-2h72l20 14h4a4 4 0 0 1 4 4v4"/><path d="M40 12v14M64 12v14M10 26h100"/></svg>'],
+        '<svg viewBox="0 0 132 52">' +
+        '<path d="M8 40V16c0-3 2-5 5-5h58c2 0 4 1 5 2l19 15 22 4c5 1 8 4 8 8v2c0 2-2 4-4 4H12c-2 0-4-2-4-4Z"/>' +
+        '<path class="w" d="M18 16h20v12H18V16Z"/><path class="w" d="M45 16h20v12H45V16Z"/>' +
+        '<path class="w" d="M72 16h5l14 12H72V16Z"/>' +
+        '<circle cx="34" cy="41" r="8.5"/><circle class="w" cx="34" cy="41" r="3.6"/>' +
+        '<circle cx="99" cy="41" r="8.5"/><circle class="w" cx="99" cy="41" r="3.6"/>' +
+        '</svg>'],
+
       Minibus: ['Up to 13 passengers with luggage.',
-        '<svg viewBox="0 0 120 46"><path d="M6 34h108M20 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0M88 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0"/>' +
-        '<path d="M8 34V12a2 2 0 0 1 2-2h96a2 2 0 0 1 2 2v22"/><path d="M32 10v14M56 10v14M80 10v14M8 24h100"/></svg>'],
+        '<svg viewBox="0 0 132 52">' +
+        '<path d="M6 40V13c0-3 2-5 5-5h108c3 0 5 2 5 5v27c0 2-2 4-4 4H10c-2 0-4-2-4-4Z"/>' +
+        '<path class="w" d="M14 14h22v12H14V14Z"/><path class="w" d="M42 14h22v12H42V14Z"/>' +
+        '<path class="w" d="M70 14h22v12H70V14Z"/><path class="w" d="M98 14h18v12H98V14Z"/>' +
+        '<circle cx="33" cy="41" r="8.5"/><circle class="w" cx="33" cy="41" r="3.6"/>' +
+        '<circle cx="100" cy="41" r="8.5"/><circle class="w" cx="100" cy="41" r="3.6"/>' +
+        '</svg>'],
+
       Coach: ['Up to 16 passengers with luggage.',
-        '<svg viewBox="0 0 120 46"><path d="M4 34h112M18 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0M90 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0"/>' +
-        '<path d="M6 34V10a2 2 0 0 1 2-2h104a2 2 0 0 1 2 2v24"/><path d="M28 8v16M50 8v16M72 8v16M94 8v16M6 24h108"/></svg>']
+        '<svg viewBox="0 0 132 52">' +
+        '<path d="M4 40V10c0-3 2-5 5-5h114c3 0 5 2 5 5v30c0 2-2 4-4 4H8c-2 0-4-2-4-4Z"/>' +
+        '<path class="w" d="M11 11h18v11H11V11Z"/><path class="w" d="M34 11h18v11H34V11Z"/>' +
+        '<path class="w" d="M57 11h18v11H57V11Z"/><path class="w" d="M80 11h18v11H80V11Z"/>' +
+        '<path class="w" d="M103 11h18v11h-18V11Z"/>' +
+        '<circle cx="31" cy="41" r="8.5"/><circle class="w" cx="31" cy="41" r="3.6"/>' +
+        '<circle cx="101" cy="41" r="8.5"/><circle class="w" cx="101" cy="41" r="3.6"/>' +
+        '</svg>']
     };
 
     function car(pax) {
@@ -810,15 +868,27 @@ function routePage(country, airport, dest, siblings) {
   ${calculator(airport, dest, isPT, MAPS_KEY)}
 
   <h2 id="included">What is included</h2>
-  <ul>
-    <li><strong>A private vehicle</strong> for your group. No sharing, no other stops.</li>
-    <li><strong>A fixed price</strong> with tolls and taxes in. Nothing is added at the end.</li>
-    <li><strong>Flight tracking.</strong> Land late and the pick-up moves, not the price.</li>
-    <li><strong>60 minutes of free waiting</strong> after the flight lands.</li>
-    <li><strong>Free cancellation</strong> until 24 hours before pick-up.</li>
-    <li><strong>One suitcase and one piece of hand luggage per passenger.</strong>
-    More than that, tell us when you book.</li>
-  </ul>
+  <div class="inc">
+    ${[
+      ['M5 17h14M7 17V9l3-4h4l3 4v8M9 5v4M15 5v4',
+       'A private vehicle', 'Yours alone. No sharing, no other stops on the way.'],
+      ['M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6',
+       'A fixed price', 'Tolls and taxes in. Nothing is added at the end.'],
+      ['M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.4-2.1 2.1-2.4-.6a.5.5 0 0 0-.5.8L5 16l1.3 2.2a.5.5 0 0 0 .8-.1l.6-2.4 2.1-2.1 4.4 3.9a.5.5 0 0 0 .8-.5Z',
+       'Flight tracking', 'Land late and the pick-up moves, not the price.'],
+      ['M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+       '60 minutes of waiting', 'Free, counted from the moment the plane lands.'],
+      ['M9 14l2 2 4-5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+       'Free cancellation', 'Until 24 hours before pick-up, refunded in full.'],
+      ['M6 8h12l1 12H5L6 8ZM9 8V6a3 3 0 0 1 6 0v2',
+       'A case each', 'One suitcase and one bag per passenger. More? Tell us.']
+    ].map(([d, t, body]) => `<div class="inc-i">
+      <span class="inc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="${d}"/></svg></span>
+      <div><strong>${esc(t)}</strong><span>${esc(body)}</span></div>
+    </div>`).join('')}
+  </div>
 
   <h2 id="journey">The journey</h2>
   <p>${esc(dest.about)}</p>
