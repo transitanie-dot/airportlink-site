@@ -102,7 +102,15 @@
     ]}
   ];
 
-  var LOGO = 'AIRPORT<b>LINK</b><span class="dot"></span>';
+  // O ícone antes do nome. Um só desenho para os dois sítios: o
+  // rodapé tinha o texto sem o ponto laranja, e ficavam diferentes.
+  var MARK = '<svg class="mark" viewBox="0 0 64 64" aria-hidden="true">' +
+    '<rect width="64" height="64" rx="14" fill="#0e1c2b"/>' +
+    '<path fill="#fefefe" d="M31.4 12.1h3.2a1.7 1.7 0 0 1 1.7 2.1l-6.4 36.6a2.7 2.7 0 0 1-2.7 2.3h-3.2a1.7 1.7 0 0 1-1.7-2.1l6.4-36.6a2.7 2.7 0 0 1 2.7-2.3Z"/>' +
+    '<path fill="#0c6b6e" d="M46.2 12.1h3.2a1.7 1.7 0 0 1 1.7 2.1l-6.4 36.6a2.7 2.7 0 0 1-2.7 2.3h-3.2a1.7 1.7 0 0 1-1.7-2.1l6.4-36.6a2.7 2.7 0 0 1 2.7-2.3Z"/>' +
+    '<circle cx="52" cy="49.5" r="3.6" fill="#fd8a2b"/></svg>';
+
+  var LOGO = MARK + 'AIRPORT<b>LINK</b><span class="dot"></span>';
 
   var MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
     'stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
@@ -175,7 +183,7 @@
   footer.className = 'site-footer';
   footer.innerHTML =
     '<div class="wrap"><div class="footer-grid">' +
-      '<div class="footer-brand"><a class="logo" href="/">AIRPORT<b>LINK</b></a>' +
+      '<div class="footer-brand"><a class="logo" href="/">' + LOGO + '</a>' +
       '<p>Private airport transfers with a fixed price agreed before you pay. ' +
       'Door to door, flight tracked, driven by licensed local companies.</p></div>' +
       FOOTER.map(function (col) {
