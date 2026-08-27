@@ -216,6 +216,21 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
 .jump a.now{background:var(--ink);color:#fff}
 html[data-theme="dark"] .jump a.now{background:var(--amber);color:#141A28}
 
+/* A rota desenhada. Um SVG, não um mapa: três mil páginas com um
+   mapa embutido custam dinheiro a cada visita e demoram a abrir. */
+.strip{margin:0 0 22px}
+.strip svg{display:block;width:100%;height:auto;color:var(--teal)}
+html[data-theme="dark"] .strip svg{color:var(--amber)}
+.strip .s-lab{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;
+  fill:var(--muted)}
+.strip .s-mid{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.14em;
+  fill:var(--muted)}
+.strip-ends{display:flex;justify-content:space-between;gap:20px;margin-top:6px}
+.strip-ends span{display:block;font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.strip-ends b{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:-.015em}
+.strip-ends .to{text-align:right}
+
 /* Calculador. Os preços estão na página, não vêm da rede: a
    resposta é instantânea e funciona sem JavaScript pesado. */
 .calc{background:var(--surface);border:1px solid var(--rule);border-radius:22px;
@@ -259,28 +274,6 @@ html[data-theme="dark"] .pax button.on{border-color:var(--amber);
 html[data-theme="dark"] .addr-row button{background:#E9EDF3;color:#141A28}
 .addr-note{margin:10px 0 0;color:var(--muted);font-size:12.5px;line-height:1.55}
 @media (max-width:520px){.addr-row{flex-direction:column}.addr-row button{width:100%}}
-
-/* Comparação com as alternativas. */
-.cmp{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 10px}
-.cmp th{text-align:left;font-family:var(--mono);font-size:9.5px;font-weight:600;
-  letter-spacing:.11em;text-transform:uppercase;color:var(--muted);
-  padding:0 14px 10px 0;border-bottom:1px solid var(--rule)}
-.cmp td{padding:14px 14px 14px 0;border-bottom:1px solid var(--rule);
-  vertical-align:top;line-height:1.6;color:var(--slate)}
-html[data-theme="dark"] .cmp td{color:#C3CBD8}
-.cmp tr.us td{background:var(--teal-soft);color:var(--text);font-weight:500}
-html[data-theme="dark"] .cmp tr.us td{background:rgba(232,163,61,.1)}
-.cmp tr.us td:first-child{border-top-left-radius:12px;border-bottom-left-radius:12px;
-  padding-left:14px}
-.cmp tr.us td:last-child{border-top-right-radius:12px;border-bottom-right-radius:12px}
-.cmp .mode{font-weight:600;color:var(--text)}
-.cmp .pick{display:inline-block;margin-left:8px;font-family:var(--mono);font-size:8.5px;
-  font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--teal);
-  color:#fff;border-radius:999px;padding:3px 8px;vertical-align:middle}
-html[data-theme="dark"] .cmp .pick{background:var(--amber);color:#141A28}
-.cmp-wrap{overflow-x:auto;margin:0 -4px}
-@media (max-width:700px){.cmp{min-width:640px}}
-
 
 .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);
   margin-bottom:18px}
@@ -326,6 +319,39 @@ function jumpNav(items) {
     items.map(([id, label], i) =>
       `<a href="#${id}"${i === 0 ? ' class="now"' : ''}>${esc(label)}</a>`).join('') +
     '</nav>';
+}
+
+/**
+ * A rota, desenhada.
+ *
+ * Um SVG feito aqui, não um mapa do Google.
+ *
+ * Um mapa embutido em três mil páginas custa dinheiro por cada
+ * visita, demora a carregar, e traz um script pesado para uma
+ * página que se orgulha de ser leve. Isto aparece instantaneamente,
+ * não custa nada, e mostra o que interessa: de onde para onde,
+ * quanto tempo e quantos quilómetros.
+ */
+function routeStrip(airport, dest) {
+  return `<div class="strip">
+    <svg viewBox="0 0 600 74" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="${esc(airport.name)} to ${esc(dest.name)}, ${esc(dest.km)} kilometres">
+      <line x1="26" y1="30" x2="574" y2="30" stroke="currentColor" stroke-width="2"
+            stroke-dasharray="3 7" stroke-linecap="round" opacity=".35"/>
+      <circle cx="26" cy="30" r="8" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="26" cy="30" r="3" fill="currentColor"/>
+      <path d="M566 30 L556 24 L558 30 L556 36 Z" fill="currentColor"/>
+      <circle cx="574" cy="30" r="8" fill="currentColor" opacity=".18"/>
+      <circle cx="574" cy="30" r="4" fill="currentColor"/>
+      <text x="26" y="60" class="s-lab" text-anchor="start">${esc(airport.iata)}</text>
+      <text x="574" y="60" class="s-lab" text-anchor="end">${esc(dest.name).toUpperCase()}</text>
+      <text x="300" y="22" class="s-mid" text-anchor="middle">${esc(dest.km)} KM &#183; ${esc(dest.minutes)} MIN</text>
+    </svg>
+    <div class="strip-ends">
+      <div><span>Pick-up</span><b>${esc(airport.name)}</b></div>
+      <div class="to"><span>Drop-off</span><b>${esc(dest.name)}</b></div>
+    </div>
+  </div>`;
 }
 
 /**
@@ -486,69 +512,7 @@ function realTime(airport, dest) {
   them &mdash; not the ${drive}.</p>`;
 }
 
-/** As alternativas, com a nossa marcada. */
-function comparison(airport, cheapest, dest) {
-  if (!airport.compare || !airport.compare.length) return '';
 
-  const where = dest ? dest.name : `${airport.city} city centre`;
-  const time = dest ? `${dest.minutes} min` : '';
-
-  return `<h2 id="compare">Getting there without us</h2>
-  <p>Every option, with what it actually costs and where it hurts. We think the transfer
-  wins for most people arriving with luggage — but not for everyone, and the table says why.</p>
-  <div class="cmp-wrap"><table class="cmp">
-    <thead><tr><th>How</th><th>Time</th><th>Cost</th><th>Good</th><th>Not so good</th></tr></thead>
-    <tbody>
-      ${airport.compare.map(([mode, t, cost, good, bad]) =>
-        `<tr><td class="mode">${esc(mode)}</td><td>${esc(t)}</td><td>${esc(cost)}</td>` +
-        `<td>${esc(good)}</td><td>${esc(bad)}</td></tr>`).join('')}
-      <tr class="us">
-        <td class="mode">Airportlink<span class="pick">Our take</span></td>
-        <td>${esc(time || 'Direct')}</td>
-        <td>${money(cheapest)} fixed</td>
-        <td>Driver waiting with your name, one price for the whole car, flight tracked,
-        free cancellation.</td>
-        <td>You have to book it before you fly.</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <p style="font-size:13px;color:var(--muted)">Public transport fares and taxi estimates are
-  for reference and change. Our price is the one you pay.</p>`;
-}
-
-/**
- * Quando NÃO nos escolher.
- *
- * Nenhum concorrente escreve isto, e é a secção que mais confiança
- * gera. Uma página que só diz vantagens lê-se como publicidade;
- * uma que admite quando outra coisa é melhor lê-se como conselho.
- *
- * E não perdemos a venda: quem não devia reservar não ia ficar
- * satisfeito na mesma.
- */
-function whenNotUs(dest, cheapest) {
-  const short = dest.km < 15;
-
-  return `<h2 id="honest">When a transfer is the wrong choice</h2>
-  <p>We would rather you booked something else than booked us and regretted it.</p>
-  <ul>
-    <li><strong>You are travelling alone with hand luggage${short ? '' : ' and time to spare'}.</strong>
-    ${short
-      ? 'Public transport is minutes slower and a fraction of the price. Take it.'
-      : 'The bus or train costs a fraction of ' + money(cheapest) + '. If the extra hour ' +
-        'does not bother you, save the money.'}</li>
-    <li><strong>You are renting a car anyway.</strong> Collect it at the airport rather
-    than paying twice.</li>
-    <li><strong>Your plans might shift by more than a day.</strong> Cancellation is free
-    up to 24 hours before, but inside that window it is not. Somewhere flexible would
-    suit you better.</li>
-    <li><strong>You want the cheapest possible arrival and nothing else matters.</strong>
-    We are not it, and we are not trying to be.</li>
-  </ul>
-  <p>A transfer earns its price when you land tired, with luggage, with children, late at
-  night, or with people who are counting on you to have it sorted. That is the trip we
-  are built for.</p>`;
-}
 
 /** O que só se sabe tendo lá estado. */
 function localInfo(airport) {
@@ -656,8 +620,8 @@ function routePage(country, airport, dest, siblings) {
   ${hero(airport, `${airport.iata} · ${country.country}`,
          `${airport.city} Airport to ${dest.name}`)}
 
-  ${jumpNav([['price', 'Price'], ['journey', 'The journey'], ['timing', 'Timing'],
-             ['compare', 'Compare'], ['honest', 'Is it worth it'],
+  ${jumpNav([['price', 'Price'], ['included', 'What is included'],
+             ['journey', 'The journey'], ['timing', 'Timing'],
              ['when', 'When to book'], ['local', 'Before you land'],
              ['faq', 'Questions'], ['more', 'Other routes']])}
 
@@ -672,7 +636,20 @@ function routePage(country, airport, dest, siblings) {
     <div class="fact"><div class="k">Free wait</div><div class="v">60 min</div></div>
   </div>
 
+  ${routeStrip(airport, dest)}
+
   ${calculator(dest.km, isPT, country.currency, airport.name, dest.name)}
+
+  <h2 id="included">What is included</h2>
+  <ul>
+    <li><strong>A private vehicle</strong> for your group. No sharing, no other stops.</li>
+    <li><strong>A fixed price</strong> with tolls and taxes in. Nothing is added at the end.</li>
+    <li><strong>Flight tracking.</strong> Land late and the pick-up moves, not the price.</li>
+    <li><strong>60 minutes of free waiting</strong> after the flight lands.</li>
+    <li><strong>Free cancellation</strong> until 24 hours before pick-up.</li>
+    <li><strong>One suitcase and one piece of hand luggage per passenger.</strong>
+    More than that, tell us when you book.</li>
+  </ul>
 
   <h2 id="journey">The journey</h2>
   <p>${esc(dest.about)}</p>
@@ -685,24 +662,9 @@ function routePage(country, airport, dest, siblings) {
 
   ${realTime(airport, dest)}
 
-  ${comparison(airport, p1, dest)}
-
-  ${whenNotUs(dest, p1)}
-
   ${whenToBook(dest)}
 
   ${localInfo(airport)}
-
-  <h2 id="included">What is included</h2>
-  <ul>
-    <li><strong>A private vehicle</strong> for your group. No sharing, no other stops.</li>
-    <li><strong>A fixed price</strong> with tolls and taxes in. Nothing is added at the end.</li>
-    <li><strong>Flight tracking.</strong> Land late and the pick-up moves, not the price.</li>
-    <li><strong>60 minutes of free waiting</strong> after the flight lands.</li>
-    <li><strong>Free cancellation</strong> until 24 hours before pick-up.</li>
-    <li><strong>One suitcase and one piece of hand luggage per passenger.</strong>
-    More than that, tell us when you book.</li>
-  </ul>
 
   <h2 id="faq">Questions</h2>
   ${faq.map(([q, a]) => `<h3>${esc(q)}</h3>\n  <p>${esc(a)}</p>`).join('\n  ')}
@@ -792,8 +754,8 @@ function airportPage(country, airport) {
   ${hero(airport, `${airport.iata} \u00b7 ${country.country}`,
          `${airport.name} transfers`)}
 
-  ${jumpNav([['routes', 'Routes and prices'], ['compare', 'Compare'],
-             ['local', 'Before you land'], ['airport', 'The airport']])}
+  ${jumpNav([['routes', 'Routes and prices'], ['local', 'Before you land'],
+             ['airport', 'The airport']])}
 
 
   <p class="lead">A private car from ${esc(airport.name)} to anywhere you are staying,
@@ -815,8 +777,6 @@ function airportPage(country, airport) {
     </div>
     <a class="btn" href="/#book">Get a price</a>
   </div>
-
-  ${comparison(airport, cheapest, null)}
 
   ${localInfo(airport)}
 
