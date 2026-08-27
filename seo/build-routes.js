@@ -26,13 +26,16 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const SEO_DIR = path.join(ROOT, 'seo');
-// Dentro de seo/, e uma subpasta por país.
+// Dentro de seo/, com uma subpasta por país.
 //
-// O país entra também no endereço público, e isso resolve um
-// problema real: com uma pasta por país mas endereços planos, seria
-// preciso acrescentar duas regras de reescrita no Render por cada
-// país aberto. Com o país no endereço, duas regras servem para
-// sempre.
+// IMPORTANTE: o caminho do ficheiro NÃO é o endereço público. As
+// regras no Render reescrevem /transfers/portugal/x para
+// /seo/transfers/portugal/x.html, e a barra de endereço continua
+// limpa — desde que a ação seja Rewrite e não Redirect. Com
+// Redirect, o /seo/ passa a aparecer e o Google indexa-o.
+//
+// O país entra no endereço de propósito: assim duas regras servem
+// para sempre, em vez de duas por cada país aberto.
 const OUT_TRANSFERS = path.join(ROOT, 'seo', 'transfers');
 const OUT_AIRPORTS = path.join(ROOT, 'seo', 'airports');
 const SITE = 'https://www.airportlink.app';
@@ -185,15 +188,19 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
 
 /* Imagem da cidade. Sem ficheiro, fica um gradiente — a página
    nunca mostra um quadrado partido. */
-.hero{position:relative;border-radius:24px;overflow:hidden;margin:0 0 26px;
-  background:linear-gradient(140deg,var(--ink),#2A3348 60%,var(--teal))}
-.hero img{display:block;width:100%;height:clamp(190px,26vw,300px);object-fit:cover}
+.hero{position:relative;border-radius:22px;overflow:hidden;margin:0 0 24px;
+  background:linear-gradient(140deg,var(--ink),#2A3348 60%,var(--teal));
+  height:clamp(150px,20vw,230px)}
+/* O site.css tem img{max-width:100%} e isso encolhia a foto dentro
+   do bloco, deixando o fundo à vista em cima e em baixo. Preencher
+   o contentor por inteiro resolve. */
+.hero img{position:absolute;inset:0;width:100%;height:100%;max-width:none;
+  object-fit:cover;object-position:center 45%}
 .hero .veil{position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(12,16,26,.86),rgba(12,16,26,.25) 60%,transparent)}
-.hero .on{position:absolute;left:0;right:0;bottom:0;padding:24px}
-.hero .on .tag{color:var(--amber)}
-.hero .on h1{color:#fff;margin:0}
-.hero.blank{height:clamp(190px,26vw,300px)}
+  background:linear-gradient(to top,rgba(12,16,26,.88),rgba(12,16,26,.2) 65%,transparent)}
+.hero .on{position:absolute;left:0;right:0;bottom:0;padding:20px 22px}
+.hero .on .tag{color:var(--amber);margin-bottom:6px}
+.hero .on h1{color:#fff;margin:0;font-size:clamp(24px,3.4vw,34px)}
 
 /* Navegação dentro da página, colada ao topo. */
 .jump{position:sticky;top:0;z-index:20;margin:0 -20px 26px;padding:11px 20px;
@@ -307,8 +314,9 @@ function hero(airport, tag, title) {
 
   return airport.image
     ? `<div class="hero"><img src="/assets/img/cities/${esc(airport.image)}.webp" ` +
-      `alt="${esc(airport.city)}" width="820" height="300" loading="eager">${inner}</div>`
-    : `<div class="hero blank">${inner}</div>`;
+      `alt="${esc(airport.city)}" width="1600" height="600" loading="eager" ` +
+      `fetchpriority="high">${inner}</div>`
+    : `<div class="hero">${inner}</div>`;
 }
 
 function jumpNav(items) {
