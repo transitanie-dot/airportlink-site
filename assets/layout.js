@@ -102,21 +102,6 @@
     ]}
   ];
 
-  /**
-   * O ícone antes do nome.
-   *
-   * Sem o quadrado de fundo: as barras assentam diretamente sobre o
-   * que estiver por trás. No cabeçalho claro e no rodapé escuro, o
-   * mesmo desenho funciona nos dois — a barra que era branca passa
-   * a herdar a cor do texto, e é isso que a mantém legível.
-   *
-   * Um só desenho para os dois sítios: o rodapé tinha o texto sem o
-   * ponto laranja e ficavam diferentes.
-   */
-  var MARK = '<svg class="mark" viewBox="0 0 44 56" aria-hidden="true">' +
-    '<path class="m1" d="M11.4 4.1h3.2a1.7 1.7 0 0 1 1.7 2.1L9.9 42.8a2.7 2.7 0 0 1-2.7 2.3H4a1.7 1.7 0 0 1-1.7-2.1L8.7 6.4a2.7 2.7 0 0 1 2.7-2.3Z"/>' +
-    '<path class="m2" d="M26.2 4.1h3.2a1.7 1.7 0 0 1 1.7 2.1l-6.4 36.6a2.7 2.7 0 0 1-2.7 2.3h-3.2a1.7 1.7 0 0 1-1.7-2.1l6.4-36.6a2.7 2.7 0 0 1 2.7-2.3Z"/>' +
-    '<circle class="m3" cx="36.4" cy="41.5" r="3.6"/></svg>';
 
   // O cabeçalho leva só o nome. O ícone é do rodapé.
   var LOGO = 'AIRPORT<b>LINK</b><span class="dot"></span>';
@@ -195,9 +180,7 @@
       // Sem ligação: o rodapé é onde se está no fim da página, e um
       // logótipo clicável ali leva de volta ao topo de onde já se
       // veio. No cabeçalho faz sentido; aqui não.
-      // O ícone ANTES do nome e em grande, só aqui. O cabeçalho
-      // leva o nome sozinho.
-      '<div class="footer-brand"><span class="logo">' + MARK + LOGO + '</span>' +
+      '<div class="footer-brand"><span class="logo">' + LOGO + '</span>' +
       '<p>Private airport transfers with a fixed price agreed before you pay. ' +
       'Door to door, flight tracked, driven by licensed local companies.</p></div>' +
       FOOTER.map(function (col) {
