@@ -1274,9 +1274,23 @@ function applyPaymentUI() {
 
   $('payLaterOff').classList.toggle('hidden', allowed);
 
+  // "Pay on 12 September, €112" diz mais do que um parágrafo sobre
+  // cartões guardados: a pessoa quer saber QUANDO e QUANTO.
+  var whenText = '';
+
+  if (allowed && $('travelDate').value) {
+    var pick = new Date($('travelDate').value + 'T' + ($('travelTime').value || '12:00'));
+    var at = new Date(pick.getTime() - (payOptions.charge_lead_hours || 48) * 36e5);
+
+    if (!isNaN(at.getTime())) {
+      whenText = 'Pay on ' +
+        at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) +
+        ', ' + $('priceValue').textContent;
+    }
+  }
+
   $('payLaterDesc').textContent = allowed
-    ? ('Card saved, nothing charged until ' +
-       (payOptions.charge_lead_hours || 48) + ' hours before pick-up.')
+    ? (whenText || 'Pay 48 hours before pick-up.')
     : why;
 
   // A razão fica NUM sítio só, dentro do cartão desativado. Estava
