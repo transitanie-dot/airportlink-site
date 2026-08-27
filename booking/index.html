@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your transfer | Airportlink</title>
+<meta name="description" content="Choose your vehicle and confirm your airport transfer. Fixed price, free cancellation up to 24 hours before.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://www.airportlink.app/booking">
+<meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('airportlink-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/layout.js" defer></script>
+
+<style>
+.bk{max-width:1080px;margin:0 auto;padding:32px 20px 40px}
+.page-h1{font-family:var(--display);font-weight:800;font-size:clamp(24px,3.4vw,32px);
+  letter-spacing:-.032em;margin:0 0 18px}
+
+/* ---------- o cabeçalho da rota ----------
+   O que foi pedido, à vista e editável. Uma página de resultados que
+   esconde a pesquisa obriga a voltar atrás para mudar uma data. */
+.route{background:var(--surface);border:1px solid var(--rule);border-radius:20px;
+  padding:18px 22px;margin-bottom:18px}
+.route-top{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.leg-dot{width:9px;height:9px;border-radius:999px;flex:0 0 auto}
+.leg-dot.a{background:var(--teal)}
+.leg-dot.b{background:#fd8a2b}
+html[data-theme="dark"] .leg-dot.a{background:var(--amber)}
+.leg-txt{min-width:0}
+.leg-txt .k{display:block;font-family:var(--mono);font-size:8.5px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.leg-txt .v{display:block;font-size:15px;font-weight:600;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.leg-arrow{color:var(--muted);flex:0 0 auto}
+.leg-arrow svg{width:18px;height:18px;display:block}
+.route-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.mchip{background:var(--surface-2);border:1px solid var(--rule);border-radius:999px;
+  padding:6px 13px;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted)}
+.edit{margin-left:auto;background:transparent;border:1px solid var(--rule-strong);
+  border-radius:10px;padding:7px 14px;font-family:inherit;font-size:12.5px;font-weight:600;
+  color:var(--text);cursor:pointer}
+.edit:hover{border-color:var(--teal)}
+
+/* O painel de edição, escondido até fazer falta. */
+.edit-box{display:none;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px;
+  padding-top:16px;border-top:1px solid var(--rule)}
+.edit-box.on{display:grid}
+.ef{display:flex;flex-direction:column;min-width:0;grid-column:span 2}
+.ef.wide{grid-column:span 3}
+.ef label{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.ef input,.ef select{height:44px;padding:0 13px;border-radius:12px;
+  border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
+  font-family:inherit;font-size:14.5px;font-weight:500;outline:none;width:100%}
+.ef input:focus,.ef select:focus{border-color:var(--teal)}
+.ef .go{height:44px;border:0;border-radius:12px;background:var(--ink);color:#fff;
+  cursor:pointer;font-family:var(--mono);font-size:11.5px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;margin-top:19px}
+
+/* ---------- as opções ---------- */
+.cols{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start}
+
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;
+  background:var(--surface);border:1px solid var(--rule);border-radius:18px;
+  padding:18px 20px;cursor:pointer;text-align:left;width:100%;
+  transition:border-color .15s ease,box-shadow .15s ease}
+.opt:hover{border-color:var(--rule-strong)}
+.opt.on{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
+html[data-theme="dark"] .opt.on{border-color:var(--amber);
+  box-shadow:0 0 0 3px rgba(232,163,61,.14)}
+.opt.out{opacity:.42;cursor:not-allowed}
+.opt-art{width:92px;flex:0 0 auto;color:var(--slate)}
+html[data-theme="dark"] .opt-art{color:#8C97A8}
+.opt-art svg{width:100%;height:auto;fill:currentColor}
+.opt-art svg .w{fill:var(--surface)}
+.opt-txt{min-width:0}
+.opt-txt strong{display:block;font-family:var(--display);font-weight:700;font-size:17px;
+  letter-spacing:-.022em;margin-bottom:4px}
+.opt-txt .cap{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12.5px;
+  margin-bottom:6px}
+.opt-txt .cap b{color:var(--text);font-weight:600}
+.opt-txt .note{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.opt-price{text-align:right;flex:0 0 auto}
+.opt-price .v{display:block;font-family:var(--mono);font-size:24px;font-weight:600;
+  letter-spacing:-.03em;line-height:1}
+.opt-price .s{display:block;font-size:10.5px;color:var(--muted);margin-top:5px}
+.opt-price .tag{display:inline-block;margin-top:7px;background:var(--teal);color:#fff;
+  border-radius:999px;padding:3px 9px;font-family:var(--mono);font-size:8.5px;
+  font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+html[data-theme="dark"] .opt-price .tag{background:var(--amber);color:#141A28}
+
+/* ---------- o resumo, colado ---------- */
+.side{position:sticky;top:90px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.side h2{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.022em;
+  margin:0}
+.sum{display:flex;justify-content:space-between;gap:12px;font-size:13.5px;
+  padding:7px 0;border-bottom:1px solid var(--rule)}
+.sum:last-of-type{border-bottom:0}
+.sum span:first-child{color:var(--muted)}
+.sum span:last-child{font-weight:600;text-align:right;min-width:0;overflow:hidden;
+  text-overflow:ellipsis}
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding-top:14px;border-top:1px solid var(--rule-strong)}
+.total span{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted)}
+.total b{font-family:var(--mono);font-size:30px;font-weight:600;letter-spacing:-.035em;
+  color:var(--teal)}
+html[data-theme="dark"] .total b{color:var(--amber)}
+.pay-when{font-size:12.5px;font-weight:600;color:var(--teal);margin:0}
+html[data-theme="dark"] .pay-when{color:var(--amber)}
+.next{display:flex;align-items:center;justify-content:center;height:50px;border:0;
+  border-radius:14px;background:var(--teal);color:#fff;text-decoration:none;cursor:pointer;
+  font-family:var(--body);font-size:15.5px;font-weight:600;
+  box-shadow:0 6px 18px rgba(15,118,110,.26);transition:transform .14s ease}
+.next:hover{transform:translateY(-2px)}
+html[data-theme="dark"] .next{background:var(--amber);color:#141A28;
+  box-shadow:0 6px 18px rgba(232,163,61,.24)}
+.next:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+
+.trust{display:flex;flex-direction:column;gap:9px;margin-top:2px}
+.tr{display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.5;
+  color:var(--muted)}
+.tr svg{width:15px;height:15px;flex:0 0 auto;margin-top:1px;color:var(--teal)}
+html[data-theme="dark"] .tr svg{color:var(--amber)}
+.tr b{color:var(--text);font-weight:600}
+
+.state{text-align:center;padding:50px 20px;color:var(--muted)}
+.state strong{display:block;font-family:var(--display);font-weight:700;font-size:18px;
+  color:var(--text);margin-bottom:8px}
+.state a{color:var(--teal)}
+
+/* Viagem de ida e volta, no mesmo passo. */
+.ret{background:var(--surface);border:1px solid var(--rule);border-radius:18px;
+  padding:16px 20px;margin-top:12px}
+.ret-head{display:flex;align-items:center;gap:13px;cursor:pointer}
+.ret-sw{position:relative;width:44px;height:26px;border-radius:999px;flex:0 0 auto;
+  background:var(--rule-strong);transition:background .22s ease}
+.ret-sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:999px;
+  background:#fff;box-shadow:0 1px 3px rgba(20,26,40,.28);
+  transition:transform .22s cubic-bezier(.34,1.4,.5,1)}
+.ret.on .ret-sw{background:var(--teal)}
+.ret.on .ret-sw i{transform:translateX(18px)}
+html[data-theme="dark"] .ret.on .ret-sw{background:var(--amber)}
+.ret-txt strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.015em;margin-bottom:3px}
+.ret-txt span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5}
+.ret-when{display:none;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;
+  padding-top:14px;border-top:1px solid var(--rule)}
+.ret.on .ret-when{display:grid}
+
+@media (max-width:960px){
+  .cols{grid-template-columns:1fr}
+  .side{position:static}
+  .edit-box{grid-template-columns:repeat(4,1fr)}
+  .ef.wide{grid-column:span 4}
+  .ef{grid-column:span 2}
+}
+@media (max-width:600px){
+  .opt{grid-template-columns:1fr auto;gap:12px}
+  .opt-art{display:none}
+  .edit-box,.ret-when{grid-template-columns:1fr}
+  .ef,.ef.wide{grid-column:span 1}
+}
+</style>
+</head>
+<body>
+
+<main id="main">
+<div class="bk">
+
+  <h1 class="page-h1">Choose your vehicle</h1>
+
+  <!-- ---------- a rota, editável ---------- -->
+  <section class="route">
+    <div class="route-top">
+      <div class="leg">
+        <span class="leg-dot a"></span>
+        <div class="leg-txt"><span class="k">Pick-up</span><span class="v" id="rFrom">&mdash;</span></div>
+      </div>
+      <span class="leg-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+      <div class="leg">
+        <span class="leg-dot b"></span>
+        <div class="leg-txt"><span class="k">Drop-off</span><span class="v" id="rTo">&mdash;</span></div>
+      </div>
+    </div>
+
+    <div class="route-meta">
+      <span class="mchip" id="rWhen">&mdash;</span>
+      <span class="mchip" id="rPax">&mdash;</span>
+      <span class="mchip" id="rKm">&mdash;</span>
+      <span class="mchip" id="rDur">&mdash;</span>
+      <button class="edit" id="editBtn" type="button">Change</button>
+    </div>
+
+    <div class="edit-box" id="editBox">
+      <div class="ef wide"><label for="eFrom">Pick-up</label>
+        <input id="eFrom" type="text" autocomplete="off"></div>
+      <div class="ef wide"><label for="eTo">Drop-off</label>
+        <input id="eTo" type="text" autocomplete="off"></div>
+      <div class="ef"><label for="eDate">Date</label><input id="eDate" type="date"></div>
+      <div class="ef"><label for="eTime">Time</label><input id="eTime" type="time"></div>
+      <div class="ef"><label for="ePax">Passengers</label>
+        <input id="ePax" type="number" min="1" max="16" step="1"></div>
+      <div class="ef"><button class="go" id="applyBtn" type="button">Update</button></div>
+    </div>
+  </section>
+
+  <div class="cols">
+    <div>
+      <!-- ---------- as opções ---------- -->
+      <div class="opts" id="opts">
+        <div class="state"><strong>Working out your options</strong>
+        <span>One moment.</span></div>
+      </div>
+
+      <!-- ---------- ida e volta ---------- -->
+      <div class="ret" id="ret">
+        <div class="ret-head" id="retHead">
+          <span class="ret-sw" aria-hidden="true"><i></i></span>
+          <div class="ret-txt">
+            <strong>Coming back too?</strong>
+            <span id="retSub">Add the return now and it is one booking, one payment.</span>
+          </div>
+        </div>
+        <div class="ret-when">
+          <div class="ef"><label for="retDate">Return date</label>
+            <input id="retDate" type="date"></div>
+          <div class="ef"><label for="retTime">Return time</label>
+            <input id="retTime" type="time" value="10:00"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- o resumo ---------- -->
+    <aside class="side">
+      <h2>Your booking</h2>
+
+      <div>
+        <div class="sum"><span>Vehicle</span><span id="sVeh">&mdash;</span></div>
+        <div class="sum"><span>Passengers</span><span id="sPax">&mdash;</span></div>
+        <div class="sum"><span>Outbound</span><span id="sOut">&mdash;</span></div>
+        <div class="sum" id="sRetRow" style="display:none">
+          <span>Return</span><span id="sRet">&mdash;</span></div>
+      </div>
+
+      <div class="total"><span>Total</span><b id="sTotal">&mdash;</b></div>
+      <p class="pay-when" id="sWhen"></p>
+
+      <button class="next" id="nextBtn" disabled>Continue</button>
+
+      <div class="trust">
+        <div class="tr">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l2 2 4-5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          <span><b>Free cancellation</b> up to 24 hours before pick-up, refunded in full.</span>
+        </div>
+        <div class="tr">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round"><path d="M2 9h20M2 9V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2M2 9v8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9"/></svg>
+          <span><b>Nothing charged today</b> on most routes. We take it 48 hours before.</span>
+        </div>
+        <div class="tr">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.4-2.1 2.1-2.4-.6a.5.5 0 0 0-.5.8L5 16l1.3 2.2a.5.5 0 0 0 .8-.1l.6-2.4 2.1-2.1 4.4 3.9a.5.5 0 0 0 .8-.5Z"/></svg>
+          <span><b>60 minutes of free waiting</b> after the flight lands. We track it.</span>
+        </div>
+        <div class="tr">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V6l-8-4Z"/></svg>
+          <span><b>Licensed local companies.</b> We check the licence and the insurance.</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+</div>
+</main>
+
+<script>
+(function () {
+'use strict';
+
+var MAPS_KEY = 'AIzaSyBWH1TXxWhFmFo7fMB8NXE4swU2idCc_0M';
+
+var $ = function (id) { return document.getElementById(id); };
+var esc = function (v) {
+  return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+};
+
+/**
+ * A mesma fórmula do servidor e da página inicial.
+ *
+ * Se mudares os valores no server.js, muda aqui e no index.html.
+ * O servidor recalcula tudo antes do pagamento — este número é para
+ * a pessoa decidir, não para cobrar.
+ */
+function fare(km, mult, isPT) {
+  var p = isPT ? { base: 40, perKm: 1.60, min: 25, up: 1.0 }
+               : { base: 20, perKm: 3.5, min: 25, up: 1.3 };
+  return Math.max(p.min, (p.base + km * p.perKm) * p.up * mult);
+}
+
+/**
+ * As quatro classes.
+ *
+ * Mostramos TODAS, mesmo as que não servem para o número de
+ * passageiros — esbatidas e com a razão escrita. Esconder as opções
+ * grandes faz o preço parecer mais alto do que a alternativa, e
+ * quem viaja em seis quer perceber porque paga mais.
+ */
+var CLASSES = [
+  { id: 'economy', name: 'Economy', seats: 4, bags: 3, mult: 1,
+    note: 'A clean, comfortable saloon. What most people book.',
+    art: '<svg viewBox="0 0 132 52"><path d="M9 40V31c0-2 1-4 3-4l9-1 10-11c2-2 4-3 7-3h25c3 0 5 1 7 3l9 11 25 3c5 1 8 4 8 8v3c0 2-2 4-4 4H13c-2 0-4-2-4-4Z"/><path class="w" d="M38 27 46 17c1-1 2-2 4-2h11v12H38Z"/><path class="w" d="M67 15h11c2 0 3 1 4 2l9 10H67V15Z"/><circle cx="35" cy="41" r="8"/><circle class="w" cx="35" cy="41" r="3.4"/><circle cx="98" cy="41" r="8"/><circle class="w" cx="98" cy="41" r="3.4"/></svg>' },
+
+  { id: 'business', name: 'Business', seats: 3, bags: 3, mult: 1.55,
+    note: 'An executive saloon — Mercedes E-Class or similar. Water on board.',
+    art: '<svg viewBox="0 0 132 52"><path d="M9 40V31c0-2 1-4 3-4l9-1 10-11c2-2 4-3 7-3h25c3 0 5 1 7 3l9 11 25 3c5 1 8 4 8 8v3c0 2-2 4-4 4H13c-2 0-4-2-4-4Z"/><path class="w" d="M38 27 46 17c1-1 2-2 4-2h11v12H38Z"/><path class="w" d="M67 15h11c2 0 3 1 4 2l9 10H67V15Z"/><circle cx="35" cy="41" r="8"/><circle class="w" cx="35" cy="41" r="3.4"/><circle cx="98" cy="41" r="8"/><circle class="w" cx="98" cy="41" r="3.4"/></svg>' },
+
+  { id: 'van', name: 'Van', seats: 8, bags: 8, mult: 1.7,
+    note: 'A minivan. Also the right choice for four people with a lot of luggage.',
+    art: '<svg viewBox="0 0 132 52"><path d="M8 40V16c0-3 2-5 5-5h58c2 0 4 1 5 2l19 15 22 4c5 1 8 4 8 8v2c0 2-2 4-4 4H12c-2 0-4-2-4-4Z"/><path class="w" d="M18 16h20v12H18V16Z"/><path class="w" d="M45 16h20v12H45V16Z"/><path class="w" d="M72 16h5l14 12H72V16Z"/><circle cx="34" cy="41" r="8.5"/><circle class="w" cx="34" cy="41" r="3.6"/><circle cx="99" cy="41" r="8.5"/><circle class="w" cx="99" cy="41" r="3.6"/></svg>' },
+
+  { id: 'minibus', name: 'Minibus', seats: 13, bags: 13, mult: 2.5,
+    note: 'For a group travelling together. One vehicle, one driver, one price.',
+    art: '<svg viewBox="0 0 132 52"><path d="M6 40V13c0-3 2-5 5-5h108c3 0 5 2 5 5v27c0 2-2 4-4 4H10c-2 0-4-2-4-4Z"/><path class="w" d="M14 14h22v12H14V14Z"/><path class="w" d="M42 14h22v12H42V14Z"/><path class="w" d="M70 14h22v12H70V14Z"/><path class="w" d="M98 14h18v12H98V14Z"/><circle cx="33" cy="41" r="8.5"/><circle class="w" cx="33" cy="41" r="3.6"/><circle cx="100" cy="41" r="8.5"/><circle class="w" cx="100" cy="41" r="3.6"/></svg>' },
+
+  { id: 'coach', name: 'Coach', seats: 16, bags: 16, mult: 3.2,
+    note: 'The largest we run as one vehicle. Above sixteen, we send two.',
+    art: '<svg viewBox="0 0 132 52"><path d="M4 40V10c0-3 2-5 5-5h114c3 0 5 2 5 5v30c0 2-2 4-4 4H8c-2 0-4-2-4-4Z"/><path class="w" d="M11 11h18v11H11V11Z"/><path class="w" d="M34 11h18v11H34V11Z"/><path class="w" d="M57 11h18v11H57V11Z"/><path class="w" d="M80 11h18v11H80V11Z"/><path class="w" d="M103 11h18v11h-18V11Z"/><circle cx="31" cy="41" r="8.5"/><circle class="w" cx="31" cy="41" r="3.6"/><circle cx="101" cy="41" r="8.5"/><circle class="w" cx="101" cy="41" r="3.6"/></svg>' }
+];
+
+var trip = { from: '', to: '', date: '', time: '', pax: 2, km: 0, dur: '', isPT: true };
+var chosen = null;
+var hasReturn = false;
+
+// ---------- ler o que veio no endereço ----------
+(function read() {
+  var q = new URLSearchParams(window.location.search);
+  trip.from = q.get('from') || '';
+  trip.to = q.get('to') || '';
+  trip.date = q.get('date') || '';
+  trip.time = q.get('time') || '12:00';
+  trip.pax = Math.min(16, Math.max(1, Number(q.get('pax')) || 2));
+
+  if (!trip.date) {
+    var d = new Date(); d.setDate(d.getDate() + 1);
+    trip.date = d.toISOString().slice(0, 10);
+  }
+})();
+
+function whenText(date, time) {
+  if (!date) return '\u2014';
+  var d = new Date(date + 'T' + (time || '12:00'));
+  if (isNaN(d.getTime())) return date;
+  return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) +
+    (time ? ' \u00b7 ' + time : '');
+}
+
+function paintRoute() {
+  $('rFrom').textContent = trip.from || 'Not set';
+  $('rTo').textContent = trip.to || 'Not set';
+  $('rWhen').textContent = whenText(trip.date, trip.time);
+  $('rPax').textContent = trip.pax + (trip.pax === 1 ? ' passenger' : ' passengers');
+  $('rKm').textContent = trip.km ? Math.round(trip.km) + ' km' : '\u2014';
+  $('rDur').textContent = trip.dur || '\u2014';
+
+  $('eFrom').value = trip.from;
+  $('eTo').value = trip.to;
+  $('eDate').value = trip.date;
+  $('eTime').value = trip.time;
+  $('ePax').value = trip.pax;
+}
+
+// ---------- o Google ----------
+var mapsReady = false, mapsLoading = false, queue = null;
+
+function maps(then) {
+  if (mapsReady) return then && then();
+  if (then) queue = then;
+  if (mapsLoading) return;
+
+  mapsLoading = true;
+  window.alBookingReady = function () {
+    mapsReady = true;
+    [$('eFrom'), $('eTo')].forEach(function (el) {
+      var ac = new google.maps.places.Autocomplete(el,
+        { fields: ['formatted_address', 'name'] });
+      ac.addListener('place_changed', function () {
+        var p = ac.getPlace();
+        if (p) el.value = p.formatted_address || p.name || el.value;
+      });
+    });
+    if (queue) { var f = queue; queue = null; f(); }
+  };
+
+  var sc = document.createElement('script');
+  sc.src = 'https://maps.googleapis.com/maps/api/js?key=' + MAPS_KEY +
+    '&loading=async&libraries=places&callback=alBookingReady&language=en&region=PT';
+  sc.async = true;
+  document.head.appendChild(sc);
+}
+
+// ---------- medir a rota ----------
+function measure() {
+  if (!trip.from || !trip.to) {
+    $('opts').innerHTML = '<div class="state"><strong>We need both ends of the trip</strong>' +
+      '<span>Press Change above and tell us where you are going, or start from the ' +
+      '<a href="/#book">home page</a>.</span></div>';
+    return;
+  }
+
+  $('opts').innerHTML = '<div class="state"><strong>Working out your options</strong>' +
+    '<span>Measuring the route.</span></div>';
+
+  maps(function () {
+    new google.maps.DirectionsService().route({
+      origin: trip.from, destination: trip.to,
+      travelMode: google.maps.TravelMode.DRIVING
+    }, function (res, status) {
+      if (status !== 'OK' || !res.routes.length) {
+        $('opts').innerHTML = '<div class="state"><strong>We could not find that route</strong>' +
+          '<span>Check the spelling of both addresses, or try the town name instead of ' +
+          'the hotel.</span></div>';
+        return;
+      }
+
+      var leg = res.routes[0].legs[0];
+      trip.km = leg.distance.value / 1000;
+      trip.dur = leg.duration.text;
+
+      // Portugal tem tabela própria. O país vem do país de destino
+      // da rota, não do que a pessoa escreveu.
+      var comp = res.routes[0].legs[0].end_address || '';
+      trip.isPT = /portugal/i.test(comp) || /portugal/i.test(trip.from);
+
+      paintRoute();
+      paintOptions();
+    });
+  });
+}
+
+// ---------- as opções ----------
+function paintOptions() {
+  var html = CLASSES.map(function (c, i) {
+    var fits = trip.pax <= c.seats;
+    var price = Math.round(fare(trip.km, c.mult, trip.isPT));
+
+    // Qualquer veículo com lugares suficientes fica escolhível,
+    // mesmo os grandes de mais para o grupo. Quatro pessoas com
+    // seis malas querem uma carrinha, e recusar-lha porque "cabem
+    // num carro" é decidir por elas.
+    var why = fits ? c.note
+      : 'Only ' + c.seats + ' seats. You are ' + trip.pax + '.';
+
+    // Uma dica quando a classe maior faz sentido por bagagem.
+    var extra = '';
+    if (fits && c.id === 'van' && trip.pax <= 4) {
+      extra = ' Worth it if you have more than one case each.';
+    }
+    if (fits && c.id === 'business' && trip.pax <= 3) {
+      extra = ' The same car class an airline would send.';
+    }
+
+    return '<button class="opt' + (fits ? '' : ' out') + '" data-i="' + i + '"' +
+      (fits ? '' : ' disabled') + ' type="button">' +
+      '<span class="opt-art">' + c.art + '</span>' +
+      '<span class="opt-txt"><strong>' + esc(c.name) + '</strong>' +
+      '<span class="cap"><span><b>' + c.seats + '</b> seats</span>' +
+      '<span><b>' + c.bags + '</b> suitcases</span></span>' +
+      '<span class="note">' + esc(why + extra) + '</span></span>' +
+      '<span class="opt-price"><span class="v">\u20ac' + price + '</span>' +
+      '<span class="s">whole vehicle</span>' +
+      (fits && i === firstFit() ? '<span class="tag">Best fit</span>' : '') +
+      '</span></button>';
+  }).join('');
+
+  $('opts').innerHTML = html;
+
+  document.querySelectorAll('.opt').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (b.disabled) return;
+      choose(Number(b.getAttribute('data-i')));
+    });
+  });
+
+  choose(firstFit());
+}
+
+/** A mais barata que serve. É a que fica escolhida de início. */
+function firstFit() {
+  var best = -1, bestPrice = Infinity;
+
+  CLASSES.forEach(function (c, i) {
+    if (trip.pax > c.seats) return;
+    var p = fare(trip.km, c.mult, trip.isPT);
+    if (p < bestPrice) { bestPrice = p; best = i; }
+  });
+
+  return best === -1 ? CLASSES.length - 1 : best;
+}
+
+function paintSummary() {
+  if (chosen === null || !trip.km) {
+    $('nextBtn').disabled = true;
+    return;
+  }
+
+  var c = CLASSES[chosen];
+  var one = Math.round(fare(trip.km, c.mult, trip.isPT));
+  var total = hasReturn ? one * 2 : one;
+
+  $('sVeh').textContent = c.name;
+  $('sPax').textContent = trip.pax + (trip.pax === 1 ? ' passenger' : ' passengers');
+  $('sOut').textContent = whenText(trip.date, trip.time);
+
+  $('sRetRow').style.display = hasReturn ? 'flex' : 'none';
+  $('sRet').textContent = whenText($('retDate').value, $('retTime').value);
+
+  $('sTotal').textContent = '\u20ac' + total;
+
+  // Quando o cartão é debitado. Menos de 48 horas, é logo.
+  var pick = new Date(trip.date + 'T' + (trip.time || '12:00'));
+  var at = new Date(pick.getTime() - 48 * 36e5);
+
+  $('sWhen').textContent = (!isNaN(at.getTime()) && at > new Date())
+    ? 'Book now, pay on ' + at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })
+    : 'Charged at checkout';
+
+  $('nextBtn').disabled = false;
+}
+
+// ---------- editar ----------
+$('editBtn').addEventListener('click', function () {
+  var box = $('editBox');
+  var open = box.classList.toggle('on');
+  $('editBtn').textContent = open ? 'Close' : 'Change';
+  if (open) maps();
+});
+
+$('applyBtn').addEventListener('click', function () {
+  trip.from = $('eFrom').value.trim();
+  trip.to = $('eTo').value.trim();
+  trip.date = $('eDate').value;
+  trip.time = $('eTime').value;
+  trip.pax = Math.min(16, Math.max(1, Number($('ePax').value) || 1));
+
+  $('editBox').classList.remove('on');
+  $('editBtn').textContent = 'Change';
+
+  paintRoute();
+  measure();
+});
+
+// ---------- ida e volta ----------
+$('retHead').addEventListener('click', function () {
+  hasReturn = $('ret').classList.toggle('on');
+
+  if (hasReturn && !$('retDate').value) {
+    // Uma semana depois: é o intervalo mais comum, e é mais fácil
+    // corrigir uma data errada do que escolher uma em branco.
+    var d = new Date(trip.date || Date.now());
+    d.setDate(d.getDate() + 7);
+    $('retDate').value = d.toISOString().slice(0, 10);
+    $('retDate').min = trip.date;
+  }
+
+  $('retSub').textContent = hasReturn
+    ? 'Same vehicle, same price. Each leg can be cancelled on its own.'
+    : 'Add the return now and it is one booking, one payment.';
+
+  paintSummary();
+});
+
+['retDate', 'retTime'].forEach(function (id) {
+  $(id).addEventListener('change', paintSummary);
+});
+
+// ---------- avançar ----------
+$('nextBtn').addEventListener('click', function () {
+  var c = CLASSES[chosen];
+
+  // Os detalhes do passageiro são pedidos na página inicial, que já
+  // os tem, valida o telefone e fala com o Stripe. Duplicar esse
+  // formulário aqui seria manter dois caminhos para a mesma coisa.
+  var q = new URLSearchParams({
+    from: trip.from, to: trip.to, date: trip.date, time: trip.time,
+    pax: String(trip.pax), vehicle: c.id
+  });
+
+  if (hasReturn) {
+    q.set('return_date', $('retDate').value);
+    q.set('return_time', $('retTime').value);
+  }
+
+  window.location.href = '/?' + q.toString() + '#book';
+});
+
+// ---------- arranque ----------
+paintRoute();
+measure();
+
+})();
+</script>
+</body>
+</html>
