@@ -1279,11 +1279,17 @@ function applyPaymentUI() {
        (payOptions.charge_lead_hours || 48) + ' hours before pick-up.')
     : why;
 
+  // A razão fica NUM sítio só, dentro do cartão desativado. Estava
+  // também na faixa por baixo, e o resultado era o mesmo texto duas
+  // vezes seguidas no ecrã — que se lê como avaria.
+  //
+  // A faixa passa a dizer só o que ACRESCENTA: que a política de
+  // cancelamento não muda por causa disto.
   if (allowed) {
     $('payWhy').classList.add('hidden');
   } else {
-    $('payWhyText').textContent = why +
-      ' You can still cancel free of charge until 24 hours before pick-up.';
+    $('payWhyText').textContent =
+      'You can still cancel free of charge until 24 hours before pick-up.';
     $('payWhy').classList.remove('hidden');
   }
 
@@ -2376,6 +2382,12 @@ $('agentsCtaBtn').addEventListener('click', function () { navigateTo('/travelage
 
       var pax = parseInt(q.get('pax'), 10);
       if (Number.isFinite(pax) && pax >= 1 && pax <= 16) $('passengers').value = pax;
+
+      // Data e hora, vindas da barra das páginas de rota.
+      var date = q.get('date');
+      var time = q.get('time');
+      if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) $('travelDate').value = date;
+      if (time && /^\d{2}:\d{2}$/.test(time)) $('travelTime').value = time;
 
       // Só calcula sozinho quando tem as duas pontas. Com uma só, o
       // resultado seria um erro logo à chegada.
