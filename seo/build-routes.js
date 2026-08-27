@@ -302,7 +302,7 @@ html[data-theme="dark"] .ca-later{color:var(--amber)}
 html[data-theme="dark"] .rt a.ca-book{background:var(--amber);color:#141A28;
   box-shadow:0 6px 18px rgba(232,163,61,.26)}
 html[data-theme="dark"] .rt a.ca-book:hover{box-shadow:0 10px 24px rgba(232,163,61,.32)}
-.rt a.ca-book.off{display:none}
+
 /* As garantias, em linha por baixo do preço. */
 .ca-trust{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
 .tr{display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);
@@ -536,7 +536,7 @@ function calculator(airport, current, isPT, mapsKey) {
         <!-- A promessa fica por cima do botão, com a data do
              pagamento. O botão diz só o que faz. -->
         <span class="ca-later" id="cl">Book now, pay later</span>
-        <a class="ca-book off" id="cb" href="/#book">Continue &rarr;</a>
+        <a class="ca-book" id="cb" href="/booking">See prices &rarr;</a>
       </div>
     </div>
 
@@ -749,21 +749,25 @@ function calculator(airport, current, isPT, mapsKey) {
       cl.textContent = later;
       cl.classList.toggle('off', !later);
 
+      // O botão está SEMPRE lá. Um botão que só aparece depois de
+      // um cálculo deixa a secção sem saída para quem não esperou —
+      // e a pessoa que quer reservar sem ver o preço fica presa.
+      cb.href = '/booking?from=' + encodeURIComponent(cf.value.trim()) +
+        '&to=' + encodeURIComponent(ct.value.trim()) +
+        '&date=' + encodeURIComponent(cdate.value) +
+        '&time=' + encodeURIComponent(ctime.value) +
+        '&pax=' + pax;
+
+      cs.textContent = 'Whole car \u00b7 tolls and taxes in';
+
       if (!price) {
         cv.textContent = '\u2014';
-        cs.textContent = 'Whole car \u00b7 tolls and taxes in';
-        cb.classList.add('off');
+        cb.textContent = 'See prices \u2192';
         return;
       }
 
       cv.textContent = '\u20ac' + Math.round(price);
-      cs.textContent = 'Whole car \u00b7 tolls and taxes in';
-      cb.classList.remove('off');
-      cb.href = '/?from=' + encodeURIComponent(cf.value.trim()) +
-        '&to=' + encodeURIComponent(ct.value.trim()) +
-        '&date=' + encodeURIComponent(cdate.value) +
-        '&time=' + encodeURIComponent(ctime.value) +
-        '&pax=' + pax + '#book';
+      cb.textContent = 'Continue \u2192';
     }
 
     function run() {
@@ -790,7 +794,6 @@ function calculator(airport, current, isPT, mapsKey) {
         cn.textContent = stop === 'burst'
           ? 'That is a lot of routes in one minute. Give it a moment.'
           : 'You have priced plenty of routes. Reload the page to start again.';
-        cb.classList.add('off');
         return;
       }
 
