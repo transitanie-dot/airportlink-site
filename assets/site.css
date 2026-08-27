@@ -81,9 +81,17 @@ img{max-width:100%;display:block}
   max-width:1180px;margin:0 auto;padding:0 20px}
 .logo{display:inline-flex;align-items:center;gap:1px;font-family:var(--display);font-weight:800;
   font-size:19px;letter-spacing:-.03em;text-decoration:none;color:var(--text);white-space:nowrap}
-/* O ícone antes do nome. Alinhado ao centro e não à linha de base:
-   com baseline, um quadrado ao lado de letras fica sempre torto. */
-.logo .mark{width:24px;height:24px;flex:0 0 auto;margin-right:9px;border-radius:6px}
+/* O ícone antes do nome. Sem fundo: as três formas assentam sobre o
+   que estiver por trás.
+
+   A primeira barra herda a cor do texto — escura no tema claro,
+   clara no escuro e no rodapé. Sem isso, uma barra branca sobre
+   fundo branco desaparecia. */
+.logo .mark{width:19px;height:24px;flex:0 0 auto;margin-right:9px}
+.logo .mark .m1{fill:currentColor}
+.logo .mark .m2{fill:var(--teal)}
+.logo .mark .m3{fill:#fd8a2b}
+html[data-theme="dark"] .logo .mark .m2{fill:var(--amber)}
 .logo b{color:var(--teal);font-weight:800}
 html[data-theme="dark"] .logo b{color:var(--amber)}
 .logo .dot{width:6px;height:6px;border-radius:999px;background:var(--amber);
@@ -144,12 +152,14 @@ html[data-theme="dark"] .hbtn{background:#E9EDF3;color:#141A28}
 /* O rodapé é sempre escuro, por isso o LINK fica âmbar como no tema
    escuro do cabeçalho — não é uma inconsistência, é a mesma regra
    aplicada ao fundo que ali existe. */
-.footer-brand .logo{color:#fff;font-size:21px;margin-bottom:14px}
+/* span e não <a>: sem cursor de mão nem sublinhado ao passar. */
+.footer-brand .logo{color:#fff;font-size:21px;margin-bottom:14px;cursor:default}
 .footer-brand .logo b{color:var(--amber)}
-/* O ícone já traz o fundo escuro dele. Sobre o rodapé escuro isso
-   lê-se como um quadrado a mais, e uma moldura fina resolve. */
-.footer-brand .logo .mark{width:26px;height:26px;
-  box-shadow:0 0 0 1px rgba(255,255,255,.1)}
+/* No rodapé o texto é branco, por isso a primeira barra também.
+   O teal daria pouco contraste sobre o escuro: fica âmbar, como o
+   LINK ao lado. */
+.footer-brand .logo .mark{width:21px;height:27px}
+.footer-brand .logo .mark .m2{fill:var(--amber)}
 .footer-brand p{margin:0;color:#8C97A8;font-size:14px;line-height:1.7;max-width:38ch}
 .footer-bottom{margin-top:40px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);
   display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
