@@ -20,8 +20,11 @@
 
 # Páginas de rota e de aeroporto, geradas por seo/build-routes.js.
 #
-# O ficheiro vive em seo/transfers/portugal/faro-to-albufeira.html e
-# o endereço público é /transfers/portugal/faro-to-albufeira.
+# O ficheiro vive em seo/transfers/portugal/faro-to-albufeira.html
+# e o endereço público é /transfers/portugal/faro-to-albufeira.
+#
+# A ação tem de ser REWRITE. Com Redirect, o /seo/ passa a aparecer
+# na barra de endereço e o Google indexa-o.
 #
 # O país está no endereço de propósito: assim o :splat apanha país e
 # rota de uma vez, e estas duas regras servem para sempre. Sem o
