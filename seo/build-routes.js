@@ -205,76 +205,65 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
 .hero .on .tag{color:var(--amber);margin-bottom:6px}
 .hero .on h1{color:#fff;margin:0;font-size:clamp(24px,3.4vw,34px)}
 
-/* Navegação dentro da página, colada ao topo. */
-.jump{position:sticky;top:0;z-index:20;margin:0 -20px 26px;padding:11px 20px;
-  background:color-mix(in srgb,var(--surface) 92%,transparent);
-  border-bottom:1px solid var(--rule);overflow-x:auto;white-space:nowrap;
-  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.jump a{display:inline-block;padding:7px 14px;margin-right:5px;border-radius:999px;
-  font-size:12.5px;font-weight:600;color:var(--muted);text-decoration:none}
-.jump a:hover{color:var(--text);background:var(--surface-2)}
-.jump a.now{background:var(--ink);color:#fff}
-html[data-theme="dark"] .jump a.now{background:var(--amber);color:#141A28}
+/* ---------- o calculador ----------
+   Duas partes: o que se escolhe em cima, o resultado em baixo. A
+   separação é de propósito — a pessoa vê logo onde mexer e onde
+   aparece a resposta. */
+.quote{background:var(--surface);border:1px solid var(--rule);border-radius:24px;
+  padding:26px;margin:0 0 30px}
+.q-head h2{margin:0 0 7px;padding:0;border:0;font-size:22px}
+.q-head p{margin:0 0 22px;color:var(--muted);font-size:14px;line-height:1.6;max-width:52ch}
 
-/* A rota desenhada. Um SVG, não um mapa: três mil páginas com um
-   mapa embutido custam dinheiro a cada visita e demoram a abrir. */
-.strip{margin:0 0 22px}
-.strip svg{display:block;width:100%;height:auto;color:var(--teal)}
-html[data-theme="dark"] .strip svg{color:var(--amber)}
-.strip .s-lab{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;
-  fill:var(--muted)}
-.strip .s-mid{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.14em;
-  fill:var(--muted)}
-.strip-ends{display:flex;justify-content:space-between;gap:20px;margin-top:6px}
-.strip-ends span{display:block;font-family:var(--mono);font-size:9px;font-weight:600;
-  letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
-.strip-ends b{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:-.015em}
-.strip-ends .to{text-align:right}
+.q-form{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.q-field{display:flex;flex-direction:column;min-width:0}
+.q-field label{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:8px}
 
-/* A barra de reserva. Uma linha no computador, empilhada no
-   telemóvel. Antes eram quatro botões e uma caixa grande — meio
-   ecrã só para dizer um número. */
-.bar{background:var(--surface);border:1px solid var(--rule);border-radius:20px;
-  padding:14px;margin:0 0 26px}
-.bar-grid{display:grid;grid-template-columns:1.1fr 1.3fr .9fr .8fr auto;gap:10px;
-  align-items:stretch}
-.cell{display:flex;flex-direction:column;justify-content:center;min-width:0;
-  background:var(--surface-2);border-radius:14px;padding:11px 14px}
-.cell label{display:block;font-family:var(--mono);font-size:8.5px;font-weight:600;
-  letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
-.cell .fixed{font-size:14.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;
-  white-space:nowrap}
-.cell input,.cell select{width:100%;border:0;background:transparent;padding:0;outline:none;
-  font-family:inherit;font-size:14.5px;font-weight:600;color:var(--text);
-  -webkit-appearance:none;appearance:none;cursor:pointer}
-.cell input{cursor:text;text-overflow:ellipsis}
-.cell select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
-  linear-gradient(135deg,var(--muted) 50%,transparent 50%);
-  background-position:calc(100% - 9px) 8px,calc(100% - 5px) 8px;
-  background-size:4px 4px,4px 4px;background-repeat:no-repeat;padding-right:18px}
-.cell.narrow{min-width:0}
-.cell.out{background:var(--ink);color:#fff}
-.cell.out label{color:var(--amber)}
-.amount{display:flex;align-items:baseline;gap:7px;min-width:0}
-.amount span{font-family:var(--mono);font-size:23px;font-weight:600;letter-spacing:-.03em;
-  line-height:1}
-.amount em{font-style:normal;font-size:11px;color:#9AA5B6;white-space:nowrap}
-.cell.go{display:flex;align-items:center;justify-content:center;background:var(--teal);
-  color:#fff;text-decoration:none;font-family:var(--mono);font-size:12px;font-weight:600;
-  letter-spacing:.09em;text-transform:uppercase;padding:11px 22px;white-space:nowrap;
-  transition:transform .14s ease}
-.cell.go:hover{transform:translateY(-1px)}
-html[data-theme="dark"] .cell.go{background:var(--amber);color:#141A28}
-.bar-note{margin:12px 4px 0;color:var(--muted);font-size:12.5px;line-height:1.55}
+/* A recolha não se escolhe: a página é sobre este aeroporto. */
+.q-locked{display:flex;align-items:center;gap:9px;height:54px;padding:0 15px;
+  border-radius:15px;background:var(--surface-2);border:1px solid transparent;
+  font-size:14.5px;font-weight:600;min-width:0}
+.q-locked svg{width:17px;height:17px;flex:0 0 auto;color:var(--teal)}
+html[data-theme="dark"] .q-locked svg{color:var(--amber)}
+.q-locked span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-@media (max-width:900px){
-  .bar-grid{grid-template-columns:1fr 1fr}
-  .cell.out,.cell.go{grid-column:span 2}
-  .cell.go{padding:15px}
-}
-@media (max-width:480px){
-  .bar-grid{grid-template-columns:1fr}
-  .cell.out,.cell.go{grid-column:span 1}
+.q-field select,.q-field input{height:54px;padding:0 15px;border-radius:15px;
+  border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
+  font-family:inherit;font-size:14.5px;font-weight:600;outline:none;width:100%;
+  transition:border-color .15s ease,box-shadow .15s ease}
+.q-field select{-webkit-appearance:none;appearance:none;cursor:pointer;padding-right:38px;
+  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
+    linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 19px) 25px,calc(100% - 14px) 25px;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.q-field select:focus,.q-field input:focus{border-color:var(--teal);
+  box-shadow:0 0 0 3px rgba(15,118,110,.14)}
+html[data-theme="dark"] .q-field select:focus,html[data-theme="dark"] .q-field input:focus{
+  border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,163,61,.16)}
+.q-field input{margin-top:9px}
+.q-field input.hidden{display:none}
+
+/* O resultado. Escuro, para se distinguir do que é para preencher. */
+.q-out{display:flex;align-items:center;justify-content:space-between;gap:22px;
+  flex-wrap:wrap;background:var(--ink);border-radius:18px;padding:20px 24px}
+.q-price{min-width:0}
+.q-price .k{display:block;font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--amber);margin-bottom:6px}
+.q-price .v{display:block;font-family:var(--mono);font-size:34px;font-weight:600;
+  letter-spacing:-.035em;line-height:1;color:#fff}
+.q-price .s{display:block;font-size:12.5px;color:#8C97A8;margin-top:7px}
+.q-go{flex:0 0 auto;display:inline-flex;align-items:center;height:52px;padding:0 28px;
+  border-radius:15px;background:var(--amber);color:#141A28;text-decoration:none;
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;transition:transform .14s ease}
+.q-go:hover{transform:translateY(-2px)}
+.q-note{margin:14px 4px 0;color:var(--muted);font-size:12.5px;line-height:1.6}
+
+@media (max-width:820px){
+  .quote{padding:20px}
+  .q-form{grid-template-columns:1fr}
+  .q-out{padding:18px 20px}
+  .q-go{width:100%;justify-content:center}
 }
 
 .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);
@@ -316,151 +305,163 @@ function hero(airport, tag, title) {
     : `<div class="hero">${inner}</div>`;
 }
 
-function jumpNav(items) {
-  return '<nav class="jump" aria-label="On this page">' +
-    items.map(([id, label], i) =>
-      `<a href="#${id}"${i === 0 ? ' class="now"' : ''}>${esc(label)}</a>`).join('') +
-    '</nav>';
-}
 
-/**
- * A rota, desenhada.
- *
- * Um SVG feito aqui, não um mapa do Google.
- *
- * Um mapa embutido em três mil páginas custa dinheiro por cada
- * visita, demora a carregar, e traz um script pesado para uma
- * página que se orgulha de ser leve. Isto aparece instantaneamente,
- * não custa nada, e mostra o que interessa: de onde para onde,
- * quanto tempo e quantos quilómetros.
- */
-function routeStrip(airport, dest) {
-  return `<div class="strip">
-    <svg viewBox="0 0 600 74" xmlns="http://www.w3.org/2000/svg" role="img"
-         aria-label="${esc(airport.name)} to ${esc(dest.name)}, ${esc(dest.km)} kilometres">
-      <line x1="26" y1="30" x2="574" y2="30" stroke="currentColor" stroke-width="2"
-            stroke-dasharray="3 7" stroke-linecap="round" opacity=".35"/>
-      <circle cx="26" cy="30" r="8" fill="none" stroke="currentColor" stroke-width="2.5"/>
-      <circle cx="26" cy="30" r="3" fill="currentColor"/>
-      <path d="M566 30 L556 24 L558 30 L556 36 Z" fill="currentColor"/>
-      <circle cx="574" cy="30" r="8" fill="currentColor" opacity=".18"/>
-      <circle cx="574" cy="30" r="4" fill="currentColor"/>
-      <text x="26" y="60" class="s-lab" text-anchor="start">${esc(airport.iata)}</text>
-      <text x="574" y="60" class="s-lab" text-anchor="end">${esc(dest.name).toUpperCase()}</text>
-      <text x="300" y="22" class="s-mid" text-anchor="middle">${esc(dest.km)} KM &#183; ${esc(dest.minutes)} MIN</text>
-    </svg>
-    <div class="strip-ends">
-      <div><span>Pick-up</span><b>${esc(airport.name)}</b></div>
-      <div class="to"><span>Drop-off</span><b>${esc(dest.name)}</b></div>
-    </div>
-  </div>`;
-}
 
 /**
  * O calculador.
  *
- * Uma barra, não uma lista de blocos. Antes eram quatro botões
- * empilhados, uma caixa grande com o preço e um campo à parte — meio
- * ecrã só para dizer um número.
+ * Interativo a sério: o destino é uma lista com TODAS as rotas
+ * daquele aeroporto, e trocar de destino muda o preço de verdade —
+ * os quilómetros de cada uma estão nos dados.
  *
- * Os preços são calculados AQUI, ao gerar a página, e ficam no HTML.
- * A resposta é instantânea e não depende da API estar acordada: o
- * Render adormece os serviços gratuitos, e um preço que demora dez
- * segundos a aparecer perde a venda.
+ * Os preços são calculados AQUI, ao gerar a página. A resposta é
+ * instantânea e não depende da API estar acordada: o Render adormece
+ * os serviços gratuitos, e um preço que demora dez segundos a
+ * aparecer perde a venda.
  */
-function calculator(km, isPT, currency, from, to) {
-  const tiers = [
-    [4, '1–4 passengers', 'Sedan'],
-    [8, '5–8 passengers', 'Van'],
-    [13, '9–13 passengers', 'Minibus'],
-    [16, '14–16 passengers', 'Coach']
-  ].map(([pax, label, kind]) => ({
-    pax, label, kind, price: Math.round(priceEUR(km, pax, isPT))
-  }));
+function calculator(airport, current, isPT) {
+  const TIERS = [
+    [4, '1 to 4 passengers', 'Sedan'],
+    [8, '5 to 8 passengers', 'Van'],
+    [13, '9 to 13 passengers', 'Minibus'],
+    [16, '14 to 16 passengers', 'Coach']
+  ];
 
-  return `<section class="bar" id="price">
-    <div class="bar-grid">
-      <div class="cell">
-        <label>Pick-up</label>
-        <div class="fixed">${esc(from)}</div>
-      </div>
+  // Uma matriz pequena: destinos vezes quatro escalões.
+  const table = {};
+  airport.destinations.forEach((d) => {
+    table[d.slug] = {
+      name: d.name,
+      min: d.minutes,
+      km: d.km,
+      p: TIERS.map(([pax]) => Math.round(priceEUR(d.km, pax, isPT)))
+    };
+  });
 
-      <div class="cell">
-        <label for="hotel">Drop-off</label>
-        <input id="hotel" type="text" autocomplete="off" value="${esc(to)}"
-               placeholder="Hotel or address">
-      </div>
+  const startSlug = current ? current.slug : airport.destinations[0].slug;
+  const start = table[startSlug];
 
-      <div class="cell narrow">
-        <label for="pax">Passengers</label>
-        <select id="pax">
-          ${tiers.map((t, i) => `<option value="${t.pax}" data-price="${t.price}"${
-            i === 0 ? ' selected' : ''}>${esc(t.label)}</option>`).join('')}
-        </select>
-      </div>
-
-      <div class="cell out">
-        <label>Price</label>
-        <div class="amount"><span id="q">&euro;${tiers[0].price}</span>
-        <em id="kind">${esc(tiers[0].kind)}</em></div>
-      </div>
-
-      <a class="cell go" id="go"
-         href="/?from=${encodeURIComponent(from)}&amp;to=${encodeURIComponent(to)}&amp;pax=1#book">
-        Book &rarr;</a>
+  return `<section class="quote" id="price">
+    <div class="q-head">
+      <h2>Your price</h2>
+      <p>Pick where you are going and how many of you there are. The price is for the whole
+      car, fixed before you travel.</p>
     </div>
 
-    <p class="bar-note" id="note">Fixed for the whole car. Tolls, taxes and 60 minutes of
-    airport waiting included. Free cancellation up to 24 hours before.</p>
+    <div class="q-form">
+      <div class="q-field">
+        <label>Picking you up at</label>
+        <div class="q-locked">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.4-2.1 2.1-2.4-.6a.5.5 0 0 0-.5.8L5 16l1.3 2.2a.5.5 0 0 0 .8-.1l.6-2.4 2.1-2.1 4.4 3.9a.5.5 0 0 0 .8-.5Z"/>
+          </svg>
+          <span>${esc(airport.name)}</span>
+        </div>
+      </div>
+
+      <div class="q-field">
+        <label for="dest">Where are you going?</label>
+        <select id="dest">
+          ${airport.destinations.map((d) =>
+            `<option value="${esc(d.slug)}"${d.slug === startSlug ? ' selected' : ''}>${
+              esc(d.name)}</option>`).join('')}
+          <option value="_other">Somewhere else&hellip;</option>
+        </select>
+        <input id="other" type="text" class="hidden" autocomplete="off"
+               placeholder="Hotel name or address">
+      </div>
+
+      <div class="q-field">
+        <label for="pax">How many of you?</label>
+        <select id="pax">
+          ${TIERS.map(([pax, label], i) =>
+            `<option value="${pax}" data-i="${i}"${i === 0 ? ' selected' : ''}>${
+              esc(label)}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+
+    <div class="q-out">
+      <div class="q-price">
+        <span class="k">Fixed price</span>
+        <span class="v" id="qv">&euro;${start.p[0]}</span>
+        <span class="s" id="qs">Sedan &middot; ${start.km} km &middot; ${start.min} min</span>
+      </div>
+      <a class="q-go" id="go" href="/?from=${encodeURIComponent(airport.name)}&amp;to=${
+        encodeURIComponent(start.name)}&amp;pax=1#book">
+        Book this transfer</a>
+    </div>
+
+    <p class="q-note" id="note">Tolls, taxes and 60 minutes of airport waiting included.
+    Free cancellation up to 24 hours before pick-up.</p>
   </section>
 
   <script>
   (function () {
-    var sel = document.getElementById('pax');
-    var hotel = document.getElementById('hotel');
-    var out = document.getElementById('q');
-    var kind = document.getElementById('kind');
+    var T = ${JSON.stringify(table)};
+    var KIND = ${JSON.stringify(TIERS.map((t) => t[2]))};
+    var FROM = ${JSON.stringify(airport.name)};
+    var SLUGS = ${JSON.stringify(Object.keys(table))};
+
+    var dest = document.getElementById('dest');
+    var other = document.getElementById('other');
+    var pax = document.getElementById('pax');
+    var qv = document.getElementById('qv');
+    var qs = document.getElementById('qs');
     var note = document.getElementById('note');
     var go = document.getElementById('go');
-    if (!sel || !out) return;
+    if (!dest || !pax) return;
 
-    var KINDS = ${JSON.stringify(tiers.map((t) => t.kind))};
-    var TOWN = ${JSON.stringify(to)};
-    var FROM = ${JSON.stringify(from)};
-
-    var HERE = 'Fixed for the whole car. Tolls, taxes and 60 minutes of airport waiting ' +
-      'included. Free cancellation up to 24 hours before.';
-    var ELSEWHERE = 'That address is priced to the door on the next page \u2014 usually the ' +
-      'same as ' + TOWN + ', sometimes a few euros either way.';
+    var HERE = 'Tolls, taxes and 60 minutes of airport waiting included. Free cancellation ' +
+      'up to 24 hours before pick-up.';
 
     function draw() {
-      var opt = sel.options[sel.selectedIndex];
-      var custom = hotel && hotel.value.trim() &&
-        hotel.value.trim().toLowerCase() !== TOWN.toLowerCase();
+      var i = Number(pax.options[pax.selectedIndex].getAttribute('data-i')) || 0;
+      var custom = dest.value === '_other';
 
-      out.textContent = (custom ? 'from \u20ac' : '\u20ac') + opt.getAttribute('data-price');
-      kind.textContent = KINDS[sel.selectedIndex] || '';
-      note.textContent = custom ? ELSEWHERE : HERE;
+      other.classList.toggle('hidden', !custom);
 
-      // O botão leva a rota consigo. A morada exata é calculada no
-      // calculador da página inicial, que já tem o mapa — repetir
-      // essa lógica aqui seria manter o mesmo preço em dois sítios.
+      if (custom) {
+        // Sem quilómetros não há preço exato. O intervalo do
+        // aeroporto é honesto e não trava a reserva.
+        var all = SLUGS.map(function (k) { return T[k].p[i]; });
+        qv.textContent = '\u20ac' + Math.min.apply(null, all) + '\u2013' +
+          Math.max.apply(null, all);
+        qs.textContent = KIND[i] + ' \u00b7 priced to the door on the next page';
+        note.textContent = 'Type the hotel or street and we price the exact address on the ' +
+          'next page. Everything else stays the same \u2014 fixed price, no meter.';
+      } else {
+        var r = T[dest.value];
+        qv.textContent = '\u20ac' + r.p[i];
+        qs.textContent = KIND[i] + ' \u00b7 ' + r.km + ' km \u00b7 ' + r.min + ' min';
+        note.textContent = HERE;
+      }
+
       if (go) {
-        go.href = '/?from=' + encodeURIComponent(FROM) +
-          '&to=' + encodeURIComponent((hotel && hotel.value.trim()) || TOWN) +
-          '&pax=' + opt.value + '#book';
+        var to = custom
+          ? (other.value.trim() || 'Address')
+          : T[dest.value].name;
+
+        go.href = '/?from=' + encodeURIComponent(FROM) + '&to=' + encodeURIComponent(to) +
+          '&pax=' + pax.value + '#book';
       }
     }
 
-    sel.addEventListener('change', draw);
+    dest.addEventListener('change', function () {
+      draw();
+      if (dest.value === '_other') other.focus();
+    });
 
-    if (hotel) {
-      hotel.addEventListener('input', draw);
-      hotel.addEventListener('focus', function () { this.select(); });
-      hotel.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') { e.preventDefault(); draw(); go.click(); }
-      });
-    }
+    pax.addEventListener('change', draw);
+    other.addEventListener('input', draw);
+    other.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); draw(); go.click(); }
+    });
+
+    // Trocar de destino NÃO muda de página. O preço aparece aqui, e
+    // levar a pessoa para outro lado a meio de uma decisão é a forma
+    // mais rápida de a perder.
   })();
   </script>`;
 }
@@ -630,25 +631,8 @@ function routePage(country, airport, dest, siblings) {
   ${hero(airport, `${airport.iata} · ${country.country}`,
          `${airport.city} Airport to ${dest.name}`)}
 
-  ${jumpNav([['price', 'Price'], ['included', 'What is included'],
-             ['journey', 'The journey'], ['timing', 'Timing'],
-             ['when', 'When to book'], ['local', 'Before you land'],
-             ['faq', 'Questions'], ['more', 'Other routes']])}
 
-
-  <p class="lead">A private car waiting for you in arrivals, at a price agreed before you
-  fly. ${esc(dest.km)} km, about ${esc(dest.minutes)} minutes, no meter and no surprises.</p>
-
-  <div class="facts">
-    <div class="fact hero"><div class="k">From</div><div class="v">${money(p1)}</div></div>
-    <div class="fact"><div class="k">Journey</div><div class="v">${esc(dest.minutes)} min</div></div>
-    <div class="fact"><div class="k">Distance</div><div class="v">${esc(dest.km)} km</div></div>
-    <div class="fact"><div class="k">Free wait</div><div class="v">60 min</div></div>
-  </div>
-
-  ${routeStrip(airport, dest)}
-
-  ${calculator(dest.km, isPT, country.currency, airport.name, dest.name)}
+  ${calculator(airport, dest, isPT)}
 
   <h2 id="included">What is included</h2>
   <ul>
@@ -763,9 +747,6 @@ function airportPage(country, airport) {
 
   ${hero(airport, `${airport.iata} \u00b7 ${country.country}`,
          `${airport.name} transfers`)}
-
-  ${jumpNav([['routes', 'Routes and prices'], ['local', 'Before you land'],
-             ['airport', 'The airport']])}
 
 
   <p class="lead">A private car from ${esc(airport.name)} to anywhere you are staying,
