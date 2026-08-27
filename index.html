@@ -265,10 +265,10 @@ input[readonly]{opacity:.7}
 .suggestion-main{font-size:14px;font-weight:600}
 .suggestion-sub{font-size:12px;color:var(--muted);margin-top:2px}
 
-.return-row{display:flex;gap:12px;align-items:center;width:100%;text-align:left;
-  padding:12px 14px;border-radius:15px;background:var(--surface);
+.return-row{display:flex;gap:13px;align-items:center;width:100%;text-align:left;
+  padding:13px 15px;border-radius:16px;background:var(--surface);
   border:1px solid var(--rule-strong);margin-top:16px;cursor:pointer;
-  transition:border-color .15s ease,background .15s ease}
+  transition:border-color .18s ease,background .18s ease}
 .return-row:hover{border-color:var(--teal)}
 .return-row.on{border-color:var(--teal);background:var(--teal-soft)}
 .rr-icon{width:32px;height:32px;border-radius:10px;background:var(--surface-2);
@@ -277,12 +277,22 @@ html[data-theme="dark"] .rr-icon{color:var(--amber)}
 .rr-icon svg{width:16px;height:16px}
 .rr-text{flex:1;min-width:0}
 .rr-text strong{display:block;font-family:var(--display);font-weight:700;font-size:14px;
-  letter-spacing:-.01em;margin-bottom:2px}
-.rr-text span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rr-chev{color:var(--muted);flex:0 0 auto;transition:transform .2s ease}
-.rr-chev svg{width:16px;height:16px;display:block}
-.return-row.on .rr-chev{transform:rotate(180deg)}
+  letter-spacing:-.01em;margin-bottom:3px}
+/* A frase inteira, em duas linhas se for preciso. Estava com
+   nowrap e ellipsis e cortava a meio — uma explicação cortada não
+   explica nada. */
+.rr-text span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5}
+
+/* Um interruptor, não um chevron. O chevron diz "abre e fecha";
+   isto diz "está ligado ou desligado", que é a pergunta real. */
+.rr-switch{position:relative;width:44px;height:26px;border-radius:999px;flex:0 0 auto;
+  background:var(--rule-strong);transition:background .22s cubic-bezier(.4,.1,.3,1)}
+.rr-switch i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:999px;
+  background:#fff;box-shadow:0 1px 3px rgba(20,26,40,.28);
+  transition:transform .22s cubic-bezier(.34,1.4,.5,1)}
+.return-row.on .rr-switch{background:var(--teal)}
+.return-row.on .rr-switch i{transform:translateX(18px)}
+html[data-theme="dark"] .return-row.on .rr-switch{background:var(--amber)}
 .return-box{background:var(--surface-2);border:1px solid var(--rule);border-radius:16px;
   padding:16px;margin-top:10px}
 .rt-route{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.7;
@@ -529,7 +539,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
           </div>
 
 
-          <button class="return-row" id="returnRow" type="button" aria-expanded="false" aria-controls="returnBox">
+          <button class="return-row" id="returnRow" type="button" role="switch" aria-checked="false" aria-controls="returnBox">
             <span class="rr-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M21 7H8a4 4 0 0 0-4 4"/><path d="M7 21l-4-4 4-4"/><path d="M3 17h13a4 4 0 0 0 4-4"/></svg>
             </span>
@@ -537,9 +547,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
               <strong>Coming back too?</strong>
               <span id="returnSummary">Add the return trip and pay for both at once.</span>
             </span>
-            <span class="rr-chev" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
-            </span>
+            <span class="rr-switch" aria-hidden="true"><i></i></span>
           </button>
 
           <div class="return-box hidden" id="returnBox">
@@ -2000,7 +2008,7 @@ function returnLegPayload() {
 function paintReturn() {
   $('returnBox').classList.toggle('hidden', !returnOn);
   $('returnRow').classList.toggle('on', returnOn);
-  $('returnRow').setAttribute('aria-expanded', returnOn ? 'true' : 'false');
+  $('returnRow').setAttribute('aria-checked', returnOn ? 'true' : 'false');
 
   if (!returnOn) {
     // A linha fechada volta ao convite. Deixar lá a data escolhida
@@ -2351,6 +2359,42 @@ $('agentsCtaBtn').addEventListener('click', function () { navigateTo('/travelage
     }
   } catch (e) { console.error('boot error:', e); }
   setAuthMode('signin');
+
+  // ---------- vindo de uma página de rota ----------
+  //
+  // As páginas de /transfers/... mandam a rota no endereço. Aqui
+  // preenchem-se os campos e calcula-se logo, para quem já disse o
+  // que quer não ter de dizer outra vez.
+  try {
+    var q = new URLSearchParams(window.location.search);
+    var from = q.get('from');
+    var to = q.get('to');
+
+    if (from || to) {
+      if (from) $('pickup').value = from;
+      if (to) $('dropoff').value = to;
+
+      var pax = parseInt(q.get('pax'), 10);
+      if (Number.isFinite(pax) && pax >= 1 && pax <= 16) $('passengers').value = pax;
+
+      // Só calcula sozinho quando tem as duas pontas. Com uma só, o
+      // resultado seria um erro logo à chegada.
+      //
+      // O atraso é para o Google Maps já estar carregado: sem ele, a
+      // rota não se traça e o preço não sai.
+      if (from && to) {
+        setTimeout(function () {
+          try { calculateRouteAndPrice(); } catch (e) { console.error('prefill quote:', e); }
+        }, 900);
+      }
+
+      var book = document.getElementById('book');
+      if (book) setTimeout(function () {
+        book.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 120);
+    }
+  } catch (e) { console.error('prefill:', e); }
+
   reportHeight();
 })();
 })();
