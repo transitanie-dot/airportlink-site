@@ -26,18 +26,21 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const SEO_DIR = path.join(ROOT, 'seo');
-// Dentro de seo/, com uma subpasta por país.
+// Na RAIZ, com uma subpasta por país.
 //
-// IMPORTANTE: o caminho do ficheiro NÃO é o endereço público. As
-// regras no Render reescrevem /transfers/portugal/x para
-// /seo/transfers/portugal/x.html, e a barra de endereço continua
-// limpa — desde que a ação seja Rewrite e não Redirect. Com
-// Redirect, o /seo/ passa a aparecer e o Google indexa-o.
+// Estiveram dentro de seo/ e o endereço público dependia de uma
+// regra de reescrita no Render. A regra nunca funcionou de forma
+// fiável, e uma página que só abre se uma configuração estiver
+// certa é uma página que um dia deixa de abrir.
 //
-// O país entra no endereço de propósito: assim duas regras servem
-// para sempre, em vez de duas por cada país aberto.
-const OUT_TRANSFERS = path.join(ROOT, 'seo', 'transfers');
-const OUT_AIRPORTS = path.join(ROOT, 'seo', 'airports');
+// Aqui o caminho do ficheiro É o endereço:
+//   transfers/portugal/faro-to-albufeira.html
+//   /transfers/portugal/faro-to-albufeira.html
+//
+// Não é preciso regra nenhuma. A pasta seo/ fica com o gerador e os
+// dados, que é para o que serve.
+const OUT_TRANSFERS = path.join(ROOT, 'transfers');
+const OUT_AIRPORTS = path.join(ROOT, 'airports');
 const SITE = 'https://www.airportlink.app';
 
 /**
@@ -549,14 +552,14 @@ function routePage(country, airport, dest, siblings) {
     .slice(0, 6)
     .map((d) => {
       const price = priceEUR(d.km, 1, isPT);
-      return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}">` +
+      return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}/">` +
         `<b>${esc(d.name)}</b><span>from ${money(price)}</span></a>`;
     }).join('\n      ');
 
   return head({ title, description, canonical: url, schema }) + `
   <div class="crumb">
     <a href="/">Airportlink</a> &rsaquo;
-    <a href="/airports/${cslug}/${slug}">${esc(airport.name)}</a> &rsaquo;
+    <a href="/airports/${cslug}/${slug}/">${esc(airport.name)}</a> &rsaquo;
     ${esc(dest.name)}
   </div>
 
@@ -612,7 +615,7 @@ function routePage(country, airport, dest, siblings) {
   <div class="others">
       ${others}
   </div>
-  <p style="margin-top:16px"><a href="/airports/${cslug}/${slug}">All
+  <p style="margin-top:16px"><a href="/airports/${cslug}/${slug}/">All
   ${esc(airport.city)} Airport transfers &rsaquo;</a></p>
 ` + foot;
 }
@@ -671,7 +674,7 @@ function airportPage(country, airport) {
     .sort((a, b) => a.km - b.km)
     .map((d) => {
       const price = priceEUR(d.km, 1, isPT);
-      return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}">` +
+      return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}/">` +
         `<b>${esc(d.name)}</b>` +
         `<span>${esc(d.minutes)} min &middot; from ${money(price)}</span></a>`;
     }).join('\n      ');
@@ -683,7 +686,7 @@ function airportPage(country, airport) {
     .map((a) => {
       const s2 = slugOf(a);
       const from = Math.min(...a.destinations.map((d) => priceEUR(d.km, 1, isPT)));
-      return `<a class="other" href="/airports/${cslug}/${s2}">` +
+      return `<a class="other" href="/airports/${cslug}/${s2}/">` +
         `<b>${esc(a.name)}</b><span>from ${money(from)}</span></a>`;
     }).join('\n      ');
 
@@ -770,12 +773,24 @@ for (const file of files) {
   for (const airport of country.airports) {
     const slug = slugOf(airport);
 
-    fs.writeFileSync(path.join(airportsDir, slug + '.html'), airportPage(country, airport));
+    // Cada página é uma PASTA com um index.html lá dentro.
+    //
+    // É o que dá um endereço limpo sem depender de regra nenhuma:
+    // qualquer servidor, ao receber um pedido para uma pasta, serve
+    // o index.html que lá estiver. É a convenção mais antiga da web
+    // e não há nada para configurar.
+    //
+    //   airports/portugal/faro/index.html
+    //   /airports/portugal/faro
+    ensure(path.join(airportsDir, slug));
+    fs.writeFileSync(path.join(airportsDir, slug, 'index.html'),
+      airportPage(country, airport));
     urls.push({ loc: `${SITE}/airports/${cslug}/${slug}`, priority: '0.8', freq: 'weekly' });
 
     for (const dest of airport.destinations) {
-      const name = `${slug}-to-${dest.slug}.html`;
-      fs.writeFileSync(path.join(transfersDir, name),
+      const folder = path.join(transfersDir, `${slug}-to-${dest.slug}`);
+      ensure(folder);
+      fs.writeFileSync(path.join(folder, 'index.html'),
         routePage(country, airport, dest, airport.destinations));
 
       urls.push({ loc: `${SITE}/transfers/${cslug}/${slug}-to-${dest.slug}`,
