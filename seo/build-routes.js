@@ -211,50 +211,67 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
 .hero .on h1{color:#fff;margin:0;font-size:clamp(24px,3.4vw,34px)}
 
 /* ---------- a calculadora ----------
-   Campos em cima, resultados ao vivo em baixo. Os números mudam
-   enquanto se escreve, como no calculador da página inicial. */
-.ca{background:var(--surface);border:1px solid var(--rule);border-radius:20px;
-  padding:18px;margin:0 0 28px}
+   Cinco campos em cima, o resultado em baixo com o veículo, os
+   números e o preço. O mesmo que a página inicial faz. */
+.ca{background:var(--surface);border:1px solid var(--rule);border-radius:22px;
+  padding:20px;margin:0 0 28px}
 
-.ca-grid{display:grid;grid-template-columns:1fr 1fr 96px;gap:10px;margin-bottom:14px}
-.ca-f{display:flex;flex-direction:column;min-width:0}
+.ca-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px}
+.ca-f{display:flex;flex-direction:column;min-width:0;grid-column:span 2}
+.ca-f.wide{grid-column:span 3}
 .ca-f label{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
   text-transform:uppercase;color:var(--muted);margin-bottom:7px}
 .ca-in{position:relative;display:flex;align-items:center}
-.ca-pin{position:absolute;left:14px;width:8px;height:8px;border-radius:999px;flex:0 0 auto}
+.ca-pin{position:absolute;left:14px;width:8px;height:8px;border-radius:999px}
 .ca-pin.a{background:var(--teal)}
 .ca-pin.b{background:var(--amber)}
 html[data-theme="dark"] .ca-pin.a{background:var(--amber)}
 html[data-theme="dark"] .ca-pin.b{background:var(--teal)}
-.ca-in input,.ca-in select{height:48px;padding:0 14px 0 30px;border-radius:13px;
+.ca-in input,.ca-in select{height:48px;padding:0 13px;border-radius:13px;
   border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
   font-family:inherit;font-size:14.5px;font-weight:500;outline:none;width:100%;
   text-overflow:ellipsis;transition:border-color .14s ease,box-shadow .14s ease}
-.ca-in select{padding-left:14px;padding-right:28px;-webkit-appearance:none;appearance:none;
-  cursor:pointer;font-weight:600;
+.ca-pin ~ input{padding-left:30px}
+.ca-in select{padding-right:28px;-webkit-appearance:none;appearance:none;cursor:pointer;
+  font-weight:600;
   background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
     linear-gradient(135deg,var(--muted) 50%,transparent 50%);
   background-position:calc(100% - 14px) 22px,calc(100% - 10px) 22px;
   background-size:4px 4px,4px 4px;background-repeat:no-repeat}
 .ca-in input::placeholder{color:var(--muted);font-weight:400}
+.ca-in input::-webkit-calendar-picker-indicator{opacity:.45;cursor:pointer}
 .ca-in input:focus,.ca-in select:focus{border-color:var(--teal);
   box-shadow:0 0 0 3px rgba(15,118,110,.14)}
 html[data-theme="dark"] .ca-in input:focus,html[data-theme="dark"] .ca-in select:focus{
   border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,163,61,.16)}
 
-/* Os números ao vivo. */
-.ca-live{display:grid;grid-template-columns:auto auto auto 1fr auto;gap:22px;
-  align-items:center;background:var(--ink);border-radius:15px;padding:15px 20px}
-.ca-stat{min-width:0}
-.ca-stat .k{display:block;font-family:var(--mono);font-size:8.5px;font-weight:600;
+/* O resultado: veículo à esquerda, números ao meio, preço à direita. */
+.ca-out{display:grid;grid-template-columns:1.15fr 1fr auto;gap:20px;align-items:center;
+  background:var(--ink);border-radius:17px;padding:18px 22px}
+.ca-veh{display:flex;align-items:center;gap:14px;min-width:0}
+.ca-art{flex:0 0 auto;width:78px;color:var(--amber)}
+.ca-art svg{width:100%;height:auto;fill:none;stroke:currentColor;stroke-width:2.4;
+  stroke-linecap:round;stroke-linejoin:round}
+.ca-vt{min-width:0}
+.ca-vt strong{display:block;font-family:var(--display);font-weight:700;font-size:16px;
+  letter-spacing:-.02em;color:#fff;margin-bottom:3px}
+.ca-vt span{display:block;font-size:11.5px;color:#8C97A8;line-height:1.5}
+
+.ca-nums{display:flex;gap:22px;flex-wrap:wrap}
+.ca-s .k{display:block;font-family:var(--mono);font-size:8.5px;font-weight:600;
   letter-spacing:.14em;text-transform:uppercase;color:#8C97A8;margin-bottom:5px}
-.ca-stat .v{display:block;font-family:var(--mono);font-size:15px;font-weight:600;
-  color:#fff;white-space:nowrap}
-.ca-stat.wide .k{color:var(--amber)}
-.ca-stat .v.big{font-size:27px;letter-spacing:-.03em;line-height:1}
-.ca-book{flex:0 0 auto;display:inline-flex;align-items:center;height:44px;padding:0 22px;
+.ca-s .v{display:block;font-family:var(--mono);font-size:15px;font-weight:600;color:#fff;
+  white-space:nowrap}
+
+.ca-pay{text-align:right;min-width:0}
+.ca-pay .k{display:block;font-family:var(--mono);font-size:8.5px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:6px}
+.ca-pay .v{display:block;font-family:var(--mono);font-size:30px;font-weight:600;
+  letter-spacing:-.03em;line-height:1;color:#fff}
+.ca-pay .s{display:block;font-size:11.5px;color:#8C97A8;margin-top:7px}
+.ca-book{display:inline-flex;align-items:center;height:42px;padding:0 20px;margin-top:12px;
   border-radius:12px;background:var(--amber);color:#141A28;text-decoration:none;
-  font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;
   text-transform:uppercase;white-space:nowrap;transition:transform .14s ease}
 .ca-book:hover{transform:translateY(-1px)}
 .ca-book.off{display:none}
@@ -271,13 +288,18 @@ html[data-theme="dark"] .ca-in input:focus,html[data-theme="dark"] .ca-in select
 .pac-item-query{font-size:14px;color:var(--text)}
 .pac-icon{display:none}
 
-@media (max-width:860px){
+@media (max-width:900px){
+  .ca-grid{grid-template-columns:repeat(4,1fr)}
+  .ca-f.wide{grid-column:span 4}
+  .ca-f{grid-column:span 2}
+  .ca-f:last-child{grid-column:span 4}
+  .ca-out{grid-template-columns:1fr;gap:16px}
+  .ca-pay{text-align:left;border-top:1px solid rgba(255,255,255,.09);padding-top:16px}
+  .ca-book{width:100%;justify-content:center}
+}
+@media (max-width:520px){
   .ca-grid{grid-template-columns:1fr 1fr}
-  .ca-f:first-child,.ca-f:nth-child(2){grid-column:span 2}
-  .ca-f.ca-sm{grid-column:span 2}
-  .ca-live{grid-template-columns:1fr 1fr 1fr;gap:16px}
-  .ca-stat.wide{grid-column:span 3;border-top:1px solid rgba(255,255,255,.09);padding-top:14px}
-  .ca-book{grid-column:span 3;justify-content:center}
+  .ca-f,.ca-f.wide,.ca-f:last-child{grid-column:span 2}
 }
 
 .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);
@@ -324,13 +346,11 @@ function hero(airport, tag, title) {
 /**
  * A calculadora.
  *
- * O mesmo comportamento da página inicial: à medida que os campos
- * mudam, a distância, a duração, o veículo e o preço atualizam-se
- * sozinhos. Sem botão de "calcular" — a resposta acompanha o que a
- * pessoa está a fazer.
+ * O mesmo comportamento da página inicial: distância, duração,
+ * veículo e preço atualizam-se enquanto a pessoa mexe nos campos.
  *
- * O Google Maps só carrega ao primeiro toque num campo: numa página
- * de pesquisa, a maioria das visitas nunca usa a calculadora, e
+ * O Google Maps só carrega ao primeiro toque: numa página de
+ * pesquisa, a maioria das visitas nunca usa a calculadora, e
  * carregá-lo a todas custaria dinheiro por visita.
  */
 function calculator(airport, current, isPT, mapsKey) {
@@ -338,47 +358,63 @@ function calculator(airport, current, isPT, mapsKey) {
 
   return `<section class="ca" id="price">
     <div class="ca-grid">
-      <div class="ca-f">
+      <div class="ca-f wide">
         <label for="cf">Pick-up</label>
-        <div class="ca-in">
-          <span class="ca-pin a"></span>
+        <div class="ca-in"><span class="ca-pin a"></span>
           <input id="cf" type="text" value="${esc(airport.name)}" autocomplete="off"
-                 placeholder="Airport, hotel or address">
-        </div>
+                 placeholder="Airport, hotel or address"></div>
+      </div>
+
+      <div class="ca-f wide">
+        <label for="ct">Drop-off</label>
+        <div class="ca-in"><span class="ca-pin b"></span>
+          <input id="ct" type="text" value="${esc(to)}" autocomplete="off"
+                 placeholder="Hotel, address or town"></div>
       </div>
 
       <div class="ca-f">
-        <label for="ct">Drop-off</label>
-        <div class="ca-in">
-          <span class="ca-pin b"></span>
-          <input id="ct" type="text" value="${esc(to)}" autocomplete="off"
-                 placeholder="Hotel, address or town">
-        </div>
+        <label for="cdate">Date</label>
+        <div class="ca-in"><input id="cdate" type="date"></div>
       </div>
 
-      <div class="ca-f ca-sm">
+      <div class="ca-f">
+        <label for="ctime">Pick-up time</label>
+        <div class="ca-in"><input id="ctime" type="time" value="12:00"></div>
+      </div>
+
+      <div class="ca-f">
         <label for="cp">Passengers</label>
-        <div class="ca-in">
-          <select id="cp">
-            ${[1,2,3,4,5,6,7,8,9,10,12,14,16].map((n) =>
-              `<option value="${n}"${n === 2 ? ' selected' : ''}>${n}</option>`).join('')}
-          </select>
-        </div>
+        <div class="ca-in"><select id="cp">
+          ${[1,2,3,4,5,6,7,8,9,10,12,14,16].map((n) =>
+            `<option value="${n}"${n === 2 ? ' selected' : ''}>${n}</option>`).join('')}
+        </select></div>
       </div>
     </div>
 
-    <div class="ca-live">
-      <div class="ca-stat"><span class="k">Distance</span><span class="v" id="cd">&mdash;</span></div>
-      <div class="ca-stat"><span class="k">Journey</span><span class="v" id="cu">&mdash;</span></div>
-      <div class="ca-stat"><span class="k">Vehicle</span><span class="v" id="cw">Sedan</span></div>
-      <div class="ca-stat wide"><span class="k" id="ck">Your price</span>
-        <span class="v big" id="cv">&mdash;</span></div>
-      <a class="ca-book off" id="cb" href="/#book">Book now, pay later</a>
+    <div class="ca-out">
+      <div class="ca-veh">
+        <div class="ca-art" id="cart"></div>
+        <div class="ca-vt">
+          <strong id="cw">Sedan</strong>
+          <span id="cwn">Up to 4 passengers with hand luggage.</span>
+        </div>
+      </div>
+
+      <div class="ca-nums">
+        <div class="ca-s"><span class="k">Distance</span><span class="v" id="cd">&mdash;</span></div>
+        <div class="ca-s"><span class="k">Journey</span><span class="v" id="cu">&mdash;</span></div>
+        <div class="ca-s"><span class="k">Free wait</span><span class="v">60 min</span></div>
+      </div>
+
+      <div class="ca-pay">
+        <span class="k" id="ck">Your price</span>
+        <span class="v" id="cv">&mdash;</span>
+        <span class="s" id="cs">Whole car, tolls and taxes in</span>
+        <a class="ca-book off" id="cb" href="/#book">Book now, pay later</a>
+      </div>
     </div>
 
-    <p class="ca-n" id="cn">Start typing a drop-off and the price appears as you go. No card
-    today &mdash; we charge it 48 hours before you travel, and you can cancel free up to 24
-    hours before.</p>
+    <p class="ca-n" id="cn">Type a drop-off and the price appears as you go.</p>
   </section>
 
   <script>
@@ -386,18 +422,22 @@ function calculator(airport, current, isPT, mapsKey) {
     var KEY = ${JSON.stringify(mapsKey)};
     var PT = ${JSON.stringify(isPT)};
 
-    var cf = document.getElementById('cf'), ct = document.getElementById('ct');
-    var cp = document.getElementById('cp');
-    var cd = document.getElementById('cd'), cu = document.getElementById('cu');
-    var cw = document.getElementById('cw'), cv = document.getElementById('cv');
-    var ck = document.getElementById('ck'), cn = document.getElementById('cn');
-    var cb = document.getElementById('cb');
+    var $$ = function (id) { return document.getElementById(id); };
+    var cf = $$('cf'), ct = $$('ct'), cp = $$('cp');
+    var cdate = $$('cdate'), ctime = $$('ctime');
+    var cd = $$('cd'), cu = $$('cu'), cw = $$('cw'), cwn = $$('cwn'), cart = $$('cart');
+    var cv = $$('cv'), ck = $$('ck'), cs = $$('cs'), cn = $$('cn'), cb = $$('cb');
     if (!cf || !ct) return;
 
     var HINT = cn.textContent;
 
+    // Amanhã: hoje faria metade das reservas serem para daqui a uma
+    // hora sem ninguém reparar.
+    var t = new Date(); t.setDate(t.getDate() + 1);
+    cdate.value = t.toISOString().slice(0, 10);
+    cdate.min = new Date().toISOString().slice(0, 10);
+
     // ---------- a mesma fórmula do site ----------
-    // Se mudares os valores no server.js, muda aqui e no index.html.
     function fare(km, pax) {
       var p = PT ? { base: 40, perKm: 1.60, min: 25, up: 1.0 }
                  : { base: 20, perKm: 3.5, min: 25, up: 1.3 };
@@ -405,15 +445,33 @@ function calculator(airport, current, isPT, mapsKey) {
       return Math.max(p.min, (p.base + km * p.perKm) * p.up * mult);
     }
 
+    var VEHICLES = {
+      Sedan: ['Up to 4 passengers with hand luggage.',
+        '<svg viewBox="0 0 120 46"><path d="M8 34h104M18 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0M88 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0"/>' +
+        '<path d="M12 34V24l10-12h50l16 12h14a6 6 0 0 1 6 6v4"/><path d="M40 12v12M12 24h100"/></svg>'],
+      Van: ['Up to 8 passengers with a suitcase each.',
+        '<svg viewBox="0 0 120 46"><path d="M8 34h104M20 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0M86 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0"/>' +
+        '<path d="M10 34V14a2 2 0 0 1 2-2h72l20 14h4a4 4 0 0 1 4 4v4"/><path d="M40 12v14M64 12v14M10 26h100"/></svg>'],
+      Minibus: ['Up to 13 passengers with luggage.',
+        '<svg viewBox="0 0 120 46"><path d="M6 34h108M20 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0M88 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0"/>' +
+        '<path d="M8 34V12a2 2 0 0 1 2-2h96a2 2 0 0 1 2 2v22"/><path d="M32 10v14M56 10v14M80 10v14M8 24h100"/></svg>'],
+      Coach: ['Up to 16 passengers with luggage.',
+        '<svg viewBox="0 0 120 46"><path d="M4 34h112M18 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0M90 34a7 7 0 1 0 14 0 7 7 0 1 0-14 0"/>' +
+        '<path d="M6 34V10a2 2 0 0 1 2-2h104a2 2 0 0 1 2 2v24"/><path d="M28 8v16M50 8v16M72 8v16M94 8v16M6 24h108"/></svg>']
+    };
+
     function car(pax) {
       return pax <= 4 ? 'Sedan' : pax <= 8 ? 'Van' : pax <= 13 ? 'Minibus' : 'Coach';
     }
 
+    function drawCar(pax) {
+      var name = car(pax);
+      cw.textContent = name;
+      cwn.textContent = VEHICLES[name][0];
+      cart.innerHTML = VEHICLES[name][1];
+    }
+
     // ---------- travão contra abuso ----------
-    //
-    // Cada rota custa dinheiro. Uma pessoa normal faz meia dúzia por
-    // visita; um programa faria milhares. Os limites são generosos:
-    // quem está mesmo a comparar destinos nunca lhes toca.
     var CAP_BURST = 10, CAP_TOTAL = 50;
 
     function quota() {
@@ -421,7 +479,7 @@ function calculator(airport, current, isPT, mapsKey) {
         var log = JSON.parse(sessionStorage.getItem('al-q') || '[]');
         var now = Date.now();
         if (log.length >= CAP_TOTAL) return 'total';
-        if (log.filter(function (t) { return now - t < 60000; }).length >= CAP_BURST) return 'burst';
+        if (log.filter(function (x) { return now - x < 60000; }).length >= CAP_BURST) return 'burst';
         log.push(now);
         sessionStorage.setItem('al-q', JSON.stringify(log.slice(-CAP_TOTAL)));
         return null;
@@ -458,24 +516,41 @@ function calculator(airport, current, isPT, mapsKey) {
       document.head.appendChild(sc);
     }
 
-    [cf, ct].forEach(function (el) {
-      el.addEventListener('focus', function () { maps(); }, { once: true });
-      el.addEventListener('focus', function () { this.select(); });
-    });
-
     // ---------- ao vivo ----------
     var lastKey = '', timer = null, km = 0;
 
+    function payLine(price) {
+      // Quando e quanto. É o que a pessoa quer saber, e é curto.
+      if (!price || !cdate.value) return 'Whole car, tolls and taxes in';
+
+      var pick = new Date(cdate.value + 'T' + (ctime.value || '12:00'));
+      var at = new Date(pick.getTime() - 48 * 36e5);
+
+      if (isNaN(at.getTime()) || at < new Date()) return 'Charged at checkout';
+
+      return 'Pay on ' + at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) +
+        ', \u20ac' + Math.round(price);
+    }
+
     function paint(price) {
       var pax = Number(cp.value) || 1;
-      cw.textContent = car(pax);
+      drawCar(pax);
 
-      if (!price) { cv.textContent = '\u2014'; cb.classList.add('off'); return; }
+      if (!price) {
+        cv.textContent = '\u2014';
+        cs.textContent = 'Whole car, tolls and taxes in';
+        cb.classList.add('off');
+        return;
+      }
 
       cv.textContent = '\u20ac' + Math.round(price);
+      cs.textContent = payLine(price);
       cb.classList.remove('off');
       cb.href = '/?from=' + encodeURIComponent(cf.value.trim()) +
-        '&to=' + encodeURIComponent(ct.value.trim()) + '&pax=' + pax + '#book';
+        '&to=' + encodeURIComponent(ct.value.trim()) +
+        '&date=' + encodeURIComponent(cdate.value) +
+        '&time=' + encodeURIComponent(ctime.value) +
+        '&pax=' + pax + '#book';
     }
 
     function run() {
@@ -490,14 +565,10 @@ function calculator(airport, current, isPT, mapsKey) {
         return;
       }
 
-      // Mudar só os passageiros não pede rota nova: a distância é a
-      // mesma e já a temos.
+      // Mudar passageiros, data ou hora não pede rota nova: a
+      // distância é a mesma e já a temos.
       var key = from + '|' + to;
-      if (key === lastKey && km) {
-        ck.textContent = 'Your price';
-        paint(fare(km, pax));
-        return;
-      }
+      if (key === lastKey && km) { ck.textContent = 'Your price'; paint(fare(km, pax)); return; }
 
       var stop = quota();
       if (stop) {
@@ -505,8 +576,7 @@ function calculator(airport, current, isPT, mapsKey) {
         cv.textContent = '\u2014';
         cn.textContent = stop === 'burst'
           ? 'That is a lot of routes in one minute. Give it a moment.'
-          : 'You have priced plenty of routes. Reload the page, or use the calculator on ' +
-            'the home page.';
+          : 'You have priced plenty of routes. Reload the page to start again.';
         cb.classList.add('off');
         return;
       }
@@ -545,14 +615,22 @@ function calculator(airport, current, isPT, mapsKey) {
     // rota por cada letra escrita.
     function later() { clearTimeout(timer); timer = setTimeout(run, 550); }
 
-    [cf, ct].forEach(function (el) { el.addEventListener('input', later); });
-    cp.addEventListener('change', run);
+    [cf, ct].forEach(function (el) {
+      el.addEventListener('input', later);
+      el.addEventListener('focus', function () { maps(); }, { once: true });
+      el.addEventListener('focus', function () { this.select(); });
+    });
 
-    // Já vem preenchido: mostrar o resultado sem esperar por um
-    // toque seria carregar o Maps a toda a gente. Fica à espera do
-    // primeiro gesto, e aí calcula sozinho.
+    cp.addEventListener('change', run);
+    cdate.addEventListener('change', function () { paint(km ? fare(km, Number(cp.value) || 1) : 0); });
+    ctime.addEventListener('change', function () { paint(km ? fare(km, Number(cp.value) || 1) : 0); });
+
+    drawCar(Number(cp.value) || 1);
+
+    // Já vem preenchido, mas espera pelo primeiro gesto: mostrar o
+    // resultado logo obrigaria a carregar o Maps a toda a gente.
     var started = false;
-    [cf, ct, cp].forEach(function (el) {
+    [cf, ct, cp, cdate, ctime].forEach(function (el) {
       el.addEventListener('focus', function () {
         if (started) return;
         started = true;
