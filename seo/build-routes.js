@@ -211,81 +211,123 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
 .hero .on h1{color:#fff;margin:0;font-size:clamp(24px,3.4vw,34px)}
 
 /* ---------- a calculadora ----------
-   Cinco campos em cima, o resultado em baixo com o veículo, os
-   números e o preço. O mesmo que a página inicial faz. */
-.ca{background:var(--surface);border:1px solid var(--rule);border-radius:22px;
-  padding:20px;margin:0 0 28px}
+   Campos em cima num cartão claro, resultado em baixo num cartão do
+   mesmo tom mas com o contorno da marca. O escuro estava a competir
+   com a fotografia por cima. */
+.ca{margin:0 0 30px}
+.ca-top{margin-bottom:14px}
+.ca-top h2{font-family:var(--display);font-weight:700;font-size:clamp(20px,2.6vw,25px);
+  letter-spacing:-.028em;margin:0;padding:0;border:0}
 
-.ca-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px}
+.ca-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;
+  background:var(--surface);border:1px solid var(--rule);border-radius:20px;
+  padding:16px;margin-bottom:10px}
 .ca-f{display:flex;flex-direction:column;min-width:0;grid-column:span 2}
 .ca-f.wide{grid-column:span 3}
 .ca-f label{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
   text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.ca-f label .hint{font-family:var(--body);font-size:10px;font-weight:400;letter-spacing:0;
+  text-transform:none;opacity:.65;margin-left:5px}
 .ca-in{position:relative;display:flex;align-items:center}
-.ca-pin{position:absolute;left:14px;width:8px;height:8px;border-radius:999px}
+.ca-pin{position:absolute;left:14px;width:7px;height:7px;border-radius:999px}
 .ca-pin.a{background:var(--teal)}
 .ca-pin.b{background:var(--amber)}
 html[data-theme="dark"] .ca-pin.a{background:var(--amber)}
 html[data-theme="dark"] .ca-pin.b{background:var(--teal)}
-.ca-in input,.ca-in select{height:48px;padding:0 13px;border-radius:13px;
+.ca-in input,.ca-in select{height:46px;padding:0 13px;border-radius:12px;
   border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
   font-family:inherit;font-size:14.5px;font-weight:500;outline:none;width:100%;
   text-overflow:ellipsis;transition:border-color .14s ease,box-shadow .14s ease}
-.ca-pin ~ input{padding-left:30px}
-.ca-in select{padding-right:28px;-webkit-appearance:none;appearance:none;cursor:pointer;
+.ca-pin ~ input{padding-left:29px}
+.ca-in select{padding-right:26px;-webkit-appearance:none;appearance:none;cursor:pointer;
   font-weight:600;
   background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
     linear-gradient(135deg,var(--muted) 50%,transparent 50%);
-  background-position:calc(100% - 14px) 22px,calc(100% - 10px) 22px;
+  background-position:calc(100% - 13px) 21px,calc(100% - 9px) 21px;
   background-size:4px 4px,4px 4px;background-repeat:no-repeat}
 .ca-in input::placeholder{color:var(--muted);font-weight:400}
-.ca-in input::-webkit-calendar-picker-indicator{opacity:.45;cursor:pointer}
+.ca-in input::-webkit-calendar-picker-indicator{opacity:.4;cursor:pointer}
 .ca-in input:focus,.ca-in select:focus{border-color:var(--teal);
-  box-shadow:0 0 0 3px rgba(15,118,110,.14)}
+  box-shadow:0 0 0 3px rgba(15,118,110,.13)}
 html[data-theme="dark"] .ca-in input:focus,html[data-theme="dark"] .ca-in select:focus{
-  border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,163,61,.16)}
+  border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,163,61,.15)}
 
-/* O resultado: veículo à esquerda, números ao meio, preço à direita. */
-.ca-out{display:grid;grid-template-columns:1.15fr 1fr auto;gap:20px;align-items:center;
-  background:var(--ink);border-radius:17px;padding:18px 22px}
-.ca-veh{display:flex;align-items:center;gap:14px;min-width:0}
-.ca-art{flex:0 0 auto;width:78px;color:var(--amber)}
+/* O resultado. Claro, com um traço da marca à esquerda para se ler
+   como resposta e não como mais um campo por preencher. */
+.ca-out{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;
+  background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--teal);
+  border-radius:20px;padding:18px 22px}
+html[data-theme="dark"] .ca-out{border-left-color:var(--amber)}
+.ca-left{min-width:0}
+.ca-veh{display:flex;align-items:center;gap:14px;min-width:0;margin-bottom:12px}
+.ca-art{flex:0 0 auto;width:70px;color:var(--slate);opacity:.85}
+html[data-theme="dark"] .ca-art{color:#8C97A8}
 .ca-art svg{width:100%;height:auto;fill:currentColor}
-/* As janelas e o interior das rodas, vazados: distinguem-se da
-   carroçaria sem precisar de uma segunda cor. */
-.ca-art svg .w{fill:var(--ink)}
+.ca-art svg .w{fill:var(--surface)}
 .ca-vt{min-width:0}
-.ca-vt strong{display:block;font-family:var(--display);font-weight:700;font-size:16px;
-  letter-spacing:-.02em;color:#fff;margin-bottom:3px}
-.ca-vt span{display:block;font-size:11.5px;color:#8C97A8;line-height:1.5}
+.ca-vt strong{display:block;font-family:var(--display);font-weight:700;font-size:15.5px;
+  letter-spacing:-.02em;margin-bottom:3px}
+.ca-vt span{display:block;font-size:12px;color:var(--muted);line-height:1.5}
 
-.ca-nums{display:flex;gap:22px;flex-wrap:wrap}
-.ca-s .k{display:block;font-family:var(--mono);font-size:8.5px;font-weight:600;
-  letter-spacing:.14em;text-transform:uppercase;color:#8C97A8;margin-bottom:5px}
-.ca-s .v{display:block;font-family:var(--mono);font-size:15px;font-weight:600;color:#fff;
-  white-space:nowrap}
+/* As escolhas, em etiquetas. Quem desce a página não perde de vista
+   para que dia e para quantas pessoas é o preço que está a ver. */
+.ca-chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{background:var(--surface-2);border:1px solid var(--rule);border-radius:999px;
+  padding:5px 12px;font-family:var(--mono);font-size:10.5px;font-weight:600;
+  letter-spacing:.02em;color:var(--muted);white-space:nowrap}
 
-.ca-pay{text-align:right;min-width:0}
+.ca-pay{text-align:right;min-width:0;flex:0 0 auto}
 .ca-pay .k{display:block;font-family:var(--mono);font-size:8.5px;font-weight:600;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:6px}
-.ca-pay .v{display:block;font-family:var(--mono);font-size:30px;font-weight:600;
-  letter-spacing:-.03em;line-height:1;color:#fff}
-.ca-pay .s{display:block;font-size:11.5px;color:#8C97A8;margin-top:7px}
-.ca-book{display:inline-flex;align-items:center;height:42px;padding:0 20px;margin-top:12px;
-  border-radius:12px;background:var(--amber);color:#141A28;text-decoration:none;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.ca-pay .v{display:block;font-family:var(--mono);font-size:clamp(28px,4vw,34px);
+  font-weight:600;letter-spacing:-.035em;line-height:1;color:var(--teal)}
+html[data-theme="dark"] .ca-pay .v{color:var(--amber)}
+.ca-pay .s{display:block;font-size:11.5px;color:var(--muted);margin-top:7px}
+.ca-book{display:inline-flex;align-items:center;height:44px;padding:0 22px;margin-top:13px;
+  border-radius:12px;background:var(--ink);color:#fff;text-decoration:none;
   font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;
-  text-transform:uppercase;white-space:nowrap;transition:transform .14s ease}
-.ca-book:hover{transform:translateY(-1px)}
+  text-transform:uppercase;white-space:nowrap;transition:background .14s ease}
+.ca-book:hover{background:var(--teal)}
+html[data-theme="dark"] .ca-book{background:var(--amber);color:#141A28}
+html[data-theme="dark"] .ca-book:hover{background:#F0B95C}
 .ca-book.off{display:none}
-.ca-n{margin:12px 4px 0;color:var(--muted);font-size:12.5px;line-height:1.55}
+.ca-n{margin:10px 4px 0;color:var(--muted);font-size:12.5px;line-height:1.55}
+.ca-n:empty{margin:0}
 
-/* Título por cima da calculadora. */
-.ca-top{margin-bottom:16px}
-.ca-top h2{font-family:var(--display);font-weight:700;font-size:clamp(19px,2.4vw,23px);
-  letter-spacing:-.025em;margin:0 0 5px;padding:0;border:0}
-.ca-top p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.55}
-.ca-f label .hint{font-family:var(--body);font-size:10px;font-weight:400;letter-spacing:0;
-  text-transform:none;color:var(--muted);opacity:.7;margin-left:5px}
+/* A lista do que está incluído, com um ícone por linha. Continua a
+   ser uma lista, não blocos — só troca o ponto por um desenho. */
+.rt ul.ticks{list-style:none;padding:0;margin:0 0 16px}
+.rt ul.ticks li{display:flex;gap:12px;align-items:flex-start;padding:9px 0;
+  border-bottom:1px solid var(--rule);margin:0}
+.rt ul.ticks li:last-child{border-bottom:0}
+.rt ul.ticks svg{width:19px;height:19px;flex:0 0 auto;margin-top:2px;color:var(--teal)}
+html[data-theme="dark"] .rt ul.ticks svg{color:var(--amber)}
+.rt ul.ticks span{flex:1;min-width:0}
+
+/* A lista de sugestões do Google, com o aspeto do site. */
+.pac-container{border-radius:12px;border:1px solid var(--rule-strong);
+  box-shadow:0 12px 30px rgba(20,26,40,.16);font-family:var(--body);margin-top:4px;
+  background:var(--surface)}
+.pac-item{padding:9px 13px;border-top:1px solid var(--rule);font-size:13.5px;
+  color:var(--muted);cursor:pointer}
+.pac-item:first-child{border-top:0}
+.pac-item:hover,.pac-item-selected{background:var(--surface-2)}
+.pac-item-query{font-size:14px;color:var(--text)}
+.pac-icon{display:none}
+
+@media (max-width:900px){
+  .ca-grid{grid-template-columns:repeat(4,1fr)}
+  .ca-f.wide{grid-column:span 4}
+  .ca-f{grid-column:span 2}
+  .ca-f:last-child{grid-column:span 4}
+  .ca-out{grid-template-columns:1fr;gap:16px}
+  .ca-pay{text-align:left;border-top:1px solid var(--rule);padding-top:16px}
+  .ca-book{width:100%;justify-content:center}
+}
+@media (max-width:520px){
+  .ca-grid{grid-template-columns:1fr 1fr}
+  .ca-f,.ca-f.wide,.ca-f:last-child{grid-column:span 2}
+}
 
 /* ---------- blocos das secções de baixo ----------
    Texto corrido de seis parágrafos não se lê numa página vinda de
@@ -406,8 +448,7 @@ function calculator(airport, current, isPT, mapsKey) {
 
   return `<section class="ca" id="price">
     <div class="ca-top">
-      <h2>Your ride, in a few clicks</h2>
-      <p>Price, vehicle and journey time as you type. No account, no card today.</p>
+      <h2>Price your transfer</h2>
     </div>
 
     <div class="ca-grid">
@@ -444,28 +485,35 @@ function calculator(airport, current, isPT, mapsKey) {
     </div>
 
     <div class="ca-out">
-      <div class="ca-veh">
-        <div class="ca-art" id="cart"></div>
-        <div class="ca-vt">
-          <strong id="cw">Sedan</strong>
-          <span id="cwn">Up to 4 passengers with hand luggage.</span>
+      <div class="ca-left">
+        <div class="ca-veh">
+          <div class="ca-art" id="cart"></div>
+          <div class="ca-vt">
+            <strong id="cw">Sedan</strong>
+            <span id="cwn">Up to 4 passengers with hand luggage.</span>
+          </div>
         </div>
-      </div>
 
-      <div class="ca-nums">
-        <div class="ca-s"><span class="k">Distance</span><span class="v" id="cd">&mdash;</span></div>
-        <div class="ca-s"><span class="k">Journey</span><span class="v" id="cu">&mdash;</span></div>
+        <!-- O que foi escolhido, repetido aqui. Sem isto, quem
+             desce a página perde de vista para que dia reservou. -->
+        <div class="ca-chips">
+          <span class="chip" id="chDate">&mdash;</span>
+          <span class="chip" id="chTime">12:00</span>
+          <span class="chip" id="chPax">2 passengers</span>
+          <span class="chip" id="chKm">&mdash;</span>
+          <span class="chip" id="chDur">&mdash;</span>
+        </div>
       </div>
 
       <div class="ca-pay">
         <span class="k" id="ck">Your price</span>
         <span class="v" id="cv">&mdash;</span>
-        <span class="s" id="cs">Whole car, tolls and taxes in</span>
+        <span class="s" id="cs">Whole car &middot; tolls and taxes in</span>
         <a class="ca-book off" id="cb" href="/#book">Book now, pay later</a>
       </div>
     </div>
 
-    <p class="ca-n" id="cn">Type a drop-off and the price appears as you go.</p>
+    <p class="ca-n" id="cn"></p>
   </section>
 
   <script>
@@ -476,11 +524,11 @@ function calculator(airport, current, isPT, mapsKey) {
     var $$ = function (id) { return document.getElementById(id); };
     var cf = $$('cf'), ct = $$('ct'), cp = $$('cp');
     var cdate = $$('cdate'), ctime = $$('ctime');
-    var cd = $$('cd'), cu = $$('cu'), cw = $$('cw'), cwn = $$('cwn'), cart = $$('cart');
+    var cw = $$('cw'), cwn = $$('cwn'), cart = $$('cart');
+    var chDate = $$('chDate'), chTime = $$('chTime'), chPax = $$('chPax');
+    var chKm = $$('chKm'), chDur = $$('chDur');
     var cv = $$('cv'), ck = $$('ck'), cs = $$('cs'), cn = $$('cn'), cb = $$('cb');
     if (!cf || !ct) return;
-
-    var HINT = cn.textContent;
 
     // Amanhã: hoje faria metade das reservas serem para daqui a uma
     // hora sem ninguém reparar.
@@ -614,9 +662,26 @@ function calculator(airport, current, isPT, mapsKey) {
         ', \u20ac' + Math.round(price);
     }
 
+    /** As etiquetas com o que foi escolhido. */
+    function chips() {
+      var pax = Number(cp.value) || 1;
+
+      if (cdate.value) {
+        var d = new Date(cdate.value + 'T12:00');
+        chDate.textContent = isNaN(d) ? '\u2014'
+          : d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+      } else {
+        chDate.textContent = '\u2014';
+      }
+
+      chTime.textContent = ctime.value || '\u2014';
+      chPax.textContent = pax + (pax === 1 ? ' passenger' : ' passengers');
+    }
+
     function paint(price) {
       var pax = Number(cp.value) || 1;
       drawCar(pax);
+      chips();
 
       if (!price) {
         cv.textContent = '\u2014';
@@ -640,9 +705,9 @@ function calculator(airport, current, isPT, mapsKey) {
       var pax = Number(cp.value) || 1;
 
       if (!from || !to) {
-        cd.textContent = cu.textContent = '\u2014';
+        chKm.textContent = chDur.textContent = '\u2014';
         ck.textContent = 'Your price';
-        cn.textContent = HINT;
+        cn.textContent = '';
         paint(0);
         return;
       }
@@ -672,7 +737,7 @@ function calculator(airport, current, isPT, mapsKey) {
         }, function (res, status) {
           if (status !== 'OK' || !res.routes.length) {
             lastKey = ''; km = 0;
-            cd.textContent = cu.textContent = '\u2014';
+            chKm.textContent = chDur.textContent = '\u2014';
             ck.textContent = 'No route';
             cn.textContent = 'We could not find a road between those two. Check the ' +
               'spelling, or try the town name.';
@@ -684,10 +749,10 @@ function calculator(airport, current, isPT, mapsKey) {
           km = leg.distance.value / 1000;
           lastKey = key;
 
-          cd.textContent = km.toFixed(0) + ' km';
-          cu.textContent = leg.duration.text;
+          chKm.textContent = km.toFixed(0) + ' km';
+          chDur.textContent = leg.duration.text;
           ck.textContent = 'Your price';
-          cn.textContent = HINT;
+          cn.textContent = '';
           paint(fare(km, pax));
         });
       });
@@ -708,6 +773,10 @@ function calculator(airport, current, isPT, mapsKey) {
     ctime.addEventListener('change', function () { paint(km ? fare(km, Number(cp.value) || 1) : 0); });
 
     drawCar(Number(cp.value) || 1);
+    chips();
+
+    // As etiquetas acompanham sempre, mesmo sem preço ainda.
+    [cdate, ctime, cp].forEach(function (el) { el.addEventListener('change', chips); });
 
     // Já vem preenchido, mas espera pelo primeiro gesto: mostrar o
     // resultado logo obrigaria a carregar o Maps a toda a gente.
@@ -903,14 +972,26 @@ function routePage(country, airport, dest, siblings) {
   ${calculator(airport, dest, isPT, MAPS_KEY)}
 
   <h2 id="included">What is included</h2>
-  <ul>
-    <li><strong>A private vehicle</strong> for your group. No sharing, no other stops.</li>
-    <li><strong>A fixed price</strong> with tolls and taxes in. Nothing is added at the end.</li>
-    <li><strong>Flight tracking.</strong> Land late and the pick-up moves, not the price.</li>
-    <li><strong>60 minutes of free waiting</strong> after the flight lands.</li>
-    <li><strong>Free cancellation</strong> until 24 hours before pick-up.</li>
-    <li><strong>One suitcase and one piece of hand luggage per passenger.</strong>
-    More than that, tell us when you book.</li>
+  <ul class="ticks">
+    ${[
+      ['M5 17h14M7 17V9l3-4h4l3 4v8M9 5v4M15 5v4',
+       'A private vehicle', 'for your group. No sharing, no other stops.'],
+      ['M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6',
+       'A fixed price', 'with tolls and taxes in. Nothing is added at the end.'],
+      ['M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.4-2.1 2.1-2.4-.6a.5.5 0 0 0-.5.8L5 16l1.3 2.2a.5.5 0 0 0 .8-.1l.6-2.4 2.1-2.1 4.4 3.9a.5.5 0 0 0 .8-.5Z',
+       'Flight tracking.', 'Land late and the pick-up moves, not the price.'],
+      ['M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+       '60 minutes of free waiting', 'after the flight lands.'],
+      ['M9 14l2 2 4-5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+       'Free cancellation', 'until 24 hours before pick-up.'],
+      ['M6 8h12l1 12H5L6 8ZM9 8V6a3 3 0 0 1 6 0v2',
+       'One suitcase and one bag per passenger.', 'More than that, tell us when you book.']
+    ].map(([d, t, rest]) => `<li>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="${d}"/></svg>
+      <span><strong>${esc(t)}</strong> ${esc(rest)}</span>
+    </li>`).join('')}
   </ul>
 
   <h2 id="journey">The journey</h2>
