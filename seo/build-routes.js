@@ -287,19 +287,43 @@ html[data-theme="dark"] .ca-in input:focus,html[data-theme="dark"] .ca-in select
 .ca-f label .hint{font-family:var(--body);font-size:10px;font-weight:400;letter-spacing:0;
   text-transform:none;color:var(--muted);opacity:.7;margin-left:5px}
 
-/* O que está incluído, com um ícone por ponto: seis linhas de texto
-   seguidas não se leem, seis blocos com ícone leem-se de relance. */
-.inc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 8px}
-.inc-i{display:flex;gap:13px;align-items:flex-start;background:var(--surface);
-  border:1px solid var(--rule);border-radius:15px;padding:15px 17px}
-.inc-ic{flex:0 0 auto;width:34px;height:34px;border-radius:11px;display:flex;
-  align-items:center;justify-content:center;background:var(--teal-soft);color:var(--teal)}
-html[data-theme="dark"] .inc-ic{background:rgba(232,163,61,.12);color:var(--amber)}
-.inc-ic svg{width:18px;height:18px}
-.inc-i strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+/* ---------- blocos das secções de baixo ----------
+   Texto corrido de seis parágrafos não se lê numa página vinda de
+   uma pesquisa. Em blocos curtos, lê-se de relance. */
+
+/* Os passos do tempo real, numerados. */
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 0 18px}
+.step{display:flex;gap:12px;align-items:flex-start;background:var(--surface);
+  border:1px solid var(--rule);border-radius:14px;padding:13px 15px}
+.step .n{flex:0 0 auto;width:24px;height:24px;border-radius:8px;display:flex;
+  align-items:center;justify-content:center;background:var(--teal-soft);color:var(--teal);
+  font-family:var(--mono);font-size:11px;font-weight:600}
+html[data-theme="dark"] .step .n{background:rgba(232,163,61,.13);color:var(--amber)}
+.step strong{display:block;font-size:13.5px;font-weight:600;margin-bottom:3px}
+.step span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5}
+
+/* Quando reservar, com um travessão colorido por urgência. */
+.when{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 0 16px}
+.when-i{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:14px 16px;border-left:3px solid var(--rule-strong)}
+.when-i.bad{border-left-color:#C0392B}
+.when-i.warn{border-left-color:var(--amber)}
+.when-i.ok{border-left-color:var(--teal)}
+.when-i strong{display:block;font-family:var(--display);font-weight:700;font-size:14px;
   letter-spacing:-.015em;margin-bottom:4px}
-.inc-i span{display:block;color:var(--muted);font-size:12.5px;line-height:1.55}
-@media (max-width:700px){.inc{grid-template-columns:1fr}}
+.when-i span{display:block;color:var(--muted);font-size:12.5px;line-height:1.55}
+
+/* O que só se sabe tendo lá estado. */
+.local{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 8px}
+.local-i{background:var(--surface);border:1px solid var(--rule);border-radius:15px;
+  padding:16px 18px}
+.local-i strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.018em;margin-bottom:6px}
+.local-i span{display:block;color:var(--muted);font-size:13px;line-height:1.6}
+
+@media (max-width:700px){
+  .steps,.when,.local{grid-template-columns:1fr}
+}
 
 /* A lista de sugestões do Google, com o aspeto do site. */
 .pac-container{border-radius:12px;border:1px solid var(--rule-strong);
@@ -710,21 +734,27 @@ function whenToBook(dest) {
   const far = dest.km > 60;
 
   return `<h2 id="when">When to book</h2>
-  <p>You can book up to 30 minutes before pick-up, and there is no discount for booking
-  early &mdash; the price is the same in March or the night before. But availability is not.</p>
-  <ul>
-    <li><strong>July and August, Fridays and Saturdays.</strong> These are the busiest
-    arrivals of the year. A week ahead is comfortable; the day before often is not,
-    ${far ? 'especially for a run this long' : 'especially for larger groups'}.</li>
-    <li><strong>Groups of five or more.</strong> Vans are the first thing to run out.
-    Book these as soon as you have the flight.</li>
-    <li><strong>Arrivals between 23:00 and 06:00.</strong> Fewer drivers are working, so
-    the window is tighter. Two or three days ahead.</li>
-    <li><strong>Everything else.</strong> A day ahead is usually fine, and the same
-    morning often works.</li>
-  </ul>
-  <p>Cancellation is free until 24 hours before, so booking early costs you nothing if
-  the plan changes.</p>`;
+  <p>Booking early costs the same as booking late &mdash; the price does not move. What
+  moves is whether there is a car left.</p>
+
+  <div class="when">
+    ${[
+      ['bad', 'A week ahead',
+       `July, August, Fridays and Saturdays. The busiest arrivals of the year${
+         far ? ', and a long run like this one is the first to run out' : ''}.`],
+      ['bad', 'As soon as you have the flight',
+       'Groups of five or more. Vans and minibuses go first, always.'],
+      ['warn', 'Two or three days',
+       'Landing between 23:00 and 06:00. Fewer drivers are working.'],
+      ['ok', 'The day before is fine',
+       'Everything else. The same morning usually works too.']
+    ].map(([tone, k, v]) => `<div class="when-i ${tone}">
+      <strong>${k}</strong><span>${esc(v)}</span>
+    </div>`).join('')}
+  </div>
+
+  <p>Cancellation is free until 24 hours before, so booking early costs you nothing if the
+  plan changes.</p>`;
 }
 
 /**
@@ -735,25 +765,27 @@ function whenToBook(dest) {
  * passaportes e a bagagem, que costuma ser mais do que a viagem.
  */
 function realTime(airport, dest) {
-  const drive = dest.minutes;
+  const d = dest.minutes;
 
   return `<h2 id="timing">How long it really takes</h2>
-  <p>Maps will tell you ${drive} minutes, and that is the driving. Door to door from the
-  moment your wheels touch the runway is a different number, and it is worth planning
-  around the right one.</p>
-  <ul>
-    <li><strong>Taxiing and disembarking:</strong> 10 to 15 minutes.</li>
-    <li><strong>Passport control:</strong> nothing inside the Schengen area; 15 to 45
-    minutes arriving from outside it, and the upper end is real in summer.</li>
-    <li><strong>Baggage reclaim:</strong> 10 to 25 minutes with hold luggage, none with
-    hand luggage only.</li>
-    <li><strong>Finding your driver:</strong> 2 to 5 minutes. They have your name on a
-    sign and your phone number.</li>
-    <li><strong>The drive:</strong> ${drive} minutes.</li>
-  </ul>
-  <p>So a realistic door-to-door figure is <strong>${drive + 30} to ${drive + 75}
-  minutes</strong> after landing. If someone is expecting you, that is the number to give
-  them &mdash; not the ${drive}.</p>`;
+  <p>Maps says ${d} minutes. That is the driving. Door to door from the moment you land is
+  a different number, and it is the one worth planning around.</p>
+
+  <div class="steps">
+    ${[
+      ['Taxi and disembark', '10&ndash;15 min'],
+      ['Passport control', 'None inside Schengen. 15&ndash;45 min from outside it.'],
+      ['Baggage reclaim', '10&ndash;25 min with hold luggage'],
+      ['Finding your driver', '2&ndash;5 min. Your name on a sign.'],
+      ['The drive', `${d} min`]
+    ].map(([k, v], i) => `<div class="step">
+      <span class="n">${i + 1}</span>
+      <div><strong>${k}</strong><span>${v}</span></div>
+    </div>`).join('')}
+  </div>
+
+  <p><strong>Realistically, ${d + 30} to ${d + 75} minutes after landing.</strong> If
+  someone is waiting for you, that is the number to give them.</p>`;
 }
 
 
@@ -763,8 +795,11 @@ function localInfo(airport) {
   if (!airport.local || !airport.local.length) return '';
 
   return `<h2 id="local">Before you land</h2>
-  ${airport.local.map(([t, body]) =>
-    `<h3>${esc(t)}</h3>\n  <p>${esc(body)}</p>`).join('\n  ')}`;
+  <div class="local">
+    ${airport.local.map(([t, body]) => `<div class="local-i">
+      <strong>${esc(t)}</strong><span>${esc(body)}</span>
+    </div>`).join('')}
+  </div>`;
 }
 
 // ============================================================
@@ -868,27 +903,15 @@ function routePage(country, airport, dest, siblings) {
   ${calculator(airport, dest, isPT, MAPS_KEY)}
 
   <h2 id="included">What is included</h2>
-  <div class="inc">
-    ${[
-      ['M5 17h14M7 17V9l3-4h4l3 4v8M9 5v4M15 5v4',
-       'A private vehicle', 'Yours alone. No sharing, no other stops on the way.'],
-      ['M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6',
-       'A fixed price', 'Tolls and taxes in. Nothing is added at the end.'],
-      ['M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.4-2.1 2.1-2.4-.6a.5.5 0 0 0-.5.8L5 16l1.3 2.2a.5.5 0 0 0 .8-.1l.6-2.4 2.1-2.1 4.4 3.9a.5.5 0 0 0 .8-.5Z',
-       'Flight tracking', 'Land late and the pick-up moves, not the price.'],
-      ['M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
-       '60 minutes of waiting', 'Free, counted from the moment the plane lands.'],
-      ['M9 14l2 2 4-5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
-       'Free cancellation', 'Until 24 hours before pick-up, refunded in full.'],
-      ['M6 8h12l1 12H5L6 8ZM9 8V6a3 3 0 0 1 6 0v2',
-       'A case each', 'One suitcase and one bag per passenger. More? Tell us.']
-    ].map(([d, t, body]) => `<div class="inc-i">
-      <span class="inc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="${d}"/></svg></span>
-      <div><strong>${esc(t)}</strong><span>${esc(body)}</span></div>
-    </div>`).join('')}
-  </div>
+  <ul>
+    <li><strong>A private vehicle</strong> for your group. No sharing, no other stops.</li>
+    <li><strong>A fixed price</strong> with tolls and taxes in. Nothing is added at the end.</li>
+    <li><strong>Flight tracking.</strong> Land late and the pick-up moves, not the price.</li>
+    <li><strong>60 minutes of free waiting</strong> after the flight lands.</li>
+    <li><strong>Free cancellation</strong> until 24 hours before pick-up.</li>
+    <li><strong>One suitcase and one piece of hand luggage per passenger.</strong>
+    More than that, tell us when you book.</li>
+  </ul>
 
   <h2 id="journey">The journey</h2>
   <p>${esc(dest.about)}</p>
@@ -905,7 +928,7 @@ function routePage(country, airport, dest, siblings) {
 
   ${localInfo(airport)}
 
-  <h2 id="faq">Questions</h2>
+  <h2 id="faq">FAQ</h2>
   ${faq.map(([q, a]) => `<h3>${esc(q)}</h3>\n  <p>${esc(a)}</p>`).join('\n  ')}
 
   <h2 id="more">Other transfers from ${esc(airport.city)} Airport</h2>
