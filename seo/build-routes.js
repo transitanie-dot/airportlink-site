@@ -281,7 +281,6 @@ html[data-theme="dark"] .cmp .pick{background:var(--amber);color:#141A28}
 .cmp-wrap{overflow-x:auto;margin:0 -4px}
 @media (max-width:700px){.cmp{min-width:640px}}
 
-.updated{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin:0 0 22px}
 
 .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);
   margin-bottom:18px}
@@ -430,6 +429,63 @@ function calculator(km, isPT, currency, from, to) {
   </script>`;
 }
 
+/**
+ * Quanto tempo antes reservar.
+ *
+ * Ninguém no setor responde a isto, e é das primeiras coisas que
+ * alguém pensa ao planear. Uma pergunta com resposta útil e sem
+ * concorrência é exatamente o que faz uma página ser encontrada.
+ */
+function whenToBook(dest) {
+  const far = dest.km > 60;
+
+  return `<h2 id="when">When to book</h2>
+  <p>You can book up to 30 minutes before pick-up, and there is no discount for booking
+  early &mdash; the price is the same in March or the night before. But availability is not.</p>
+  <ul>
+    <li><strong>July and August, Fridays and Saturdays.</strong> These are the busiest
+    arrivals of the year. A week ahead is comfortable; the day before often is not,
+    ${far ? 'especially for a run this long' : 'especially for larger groups'}.</li>
+    <li><strong>Groups of five or more.</strong> Vans are the first thing to run out.
+    Book these as soon as you have the flight.</li>
+    <li><strong>Arrivals between 23:00 and 06:00.</strong> Fewer drivers are working, so
+    the window is tighter. Two or three days ahead.</li>
+    <li><strong>Everything else.</strong> A day ahead is usually fine, and the same
+    morning often works.</li>
+  </ul>
+  <p>Cancellation is free until 24 hours before, so booking early costs you nothing if
+  the plan changes.</p>`;
+}
+
+/**
+ * O tempo real, não o do mapa.
+ *
+ * O Google Maps diz o tempo a conduzir. O que interessa a quem
+ * chega é o tempo desde a aterragem — e a diferença é o controlo de
+ * passaportes e a bagagem, que costuma ser mais do que a viagem.
+ */
+function realTime(airport, dest) {
+  const drive = dest.minutes;
+
+  return `<h2 id="timing">How long it really takes</h2>
+  <p>Maps will tell you ${drive} minutes, and that is the driving. Door to door from the
+  moment your wheels touch the runway is a different number, and it is worth planning
+  around the right one.</p>
+  <ul>
+    <li><strong>Taxiing and disembarking:</strong> 10 to 15 minutes.</li>
+    <li><strong>Passport control:</strong> nothing inside the Schengen area; 15 to 45
+    minutes arriving from outside it, and the upper end is real in summer.</li>
+    <li><strong>Baggage reclaim:</strong> 10 to 25 minutes with hold luggage, none with
+    hand luggage only.</li>
+    <li><strong>Finding your driver:</strong> 2 to 5 minutes. They have your name on a
+    sign and your phone number.</li>
+    <li><strong>The drive:</strong> ${drive} minutes.</li>
+  </ul>
+  <p>So a realistic door-to-door figure is <strong>${drive + 30} to ${drive + 75}
+  minutes</strong> after landing. If someone is expecting you, that is the number to give
+  them &mdash; not the ${drive}.</p>`;
+}
+
 /** As alternativas, com a nossa marcada. */
 function comparison(airport, cheapest, dest) {
   if (!airport.compare || !airport.compare.length) return '';
@@ -458,6 +514,40 @@ function comparison(airport, cheapest, dest) {
   </table></div>
   <p style="font-size:13px;color:var(--muted)">Public transport fares and taxi estimates are
   for reference and change. Our price is the one you pay.</p>`;
+}
+
+/**
+ * Quando NÃO nos escolher.
+ *
+ * Nenhum concorrente escreve isto, e é a secção que mais confiança
+ * gera. Uma página que só diz vantagens lê-se como publicidade;
+ * uma que admite quando outra coisa é melhor lê-se como conselho.
+ *
+ * E não perdemos a venda: quem não devia reservar não ia ficar
+ * satisfeito na mesma.
+ */
+function whenNotUs(dest, cheapest) {
+  const short = dest.km < 15;
+
+  return `<h2 id="honest">When a transfer is the wrong choice</h2>
+  <p>We would rather you booked something else than booked us and regretted it.</p>
+  <ul>
+    <li><strong>You are travelling alone with hand luggage${short ? '' : ' and time to spare'}.</strong>
+    ${short
+      ? 'Public transport is minutes slower and a fraction of the price. Take it.'
+      : 'The bus or train costs a fraction of ' + money(cheapest) + '. If the extra hour ' +
+        'does not bother you, save the money.'}</li>
+    <li><strong>You are renting a car anyway.</strong> Collect it at the airport rather
+    than paying twice.</li>
+    <li><strong>Your plans might shift by more than a day.</strong> Cancellation is free
+    up to 24 hours before, but inside that window it is not. Somewhere flexible would
+    suit you better.</li>
+    <li><strong>You want the cheapest possible arrival and nothing else matters.</strong>
+    We are not it, and we are not trying to be.</li>
+  </ul>
+  <p>A transfer earns its price when you land tired, with luggage, with children, late at
+  night, or with people who are counting on you to have it sorted. That is the trip we
+  are built for.</p>`;
 }
 
 /** O que só se sabe tendo lá estado. */
@@ -566,11 +656,11 @@ function routePage(country, airport, dest, siblings) {
   ${hero(airport, `${airport.iata} · ${country.country}`,
          `${airport.city} Airport to ${dest.name}`)}
 
-  ${jumpNav([['price', 'Price'], ['journey', 'The journey'], ['compare', 'Compare'],
-             ['local', 'Before you land'], ['included', 'What is included'],
+  ${jumpNav([['price', 'Price'], ['journey', 'The journey'], ['timing', 'Timing'],
+             ['compare', 'Compare'], ['honest', 'Is it worth it'],
+             ['when', 'When to book'], ['local', 'Before you land'],
              ['faq', 'Questions'], ['more', 'Other routes']])}
 
-  <p class="updated">Checked ${today}</p>
 
   <p class="lead">A private car waiting for you in arrivals, at a price agreed before you
   fly. ${esc(dest.km)} km, about ${esc(dest.minutes)} minutes, no meter and no surprises.</p>
@@ -593,7 +683,13 @@ function routePage(country, airport, dest, siblings) {
     ? '<ul>' + airport.tips.map((t) => `<li>${esc(t)}</li>`).join('') + '</ul>'
     : ''}
 
+  ${realTime(airport, dest)}
+
   ${comparison(airport, p1, dest)}
+
+  ${whenNotUs(dest, p1)}
+
+  ${whenToBook(dest)}
 
   ${localInfo(airport)}
 
@@ -699,7 +795,6 @@ function airportPage(country, airport) {
   ${jumpNav([['routes', 'Routes and prices'], ['compare', 'Compare'],
              ['local', 'Before you land'], ['airport', 'The airport']])}
 
-  <p class="updated">Checked ${today}</p>
 
   <p class="lead">A private car from ${esc(airport.name)} to anywhere you are staying,
   at a price agreed before you fly. ${esc(airport.destinations.length)} routes below, and
