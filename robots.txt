@@ -15,5 +15,6 @@ Disallow: /admin
 # noindex na propria pagina; isto poupa ao Google o trabalho de a
 # visitar para descobrir isso.
 Disallow: /booking
+Disallow: /checkout
 
 Sitemap: https://www.airportlink.app/sitemap.xml
