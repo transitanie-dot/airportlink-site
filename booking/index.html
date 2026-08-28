@@ -66,6 +66,16 @@ html[data-theme="dark"] .leg-dot.a{background:var(--amber)}
 .edit-box.on{display:grid}
 .ef{display:flex;flex-direction:column;min-width:0;grid-column:span 2}
 .ef.wide{grid-column:span 3}
+/* Sem botão de confirmar: um aviso discreto de que já está a
+   recalcular, para a mudança não parecer ter-se perdido. */
+.saving{grid-column:1/-1;display:none;align-items:center;gap:8px;color:var(--muted);
+  font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase}
+.saving.on{display:flex}
+.saving i{width:7px;height:7px;border-radius:999px;background:var(--teal);
+  animation:pulse 1s ease-in-out infinite}
+html[data-theme="dark"] .saving i{background:var(--amber)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
 .ef label{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
   text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 /* As sugestões, iguais às da página inicial: a mesma caixa, o mesmo
@@ -282,7 +292,8 @@ html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
       <div class="ef"><label for="eTime">Time</label><input id="eTime" type="time"></div>
       <div class="ef"><label for="ePax">Passengers</label>
         <input id="ePax" type="number" min="1" max="16" step="1"></div>
-      <div class="ef"><button class="go" id="applyBtn" type="button">Update</button></div>
+
+      <div class="saving" id="saving"><i></i>Updating your price</div>
     </div>
   </section>
 
@@ -642,6 +653,7 @@ function suggest(input, box) {
 
     input.value = item.getAttribute('data-d');
     box.classList.remove('show');
+    apply(true);
 
     // Sessão nova depois de cada escolha: é assim que o Google
     // agrupa as teclas numa só cobrança.
@@ -826,22 +838,65 @@ function paintSummary() {
 $('editBtn').addEventListener('click', function () {
   var box = $('editBox');
   var open = box.classList.toggle('on');
-  $('editBtn').textContent = open ? 'Close' : 'Change';
+
+  // "Done" e não "Close": não há nada por guardar, e "close" faria
+  // pensar que fechar sem confirmar perde a alteração.
+  $('editBtn').textContent = open ? 'Done' : 'Change';
   if (open) maps();
 });
 
-$('applyBtn').addEventListener('click', function () {
-  trip.from = $('eFrom').value.trim();
-  trip.to = $('eTo').value.trim();
-  trip.date = $('eDate').value;
-  trip.time = $('eTime').value;
-  trip.pax = Math.min(16, Math.max(1, Number($('ePax').value) || 1));
+/**
+ * Cada alteração recalcula sozinha.
+ *
+ * Um botão de confirmar obriga a um gesto que a pessoa não pediu, e
+ * quem se esquece dele fica a ver um preço que já não corresponde ao
+ * que escolheu — que é pior do que não ter preço nenhum.
+ */
+var applyTimer = null;
 
-  $('editBox').classList.remove('on');
-  $('editBtn').textContent = 'Change';
+function apply(now) {
+  clearTimeout(applyTimer);
 
-  paintRoute();
-  measure();
+  var wait = now ? 0 : 700;
+
+  $('saving').classList.add('on');
+
+  applyTimer = setTimeout(function () {
+    var from = $('eFrom').value.trim();
+    var to = $('eTo').value.trim();
+
+    // Só as moradas exigem medir a rota outra vez. Mudar a data, a
+    // hora ou os passageiros não muda a distância — e cada medição
+    // é uma chamada paga ao Google.
+    var moved = from !== trip.from || to !== trip.to;
+
+    trip.from = from;
+    trip.to = to;
+    trip.date = $('eDate').value;
+    trip.time = $('eTime').value;
+    trip.pax = Math.min(16, Math.max(1, Number($('ePax').value) || 1));
+
+    paintRoute();
+
+    if (moved) {
+      measure();
+    } else if (trip.km) {
+      paintOptions();
+      paintSummary();
+    }
+
+    $('saving').classList.remove('on');
+  }, wait);
+}
+
+// A escrever, esperamos que pare. Nos outros campos, é imediato: já
+// houve uma decisão.
+['eFrom', 'eTo'].forEach(function (id) {
+  $(id).addEventListener('input', function () { apply(false); });
+});
+
+['eDate', 'eTime', 'ePax'].forEach(function (id) {
+  $(id).addEventListener('change', function () { apply(true); });
 });
 
 // ---------- ida e volta ----------
