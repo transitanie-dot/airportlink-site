@@ -262,6 +262,7 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
         </div>
         <div class="acct-btns">
           <button class="acct-b" id="signInBtn" type="button">Sign in</button>
+          <button class="acct-b" id="createBtn" type="button">Create account</button>
           <button class="acct-b ghost" id="guestBtn" type="button">Continue as guest</button>
         </div>
       </div>
@@ -703,11 +704,14 @@ $('guestBtn').addEventListener('click', function () {
   $('name').focus();
 });
 
-$('signInBtn').addEventListener('click', function () {
-  // Volta aqui depois de entrar, com tudo o que já foi escolhido.
+// Ambos voltam aqui depois, com tudo o que já foi escolhido.
+function leaveAndReturn(where) {
   var back = encodeURIComponent(window.location.pathname + window.location.search);
-  window.location.href = '/login?next=' + back;
-});
+  window.location.href = where + '?next=' + back;
+}
+
+$('signInBtn').addEventListener('click', function () { leaveAndReturn('/login'); });
+$('createBtn').addEventListener('click', function () { leaveAndReturn('/createaccount'); });
 
 $('backBtn').addEventListener('click', function () {
   history.length > 1 ? history.back() : (window.location.href = '/booking/');
