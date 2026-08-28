@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confirm your transfer | Airportlink</title>
+<meta name="description" content="Your details and payment. Free cancellation up to 24 hours before pick-up.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('airportlink-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="stylesheet" href="/assets/site.css">
+
+<style>
+/* ---------- a barra do topo ----------
+   Sem navegação. A partir daqui só há um caminho, e cada link para
+   fora é uma hipótese de a pessoa não voltar. */
+.co-bar{border-bottom:1px solid var(--rule);background:var(--surface)}
+.co-bar-in{max-width:1000px;margin:0 auto;padding:16px 20px;display:flex;
+  align-items:center;justify-content:space-between;gap:20px}
+.co-logo{display:inline-flex;align-items:center;font-family:var(--display);font-weight:800;
+  font-size:18px;letter-spacing:-.03em;color:var(--text);text-decoration:none}
+.co-logo b{color:var(--teal);font-weight:800}
+html[data-theme="dark"] .co-logo b{color:#17A398}
+.co-logo .dot{width:5px;height:5px;border-radius:999px;background:#fd8a2b;margin-left:3px}
+.co-secure{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10.5px;
+  font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.co-secure svg{width:14px;height:14px}
+
+/* ---------- os passos ---------- */
+.steps{max-width:1000px;margin:0 auto;padding:22px 20px 0;display:flex;align-items:center;
+  gap:10px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.step .n{width:22px;height:22px;border-radius:999px;display:flex;align-items:center;
+  justify-content:center;background:var(--surface-2);color:var(--muted);
+  font-family:var(--mono);font-size:11px;font-weight:600}
+.step.done .n{background:var(--teal);color:#fff}
+.step.now .n{background:var(--ink);color:#fff}
+.step.now{color:var(--text);font-weight:600}
+html[data-theme="dark"] .step.done .n{background:var(--amber);color:#141A28}
+html[data-theme="dark"] .step.now .n{background:#D8DEE8;color:#141A28}
+.step-line{flex:1;height:1px;background:var(--rule);min-width:16px;max-width:40px}
+
+.co{max-width:1000px;margin:0 auto;padding:20px 20px 50px;
+  display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+
+/* ---------- o formulário ---------- */
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:20px;
+  padding:22px;margin-bottom:14px}
+.card h2{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:-.022em;
+  margin:0 0 3px}
+.card .sub{margin:0 0 18px;color:var(--muted);font-size:13px;line-height:1.55}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f{display:flex;flex-direction:column;min-width:0}
+.f.wide{grid-column:span 2}
+.f label{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.f label .opt{font-family:var(--body);font-size:10px;font-weight:400;letter-spacing:0;
+  text-transform:none;opacity:.65;margin-left:5px}
+.f input,.f textarea{padding:0 14px;height:48px;border-radius:13px;
+  border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
+  font-family:inherit;font-size:14.5px;outline:none;width:100%;
+  transition:border-color .14s ease,box-shadow .14s ease}
+.f textarea{height:auto;min-height:86px;padding:13px 14px;resize:vertical;line-height:1.55}
+.f input:focus,.f textarea:focus{border-color:var(--teal);
+  box-shadow:0 0 0 3px rgba(15,118,110,.13)}
+html[data-theme="dark"] .f input:focus,html[data-theme="dark"] .f textarea:focus{
+  border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,163,61,.15)}
+.f .hint{margin-top:6px;color:var(--muted);font-size:11.5px;line-height:1.45}
+.f.bad input,.f.bad textarea{border-color:var(--err-rule);background:var(--err-bg)}
+.f .err{display:none;margin-top:6px;color:var(--err-text);font-size:11.5px}
+.f.bad .err{display:block}
+
+/* ---------- pagamento ---------- */
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.pay-opt{text-align:left;background:var(--surface-2);border:1px solid var(--rule-strong);
+  border-radius:15px;padding:15px 17px;cursor:pointer;
+  transition:border-color .14s ease,box-shadow .14s ease}
+.pay-opt:hover{border-color:var(--muted)}
+.pay-opt.on{border-color:var(--teal);background:var(--teal-soft);
+  box-shadow:0 0 0 2px var(--teal-soft)}
+html[data-theme="dark"] .pay-opt.on{border-color:var(--amber);
+  background:rgba(232,163,61,.1);box-shadow:0 0 0 2px rgba(232,163,61,.12)}
+.pay-opt.off{opacity:.45;cursor:not-allowed}
+.pay-opt strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.015em;margin-bottom:4px}
+.pay-opt span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+
+/* ---------- o resumo ---------- */
+.side{position:sticky;top:20px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.side h2{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.022em;
+  margin:0}
+.leg{display:flex;gap:11px;align-items:flex-start}
+.leg .dot{width:8px;height:8px;border-radius:999px;margin-top:5px;flex:0 0 auto}
+.leg .dot.a{background:var(--teal)}
+.leg .dot.b{background:#fd8a2b}
+html[data-theme="dark"] .leg .dot.a{background:var(--amber)}
+.leg div{min-width:0}
+.leg .k{display:block;font-family:var(--mono);font-size:8px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.leg .v{display:block;font-size:13.5px;font-weight:600;line-height:1.4}
+.row{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:7px 0;
+  border-bottom:1px solid var(--rule)}
+.row:last-of-type{border-bottom:0}
+.row span:first-child{color:var(--muted)}
+.row span:last-child{font-weight:600;text-align:right}
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding-top:14px;border-top:1px solid var(--rule-strong)}
+.total span{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted)}
+.total b{font-family:var(--mono);font-size:30px;font-weight:600;letter-spacing:-.035em;
+  color:var(--teal)}
+html[data-theme="dark"] .total b{color:var(--amber)}
+.when{margin:0;font-size:12.5px;font-weight:600;color:var(--teal)}
+html[data-theme="dark"] .when{color:var(--amber)}
+.go{display:flex;align-items:center;justify-content:center;height:52px;border:0;
+  border-radius:14px;background:var(--teal);color:#fff;cursor:pointer;
+  font-family:var(--body);font-size:16px;font-weight:600;
+  box-shadow:0 6px 18px rgba(15,118,110,.26);transition:transform .14s ease}
+.go:hover{transform:translateY(-2px)}
+html[data-theme="dark"] .go{background:var(--amber);color:#141A28;
+  box-shadow:0 6px 18px rgba(232,163,61,.24)}
+.go:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.fine{margin:0;color:var(--muted);font-size:11.5px;line-height:1.5}
+.fine a{color:var(--teal)}
+html[data-theme="dark"] .fine a{color:var(--amber)}
+.back{background:transparent;border:0;padding:0;color:var(--muted);cursor:pointer;
+  font-family:inherit;font-size:12.5px;text-align:center}
+.back:hover{color:var(--text);text-decoration:underline}
+
+.warn{display:none;background:var(--err-bg);border:1px solid var(--err-rule);
+  border-radius:13px;padding:13px 15px;color:var(--err-text);font-size:13px;line-height:1.55}
+.warn.on{display:block}
+
+@media (max-width:940px){
+  .co{grid-template-columns:1fr}
+  .side{position:static;order:-1}
+}
+@media (max-width:560px){
+  .grid,.pay{grid-template-columns:1fr}
+  .f.wide{grid-column:span 1}
+}
+</style>
+</head>
+<body>
+
+<!-- Sem cabeçalho de navegação: a partir daqui só há um caminho. -->
+<div class="co-bar">
+  <div class="co-bar-in">
+    <a class="co-logo" href="/">AIRPORT<b>LINK</b><span class="dot"></span></a>
+    <span class="co-secure">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      Secure checkout
+    </span>
+  </div>
+</div>
+
+<div class="steps">
+  <span class="step done"><span class="n">&#10003;</span>Route</span>
+  <span class="step-line"></span>
+  <span class="step done"><span class="n">&#10003;</span>Vehicle</span>
+  <span class="step-line"></span>
+  <span class="step now"><span class="n">3</span>Your details</span>
+  <span class="step-line"></span>
+  <span class="step"><span class="n">4</span>Payment</span>
+</div>
+
+<main id="main">
+<div class="co">
+
+  <div>
+    <div class="warn" id="warn"></div>
+
+    <!-- ---------- quem viaja ---------- -->
+    <section class="card">
+      <h2>Who is travelling</h2>
+      <p class="sub">The driver gets the name and phone number the day before, and nothing
+      else.</p>
+
+      <div class="grid">
+        <div class="f wide">
+          <label for="name">Full name</label>
+          <input id="name" type="text" autocomplete="name" placeholder="As on your passport">
+          <span class="err">We need a name for the driver to look for.</span>
+        </div>
+
+        <div class="f wide">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="email" inputmode="email"
+                 placeholder="you@example.com">
+          <span class="hint">Your confirmation and the driver's details go here.</span>
+          <span class="err">That email does not look right.</span>
+        </div>
+
+        <div class="f wide" id="phoneField">
+          <label for="phone">Phone</label>
+          <input id="phone" type="tel" autocomplete="tel" placeholder="+351 912 345 678">
+          <span class="hint">The driver calls or messages this number on the day.</span>
+          <span class="err">We need a number the driver can reach on the day.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- a viagem ---------- -->
+    <section class="card">
+      <h2>The journey</h2>
+      <p class="sub">The more exact the address, the fewer phone calls on the day.</p>
+
+      <div class="grid">
+        <div class="f wide">
+          <label for="flight">Flight number <span class="opt">optional but useful</span></label>
+          <input id="flight" type="text" placeholder="TP1234" style="text-transform:uppercase">
+          <span class="hint">We track it. If you land late, the driver waits and you pay
+          nothing extra.</span>
+        </div>
+
+        <div class="f wide">
+          <label for="pickup">Pick-up address</label>
+          <input id="pickup" type="text">
+          <span class="hint" id="pickupHint">Terminal, or the exact address if it is not
+          an airport.</span>
+        </div>
+
+        <div class="f wide">
+          <label for="dropoff">Drop-off address</label>
+          <input id="dropoff" type="text">
+          <span class="hint">Hotel name and street. Not just the town.</span>
+          <span class="err">We need somewhere to drop you.</span>
+        </div>
+
+        <div class="f wide">
+          <label for="notes">Anything we should know <span class="opt">optional</span></label>
+          <textarea id="notes" maxlength="600" placeholder="Child seats, extra luggage, a wheelchair, a second stop &mdash; tell us here and we arrange it."></textarea>
+          <span class="hint">Child seats are free. Just say the ages.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- pagamento ---------- -->
+    <section class="card">
+      <h2>How you want to pay</h2>
+      <p class="sub">Either way, cancellation is free until 24 hours before pick-up.</p>
+
+      <div class="pay">
+        <button class="pay-opt on" id="payLater" data-mode="later" type="button">
+          <strong>Pay later</strong>
+          <span id="payLaterDesc">Card saved now, charged 48 hours before you travel.</span>
+        </button>
+        <button class="pay-opt" id="payNow" data-mode="now" type="button">
+          <strong>Pay now</strong>
+          <span>Settle it today and forget about it.</span>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ---------- o resumo ---------- -->
+  <aside class="side">
+    <h2>Your transfer</h2>
+
+    <div class="leg">
+      <span class="dot a"></span>
+      <div><span class="k">Pick-up</span><span class="v" id="sFrom">&mdash;</span></div>
+    </div>
+    <div class="leg">
+      <span class="dot b"></span>
+      <div><span class="k">Drop-off</span><span class="v" id="sTo">&mdash;</span></div>
+    </div>
+
+    <div>
+      <div class="row"><span>When</span><span id="sWhen">&mdash;</span></div>
+      <div class="row"><span>Vehicle</span><span id="sVeh">&mdash;</span></div>
+      <div class="row"><span>Passengers</span><span id="sPax">&mdash;</span></div>
+      <div class="row" id="sRetRow" style="display:none">
+        <span>Return</span><span id="sRet">&mdash;</span></div>
+    </div>
+
+    <div class="total"><span>Total</span><b id="sTotal">&mdash;</b></div>
+    <p class="when" id="sPayWhen"></p>
+
+    <button class="go" id="goBtn">Confirm booking</button>
+
+    <p class="fine">By confirming you accept our <a href="/terms">terms</a> and
+    <a href="/privacypolicy">privacy policy</a>. The price is recalculated on our servers
+    before payment, so what you see is what you are charged.</p>
+
+    <button class="back" id="backBtn" type="button">&larr; Change the vehicle</button>
+  </aside>
+
+</div>
+</main>
+
+<script>
+(function () {
+'use strict';
+
+var $ = function (id) { return document.getElementById(id); };
+
+/**
+ * As mesmas classes da página de reserva.
+ *
+ * Só os números que o resumo precisa: nome, lugares e multiplicador.
+ * Os desenhos ficam lá, que é onde se escolhe.
+ */
+var CLASSES = {
+  sedan:     { name: 'Sedan',         seats: 4,  mult: 1 },
+  premium:   { name: 'Premium Sedan', seats: 4,  mult: 1.55 },
+  van:       { name: 'Van',           seats: 8,  mult: 1.7 },
+  van_sedan: { name: 'Van + Sedan',   seats: 12, mult: 2.5, cars: 2 },
+  two_vans:  { name: 'Two Vans',      seats: 16, mult: 3.2, cars: 2 }
+};
+
+/**
+ * A mesma fórmula do servidor.
+ *
+ * Este número é para a pessoa ver. O servidor recalcula tudo antes
+ * de falar com o Stripe — se divergirem, é o do servidor que vale.
+ */
+function fare(km, mult, isPT) {
+  var p = isPT ? { base: 40, perKm: 1.60, min: 25, up: 1.0 }
+               : { base: 20, perKm: 3.5, min: 25, up: 1.3 };
+  return Math.max(p.min, (p.base + km * p.perKm) * p.up * mult);
+}
+
+var trip = {
+  from: '', to: '', date: '', time: '12:00', pax: 2,
+  vehicle: 'sedan', km: 0, isPT: true,
+  returnDate: '', returnTime: ''
+};
+
+var payMode = 'later';
+
+// ---------- ler o que veio da página anterior ----------
+(function read() {
+  var q = new URLSearchParams(window.location.search);
+
+  trip.from = q.get('from') || '';
+  trip.to = q.get('to') || '';
+  trip.date = q.get('date') || '';
+  trip.time = q.get('time') || '12:00';
+  trip.pax = Math.min(16, Math.max(1, Number(q.get('pax')) || 2));
+  trip.vehicle = CLASSES[q.get('vehicle')] ? q.get('vehicle') : 'sedan';
+  trip.km = Number(q.get('km')) || 0;
+  trip.returnDate = q.get('return_date') || '';
+  trip.returnTime = q.get('return_time') || '';
+})();
+
+function whenText(date, time) {
+  if (!date) return '\u2014';
+  var d = new Date(date + 'T' + (time || '12:00'));
+  if (isNaN(d.getTime())) return date;
+  return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) +
+    (time ? ' \u00b7 ' + time : '');
+}
+
+function paint() {
+  var c = CLASSES[trip.vehicle];
+
+  $('sFrom').textContent = trip.from || 'Not set';
+  $('sTo').textContent = trip.to || 'Not set';
+  $('sWhen').textContent = whenText(trip.date, trip.time);
+  $('sVeh').textContent = c.name + (c.cars ? ' (' + c.cars + ' vehicles)' : '');
+  $('sPax').textContent = trip.pax + (trip.pax === 1 ? ' passenger' : ' passengers');
+
+  var hasReturn = Boolean(trip.returnDate);
+  $('sRetRow').style.display = hasReturn ? 'flex' : 'none';
+  $('sRet').textContent = whenText(trip.returnDate, trip.returnTime);
+
+  var one = trip.km ? Math.round(fare(trip.km, c.mult, trip.isPT)) : 0;
+  var total = hasReturn ? one * 2 : one;
+  $('sTotal').textContent = total ? '\u20ac' + total : '\u2014';
+
+  // Quando o cartão é debitado. Menos de 48 horas, é logo — e nesse
+  // caso o "pagar depois" nem sequer é oferecido.
+  var pick = new Date(trip.date + 'T' + (trip.time || '12:00'));
+  var at = new Date(pick.getTime() - 48 * 36e5);
+  var canLater = !isNaN(at.getTime()) && at > new Date();
+
+  if (canLater) {
+    var d = at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+    $('payLaterDesc').textContent = 'Card saved now, charged on ' + d + '.';
+    $('sPayWhen').textContent = payMode === 'later'
+      ? 'Book now, pay later (' + d + ')' : 'Charged today';
+  } else {
+    $('payLater').classList.add('off');
+    $('payLater').disabled = true;
+    $('payLaterDesc').textContent = 'Not available this close to pick-up.';
+    setPay('now');
+    $('sPayWhen').textContent = 'Charged today';
+  }
+
+  // Os campos de morada começam com o que já foi dito.
+  if (!$('pickup').value) $('pickup').value = trip.from;
+  if (!$('dropoff').value) $('dropoff').value = trip.to;
+
+  $('pickupHint').textContent = /airport/i.test(trip.from)
+    ? 'Terminal number if you know it. The driver meets you in arrivals.'
+    : 'The exact street and number.';
+}
+
+// ---------- pagamento ----------
+function setPay(mode) {
+  payMode = mode;
+  $('payLater').classList.toggle('on', mode === 'later');
+  $('payNow').classList.toggle('on', mode === 'now');
+  paint();
+}
+
+$('payLater').addEventListener('click', function () {
+  if (this.disabled) return;
+  setPay('later');
+});
+$('payNow').addEventListener('click', function () { setPay('now'); });
+
+// ---------- validação ----------
+function bad(id, is) {
+  $(id).closest('.f').classList.toggle('bad', is);
+  return !is;
+}
+
+function check() {
+  var ok = true;
+
+  ok = bad('name', $('name').value.trim().length < 2) && ok;
+  ok = bad('email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('email').value.trim())) && ok;
+  ok = bad('phone', $('phone').value.replace(/\D/g, '').length < 6) && ok;
+  ok = bad('dropoff', !$('dropoff').value.trim()) && ok;
+
+  return ok;
+}
+
+// Ao corrigir um campo, o vermelho sai logo — esperar pelo botão
+// para dizer que já está certo é irritante.
+['name', 'email', 'phone', 'dropoff'].forEach(function (id) {
+  $(id).addEventListener('input', function () {
+    if ($(id).closest('.f').classList.contains('bad')) check();
+  });
+});
+
+// ---------- confirmar ----------
+$('goBtn').addEventListener('click', function () {
+  $('warn').classList.remove('on');
+
+  if (!check()) {
+    $('warn').textContent = 'A couple of fields need fixing before we can go on.';
+    $('warn').classList.add('on');
+    document.querySelector('.f.bad input').focus();
+    return;
+  }
+
+  // AQUI entra a chamada ao /api/create-checkout-session.
+  //
+  // Fica por ligar de propósito: o servidor ainda não conhece as
+  // classes de veículo, e ligá-lo agora faria o Premium Sedan ser
+  // cobrado ao preço do Sedan.
+  $('warn').textContent = 'Checkout is not connected yet. The server needs to know about ' +
+    'vehicle classes first, otherwise the price you chose is not the price you would pay.';
+  $('warn').classList.add('on');
+});
+
+$('backBtn').addEventListener('click', function () {
+  history.length > 1 ? history.back() : (window.location.href = '/booking/');
+});
+
+paint();
+
+})();
+</script>
+</body>
+</html>
