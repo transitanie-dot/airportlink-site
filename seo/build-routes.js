@@ -536,7 +536,7 @@ function calculator(airport, current, isPT, mapsKey) {
         <!-- A promessa fica por cima do botão, com a data do
              pagamento. O botão diz só o que faz. -->
         <span class="ca-later" id="cl">Book now, pay later</span>
-        <a class="ca-book" id="cb" href="/booking">See prices &rarr;</a>
+        <a class="ca-book" id="cb" href="/booking/">See prices &rarr;</a>
       </div>
     </div>
 
@@ -752,7 +752,7 @@ function calculator(airport, current, isPT, mapsKey) {
       // O botão está SEMPRE lá. Um botão que só aparece depois de
       // um cálculo deixa a secção sem saída para quem não esperou —
       // e a pessoa que quer reservar sem ver o preço fica presa.
-      cb.href = '/booking?from=' + encodeURIComponent(cf.value.trim()) +
+      cb.href = '/booking/?from=' + encodeURIComponent(cf.value.trim()) +
         '&to=' + encodeURIComponent(ct.value.trim()) +
         '&date=' + encodeURIComponent(cdate.value) +
         '&time=' + encodeURIComponent(ctime.value) +
@@ -951,7 +951,7 @@ function routePage(country, airport, dest, siblings) {
 
   const slug = slugOf(airport);
   const cslug = countrySlug(country);
-  const url = `${SITE}/transfers/${cslug}/${slug}-to-${dest.slug}`;
+  const url = `${SITE}/transfers/${cslug}/${slug}-to-${dest.slug}/`;
   const title = `${airport.city} Airport to ${dest.name} Transfer | From ${money(p1)} | Airportlink`;
   const description =
     `Private transfer from ${airport.name} to ${dest.name}: ${dest.minutes} minutes, ` +
@@ -1011,7 +1011,7 @@ function routePage(country, airport, dest, siblings) {
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
           { '@type': 'ListItem', position: 2, name: airport.name,
-            item: `${SITE}/airports/${cslug}/${slug}` },
+            item: `${SITE}/airports/${cslug}/${slug}/` },
           { '@type': 'ListItem', position: 3, name: dest.name, item: url }
         ]
       }
@@ -1098,7 +1098,7 @@ function airportPage(country, airport) {
   const isPT = country.countryCode === 'PT';
   const slug = slugOf(airport);
   const cslug = countrySlug(country);
-  const url = `${SITE}/airports/${cslug}/${slug}`;
+  const url = `${SITE}/airports/${cslug}/${slug}/`;
 
   const cheapest = Math.min(...airport.destinations.map((d) => priceEUR(d.km, 1, isPT)));
 
@@ -1126,7 +1126,7 @@ function airportPage(country, airport) {
           '@type': 'ListItem',
           position: i + 1,
           name: `${airport.city} Airport to ${d.name}`,
-          url: `${SITE}/transfers/${cslug}/${slug}-to-${d.slug}`
+          url: `${SITE}/transfers/${cslug}/${slug}-to-${d.slug}/`
         }))
       },
       {
@@ -1249,7 +1249,7 @@ for (const file of files) {
     ensure(path.join(airportsDir, slug));
     fs.writeFileSync(path.join(airportsDir, slug, 'index.html'),
       airportPage(country, airport));
-    urls.push({ loc: `${SITE}/airports/${cslug}/${slug}`, priority: '0.8', freq: 'weekly' });
+    urls.push({ loc: `${SITE}/airports/${cslug}/${slug}/`, priority: '0.8', freq: 'weekly' });
 
     for (const dest of airport.destinations) {
       const folder = path.join(transfersDir, `${slug}-to-${dest.slug}`);
@@ -1257,7 +1257,7 @@ for (const file of files) {
       fs.writeFileSync(path.join(folder, 'index.html'),
         routePage(country, airport, dest, airport.destinations));
 
-      urls.push({ loc: `${SITE}/transfers/${cslug}/${slug}-to-${dest.slug}`,
+      urls.push({ loc: `${SITE}/transfers/${cslug}/${slug}-to-${dest.slug}/`,
                   priority: '0.7', freq: 'monthly' });
       routeCount += 1;
     }
@@ -1273,6 +1273,9 @@ for (const file of files) {
 // por inteiro a cada geração: manter à mão com centenas de linhas
 // era garantir que mais cedo ou mais tarde ficava desatualizado.
 
+// A barra no fim é obrigatória nas pastas: o Render não a
+// acrescenta sozinho, e sem ela a página vem em branco. O canonical
+// e o sitemap têm de apontar para o endereço que funciona.
 const fixed = [
   { loc: SITE + '/', priority: '1.0', freq: 'weekly' },
   { loc: SITE + '/travelagents', priority: '0.9', freq: 'monthly' },
