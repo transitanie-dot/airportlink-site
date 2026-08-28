@@ -529,7 +529,7 @@ function calculator(airport, current, isPT, mapsKey) {
       </div>
 
       <div class="ca-pay">
-        <span class="k" id="ck">Your price</span>
+        <span class="k" id="ck">From</span>
         <span class="v" id="cv">&mdash;</span>
         <span class="s" id="cs">Whole car &middot; tolls and taxes in</span>
 
@@ -779,7 +779,7 @@ function calculator(airport, current, isPT, mapsKey) {
 
       if (!from || !to) {
         chKm.textContent = chDur.textContent = '\u2014';
-        ck.textContent = 'Your price';
+        ck.textContent = 'From';
         cn.textContent = '';
         paint(0);
         return;
@@ -788,7 +788,7 @@ function calculator(airport, current, isPT, mapsKey) {
       // Mudar passageiros, data ou hora não pede rota nova: a
       // distância é a mesma e já a temos.
       var key = from + '|' + to;
-      if (key === lastKey && km) { ck.textContent = 'Your price'; paint(fare(km, pax)); return; }
+      if (key === lastKey && km) { ck.textContent = 'From'; paint(fare(km, pax)); return; }
 
       var stop = quota();
       if (stop) {
@@ -823,7 +823,7 @@ function calculator(airport, current, isPT, mapsKey) {
 
           chKm.textContent = km.toFixed(0) + ' km';
           chDur.textContent = leg.duration.text;
-          ck.textContent = 'Your price';
+          ck.textContent = 'From';
           cn.textContent = '';
           paint(fare(km, pax));
         });
@@ -850,16 +850,19 @@ function calculator(airport, current, isPT, mapsKey) {
     // As etiquetas acompanham sempre, mesmo sem preço ainda.
     [cdate, ctime, cp].forEach(function (el) { el.addEventListener('change', chips); });
 
-    // Já vem preenchido, mas espera pelo primeiro gesto: mostrar o
-    // resultado logo obrigaria a carregar o Maps a toda a gente.
-    var started = false;
-    [cf, ct, cp, cdate, ctime].forEach(function (el) {
-      el.addEventListener('focus', function () {
-        if (started) return;
-        started = true;
-        if (cf.value.trim() && ct.value.trim()) run();
-      });
-    });
+    /**
+     * O preço aparece sozinho, sem esperar por um toque.
+     *
+     * Estava à espera do primeiro gesto para não carregar o Maps a
+     * quem só passa pela página — mas o resultado era um preço a
+     * tracejado, que é o contrário do que a pessoa veio buscar.
+     *
+     * Um segundo de atraso: quem chega e sai depressa não chega a
+     * gastar nada, e quem fica tem o preço quase de imediato.
+     */
+    if (cf.value.trim() && ct.value.trim()) {
+      setTimeout(run, 1000);
+    }
   })();
   </script>`;
 }
