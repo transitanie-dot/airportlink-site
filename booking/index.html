@@ -89,10 +89,31 @@ html[data-theme="dark"] .leg-dot.a{background:var(--amber)}
 html[data-theme="dark"] .opt.on{border-color:var(--amber);
   box-shadow:0 0 0 3px rgba(232,163,61,.14)}
 .opt.out{opacity:.42;cursor:not-allowed}
-/* As opções de duas viaturas levam o dobro da largura: espremer
-   dois carros no espaço de um deixava-os ilegíveis. */
-.opt-art{width:92px;flex:0 0 auto;color:var(--slate)}
-.opt-art.two{width:150px}
+/* Os mesmos desenhos da página inicial: sombra, vidros, jantes e
+   faróis. As combinações já vêm com as duas viaturas dentro do
+   mesmo SVG, por isso não precisam de mais largura. */
+.opt-art{width:124px;flex:0 0 auto}
+.opt-art svg{width:100%;height:auto;display:block}
+.veh-shadow{fill:var(--ink);opacity:.07}
+html[data-theme="dark"] .veh-shadow{fill:#000;opacity:.35}
+.veh-body{fill:var(--ink)}
+html[data-theme="dark"] .veh-body{fill:#D8DEE8}
+.veh-glass{fill:#7FB8B2;opacity:.55}
+html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
+/* Os vidros do Premium são escurecidos: é o que se vê de fora num
+   carro executivo, e distingue-o do Sedan sem uma palavra. */
+.veh-glass.dark{fill:#3A4A55;opacity:.8}
+html[data-theme="dark"] .veh-glass.dark{fill:#2A3A48;opacity:.9}
+.veh-pillar{fill:var(--surface);opacity:.5}
+.veh-line{stroke:var(--surface);stroke-width:1.6;opacity:.28;fill:none;stroke-linecap:round}
+/* Um friso cromado, só no Premium. */
+.veh-chrome{stroke:#C9B896;stroke-width:1.4;opacity:.55;fill:none;stroke-linecap:round}
+.veh-lamp{fill:#F4E3B8}
+.veh-tail{fill:#D9534F}
+.veh-tyre{fill:#0B0F16}
+html[data-theme="dark"] .veh-tyre{fill:#05080D}
+.veh-rim{fill:var(--surface);stroke:var(--rule-strong);stroke-width:1}
+.veh-spokes{stroke:var(--muted);stroke-width:1.5;fill:none;stroke-linecap:round;opacity:.6}
 html[data-theme="dark"] .opt-art{color:#8C97A8}
 .opt-art svg{width:100%;height:auto;fill:currentColor}
 .opt-art svg .w{fill:var(--surface)}
@@ -328,29 +349,125 @@ function fare(km, mult, isPT) {
  * grandes faz o preço parecer mais alto do que a alternativa, e
  * quem viaja em seis quer perceber porque paga mais.
  */
+var ART = {
+  // Perfil lateral. Tentei três quartos e não ficou ao nível: um
+  // carro em perspetiva escrito à mão em coordenadas SVG nota-se que
+  // foi escrito à mão. De lado, a silhueta é limpa e diz o que
+  // precisa de dizer — o tamanho do veículo.
+  //
+  // Se quiseres o ângulo de três quartos com qualidade, o caminho é
+  // comprar um conjunto de vetores e substituir estas strings.
+  sedan: '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<ellipse class="veh-shadow" cx="120" cy="92" rx="102" ry="6"/>' +
+    '<path class="veh-body" d="M12 74c-4 0-6-3-6-7l1-13c1-8 7-14 15-16l31-7 26-19c5-4 11-6 17-6h44c7 0 14 3 19 8l20 19 27 6c9 2 15 9 15 18v10c0 4-3 7-7 7H12Z"/>' +
+    '<path class="veh-glass" d="M84 15h26v25H57l21-21a9 9 0 0 1 6-4Zm34 0h22c5 0 9 2 12 5l17 20h-51V15Z"/>' +
+    '<path class="veh-pillar" d="M112 15h4v25h-4z"/>' +
+    '<path class="veh-line" d="M40 56h158"/>' +
+    '<path class="veh-lamp" d="M205 50h18a6 6 0 0 1 6 6v3h-24a4 4 0 0 1-4-4v-1a4 4 0 0 1 4-4Z"/>' +
+    '<path class="veh-tail" d="M10 52h13a4 4 0 0 1 4 4v4H10a5 5 0 0 1-5-5 3 3 0 0 1 5-3Z"/>' +
+    '<g><circle class="veh-tyre" cx="68" cy="74" r="18"/>' +
+    '<circle class="veh-rim" cx="68" cy="74" r="9"/>' +
+    '<path class="veh-spokes" d="M68 65v18M59 74h18M62 68l12 12M74 68L62 80"/></g>' +
+    '<g><circle class="veh-tyre" cx="180" cy="74" r="18"/>' +
+    '<circle class="veh-rim" cx="180" cy="74" r="9"/>' +
+    '<path class="veh-spokes" d="M180 65v18M171 74h18M174 68l12 12M186 68l-12 12"/></g>' +
+    '</svg>',
+
+  van: '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<ellipse class="veh-shadow" cx="120" cy="92" rx="104" ry="6"/>' +
+    '<path class="veh-body" d="M14 76c-5 0-8-3-8-8V30c0-11 9-20 20-20h132c6 0 12 2 17 6l32 25c6 5 9 12 9 19v8c0 5-3 8-8 8H14Z"/>' +
+    '<path class="veh-glass" d="M28 22h34v26H28V22Zm42 0h34v26H70V22Zm42 0h34v26h-34V22Zm42 0h13c3 0 6 1 9 3l21 17c2 2 3 4 3 6h-46V22Z"/>' +
+    '<path class="veh-line" d="M22 60h190"/>' +
+    '<path class="veh-line" d="M30 14h120"/>' +
+    '<path class="veh-lamp" d="M212 52h16a5 5 0 0 1 5 5v3h-21a4 4 0 0 1-4-4v0a4 4 0 0 1 4-4Z"/>' +
+    '<path class="veh-tail" d="M10 46h12a4 4 0 0 1 4 4v10H10a6 6 0 0 1-6-6v-3a5 5 0 0 1 6-5Z"/>' +
+    '<g><circle class="veh-tyre" cx="62" cy="76" r="18"/>' +
+    '<circle class="veh-rim" cx="62" cy="76" r="9"/>' +
+    '<path class="veh-spokes" d="M62 67v18M53 76h18M56 70l12 12M68 70L56 82"/></g>' +
+    '<g><circle class="veh-tyre" cx="182" cy="76" r="18"/>' +
+    '<circle class="veh-rim" cx="182" cy="76" r="9"/>' +
+    '<path class="veh-spokes" d="M182 67v18M173 76h18M176 70l12 12M188 70l-12 12"/></g>' +
+    '</svg>',
+
+  pair: '',
+  minibus: ''
+};
+
+// As combinações reaproveitam os desenhos acima em vez de os
+// repetirem: menos código para manter e sem risco de divergirem.
+ART.pair =
+  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<g opacity=".32" transform="translate(4 2) scale(.62)">' +
+  ART.sedan.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '<g transform="translate(46 30) scale(.78)">' +
+  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '</svg>';
+
+ART.minibus =
+  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<g opacity=".32" transform="translate(2 0) scale(.62)">' +
+  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '<g transform="translate(46 30) scale(.78)">' +
+  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '</svg>';
+
+/**
+ * O Premium tem desenho próprio.
+ *
+ * Um carro maior, com tejadilho mais longo e vidros escurecidos —
+ * uma classe superior tem de PARECER diferente, senão a pessoa
+ * pergunta-se pelo que está a pagar a mais.
+ */
+ART.premium =
+  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<ellipse class="veh-shadow" cx="120" cy="92" rx="106" ry="6"/>' +
+  '<path class="veh-body" d="M10 76c-4 0-6-3-6-8l1-14c1-9 8-15 17-17l30-7 24-20c6-5 13-7 20-7h48c8 0 15 3 21 9l21 20 28 6c10 2 17 10 17 20v11c0 4-3 7-8 7H10Z"/>' +
+  '<path class="veh-glass dark" d="M80 12h30v28H52l22-24a9 9 0 0 1 6-4Zm38 0h24c6 0 11 2 14 6l19 22h-57V12Z"/>' +
+  '<path class="veh-pillar" d="M112 12h5v28h-5z"/>' +
+  '<path class="veh-line" d="M36 56h168"/>' +
+  '<path class="veh-chrome" d="M36 64h168"/>' +
+  '<path class="veh-lamp" d="M206 48h20a7 7 0 0 1 7 7v4h-27a4 4 0 0 1-4-4v-3a4 4 0 0 1 4-4Z"/>' +
+  '<path class="veh-tail" d="M8 50h14a4 4 0 0 1 4 4v5H8a5 5 0 0 1-5-5 4 4 0 0 1 5-4Z"/>' +
+  '<g><circle class="veh-tyre" cx="66" cy="76" r="19"/>' +
+  '<circle class="veh-rim" cx="66" cy="76" r="10"/>' +
+  '<path class="veh-spokes" d="M66 66v20M56 76h20M59 69l14 14M73 69L59 83"/></g>' +
+  '<g><circle class="veh-tyre" cx="182" cy="76" r="19"/>' +
+  '<circle class="veh-rim" cx="182" cy="76" r="10"/>' +
+  '<path class="veh-spokes" d="M182 66v20M172 76h20M175 69l14 14M189 69l-14 14"/></g>' +
+  '</svg>';
+
+/** Duas carrinhas: a mesma técnica das outras combinações. */
+ART.twoVans =
+  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<g opacity=".32" transform="translate(2 0) scale(.62)">' +
+  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '<g transform="translate(44 30) scale(.78)">' +
+  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '</svg>';
+
 var CLASSES = [
-  { id: 'sedan', name: 'Sedan', seats: 4, bags: 3, mult: 1, cars: 1,
+  { id: 'sedan', name: 'Sedan', seats: 4, bags: 4, mult: 1, cars: 1,
     note: 'A comfortable saloon. What most people book.',
-    art: '<svg viewBox="0 0 132 52"><path d="M9 40V31c0-2 1-4 3-4l9-1 10-11c2-2 4-3 7-3h25c3 0 5 1 7 3l9 11 25 3c5 1 8 4 8 8v3c0 2-2 4-4 4H13c-2 0-4-2-4-4Z"/><path class="w" d="M38 27 46 17c1-1 2-2 4-2h11v12H38Z"/><path class="w" d="M67 15h11c2 0 3 1 4 2l9 10H67V15Z"/><circle cx="35" cy="41" r="8"/><circle class="w" cx="35" cy="41" r="3.4"/><circle cx="98" cy="41" r="8"/><circle class="w" cx="98" cy="41" r="3.4"/></svg>' },
+    art: ART.sedan },
 
   { id: 'premium', name: 'Premium Sedan', seats: 4, bags: 4, mult: 1.55, cars: 1,
-    note: 'A larger executive saloon \u2014 more boot space and more legroom.',
-    art: '<svg viewBox="0 0 132 52"><path d="M9 40V31c0-2 1-4 3-4l9-1 10-11c2-2 4-3 7-3h25c3 0 5 1 7 3l9 11 25 3c5 1 8 4 8 8v3c0 2-2 4-4 4H13c-2 0-4-2-4-4Z"/><path class="w" d="M38 27 46 17c1-1 2-2 4-2h11v12H38Z"/><path class="w" d="M67 15h11c2 0 3 1 4 2l9 10H67V15Z"/><circle cx="35" cy="41" r="8"/><circle class="w" cx="35" cy="41" r="3.4"/><circle cx="98" cy="41" r="8"/><circle class="w" cx="98" cy="41" r="3.4"/></svg>' },
+    note: 'A larger executive saloon \u2014 more legroom, more boot space, water on board.',
+    art: ART.premium },
 
   { id: 'van', name: 'Van', seats: 8, bags: 8, mult: 1.7, cars: 1,
     note: 'A minivan. Also the right choice for four people with a lot of luggage.',
-    art: '<svg viewBox="0 0 132 52"><path d="M8 40V16c0-3 2-5 5-5h58c2 0 4 1 5 2l19 15 22 4c5 1 8 4 8 8v2c0 2-2 4-4 4H12c-2 0-4-2-4-4Z"/><path class="w" d="M18 16h20v12H18V16Z"/><path class="w" d="M45 16h20v12H45V16Z"/><path class="w" d="M72 16h5l14 12H72V16Z"/><circle cx="34" cy="41" r="8.5"/><circle class="w" cx="34" cy="41" r="3.6"/><circle cx="99" cy="41" r="8.5"/><circle class="w" cx="99" cy="41" r="3.6"/></svg>' },
+    art: ART.van },
 
   // Acima de oito passageiros nao ha um veiculo so: mandamos dois.
   // Dize-lo e mais honesto do que chamar-lhe "minibus" e a pessoa
   // descobrir no aeroporto que sao duas viaturas.
-  { id: 'van_sedan', name: 'Van + Sedan', seats: 12, bags: 11, mult: 2.5, cars: 2,
+  { id: 'van_sedan', name: 'Van + Sedan', seats: 12, bags: 12, mult: 2.5, cars: 2,
     note: 'Two vehicles, two drivers. They travel together and arrive together.',
-    art: '<svg viewBox="0 0 272 52"><g transform="translate(0 4) scale(0.9)"><path d="M8 40V16c0-3 2-5 5-5h58c2 0 4 1 5 2l19 15 22 4c5 1 8 4 8 8v2c0 2-2 4-4 4H12c-2 0-4-2-4-4Z"/><path class="w" d="M18 16h20v12H18V16Z"/><path class="w" d="M45 16h20v12H45V16Z"/><path class="w" d="M72 16h5l14 12H72V16Z"/><circle cx="34" cy="41" r="8.5"/><circle class="w" cx="34" cy="41" r="3.6"/><circle cx="99" cy="41" r="8.5"/><circle class="w" cx="99" cy="41" r="3.6"/></g><g transform="translate(140 4) scale(0.9)"><path d="M9 40V31c0-2 1-4 3-4l9-1 10-11c2-2 4-3 7-3h25c3 0 5 1 7 3l9 11 25 3c5 1 8 4 8 8v3c0 2-2 4-4 4H13c-2 0-4-2-4-4Z"/><path class="w" d="M38 27 46 17c1-1 2-2 4-2h11v12H38Z"/><path class="w" d="M67 15h11c2 0 3 1 4 2l9 10H67V15Z"/><circle cx="35" cy="41" r="8"/><circle class="w" cx="35" cy="41" r="3.4"/><circle cx="98" cy="41" r="8"/><circle class="w" cx="98" cy="41" r="3.4"/></g></svg>' },
+    art: ART.pair },
 
   { id: 'two_vans', name: 'Two Vans', seats: 16, bags: 16, mult: 3.2, cars: 2,
-    note: 'Two minivans for a large group. One price for both.',
-    art: '<svg viewBox="0 0 272 52"><g transform="translate(0 4) scale(0.9)"><path d="M8 40V16c0-3 2-5 5-5h58c2 0 4 1 5 2l19 15 22 4c5 1 8 4 8 8v2c0 2-2 4-4 4H12c-2 0-4-2-4-4Z"/><path class="w" d="M18 16h20v12H18V16Z"/><path class="w" d="M45 16h20v12H45V16Z"/><path class="w" d="M72 16h5l14 12H72V16Z"/><circle cx="34" cy="41" r="8.5"/><circle class="w" cx="34" cy="41" r="3.6"/><circle cx="99" cy="41" r="8.5"/><circle class="w" cx="99" cy="41" r="3.6"/></g><g transform="translate(140 4) scale(0.9)"><path d="M8 40V16c0-3 2-5 5-5h58c2 0 4 1 5 2l19 15 22 4c5 1 8 4 8 8v2c0 2-2 4-4 4H12c-2 0-4-2-4-4Z"/><path class="w" d="M18 16h20v12H18V16Z"/><path class="w" d="M45 16h20v12H45V16Z"/><path class="w" d="M72 16h5l14 12H72V16Z"/><circle cx="34" cy="41" r="8.5"/><circle class="w" cx="34" cy="41" r="3.6"/><circle cx="99" cy="41" r="8.5"/><circle class="w" cx="99" cy="41" r="3.6"/></g></svg>' }
+    note: 'Two minivans for a large group. One booking, one price.',
+    art: ART.twoVans }
 ];
 
 var trip = { from: '', to: '', date: '', time: '', pax: 2, km: 0, dur: '', isPT: true };
@@ -487,7 +604,7 @@ function paintOptions() {
 
     return '<button class="opt' + (fits ? '' : ' out') + '" data-i="' + i + '"' +
       (fits ? '' : ' disabled') + ' type="button">' +
-      '<span class="opt-art' + (c.cars > 1 ? ' two' : '') + '">' + c.art + '</span>' +
+      '<span class="opt-art">' + c.art + '</span>' +
       '<span class="opt-txt"><strong>' + esc(c.name) + '</strong>' +
       '<span class="cap"><span><b>' + c.seats + '</b> seats</span>' +
       '<span><b>' + c.bags + '</b> suitcases</span></span>' +
