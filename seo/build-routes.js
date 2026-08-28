@@ -579,9 +579,12 @@ function calculator(airport, current, isPT, mapsKey) {
     var cl = $$('cl');
     if (!cf || !ct) return;
 
-    // Amanhã: hoje faria metade das reservas serem para daqui a uma
-    // hora sem ninguém reparar.
-    var t = new Date(); t.setDate(t.getDate() + 1);
+    // Daqui a três dias, não amanhã.
+    //
+    // Amanhã está dentro das 48 horas, e isso tira o "pagar depois"
+    // a toda a gente logo à partida — a vantagem que mais nos
+    // distingue desapareceria antes de alguém a ver.
+    var t = new Date(); t.setDate(t.getDate() + 3);
     cdate.value = t.toISOString().slice(0, 10);
     cdate.min = new Date().toISOString().slice(0, 10);
 
