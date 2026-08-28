@@ -1305,10 +1305,15 @@ const fixed = [
   { loc: SITE + '/privacypolicy', priority: '0.3', freq: 'yearly' }
 ];
 
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+// Um sitemap por país, mais um das páginas fixas, e um índice que
+// os junta. O Search Console mostra a indexação de cada ficheiro em
+// separado — quando Espanha entrar, vês logo se as páginas dela
+// estão a ser apanhadas sem misturar com Portugal.
+function urlsetXml(list) {
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <!-- Gerado por seo/build-routes.js. Não editar à mão. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${fixed.concat(urls).map((u) => `  <url>
+${list.map((u) => `  <url>
     <loc>${u.loc}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${u.freq}</changefreq>
@@ -1316,8 +1321,42 @@ ${fixed.concat(urls).map((u) => `  <url>
   </url>`).join('\n')}
 </urlset>
 `;
+}
 
-fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), sitemap);
+// as urls geradas, agrupadas pelo país que vem no caminho
+const byCountry = {};
+for (const u of urls) {
+  const m = u.loc.match(/\/(?:transfers|airports)\/([a-z-]+)\//);
+  const cc = m ? m[1] : 'other';
+  (byCountry[cc] = byCountry[cc] || []).push(u);
+}
+
+// Os filhos vivem em /sitemaps/, o índice fica na raiz. A regra do
+// protocolo que prende um sitemap à sua pasta não se aplica quando
+// ele é submetido pelo Search Console ou referido no robots.txt —
+// e o nosso índice está nos dois.
+const SM_DIR = path.join(ROOT, 'sitemaps');
+fs.mkdirSync(SM_DIR, { recursive: true });
+
+fs.writeFileSync(path.join(SM_DIR, 'static.xml'), urlsetXml(fixed));
+
+const parts = ['sitemaps/static.xml'];
+for (const [cc, list] of Object.entries(byCountry)) {
+  const name = `${cc}.xml`;
+  fs.writeFileSync(path.join(SM_DIR, name), urlsetXml(list));
+  parts.push('sitemaps/' + name);
+}
+
+const index = `<?xml version="1.0" encoding="UTF-8"?>
+<!-- Índice: um sitemap por país + um das páginas fixas. -->
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${parts.map((n) => `  <sitemap>
+    <loc>${SITE}/${n}</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>`).join('\n')}
+</sitemapindex>
+`;
+fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), index);
 
 console.log(`\n${routeCount} route pages, ${urls.length - routeCount} airport pages.`);
 console.log(`sitemap.xml rewritten with ${fixed.length + urls.length} URLs.`);
