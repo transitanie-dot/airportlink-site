@@ -52,7 +52,10 @@ html[data-theme="dark"] .leg-dot.a{background:var(--amber)}
 .route-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
 .mchip{background:var(--surface-2);border:1px solid var(--rule);border-radius:999px;
   padding:6px 13px;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted)}
-.edit{margin-left:auto;background:transparent;border:1px solid var(--rule-strong);
+/* Os dois botões juntos, empurrados para a direita como um par: o
+   margin-left estava no Change e separava-os. */
+.route-meta .edit:first-of-type{margin-left:auto}
+.edit{background:transparent;border:1px solid var(--rule-strong);
   border-radius:10px;padding:7px 14px;font-family:inherit;font-size:12.5px;font-weight:600;
   color:var(--text);cursor:pointer}
 .edit:hover{border-color:var(--teal)}
@@ -147,24 +150,15 @@ html[data-theme="dark"] .tr svg{color:var(--amber)}
   color:var(--text);margin-bottom:8px}
 .state a{color:var(--teal)}
 
-/* Viagem de ida e volta, no mesmo passo. */
-.ret{background:var(--surface);border:1px solid var(--rule);border-radius:18px;
-  padding:16px 20px;margin-top:12px}
-.ret-head{display:flex;align-items:center;gap:13px;cursor:pointer}
-.ret-sw{position:relative;width:44px;height:26px;border-radius:999px;flex:0 0 auto;
-  background:var(--rule-strong);transition:background .22s ease}
-.ret-sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:999px;
-  background:#fff;box-shadow:0 1px 3px rgba(20,26,40,.28);
-  transition:transform .22s cubic-bezier(.34,1.4,.5,1)}
-.ret.on .ret-sw{background:var(--teal)}
-.ret.on .ret-sw i{transform:translateX(18px)}
-html[data-theme="dark"] .ret.on .ret-sw{background:var(--amber)}
-.ret-txt strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
-  letter-spacing:-.015em;margin-bottom:3px}
-.ret-txt span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5}
-.ret-when{display:none;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;
-  padding-top:14px;border-top:1px solid var(--rule)}
-.ret.on .ret-when{display:grid}
+/* Ida e volta, ao lado do Change. */
+.ret-btn{display:inline-flex;align-items:center;gap:7px}
+.ret-btn svg{width:14px;height:14px}
+.ret-btn.on{background:var(--teal);border-color:transparent;color:#fff}
+html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
+.ret-when{display:none;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;
+  padding-top:16px;border-top:1px solid var(--rule)}
+.ret-when.on{display:grid}
+.ret-note{grid-column:1/-1;margin:0;color:var(--muted);font-size:12.5px;line-height:1.55}
 
 @media (max-width:960px){
   .cols{grid-template-columns:1fr}
@@ -211,6 +205,23 @@ html[data-theme="dark"] .ret.on .ret-sw{background:var(--amber)}
       <span class="mchip" id="rKm">&mdash;</span>
       <span class="mchip" id="rDur">&mdash;</span>
       <button class="edit" id="editBtn" type="button">Change</button>
+
+      <!-- A ida e volta vive aqui, ao lado do Change: as duas coisas
+           são alterações à viagem, e estavam em sítios diferentes. -->
+      <button class="edit ret-btn" id="retBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 4v16M7 20l-3-3M17 20V4M17 4l3 3"/></svg>
+        <span id="retLabel">Add return</span>
+      </button>
+    </div>
+
+    <div class="ret-when" id="retWhen">
+      <div class="ef"><label for="retDate">Return date</label>
+        <input id="retDate" type="date"></div>
+      <div class="ef"><label for="retTime">Return time</label>
+        <input id="retTime" type="time" value="10:00"></div>
+      <p class="ret-note">Same vehicle, same price. Each leg can be cancelled on its own.</p>
     </div>
 
     <div class="edit-box" id="editBox">
@@ -234,22 +245,6 @@ html[data-theme="dark"] .ret.on .ret-sw{background:var(--amber)}
         <span>One moment.</span></div>
       </div>
 
-      <!-- ---------- ida e volta ---------- -->
-      <div class="ret" id="ret">
-        <div class="ret-head" id="retHead">
-          <span class="ret-sw" aria-hidden="true"><i></i></span>
-          <div class="ret-txt">
-            <strong>Coming back too?</strong>
-            <span id="retSub">Add the return now and it is one booking, one payment.</span>
-          </div>
-        </div>
-        <div class="ret-when">
-          <div class="ef"><label for="retDate">Return date</label>
-            <input id="retDate" type="date"></div>
-          <div class="ef"><label for="retTime">Return time</label>
-            <input id="retTime" type="time" value="10:00"></div>
-        </div>
-      </div>
     </div>
 
     <!-- ---------- o resumo ---------- -->
@@ -575,21 +570,21 @@ $('applyBtn').addEventListener('click', function () {
 });
 
 // ---------- ida e volta ----------
-$('retHead').addEventListener('click', function () {
-  hasReturn = $('ret').classList.toggle('on');
+$('retBtn').addEventListener('click', function () {
+  hasReturn = !hasReturn;
+
+  $('retBtn').classList.toggle('on', hasReturn);
+  $('retWhen').classList.toggle('on', hasReturn);
+  $('retLabel').textContent = hasReturn ? 'Return added' : 'Add return';
 
   if (hasReturn && !$('retDate').value) {
-    // Uma semana depois: é o intervalo mais comum, e é mais fácil
+    // Uma semana depois: e o intervalo mais comum, e e mais facil
     // corrigir uma data errada do que escolher uma em branco.
     var d = new Date(trip.date || Date.now());
     d.setDate(d.getDate() + 7);
     $('retDate').value = d.toISOString().slice(0, 10);
     $('retDate').min = trip.date;
   }
-
-  $('retSub').textContent = hasReturn
-    ? 'Same vehicle, same price. Each leg can be cancelled on its own.'
-    : 'Add the return now and it is one booking, one payment.';
 
   paintSummary();
 });
