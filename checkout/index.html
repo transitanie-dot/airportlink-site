@@ -86,6 +86,23 @@ html[data-theme="dark"] .f input:focus,html[data-theme="dark"] .f textarea:focus
 .f .err{display:none;margin-top:6px;color:var(--err-text);font-size:11.5px}
 .f.bad .err{display:block}
 
+/* Entrar ou continuar sem conta. */
+.acct{padding:16px 20px}
+.acct-row{display:flex;align-items:center;justify-content:space-between;gap:18px;
+  flex-wrap:wrap}
+.acct-row strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.015em;margin-bottom:3px}
+.acct-row span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5}
+.acct-btns{display:flex;gap:8px;flex-wrap:wrap}
+.acct-b{border:1px solid var(--rule-strong);background:var(--surface-2);border-radius:11px;
+  padding:10px 16px;font-family:inherit;font-size:13px;font-weight:600;color:var(--text);
+  cursor:pointer}
+.acct-b:hover{border-color:var(--teal)}
+.acct-b.ghost{background:transparent;color:var(--muted)}
+.acct-b.ghost:hover{color:var(--text)}
+.acct.done{padding:13px 20px;background:var(--ok-bg);border-color:var(--ok-rule)}
+.acct.done .acct-row strong{color:var(--ok-text)}
+
 /* ---------- pagamento ---------- */
 .pay{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 .pay-opt{text-align:left;background:var(--surface-2);border:1px solid var(--rule-strong);
@@ -234,6 +251,22 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
   <div>
     <div class="warn" id="warn"></div>
 
+    <!-- Entrar é opcional e está em cima, não escondido a meio. Quem
+         já reservou antes poupa três campos; quem nunca cá veio não
+         é obrigado a criar conta para comprar. -->
+    <section class="card acct" id="acct">
+      <div class="acct-row">
+        <div>
+          <strong>Booked with us before?</strong>
+          <span>Sign in and your details fill themselves in.</span>
+        </div>
+        <div class="acct-btns">
+          <button class="acct-b" id="signInBtn" type="button">Sign in</button>
+          <button class="acct-b ghost" id="guestBtn" type="button">Continue as guest</button>
+        </div>
+      </div>
+    </section>
+
     <!-- ---------- quem viaja ---------- -->
     <section class="card">
       <h2>Who is travelling</h2>
@@ -243,21 +276,20 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
       <div class="grid">
         <div class="f wide">
           <label for="name">Full name</label>
-          <input id="name" type="text" autocomplete="name" placeholder="As on your passport">
+          <input id="name" type="text" autocomplete="name">
           <span class="err">We need a name for the driver to look for.</span>
         </div>
 
         <div class="f wide">
           <label for="email">Email</label>
-          <input id="email" type="email" autocomplete="email" inputmode="email"
-                 placeholder="you@example.com">
+          <input id="email" type="email" autocomplete="email" inputmode="email">
           <span class="hint">Your confirmation and the driver's details go here.</span>
           <span class="err">That email does not look right.</span>
         </div>
 
         <div class="f wide" id="phoneField">
           <label for="phone">Phone</label>
-          <input id="phone" type="tel" autocomplete="tel" placeholder="+351 912 345 678">
+          <input id="phone" type="tel" autocomplete="tel">
           <span class="hint">The driver calls or messages this number on the day.</span>
           <span class="err">We need a number the driver can reach on the day.</span>
         </div>
@@ -271,8 +303,8 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
 
       <div class="grid">
         <div class="f wide">
-          <label for="flight">Flight number <span class="opt">optional but useful</span></label>
-          <input id="flight" type="text" placeholder="TP1234" style="text-transform:uppercase">
+          <label for="flight">Flight number <span class="opt">optional</span></label>
+          <input id="flight" type="text" style="text-transform:uppercase">
           <span class="hint">We track it. If you land late, the driver waits and you pay
           nothing extra.</span>
         </div>
@@ -353,7 +385,7 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
       <div class="row" id="sRetRow" style="display:none">
         <span id="sRetLabel">Return</span><span id="sRet">&mdash;</span></div>
       <div class="row"><span>Tolls and taxes</span><span class="inc">Included</span></div>
-      <div class="row"><span>Waiting time</span><span class="inc">60 min free</span></div>
+      <div class="row"><span>Waiting time</span><span class="inc">60 min</span></div>
     </div>
 
     <div class="total"><span>Total</span><b id="sTotal">&mdash;</b></div>
@@ -569,15 +601,27 @@ function paint() {
 
   if (canLater) {
     var d = at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
-    $('payLaterDesc').textContent = 'Card saved now, charged on ' + d + '.';
+    $('payLaterDesc').textContent = 'Card saved now, charged on ' + d +
+      ' \u2014 48 hours before you travel.';
     $('sPayWhen').textContent = payMode === 'later'
-      ? 'Book now, pay later (' + d + ')' : 'Charged today';
+      ? 'Book now, pay later (' + d + ')'
+      : 'Charged today';
   } else {
+    // Dizer PORQUE não está disponível. "Not available" sozinho
+    // parece uma avaria, e a razão é simples de perceber.
     $('payLater').classList.add('off');
     $('payLater').disabled = true;
-    $('payLaterDesc').textContent = 'Not available this close to pick-up.';
-    setPay('now');
-    $('sPayWhen').textContent = 'Charged today';
+    $('payLaterDesc').textContent = 'Your transfer is less than 48 hours away, so there ' +
+      'is no later to wait for.';
+
+    // Mudar o modo AQUI, sem chamar o setPay: ele volta a chamar o
+    // paint, e o paint volta a cair neste ramo — ciclo infinito e
+    // página bloqueada.
+    payMode = 'now';
+    $('payLater').classList.remove('on');
+    $('payNow').classList.add('on');
+
+    $('sPayWhen').textContent = 'Charged today \u00b7 less than 48 hours to pick-up';
   }
 
   // Os campos de morada começam com o que já foi dito.
@@ -647,6 +691,22 @@ $('goBtn').addEventListener('click', function () {
   $('warn').textContent = 'Checkout is not connected yet. The server needs to know about ' +
     'vehicle classes first, otherwise the price you chose is not the price you would pay.';
   $('warn').classList.add('on');
+});
+
+$('guestBtn').addEventListener('click', function () {
+  // Some e dá lugar a uma linha discreta. Deixá-lo lá depois de a
+  // pessoa escolher é ocupar o topo com uma decisão já tomada.
+  $('acct').classList.add('done');
+  $('acct').innerHTML = '<div class="acct-row"><div><strong>Continuing as a guest</strong>' +
+    '<span>We create your account after the booking, so you can see the trip later. ' +
+    'No password needed now.</span></div></div>';
+  $('name').focus();
+});
+
+$('signInBtn').addEventListener('click', function () {
+  // Volta aqui depois de entrar, com tudo o que já foi escolhido.
+  var back = encodeURIComponent(window.location.pathname + window.location.search);
+  window.location.href = '/login?next=' + back;
 });
 
 $('backBtn').addEventListener('click', function () {
