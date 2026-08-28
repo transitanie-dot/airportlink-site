@@ -519,7 +519,9 @@ var hasReturn = false;
   trip.pax = Math.min(16, Math.max(1, Number(q.get('pax')) || 2));
 
   if (!trip.date) {
-    var d = new Date(); d.setDate(d.getDate() + 1);
+    // Três dias, não um: amanhã cai dentro das 48 horas e tira o
+    // "pagar depois" antes de a pessoa sequer o ver.
+    var d = new Date(); d.setDate(d.getDate() + 3);
     trip.date = d.toISOString().slice(0, 10);
   }
 })();
@@ -556,22 +558,43 @@ function maps(then) {
   if (mapsLoading) return;
 
   mapsLoading = true;
+
   window.alBookingReady = function () {
     mapsReady = true;
+
+    // A fila PRIMEIRO. É ela que mede a rota e desenha os preços —
+    // se um erro nas sugestões rebentasse antes, a página ficava a
+    // tracejado para sempre e sem explicação.
+    if (queue) {
+      var f = queue;
+      queue = null;
+      try { f(); } catch (e) { console.error('[booking] route:', e); }
+    }
 
     // O mesmo serviço da página inicial, com a lista desenhada por
     // nós. O Autocomplete do Google traz caixa própria, com outro
     // tipo de letra e outro espaçamento — duas listas diferentes no
     // mesmo site notam-se.
-    acService = new google.maps.places.AutocompleteService();
-    placesService = new google.maps.places.PlacesService(document.createElement('div'));
-    acToken = new google.maps.places.AutocompleteSessionToken();
+    try {
+      acService = new google.maps.places.AutocompleteService();
+      placesService = new google.maps.places.PlacesService(document.createElement('div'));
+      acToken = new google.maps.places.AutocompleteSessionToken();
 
-    suggest($('eFrom'), $('acFrom'));
-    suggest($('eTo'), $('acTo'));
-
-    if (queue) { var f = queue; queue = null; f(); }
+      suggest($('eFrom'), $('acFrom'));
+      suggest($('eTo'), $('acTo'));
+    } catch (e) {
+      console.error('[booking] suggestions:', e);
+    }
   };
+
+  // Se o Google não responder, dizê-lo em vez de deixar a tracejado.
+  setTimeout(function () {
+    if (mapsReady) return;
+    document.getElementById('opts').innerHTML =
+      '<div class="state"><strong>We could not reach the map service</strong>' +
+      '<span>Reload the page, or use the calculator on the ' +
+      '<a href="/#book">home page</a>.</span></div>';
+  }, 12000);
 
   var sc = document.createElement('script');
   sc.src = 'https://maps.googleapis.com/maps/api/js?key=' + MAPS_KEY +
