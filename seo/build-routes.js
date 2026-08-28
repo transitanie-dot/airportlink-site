@@ -57,18 +57,25 @@ const MAPS_KEY = 'AIzaSyBWH1TXxWhFmFo7fMB8NXE4swU2idCc_0M';
  *
  * Se mudares os valores no server.js, muda aqui também.
  */
-function priceEUR(km, passengers, isPortugal) {
-  const p = isPortugal
-    ? { base: 40, perKm: 1.6, min: 25, markup: 1.0 }
-    : { base: 20, perKm: 3.5, min: 25, markup: 1.3 };
+const PT_ZONES = {
+  lisbon: { base: 23.23, perKm: 0.909 },
+  porto:  { base: 7.14,  perKm: 1.401 },
+  faro:   { base: 4.45,  perKm: 1.116 }
+};
+const PT_FALLBACK = { base: 11.61, perKm: 1.142 };
 
+function priceEUR(km, passengers, isPortugal, zoneSlug) {
   const multiplier =
-    passengers <= 4 ? 1 :
+    passengers <= 3 ? 1 :
+    passengers <= 4 ? 1.47 :
     passengers <= 8 ? 1.7 :
     passengers <= 13 ? 2.5 : 3.2;
 
-  const price = (p.base + km * p.perKm) * p.markup * multiplier;
-  return Math.max(p.min, price);
+  if (isPortugal) {
+    const z = PT_ZONES[zoneSlug] || PT_FALLBACK;
+    return Math.max(24, (z.base + km * z.perKm) * multiplier);
+  }
+  return Math.max(25, (20 + km * 3.5) * 1.3 * multiplier);
 }
 
 const money = (v) => '€' + Math.round(v);
@@ -565,6 +572,11 @@ function calculator(airport, current, isPT, mapsKey) {
   </section>
 
   <script>
+  // A tabela desta zona, impressa pelo gerador: a calculadora da
+  // página usa-a sem adivinhar nada.
+  window.__ZONE = ${JSON.stringify(PT_ZONES[slugOf(airport)] || PT_FALLBACK)};
+  </script>
+  <script>
   (function () {
     var KEY = ${JSON.stringify(mapsKey)};
     var PT = ${JSON.stringify(isPT)};
@@ -590,8 +602,10 @@ function calculator(airport, current, isPT, mapsKey) {
 
     // ---------- a mesma fórmula do site ----------
     function fare(km, pax) {
-      var p = PT ? { base: 40, perKm: 1.60, min: 25, up: 1.0 }
+      // A zona vem impressa na página: cada aeroporto sabe a sua.
+      var p = PT ? (window.__ZONE || { base: 11.61, perKm: 1.142, min: 24 })
                  : { base: 20, perKm: 3.5, min: 25, up: 1.3 };
+      if (PT) { p.min = 24; p.up = 1.0; }
       var mult = pax <= 4 ? 1 : pax <= 8 ? 1.7 : pax <= 13 ? 2.5 : 3.2;
       return Math.max(p.min, (p.base + km * p.perKm) * p.up * mult);
     }
@@ -952,10 +966,10 @@ function localInfo(airport) {
 
 function routePage(country, airport, dest, siblings) {
   const isPT = country.countryCode === 'PT';
-  const p1 = priceEUR(dest.km, 1, isPT);
-  const p5 = priceEUR(dest.km, 5, isPT);
-
   const slug = slugOf(airport);
+  const p1 = priceEUR(dest.km, 1, isPT, slug);
+  const p5 = priceEUR(dest.km, 5, isPT, slug);
+
   const cslug = countrySlug(country);
   const url = `${SITE}/transfers/${cslug}/${slug}-to-${dest.slug}/`;
   const title = `${airport.city} Airport to ${dest.name} Transfer | From ${money(p1)} | Airportlink`;
@@ -1028,7 +1042,7 @@ function routePage(country, airport, dest, siblings) {
     .filter((d) => d.slug !== dest.slug)
     .slice(0, 6)
     .map((d) => {
-      const price = priceEUR(d.km, 1, isPT);
+      const price = priceEUR(d.km, 1, isPT, slug);
       return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}/">` +
         `<b>${esc(d.name)}</b><span>from ${money(price)}</span></a>`;
     }).join('\n      ');
@@ -1106,7 +1120,7 @@ function airportPage(country, airport) {
   const cslug = countrySlug(country);
   const url = `${SITE}/airports/${cslug}/${slug}/`;
 
-  const cheapest = Math.min(...airport.destinations.map((d) => priceEUR(d.km, 1, isPT)));
+  const cheapest = Math.min(...airport.destinations.map((d) => priceEUR(d.km, 1, isPT, slug)));
 
   const title = `${airport.city} Airport Transfers (${airport.iata}) | From ${money(cheapest)} | Airportlink`;
   const description =
@@ -1149,7 +1163,7 @@ function airportPage(country, airport) {
     .slice()
     .sort((a, b) => a.km - b.km)
     .map((d) => {
-      const price = priceEUR(d.km, 1, isPT);
+      const price = priceEUR(d.km, 1, isPT, slug);
       return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}/">` +
         `<b>${esc(d.name)}</b>` +
         `<span>${esc(d.minutes)} min &middot; from ${money(price)}</span></a>`;
@@ -1161,7 +1175,7 @@ function airportPage(country, airport) {
     .filter((a) => a.iata !== airport.iata)
     .map((a) => {
       const s2 = slugOf(a);
-      const from = Math.min(...a.destinations.map((d) => priceEUR(d.km, 1, isPT)));
+      const from = Math.min(...a.destinations.map((d) => priceEUR(d.km, 1, isPT, a.slug)));
       return `<a class="other" href="/airports/${cslug}/${s2}/">` +
         `<b>${esc(a.name)}</b><span>from ${money(from)}</span></a>`;
     }).join('\n      ');
