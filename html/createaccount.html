@@ -210,7 +210,9 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
 
       showSignupSuccess('Account created. Taking you to sign in...');
 
-      setTimeout(() => { window.location.href = '/login'; }, 1200);
+      // O next= viaja com a pessoa: quem veio do checkout volta lá
+      // com a reserva que já tinha montado, em vez de recomeçar.
+      setTimeout(() => { window.location.href = '/login' + nextQuery(); }, 1200);
     } catch (err) {
       showSignupError(err.message || 'Could not create account.');
     } finally {
@@ -219,7 +221,27 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
     }
   });
 
-  backBtn.addEventListener('click', () => { window.location.href = '/login'; });
+  /**
+   * Para onde ir depois.
+   *
+   * O next= atravessa o registo e chega ao login, que sabe usá-lo.
+   * Sem isto, quem cria conta a meio de uma reserva volta à conta
+   * pessoal e perde tudo o que já tinha escolhido.
+   */
+  function nextQuery() {
+    var m = /[?&]next=([^&]+)/.exec(window.location.search);
+    if (!m) return '';
+
+    var p = decodeURIComponent(m[1]);
+
+    // Só caminhos internos. Duas barras no início também são
+    // externas: //evil.com é um endereço absoluto disfarçado.
+    if (p.charAt(0) !== '/' || p.charAt(1) === '/' || p.indexOf('\\') !== -1) return '';
+
+    return '?next=' + encodeURIComponent(p);
+  }
+
+  backBtn.addEventListener('click', () => { window.location.href = '/login' + nextQuery(); });
 
   confirmPasswordEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') registerBtn.click();
