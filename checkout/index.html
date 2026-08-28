@@ -557,7 +557,8 @@ function ptZone(a, b) {
     for (var k in PT_ZONES) {
       var ws = PT_ZONES[k].words;
       for (var i = 0; i < ws.length; i++) {
-        if (texts[t].indexOf(ws[i]) !== -1) return PT_ZONES[k];
+        // Palavra inteira: "aeroporto" contem "porto".
+        if (new RegExp('\\b' + ws[i] + '\\b').test(texts[t])) return PT_ZONES[k];
       }
     }
   }
