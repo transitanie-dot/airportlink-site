@@ -255,9 +255,18 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
     var m = /[?&]next=([^&]+)/.exec(window.location.search);
     if (!m) return ACCOUNT_PATH;
     var p = decodeURIComponent(m[1]);
+
     // Só caminhos internos: um "next" externo seria um vector de
-    // phishing — o utilizador confia no nosso domínio e sai para outro.
-    return /^\/[A-Za-z0-9/_-]*$/.test(p) ? p : ACCOUNT_PATH;
+    // phishing — o utilizador confia no nosso domínio e sai para
+    // outro. Duas barras no início também contam como externo:
+    // //evil.com é um endereço absoluto disfarçado de caminho.
+    if (p.charAt(0) !== '/' || p.charAt(1) === '/' || p.indexOf('\\') !== -1) {
+      return ACCOUNT_PATH;
+    }
+
+    // Os parâmetros passam. Estavam a ser rejeitados, e por isso
+    // quem vinha do checkout perdia a reserva que já tinha montado.
+    return /^\/[A-Za-z0-9/_.?=&%,+:-]*$/.test(p) ? p : ACCOUNT_PATH;
   }
 
   // =========================================================
