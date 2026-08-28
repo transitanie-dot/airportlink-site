@@ -148,8 +148,14 @@ html[data-agency="on"] .sidebar,
 html[data-agency="on"] .side{
   background:linear-gradient(170deg,#1A2233 0%,var(--ink) 62%);
   border:1px solid rgba(232,163,61,.22)}
+/* O texto dos itens tem de clarear com o fundo.
+   Só o item ativo estava tratado, e por isso os restantes ficavam
+   escuros sobre escuro — invisíveis. */
+html[data-agency="on"] .side-item{color:#B9C2D2}
+html[data-agency="on"] .side-item:hover{background:rgba(255,255,255,.06);color:#fff}
 html[data-agency="on"] .side-item.active{
   background:rgba(232,163,61,.14);color:var(--amber);box-shadow:inset 2px 0 0 var(--amber)}
+html[data-agency="on"] .side-title{color:#8C97A8}
 html[data-agency="on"] .side-btn.teal{background:var(--amber);color:#141A28}
 
 /* A faixa que identifica a conta, por cima da navegação. */
