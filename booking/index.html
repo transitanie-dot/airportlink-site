@@ -691,6 +691,18 @@ function firstFit() {
 }
 
 function paintSummary() {
+  // A data do pagamento aparece SEMPRE, com ou sem rota medida: é
+  // uma condição da reserva, não um resultado do cálculo. Estava
+  // atrás do return e por isso nunca se via.
+  var pickAt = new Date(trip.date + 'T' + (trip.time || '12:00'));
+  var chargeAt = new Date(pickAt.getTime() - 48 * 36e5);
+  var canLater = !isNaN(chargeAt.getTime()) && chargeAt > new Date();
+
+  $('sWhen').textContent = canLater
+    ? 'Book now, pay later (' +
+      chargeAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) + ')'
+    : 'Less than 48 hours away \u2014 charged at checkout';
+
   if (chosen === null || !trip.km) {
     $('nextBtn').disabled = true;
     return;
@@ -710,14 +722,6 @@ function paintSummary() {
   $('sTotal').textContent = '\u20ac' + total;
 
   // Quando o cartão é debitado. Menos de 48 horas, é logo.
-  var pick = new Date(trip.date + 'T' + (trip.time || '12:00'));
-  var at = new Date(pick.getTime() - 48 * 36e5);
-
-  $('sWhen').textContent = (!isNaN(at.getTime()) && at > new Date())
-    ? 'Book now, pay later (' +
-      at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) + ')'
-    : 'Charged at checkout';
-
   $('nextBtn').disabled = false;
 }
 
@@ -793,6 +797,7 @@ $('nextBtn').addEventListener('click', function () {
 // ---------- arranque ----------
 bindOpts();
 paintRoute();
+paintSummary();
 measure();
 
 })();
