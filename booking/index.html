@@ -736,9 +736,12 @@ $('nextBtn').addEventListener('click', function () {
   // Os detalhes do passageiro são pedidos na página inicial, que já
   // os tem, valida o telefone e fala com o Stripe. Duplicar esse
   // formulário aqui seria manter dois caminhos para a mesma coisa.
+  // Os quilómetros seguem: sem eles o checkout teria de medir a
+  // rota outra vez, e isso é uma chamada paga ao Google por cada
+  // pessoa que avança.
   var q = new URLSearchParams({
     from: trip.from, to: trip.to, date: trip.date, time: trip.time,
-    pax: String(trip.pax), vehicle: c.id
+    pax: String(trip.pax), vehicle: c.id, km: trip.km.toFixed(1)
   });
 
   if (hasReturn) {
@@ -746,7 +749,7 @@ $('nextBtn').addEventListener('click', function () {
     q.set('return_time', $('retTime').value);
   }
 
-  window.location.href = '/?' + q.toString() + '#book';
+  window.location.href = '/checkout/?' + q.toString();
 });
 
 // ---------- arranque ----------
