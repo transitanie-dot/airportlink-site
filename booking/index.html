@@ -89,7 +89,10 @@ html[data-theme="dark"] .leg-dot.a{background:var(--amber)}
 html[data-theme="dark"] .opt.on{border-color:var(--amber);
   box-shadow:0 0 0 3px rgba(232,163,61,.14)}
 .opt.out{opacity:.42;cursor:not-allowed}
+/* As opções de duas viaturas levam o dobro da largura: espremer
+   dois carros no espaço de um deixava-os ilegíveis. */
 .opt-art{width:92px;flex:0 0 auto;color:var(--slate)}
+.opt-art.two{width:150px}
 html[data-theme="dark"] .opt-art{color:#8C97A8}
 .opt-art svg{width:100%;height:auto;fill:currentColor}
 .opt-art svg .w{fill:var(--surface)}
@@ -326,25 +329,28 @@ function fare(km, mult, isPT) {
  * quem viaja em seis quer perceber porque paga mais.
  */
 var CLASSES = [
-  { id: 'economy', name: 'Economy', seats: 4, bags: 3, mult: 1,
-    note: 'A clean, comfortable saloon. What most people book.',
+  { id: 'sedan', name: 'Sedan', seats: 4, bags: 3, mult: 1, cars: 1,
+    note: 'A comfortable saloon. What most people book.',
     art: '<svg viewBox="0 0 132 52"><path d="M9 40V31c0-2 1-4 3-4l9-1 10-11c2-2 4-3 7-3h25c3 0 5 1 7 3l9 11 25 3c5 1 8 4 8 8v3c0 2-2 4-4 4H13c-2 0-4-2-4-4Z"/><path class="w" d="M38 27 46 17c1-1 2-2 4-2h11v12H38Z"/><path class="w" d="M67 15h11c2 0 3 1 4 2l9 10H67V15Z"/><circle cx="35" cy="41" r="8"/><circle class="w" cx="35" cy="41" r="3.4"/><circle cx="98" cy="41" r="8"/><circle class="w" cx="98" cy="41" r="3.4"/></svg>' },
 
-  { id: 'business', name: 'Business', seats: 3, bags: 3, mult: 1.55,
-    note: 'An executive saloon — Mercedes E-Class or similar. Water on board.',
+  { id: 'premium', name: 'Premium Sedan', seats: 4, bags: 4, mult: 1.55, cars: 1,
+    note: 'A larger executive saloon \u2014 more boot space and more legroom.',
     art: '<svg viewBox="0 0 132 52"><path d="M9 40V31c0-2 1-4 3-4l9-1 10-11c2-2 4-3 7-3h25c3 0 5 1 7 3l9 11 25 3c5 1 8 4 8 8v3c0 2-2 4-4 4H13c-2 0-4-2-4-4Z"/><path class="w" d="M38 27 46 17c1-1 2-2 4-2h11v12H38Z"/><path class="w" d="M67 15h11c2 0 3 1 4 2l9 10H67V15Z"/><circle cx="35" cy="41" r="8"/><circle class="w" cx="35" cy="41" r="3.4"/><circle cx="98" cy="41" r="8"/><circle class="w" cx="98" cy="41" r="3.4"/></svg>' },
 
-  { id: 'van', name: 'Van', seats: 8, bags: 8, mult: 1.7,
+  { id: 'van', name: 'Van', seats: 8, bags: 8, mult: 1.7, cars: 1,
     note: 'A minivan. Also the right choice for four people with a lot of luggage.',
     art: '<svg viewBox="0 0 132 52"><path d="M8 40V16c0-3 2-5 5-5h58c2 0 4 1 5 2l19 15 22 4c5 1 8 4 8 8v2c0 2-2 4-4 4H12c-2 0-4-2-4-4Z"/><path class="w" d="M18 16h20v12H18V16Z"/><path class="w" d="M45 16h20v12H45V16Z"/><path class="w" d="M72 16h5l14 12H72V16Z"/><circle cx="34" cy="41" r="8.5"/><circle class="w" cx="34" cy="41" r="3.6"/><circle cx="99" cy="41" r="8.5"/><circle class="w" cx="99" cy="41" r="3.6"/></svg>' },
 
-  { id: 'minibus', name: 'Minibus', seats: 13, bags: 13, mult: 2.5,
-    note: 'For a group travelling together. One vehicle, one driver, one price.',
-    art: '<svg viewBox="0 0 132 52"><path d="M6 40V13c0-3 2-5 5-5h108c3 0 5 2 5 5v27c0 2-2 4-4 4H10c-2 0-4-2-4-4Z"/><path class="w" d="M14 14h22v12H14V14Z"/><path class="w" d="M42 14h22v12H42V14Z"/><path class="w" d="M70 14h22v12H70V14Z"/><path class="w" d="M98 14h18v12H98V14Z"/><circle cx="33" cy="41" r="8.5"/><circle class="w" cx="33" cy="41" r="3.6"/><circle cx="100" cy="41" r="8.5"/><circle class="w" cx="100" cy="41" r="3.6"/></svg>' },
+  // Acima de oito passageiros nao ha um veiculo so: mandamos dois.
+  // Dize-lo e mais honesto do que chamar-lhe "minibus" e a pessoa
+  // descobrir no aeroporto que sao duas viaturas.
+  { id: 'van_sedan', name: 'Van + Sedan', seats: 12, bags: 11, mult: 2.5, cars: 2,
+    note: 'Two vehicles, two drivers. They travel together and arrive together.',
+    art: '<svg viewBox="0 0 272 52"><g transform="translate(0 4) scale(0.9)"><path d="M8 40V16c0-3 2-5 5-5h58c2 0 4 1 5 2l19 15 22 4c5 1 8 4 8 8v2c0 2-2 4-4 4H12c-2 0-4-2-4-4Z"/><path class="w" d="M18 16h20v12H18V16Z"/><path class="w" d="M45 16h20v12H45V16Z"/><path class="w" d="M72 16h5l14 12H72V16Z"/><circle cx="34" cy="41" r="8.5"/><circle class="w" cx="34" cy="41" r="3.6"/><circle cx="99" cy="41" r="8.5"/><circle class="w" cx="99" cy="41" r="3.6"/></g><g transform="translate(140 4) scale(0.9)"><path d="M9 40V31c0-2 1-4 3-4l9-1 10-11c2-2 4-3 7-3h25c3 0 5 1 7 3l9 11 25 3c5 1 8 4 8 8v3c0 2-2 4-4 4H13c-2 0-4-2-4-4Z"/><path class="w" d="M38 27 46 17c1-1 2-2 4-2h11v12H38Z"/><path class="w" d="M67 15h11c2 0 3 1 4 2l9 10H67V15Z"/><circle cx="35" cy="41" r="8"/><circle class="w" cx="35" cy="41" r="3.4"/><circle cx="98" cy="41" r="8"/><circle class="w" cx="98" cy="41" r="3.4"/></g></svg>' },
 
-  { id: 'coach', name: 'Coach', seats: 16, bags: 16, mult: 3.2,
-    note: 'The largest we run as one vehicle. Above sixteen, we send two.',
-    art: '<svg viewBox="0 0 132 52"><path d="M4 40V10c0-3 2-5 5-5h114c3 0 5 2 5 5v30c0 2-2 4-4 4H8c-2 0-4-2-4-4Z"/><path class="w" d="M11 11h18v11H11V11Z"/><path class="w" d="M34 11h18v11H34V11Z"/><path class="w" d="M57 11h18v11H57V11Z"/><path class="w" d="M80 11h18v11H80V11Z"/><path class="w" d="M103 11h18v11h-18V11Z"/><circle cx="31" cy="41" r="8.5"/><circle class="w" cx="31" cy="41" r="3.6"/><circle cx="101" cy="41" r="8.5"/><circle class="w" cx="101" cy="41" r="3.6"/></svg>' }
+  { id: 'two_vans', name: 'Two Vans', seats: 16, bags: 16, mult: 3.2, cars: 2,
+    note: 'Two minivans for a large group. One price for both.',
+    art: '<svg viewBox="0 0 272 52"><g transform="translate(0 4) scale(0.9)"><path d="M8 40V16c0-3 2-5 5-5h58c2 0 4 1 5 2l19 15 22 4c5 1 8 4 8 8v2c0 2-2 4-4 4H12c-2 0-4-2-4-4Z"/><path class="w" d="M18 16h20v12H18V16Z"/><path class="w" d="M45 16h20v12H45V16Z"/><path class="w" d="M72 16h5l14 12H72V16Z"/><circle cx="34" cy="41" r="8.5"/><circle class="w" cx="34" cy="41" r="3.6"/><circle cx="99" cy="41" r="8.5"/><circle class="w" cx="99" cy="41" r="3.6"/></g><g transform="translate(140 4) scale(0.9)"><path d="M8 40V16c0-3 2-5 5-5h58c2 0 4 1 5 2l19 15 22 4c5 1 8 4 8 8v2c0 2-2 4-4 4H12c-2 0-4-2-4-4Z"/><path class="w" d="M18 16h20v12H18V16Z"/><path class="w" d="M45 16h20v12H45V16Z"/><path class="w" d="M72 16h5l14 12H72V16Z"/><circle cx="34" cy="41" r="8.5"/><circle class="w" cx="34" cy="41" r="3.6"/><circle cx="99" cy="41" r="8.5"/><circle class="w" cx="99" cy="41" r="3.6"/></g></svg>' }
 ];
 
 var trip = { from: '', to: '', date: '', time: '', pax: 2, km: 0, dur: '', isPT: true };
@@ -481,7 +487,7 @@ function paintOptions() {
 
     return '<button class="opt' + (fits ? '' : ' out') + '" data-i="' + i + '"' +
       (fits ? '' : ' disabled') + ' type="button">' +
-      '<span class="opt-art">' + c.art + '</span>' +
+      '<span class="opt-art' + (c.cars > 1 ? ' two' : '') + '">' + c.art + '</span>' +
       '<span class="opt-txt"><strong>' + esc(c.name) + '</strong>' +
       '<span class="cap"><span><b>' + c.seats + '</b> seats</span>' +
       '<span><b>' + c.bags + '</b> suitcases</span></span>' +
@@ -527,7 +533,7 @@ function paintSummary() {
   var one = Math.round(fare(trip.km, c.mult, trip.isPT));
   var total = hasReturn ? one * 2 : one;
 
-  $('sVeh').textContent = c.name;
+  $('sVeh').textContent = c.name + (c.cars > 1 ? ' (' + c.cars + ' vehicles)' : '');
   $('sPax').textContent = trip.pax + (trip.pax === 1 ? ' passenger' : ' passengers');
   $('sOut').textContent = whenText(trip.date, trip.time);
 
