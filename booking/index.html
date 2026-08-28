@@ -89,6 +89,10 @@ html[data-theme="dark"] .leg-dot.a{background:var(--amber)}
 html[data-theme="dark"] .opt.on{border-color:var(--amber);
   box-shadow:0 0 0 3px rgba(232,163,61,.14)}
 .opt.out{opacity:.42;cursor:not-allowed}
+/* Nada dentro do botão apanha o clique. Sem isto, tocar no desenho
+   ou no preço tem o SVG como alvo e o botão nunca sabe que foi
+   clicado. */
+.opt *{pointer-events:none}
 /* Os mesmos desenhos da página inicial: sombra, vidros, jantes e
    faróis. As combinações já vêm com as duas viaturas dentro do
    mesmo SVG, por isso não precisam de mais largura. */
@@ -593,6 +597,29 @@ function measure() {
 }
 
 // ---------- as opções ----------
+/**
+ * O clique nas opções.
+ *
+ * Ligado uma vez ao contentor, no arranque, e não a cada botão: o
+ * innerHTML apaga os ouvintes dos filhos a cada redesenho, e ligá-los
+ * outra vez somava-os até um clique disparar cinco vezes.
+ */
+function bindOpts() {
+  document.getElementById('opts').addEventListener('click', function (e) {
+    var b = null, n = e.target;
+
+    // Subir até ao botão: um clique dentro do SVG tem o próprio
+    // desenho como alvo, e ligar a cada botão deixava-o morto.
+    while (n && n !== this) {
+      if (n.classList && n.classList.contains('opt')) { b = n; break; }
+      n = n.parentNode;
+    }
+
+    if (!b || b.disabled) return;
+    choose(Number(b.getAttribute('data-i')));
+  });
+}
+
 function paintOptions() {
   var html = CLASSES.map(function (c, i) {
     var fits = trip.pax <= c.seats;
@@ -629,14 +656,25 @@ function paintOptions() {
 
   $('opts').innerHTML = html;
 
-  document.querySelectorAll('.opt').forEach(function (b) {
-    b.addEventListener('click', function () {
-      if (b.disabled) return;
-      choose(Number(b.getAttribute('data-i')));
-    });
-  });
 
   choose(firstFit());
+}
+
+/**
+ * Escolher uma opção.
+ *
+ * Desapareceu numa edição minha e nada funcionava por causa disso:
+ * sem ela, clicar não fazia nada, o resumo ficava vazio e o botão
+ * nunca era ativado. Três sintomas, uma função em falta.
+ */
+function choose(i) {
+  chosen = i;
+
+  document.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.toggle('on', Number(b.getAttribute('data-i')) === i);
+  });
+
+  paintSummary();
 }
 
 /** A mais barata que serve. É a que fica escolhida de início. */
@@ -753,6 +791,7 @@ $('nextBtn').addEventListener('click', function () {
 });
 
 // ---------- arranque ----------
+bindOpts();
 paintRoute();
 measure();
 
