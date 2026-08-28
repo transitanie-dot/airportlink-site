@@ -68,6 +68,19 @@ html[data-theme="dark"] .leg-dot.a{background:var(--amber)}
 .ef.wide{grid-column:span 3}
 .ef label{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
   text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+/* As sugestões, iguais às da página inicial: a mesma caixa, o mesmo
+   nome principal a negrito e a morada por baixo. */
+.ac{position:relative}
+.suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);
+  border:1px solid var(--rule-strong);border-radius:16px;
+  box-shadow:0 18px 40px rgba(20,26,40,.16);z-index:50;overflow:hidden;display:none}
+.suggestions.show{display:block}
+.suggestion-item{padding:12px 15px;cursor:pointer;border-bottom:1px solid var(--rule)}
+.suggestion-item:last-child{border-bottom:0}
+.suggestion-item:hover{background:var(--surface-2)}
+.suggestion-main{font-size:14px;font-weight:600}
+.suggestion-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
 .ef input,.ef select{height:44px;padding:0 13px;border-radius:12px;
   border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
   font-family:inherit;font-size:14.5px;font-weight:500;outline:none;width:100%}
@@ -256,9 +269,11 @@ html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
 
     <div class="edit-box" id="editBox">
       <div class="ef wide"><label for="eFrom">Pick-up</label>
-        <input id="eFrom" type="text" autocomplete="off"></div>
+        <div class="ac"><input id="eFrom" type="text" autocomplete="off">
+          <div class="suggestions" id="acFrom"></div></div></div>
       <div class="ef wide"><label for="eTo">Drop-off</label>
-        <input id="eTo" type="text" autocomplete="off"></div>
+        <div class="ac"><input id="eTo" type="text" autocomplete="off">
+          <div class="suggestions" id="acTo"></div></div></div>
       <div class="ef"><label for="eDate">Date</label><input id="eDate" type="date"></div>
       <div class="ef"><label for="eTime">Time</label><input id="eTime" type="time"></div>
       <div class="ef"><label for="ePax">Passengers</label>
@@ -290,7 +305,7 @@ html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
       </div>
 
       <div class="total"><span>Total</span><b id="sTotal">&mdash;</b></div>
-      <p class="pay-when" id="sWhen"></p>
+      <p class="pay-when" id="sWhen">Book now, pay later</p>
 
       <button class="next" id="nextBtn" disabled>Continue</button>
 
@@ -462,7 +477,7 @@ ART.twoVans =
   '</svg>';
 
 var CLASSES = [
-  { id: 'sedan', name: 'Sedan', seats: 4, bags: 4, mult: 1, cars: 1,
+  { id: 'sedan', name: 'Sedan', seats: 3, bags: 3, mult: 1, cars: 1,
     note: 'A comfortable saloon. What most people book.',
     art: ART.sedan },
 
@@ -539,14 +554,18 @@ function maps(then) {
   mapsLoading = true;
   window.alBookingReady = function () {
     mapsReady = true;
-    [$('eFrom'), $('eTo')].forEach(function (el) {
-      var ac = new google.maps.places.Autocomplete(el,
-        { fields: ['formatted_address', 'name'] });
-      ac.addListener('place_changed', function () {
-        var p = ac.getPlace();
-        if (p) el.value = p.formatted_address || p.name || el.value;
-      });
-    });
+
+    // O mesmo serviço da página inicial, com a lista desenhada por
+    // nós. O Autocomplete do Google traz caixa própria, com outro
+    // tipo de letra e outro espaçamento — duas listas diferentes no
+    // mesmo site notam-se.
+    acService = new google.maps.places.AutocompleteService();
+    placesService = new google.maps.places.PlacesService(document.createElement('div'));
+    acToken = new google.maps.places.AutocompleteSessionToken();
+
+    suggest($('eFrom'), $('acFrom'));
+    suggest($('eTo'), $('acTo'));
+
     if (queue) { var f = queue; queue = null; f(); }
   };
 
@@ -555,6 +574,57 @@ function maps(then) {
     '&loading=async&libraries=places&callback=alBookingReady&language=en&region=PT';
   sc.async = true;
   document.head.appendChild(sc);
+}
+
+/**
+ * As sugestões, como na página inicial.
+ *
+ * O nome principal a negrito e a morada por baixo — em vez da linha
+ * corrida que o Autocomplete do Google devolve.
+ */
+var acService = null, placesService = null, acToken = null;
+
+function suggest(input, box) {
+  input.addEventListener('input', function () {
+    var v = input.value.trim();
+
+    // Menos de três letras não vale uma chamada paga.
+    if (v.length < 3) { box.innerHTML = ''; box.classList.remove('show'); return; }
+
+    acService.getPlacePredictions({ input: v, sessionToken: acToken }, function (preds, st) {
+      if (st !== google.maps.places.PlacesServiceStatus.OK || !preds || !preds.length) {
+        box.innerHTML = ''; box.classList.remove('show'); return;
+      }
+
+      box.innerHTML = preds.slice(0, 5).map(function (p) {
+        return '<div class="suggestion-item" data-d="' +
+          String(p.description).replace(/"/g, '&quot;') + '">' +
+          '<div class="suggestion-main">' +
+          esc(p.structured_formatting.main_text || p.description) + '</div>' +
+          '<div class="suggestion-sub">' +
+          esc(p.structured_formatting.secondary_text || '') + '</div></div>';
+      }).join('');
+
+      box.classList.add('show');
+    });
+  });
+
+  box.addEventListener('click', function (e) {
+    var item = e.target.closest ? e.target.closest('.suggestion-item') : null;
+    if (!item) return;
+
+    input.value = item.getAttribute('data-d');
+    box.classList.remove('show');
+
+    // Sessão nova depois de cada escolha: é assim que o Google
+    // agrupa as teclas numa só cobrança.
+    acToken = new google.maps.places.AutocompleteSessionToken();
+  });
+
+  // Clicar fora fecha a lista.
+  document.addEventListener('click', function (e) {
+    if (e.target !== input && !box.contains(e.target)) box.classList.remove('show');
+  });
 }
 
 // ---------- medir a rota ----------
