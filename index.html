@@ -613,10 +613,10 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
             removed without being charged.
           </div>
 
-          <div class="booking-summary" id="bookingSummary"><strong>Trip details</strong><br>Date: &mdash;<br>Time: &mdash;<br>Passengers: &mdash;<br>Vehicle type: &mdash;</div>
-          <div class="status" id="statusText">Enter your pick-up and drop-off to get a quote.</div>
+          <div class="booking-summary hidden" id="bookingSummary"><strong>Trip details</strong><br>Date: &mdash;<br>Time: &mdash;<br>Passengers: &mdash;<br>Vehicle type: &mdash;</div>
+          <div class="status" id="statusText">Tell us where you are going and we will show you the cars.</div>
 
-          <button id="proceedBtn" class="btn proceed-btn" type="button">Continue to booking</button>
+          <button id="proceedBtn" class="btn proceed-btn" type="button">Search transfers</button>
 
           <div id="authCard" class="auth-card hidden">
             <h3>Sign in to continue</h3>
@@ -1689,10 +1689,16 @@ function selectPrediction(placeId, description, type) {
   });
 }
 
+/**
+ * Desligado de propósito.
+ *
+ * A rota passou a ser medida uma vez só, em /booking/. Media-se aqui
+ * também e cada pesquisa custava duas chamadas ao Google em vez de
+ * uma. O corpo fica para trás porque o bloco do preço continua no
+ * HTML, escondido, caso seja preciso voltar atrás.
+ */
 function tryAutoCalculate() {
-  if (!pickupPlace || !dropoffPlace) return setStatus('Select pick-up and drop-off first.');
-  if (!$('travelDate').value || !$('travelTime').value) return setStatus('Select date and time to calculate.');
-  calculateRouteAndPrice();
+  setStatus('');
 }
 
 function calculateRouteAndPrice() {
@@ -2241,21 +2247,41 @@ $('guestBackBtn').addEventListener('click', function () {
 // ============================================================
 // FLUXO DE RESERVA
 // ============================================================
+/**
+ * A homepage passou a ser só pesquisa.
+ *
+ * O preço e os dados do passageiro vivem agora em /booking/ e
+ * /checkout/. Ter os dois caminhos a fazer o mesmo era o dobro dos
+ * sítios onde um erro se podia esconder — e obrigava a medir a rota
+ * duas vezes, o que é uma chamada paga ao Google por cada pesquisa.
+ */
 $('proceedBtn').addEventListener('click', function () {
-  if (!pickupPlace || !dropoffPlace) return setStatus('Select pick-up and drop-off first.', true);
-  if (!$('travelDate').value || !$('travelTime').value) return setStatus('Select date and time first.', true);
-  if (!$('priceValue').dataset.basePrice) return setStatus('Wait for the fare to be calculated.', true);
+  var from = ($('pickup').value || '').trim();
+  var to = ($('dropoff').value || '').trim();
 
-  if (currentUser || guestMode) {
-    $('finalForm').classList.remove('hidden');
-    $('finalForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    setStatus('Complete your booking details below.');
-  } else {
-    $('authCard').classList.remove('hidden');
-    $('authCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    setStatus('Sign in or create an account to continue.');
+  if (!from || !to) {
+    setStatus('Tell us where you are going first.');
+    ($('pickup').value ? $('dropoff') : $('pickup')).focus();
+    return;
   }
-  reportHeight();
+
+  var q = new URLSearchParams({
+    from: from,
+    to: to,
+    date: $('travelDate').value || '',
+    time: $('travelTime').value || '12:00',
+    pax: String(Math.max(1, Math.min(16, parseInt($('passengers').value, 10) || 1)))
+  });
+
+  // A ida e volta, se estiver escolhida na pesquisa.
+  var rd = $('returnDate');
+  if (rd && rd.value) {
+    q.set('return_date', rd.value);
+    var rt = $('returnTime');
+    if (rt && rt.value) q.set('return_time', rt.value);
+  }
+
+  window.location.href = '/booking/?' + q.toString();
 });
 
 $('confirmBtn').addEventListener('click', function () {
