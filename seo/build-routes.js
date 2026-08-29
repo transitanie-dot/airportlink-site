@@ -211,8 +211,16 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
    o contentor por inteiro resolve. */
 .hero img{position:absolute;inset:0;width:100%;height:100%;max-width:none;
   object-fit:cover;object-position:center 45%}
+/* O véu existe só para o texto branco ser legível. Estava tão
+   carregado que apagava a foto — sobretudo horizontes com muito
+   detalhe, onde o degradê achatava tudo. Agora só escurece a faixa
+   de baixo, onde o título assenta, e deixa a foto respirar. */
 .hero .veil{position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(12,16,26,.88),rgba(12,16,26,.2) 65%,transparent)}
+  background:linear-gradient(to top,rgba(12,16,26,.78) 0%,
+    rgba(12,16,26,.42) 32%,rgba(12,16,26,.08) 58%,transparent 78%)}
+/* Uma sombra atrás do texto, para não depender do véu para contraste. */
+.hero .on h1{text-shadow:0 2px 14px rgba(8,11,18,.6)}
+.hero .on .tag{text-shadow:0 1px 8px rgba(8,11,18,.7)}
 .hero .on{position:absolute;left:0;right:0;bottom:0;padding:20px 22px}
 .hero .on .tag{color:var(--amber);margin-bottom:6px}
 .hero .on h1{color:#fff;margin:0;font-size:clamp(24px,3.4vw,34px)}
@@ -455,7 +463,7 @@ function hero(airport, tag, title) {
     `<span class="tag">${esc(tag)}</span><h1>${esc(title)}</h1></div>`;
 
   return airport.image
-    ? `<div class="hero"><img src="/assets/img/cities/${esc(airport.image)}.webp" ` +
+    ? `<div class="hero"><img src="/assets/img/cities/${esc(airport.image)}.jpg" ` +
       `alt="${esc(airport.city)}" width="1600" height="600" loading="eager" ` +
       `fetchpriority="high">${inner}</div>`
     : `<div class="hero">${inner}</div>`;
