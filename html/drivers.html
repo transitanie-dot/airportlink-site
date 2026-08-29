@@ -207,9 +207,11 @@ html[data-theme="dark"] .or-fee{color:var(--amber)}
   box-shadow:0 8px 22px rgba(232,163,61,.28)}
 .btn.amber:hover{box-shadow:0 12px 28px rgba(232,163,61,.36)}
 
-/* O secundário: contorno, para não competir com o principal. */
-.btn.line{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
-.btn.line:hover{border-color:#fff;background:rgba(255,255,255,.08)}
+/* O secundário: preto sólido. O contorno transparente lia-se mal
+   sobre a fotografia do herói, onde o fundo muda de zona para zona. */
+.btn.line{background:var(--ink);color:#fff;border-color:transparent;
+  box-shadow:0 6px 18px rgba(12,16,26,.32)}
+.btn.line:hover{background:#0B0F16;box-shadow:0 10px 24px rgba(12,16,26,.4)}
 </style>
 </head>
 <body data-cta-href="#apply" data-cta-label="Become a partner">
