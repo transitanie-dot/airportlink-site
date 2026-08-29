@@ -209,6 +209,7 @@ html[data-theme="dark"] .cta .btn{background:var(--amber);color:#141A28}
 /* O site.css tem img{max-width:100%} e isso encolhia a foto dentro
    do bloco, deixando o fundo à vista em cima e em baixo. Preencher
    o contentor por inteiro resolve. */
+.hero picture{position:absolute;inset:0;display:block}
 .hero img{position:absolute;inset:0;width:100%;height:100%;max-width:none;
   object-fit:cover;object-position:center 45%}
 /* O véu existe só para o texto branco ser legível. Estava tão
@@ -462,11 +463,20 @@ function hero(airport, tag, title) {
   const inner = `<div class="veil"></div><div class="on">` +
     `<span class="tag">${esc(tag)}</span><h1>${esc(title)}</h1></div>`;
 
-  return airport.image
-    ? `<div class="hero"><img src="/assets/img/cities/${esc(airport.image)}.jpg" ` +
-      `alt="${esc(airport.city)}" width="1600" height="600" loading="eager" ` +
-      `fetchpriority="high">${inner}</div>`
-    : `<div class="hero">${inner}</div>`;
+  if (!airport.image) return `<div class="hero">${inner}</div>`;
+
+  // <picture> tenta os formatos por ordem e fica no primeiro que
+  // existir. Assim tanto faz a foto ser .webp ou .jpg — poupa ter
+  // de acertar a extensão no código sempre que se muda de fonte,
+  // e nos países que vierem a seguir.
+  const base = `/assets/img/cities/${esc(airport.image)}`;
+
+  return `<div class="hero"><picture>` +
+    `<source srcset="${base}.webp" type="image/webp">` +
+    `<source srcset="${base}.jpg" type="image/jpeg">` +
+    `<img src="${base}.jpg" alt="${esc(airport.city)}" ` +
+    `width="1600" height="600" loading="eager" fetchpriority="high">` +
+    `</picture>${inner}</div>`;
 }
 
 
