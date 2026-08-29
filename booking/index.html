@@ -564,6 +564,11 @@ var hasReturn = false;
   trip.time = q.get('time') || '12:00';
   trip.pax = Math.min(16, Math.max(1, Number(q.get('pax')) || 2));
 
+  // A homepage já mediu a rota. Reaproveitamos: medir outra vez era
+  // pagar duas chamadas ao Google pela mesma resposta.
+  trip.km = Number(q.get('km')) || 0;
+  trip.dur = q.get('dur') || '';
+
   if (!trip.date) {
     // Três dias, não um: amanhã cai dentro das 48 horas e tira o
     // "pagar depois" antes de a pessoa sequer o ver.
@@ -702,7 +707,14 @@ function suggest(input, box) {
 }
 
 // ---------- medir a rota ----------
-function measure() {
+function measure(force) {
+  // Já vem medida da homepage: desenhar as opções e ficar por aqui.
+  if (!force && trip.km > 0) {
+    paintRoute();
+    paintOptions();
+    return;
+  }
+
   if (!trip.from || !trip.to) {
     $('opts').innerHTML = '<div class="state"><strong>We need both ends of the trip</strong>' +
       '<span>Press Change above and tell us where you are going, or start from the ' +
@@ -914,7 +926,8 @@ function apply(now) {
     paintRoute();
 
     if (moved) {
-      measure();
+      trip.km = 0;
+      measure(true);
     } else if (trip.km) {
       paintOptions();
       paintSummary();
