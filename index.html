@@ -122,7 +122,28 @@ html[data-theme="dark"] .veh-tyre{fill:#05080D}
    Fotografamos o destino, não o serviço. Um carro numa foto promete
    um modelo que não controlamos; uma cidade promete a viagem, que é
    o que a pessoa está a comprar. */
-.dest-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+/* Carrossel em vez de grelha: com seis destinos e mais a caminho,
+   uma grelha ou empilhava tudo ou espremia os cartões. */
+.dest-wrap{position:relative}
+.dest-grid{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;
+  padding:4px 0 6px}
+.dest-grid::-webkit-scrollbar{display:none}
+.dest-grid > *{flex:0 0 calc((100% - 42px) / 4);scroll-snap-align:start}
+
+/* As setas ficam sobre as pontas, e escondem-se quando não há para
+   onde ir — uma seta que não faz nada é pior do que nenhuma. */
+.dest-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+  width:42px;height:42px;border-radius:999px;border:1px solid var(--rule);
+  background:var(--surface);color:var(--text);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 20px rgba(20,26,40,.16);transition:opacity .18s ease,transform .18s ease}
+.dest-nav:hover{transform:translateY(-50%) scale(1.06)}
+.dest-nav[hidden]{display:none}
+.dest-nav svg{width:19px;height:19px}
+.dest-nav.prev{left:-14px}
+.dest-nav.next{right:-14px}
+@media (max-width:1100px){.dest-nav.prev{left:4px}.dest-nav.next{right:4px}}
 .dest{position:relative;display:block;border-radius:20px;overflow:hidden;
   text-decoration:none;color:#fff;background:var(--surface-2);
   transition:transform .2s cubic-bezier(.22,.68,.35,1)}
@@ -144,8 +165,8 @@ html[data-theme="dark"] .veh-tyre{fill:#05080D}
 .dest-more{display:flex;align-items:center;justify-content:center;
   border:1px dashed var(--rule-strong);border-radius:20px;padding:24px;text-align:center}
 .dest-more span{color:var(--muted);font-size:13.5px;line-height:1.6}
-@media (max-width:960px){.dest-grid{grid-template-columns:1fr 1fr}}
-@media (max-width:520px){.dest-grid{grid-template-columns:1fr}.dest-img{aspect-ratio:16/10}}
+@media (max-width:960px){.dest-grid > *{flex-basis:calc((100% - 14px) / 2)}}
+@media (max-width:520px){.dest-grid > *{flex-basis:82%}.dest-img{aspect-ratio:16/10}}
 
 /* ---------- os três passos, agora em faixa ---------- */
 .steps-band{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
@@ -843,7 +864,18 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
       our partners can drive.</p>
     </div>
 
-    <div class="dest-grid">
+    <div class="dest-wrap">
+      <button class="dest-nav prev" id="destPrev" type="button"
+              aria-label="Previous destinations" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="dest-nav next" id="destNext" type="button"
+              aria-label="More destinations">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    <div class="dest-grid" id="destGrid">
       <a class="dest" href="/#book">
         <div class="dest-img">
           <img src="/assets/img/cities/porto-vertical.webp" alt="Porto" width="600" height="800"
@@ -891,6 +923,31 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
           <p>Copacabana, Ipanema, Barra, Búzios</p>
         </div>
       </a>
+
+      <a class="dest" href="/#book">
+        <div class="dest-img">
+          <img src="/assets/img/cities/paris-vertical.webp" alt="Paris"
+               width="600" height="800" loading="lazy" decoding="async">
+        </div>
+        <div class="dest-body">
+          <div class="k">CDG</div>
+          <h3>Paris</h3>
+          <p>City centre, Disneyland, Versailles, Reims</p>
+        </div>
+      </a>
+
+      <a class="dest" href="/#book">
+        <div class="dest-img">
+          <img src="/assets/img/cities/rome-vertical.webp" alt="Rome"
+               width="600" height="800" loading="lazy" decoding="async">
+        </div>
+        <div class="dest-body">
+          <div class="k">FCO</div>
+          <h3>Rome</h3>
+          <p>City centre, Vatican, Ostia, Civitavecchia</p>
+        </div>
+      </a>
+    </div>
     </div>
   </div>
 </section>
@@ -2426,5 +2483,46 @@ $('agentsCtaBtn').addEventListener('click', function () { navigateTo('/travelage
 })();
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWH1TXxWhFmFo7fMB8NXE4swU2idCc_0M&loading=async&libraries=places,routes&callback=initMap&language=en&region=IE"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  var grid = document.getElementById('destGrid');
+  var prev = document.getElementById('destPrev');
+  var next = document.getElementById('destNext');
+  if (!grid || !prev || !next) return;
+
+  /** Uma seta que não faz nada é pior do que nenhuma: escondem-se
+      quando se chega ao fim, e desaparecem de vez se tudo couber. */
+  function refresh() {
+    var max = grid.scrollWidth - grid.clientWidth;
+
+    if (max < 8) {
+      prev.hidden = true;
+      next.hidden = true;
+      return;
+    }
+
+    prev.hidden = grid.scrollLeft < 8;
+    next.hidden = grid.scrollLeft > max - 8;
+  }
+
+  /** Um cartão de cada vez, com o espaço entre eles. */
+  function step(dir) {
+    var card = grid.querySelector('.dest');
+    var by = card ? card.getBoundingClientRect().width + 14 : grid.clientWidth * 0.8;
+    grid.scrollBy({ left: dir * by, behavior: 'smooth' });
+  }
+
+  prev.addEventListener('click', function () { step(-1); });
+  next.addEventListener('click', function () { step(1); });
+
+  grid.addEventListener('scroll', refresh, { passive: true });
+  window.addEventListener('resize', refresh);
+
+  refresh();
+})();
+</script>
 </body>
 </html>
