@@ -24,6 +24,7 @@
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/i18n.js"></script>
 <script src="/assets/layout.js" defer></script>
 
 <style>
@@ -233,14 +234,14 @@ html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
 <main id="main">
 <div class="bk">
 
-  <h1 class="page-h1">Choose your vehicle</h1>
+  <h1 class="page-h1" data-i18n="book.title">Choose your vehicle</h1>
 
   <!-- ---------- a rota, editável ---------- -->
   <section class="route">
     <div class="route-top">
       <div class="leg">
         <span class="leg-dot a"></span>
-        <div class="leg-txt"><span class="k">Pick-up</span><span class="v" id="rFrom">&mdash;</span></div>
+        <div class="leg-txt"><span class="k" data-i18n="common.pickup">Pick-up</span><span class="v" id="rFrom">&mdash;</span></div>
       </div>
       <span class="leg-arrow">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -248,7 +249,7 @@ html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
       </span>
       <div class="leg">
         <span class="leg-dot b"></span>
-        <div class="leg-txt"><span class="k">Drop-off</span><span class="v" id="rTo">&mdash;</span></div>
+        <div class="leg-txt"><span class="k" data-i18n="common.dropoff">Drop-off</span><span class="v" id="rTo">&mdash;</span></div>
       </div>
     </div>
 
@@ -257,7 +258,7 @@ html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
       <span class="mchip" id="rPax">&mdash;</span>
       <span class="mchip" id="rKm">&mdash;</span>
       <span class="mchip" id="rDur">&mdash;</span>
-      <button class="edit" id="editBtn" type="button">Change</button>
+      <button class="edit" id="editBtn" type="button" data-i18n="common.change">Change</button>
 
       <!-- A ida e volta vive aqui, ao lado do Change: as duas coisas
            são alterações à viagem, e estavam em sítios diferentes. -->
@@ -265,31 +266,31 @@ html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M7 4v16M7 20l-3-3M17 20V4M17 4l3 3"/></svg>
-        <span id="retLabel">Add return</span>
+        <span id="retLabel" data-i18n="book.addReturn">Add return</span>
       </button>
     </div>
 
     <div class="ret-when" id="retWhen">
-      <div class="ef"><label for="retDate">Return date</label>
+      <div class="ef"><label for="retDate" data-i18n="book.returnDate">Return date</label>
         <input id="retDate" type="date"></div>
-      <div class="ef"><label for="retTime">Return time</label>
+      <div class="ef"><label for="retTime" data-i18n="book.returnTime">Return time</label>
         <input id="retTime" type="time" value="10:00"></div>
-      <p class="ret-note">Same vehicle, same price. Each leg can be cancelled on its own.</p>
+      <p class="ret-note" data-i18n="book.returnNote">Same vehicle, same price. Each leg can be cancelled on its own.</p>
     </div>
 
     <div class="edit-box" id="editBox">
-      <div class="ef wide"><label for="eFrom">Pick-up</label>
+      <div class="ef wide"><label for="eFrom" data-i18n="common.pickup">Pick-up</label>
         <div class="ac"><input id="eFrom" type="text" autocomplete="off">
           <div class="suggestions" id="acFrom"></div></div></div>
-      <div class="ef wide"><label for="eTo">Drop-off</label>
+      <div class="ef wide"><label for="eTo" data-i18n="common.dropoff">Drop-off</label>
         <div class="ac"><input id="eTo" type="text" autocomplete="off">
           <div class="suggestions" id="acTo"></div></div></div>
-      <div class="ef"><label for="eDate">Date</label><input id="eDate" type="date"></div>
-      <div class="ef"><label for="eTime">Time</label><input id="eTime" type="time"></div>
-      <div class="ef"><label for="ePax">Passengers</label>
+      <div class="ef"><label for="eDate" data-i18n="common.date">Date</label><input id="eDate" type="date"></div>
+      <div class="ef"><label for="eTime" data-i18n="common.time">Time</label><input id="eTime" type="time"></div>
+      <div class="ef"><label for="ePax" data-i18n="common.passengers">Passengers</label>
         <input id="ePax" type="number" min="1" max="16" step="1"></div>
 
-      <div class="saving" id="saving"><i></i>Updating your price</div>
+      <div class="saving" id="saving"><i></i><span data-i18n="book.updating">Updating your price</span></div>
     </div>
   </section>
 
@@ -305,42 +306,41 @@ html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
 
     <!-- ---------- o resumo ---------- -->
     <aside class="side">
-      <h2>Your booking</h2>
+      <h2 data-i18n="book.yourBooking">Your booking</h2>
 
       <div>
-        <div class="sum"><span>Vehicle</span><span id="sVeh">&mdash;</span></div>
-        <div class="sum"><span>Passengers</span><span id="sPax">&mdash;</span></div>
-        <div class="sum"><span>Outbound</span><span id="sOut">&mdash;</span></div>
+        <div class="sum"><span data-i18n="book.vehicle">Vehicle</span><span id="sVeh">&mdash;</span></div>
+        <div class="sum"><span data-i18n="common.passengers">Passengers</span><span id="sPax">&mdash;</span></div>
+        <div class="sum"><span data-i18n="book.outbound">Outbound</span><span id="sOut">&mdash;</span></div>
         <div class="sum" id="sRetRow" style="display:none">
-          <span>Return</span><span id="sRet">&mdash;</span></div>
+          <span data-i18n="book.return">Return</span><span id="sRet">&mdash;</span></div>
       </div>
 
-      <div class="total"><span>Total</span><b id="sTotal">&mdash;</b></div>
+      <div class="total"><span data-i18n="common.total">Total</span><b id="sTotal">&mdash;</b></div>
       <p class="pay-when" id="sWhen">Book now, pay later</p>
 
-      <button class="next" id="nextBtn" disabled>Continue</button>
+      <button class="next" id="nextBtn" disabled data-i18n="common.continue">Continue</button>
 
       <div class="trust">
         <div class="tr">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
                stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l2 2 4-5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-          <span><b>Free cancellation</b> up to 24 hours before pick-up, refunded in full.</span>
+          <span><b data-i18n="trust.freeCancel">Free cancellation</b> <span data-i18n="trust.freeCancelText">up to 24 hours before pick-up, refunded in full.</span></span>
         </div>
         <div class="tr">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
                stroke-linecap="round" stroke-linejoin="round"><path d="M2 9h20M2 9V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2M2 9v8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9"/></svg>
-          <span><b>Nothing charged today</b> on most routes. We take it 48 hours before.</span>
+          <span><b data-i18n="trust.noCharge">Nothing charged today</b> <span data-i18n="trust.noChargeText">on most routes. We take it 48 hours before.</span></span>
         </div>
         <div class="tr">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
                stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.4-2.1 2.1-2.4-.6a.5.5 0 0 0-.5.8L5 16l1.3 2.2a.5.5 0 0 0 .8-.1l.6-2.4 2.1-2.1 4.4 3.9a.5.5 0 0 0 .8-.5Z"/></svg>
-          <span><b>We track your flight.</b> Land late and the driver is there anyway,
-          at no extra cost.</span>
+          <span><b data-i18n="trust.flight">We track your flight.</b> <span data-i18n="trust.flightText">Land late and the driver is there anyway, at no extra cost.</span></span>
         </div>
         <div class="tr">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
                stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V6l-8-4Z"/></svg>
-          <span><b>Licensed local companies.</b> We check the licence and the insurance.</span>
+          <span><b data-i18n="trust.licensed">Licensed local companies.</b> <span data-i18n="trust.licensedText">We check the licence and the insurance.</span></span>
         </div>
       </div>
     </aside>
@@ -356,6 +356,14 @@ html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
 var MAPS_KEY = 'AIzaSyBWH1TXxWhFmFo7fMB8NXE4swU2idCc_0M';
 
 var $ = function (id) { return document.getElementById(id); };
+/** A tradução, com o inglês como rede. */
+var T = function (k, en) { return (window.i18n ? window.i18n.t(k, en) : en); };
+
+/** A data no formato da língua escolhida. */
+var fmtDate = function (d, o) {
+  return window.i18n ? window.i18n.formatDate(d, o) : d.toLocaleDateString('en-GB', o);
+};
+
 var esc = function (v) {
   return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -607,27 +615,27 @@ ART.twoVans =
   '</svg>';
 
 var CLASSES = [
-  { id: 'sedan', name: 'Sedan', seats: 3, bags: 3, mult: 1, cars: 1,
-    note: 'A comfortable saloon. What most people book.',
+  { id: 'sedan', name: T('veh.sedan', 'Sedan'), seats: 3, bags: 3, mult: 1, cars: 1,
+    note: T('veh.sedan.note', 'A comfortable saloon. What most people book.'),
     art: ART.sedan },
 
-  { id: 'premium', name: 'Premium Sedan', seats: 4, bags: 4, mult: 1.47, cars: 1,
-    note: 'A larger executive saloon \u2014 more legroom, more boot space, water on board.',
+  { id: 'premium', name: T('veh.premium', 'Premium Sedan'), seats: 4, bags: 4, mult: 1.47, cars: 1,
+    note: T('veh.premium.note', 'A larger executive saloon \u2014 more legroom, more boot space.'),
     art: ART.premium },
 
-  { id: 'van', name: 'Van', seats: 8, bags: 8, mult: 1.7, cars: 1,
-    note: 'A minivan. Also the right choice for four people with a lot of luggage.',
+  { id: 'van', name: T('veh.van', 'Van'), seats: 8, bags: 8, mult: 1.7, cars: 1,
+    note: T('veh.van.note', 'A minivan. Also the right choice for four people with a lot of luggage.'),
     art: ART.van },
 
   // Acima de oito passageiros nao ha um veiculo so: mandamos dois.
   // Dize-lo e mais honesto do que chamar-lhe "minibus" e a pessoa
   // descobrir no aeroporto que sao duas viaturas.
-  { id: 'van_sedan', name: 'Van + Sedan', seats: 12, bags: 12, mult: 2.85, cars: 2,
-    note: 'Two vehicles, two drivers. They travel together and arrive together.',
+  { id: 'van_sedan', name: T('veh.van_sedan', 'Van + Sedan'), seats: 12, bags: 12, mult: 2.85, cars: 2,
+    note: T('veh.van_sedan.note', 'Two vehicles, two drivers. They travel together and arrive together.'),
     art: ART.pair },
 
-  { id: 'two_vans', name: 'Two Vans', seats: 16, bags: 16, mult: 3.6, cars: 2,
-    note: 'Two minivans for a large group. One booking, one price.',
+  { id: 'two_vans', name: T('veh.two_vans', 'Two Vans'), seats: 16, bags: 16, mult: 3.6, cars: 2,
+    note: T('veh.two_vans.note', 'Two minivans for a large group. One booking, one price.'),
     art: ART.twoVans }
 ];
 
@@ -661,7 +669,7 @@ function whenText(date, time) {
   if (!date) return '\u2014';
   var d = new Date(date + 'T' + (time || '12:00'));
   if (isNaN(d.getTime())) return date;
-  return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) +
+  return fmtDate(d, { weekday: 'short', day: 'numeric', month: 'short' }) +
     (time ? ' \u00b7 ' + time : '');
 }
 
@@ -669,7 +677,9 @@ function paintRoute() {
   $('rFrom').textContent = trip.from || 'Not set';
   $('rTo').textContent = trip.to || 'Not set';
   $('rWhen').textContent = whenText(trip.date, trip.time);
-  $('rPax').textContent = trip.pax + (trip.pax === 1 ? ' passenger' : ' passengers');
+  $('rPax').textContent = trip.pax + ' ' +
+    T(trip.pax === 1 ? 'common.passenger' : 'common.passengersPlural',
+      trip.pax === 1 ? 'passenger' : 'passengers');
   $('rKm').textContent = trip.km ? Math.round(trip.km) + ' km' : '\u2014';
   $('rDur').textContent = trip.dur || '\u2014';
 
@@ -722,9 +732,9 @@ function maps(then) {
   setTimeout(function () {
     if (mapsReady) return;
     document.getElementById('opts').innerHTML =
-      '<div class="state"><strong>We could not reach the map service</strong>' +
-      '<span>Reload the page, or use the calculator on the ' +
-      '<a href="/#book">home page</a>.</span></div>';
+      '<div class="state"><strong>' + T('book.noService', 'We could not reach the map service') +
+      '</strong><span>' + T('book.noServiceHelp', 'Reload the page or use the home page calculator.') +
+      '</span></div>';
   }, 12000);
 
   var sc = document.createElement('script');
@@ -796,14 +806,14 @@ function measure(force) {
   }
 
   if (!trip.from || !trip.to) {
-    $('opts').innerHTML = '<div class="state"><strong>We need both ends of the trip</strong>' +
-      '<span>Press Change above and tell us where you are going, or start from the ' +
-      '<a href="/#book">home page</a>.</span></div>';
+    $('opts').innerHTML = '<div class="state"><strong>' + T('book.needBoth', 'We need both ends of the trip') + '</strong>' +
+      '<span>' + T('book.needBothHelp', 'Press Change above and tell us where you are going.') +
+      '</span></div>';
     return;
   }
 
-  $('opts').innerHTML = '<div class="state"><strong>Working out your options</strong>' +
-    '<span>Measuring the route.</span></div>';
+  $('opts').innerHTML = '<div class="state"><strong>' + T('book.working', 'Working out your options') + '</strong>' +
+    '<span>' + T('book.measuring', 'Measuring the route.') + '</span></div>';
 
   maps(function () {
     new google.maps.DirectionsService().route({
@@ -811,9 +821,9 @@ function measure(force) {
       travelMode: google.maps.TravelMode.DRIVING
     }, function (res, status) {
       if (status !== 'OK' || !res.routes.length) {
-        $('opts').innerHTML = '<div class="state"><strong>We could not find that route</strong>' +
-          '<span>Check the spelling of both addresses, or try the town name instead of ' +
-          'the hotel.</span></div>';
+        $('opts').innerHTML = '<div class="state"><strong>' + T('book.noRoute', 'We could not find that route') + '</strong>' +
+          '<span>' + T('book.noRouteHelp', 'Check the spelling of both addresses.') +
+          '</span></div>';
         return;
       }
 
@@ -866,7 +876,7 @@ function paintOptions() {
     // seis malas querem uma carrinha, e recusar-lha porque "cabem
     // num carro" é decidir por elas.
     var why = fits ? c.note
-      : 'Only ' + c.seats + ' seats. You are ' + trip.pax + '.';
+      : T('book.notEnoughSeats', 'Not enough seats for') + ' ' + trip.pax + '.';
 
     // Uma dica quando a classe maior faz sentido por bagagem.
     var extra = '';
@@ -881,12 +891,12 @@ function paintOptions() {
       (fits ? '' : ' disabled') + ' type="button">' +
       '<span class="opt-art">' + c.art + '</span>' +
       '<span class="opt-txt"><strong>' + esc(c.name) + '</strong>' +
-      '<span class="cap"><span><b>' + c.seats + '</b> seats</span>' +
-      '<span><b>' + c.bags + '</b> suitcases</span></span>' +
+      '<span class="cap"><span><b>' + c.seats + '</b> ' + T('common.seats', 'seats') + '</span>' +
+      '<span><b>' + c.bags + '</b> ' + T('common.suitcases', 'suitcases') + '</span></span>' +
       '<span class="note">' + esc(why + extra) + '</span></span>' +
       '<span class="opt-price"><span class="v">\u20ac' + price + '</span>' +
-      '<span class="s">whole vehicle</span>' +
-      (fits && i === firstFit() ? '<span class="tag">Best fit</span>' : '') +
+      '<span class="s">' + T('book.wholeVehicle', 'whole vehicle') + '</span>' +
+      (fits && i === firstFit() ? '<span class="tag">' + T('book.bestFit', 'Best fit') + '</span>' : '') +
       '</span></button>';
   }).join('');
 
@@ -935,9 +945,9 @@ function paintSummary() {
   var canLater = !isNaN(chargeAt.getTime()) && chargeAt > new Date();
 
   $('sWhen').textContent = canLater
-    ? 'Book now, pay later (' +
-      chargeAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) + ')'
-    : 'Less than 48 hours away \u2014 charged at checkout';
+    ? T('book.payLater', 'Book now, pay later') + ' ' +
+      fmtDate(chargeAt, { day: 'numeric', month: 'long' })
+    : T('book.chargedAtCheckout', 'Less than 48 hours away \u2014 charged at checkout');
 
   if (chosen === null || !trip.km) {
     $('nextBtn').disabled = true;
@@ -948,8 +958,11 @@ function paintSummary() {
   var one = Math.round(fare(trip.km, c.mult, trip.isPT, c.id));
   var total = hasReturn ? one * 2 : one;
 
-  $('sVeh').textContent = c.name + (c.cars > 1 ? ' (' + c.cars + ' vehicles)' : '');
-  $('sPax').textContent = trip.pax + (trip.pax === 1 ? ' passenger' : ' passengers');
+  $('sVeh').textContent = c.name +
+    (c.cars > 1 ? ' (' + c.cars + ' ' + T('common.vehicles', 'vehicles') + ')' : '');
+  $('sPax').textContent = trip.pax + ' ' +
+    T(trip.pax === 1 ? 'common.passenger' : 'common.passengersPlural',
+      trip.pax === 1 ? 'passenger' : 'passengers');
   $('sOut').textContent = whenText(trip.date, trip.time);
 
   $('sRetRow').style.display = hasReturn ? 'flex' : 'none';
@@ -968,7 +981,7 @@ $('editBtn').addEventListener('click', function () {
 
   // "Done" e não "Close": não há nada por guardar, e "close" faria
   // pensar que fechar sem confirmar perde a alteração.
-  $('editBtn').textContent = open ? 'Done' : 'Change';
+  $('editBtn').textContent = open ? T('common.done', 'Done') : T('common.change', 'Change');
   if (open) maps();
 });
 
@@ -1033,7 +1046,8 @@ $('retBtn').addEventListener('click', function () {
 
   $('retBtn').classList.toggle('on', hasReturn);
   $('retWhen').classList.toggle('on', hasReturn);
-  $('retLabel').textContent = hasReturn ? 'Return added' : 'Add return';
+  $('retLabel').textContent = hasReturn
+    ? T('book.returnAdded', 'Return added') : T('book.addReturn', 'Add return');
 
   if (hasReturn && !$('retDate').value) {
     // Uma semana depois: e o intervalo mais comum, e e mais facil
