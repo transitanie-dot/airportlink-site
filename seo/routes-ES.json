@@ -1,0 +1,1563 @@
+{
+  "_leia_me": [
+    "Espanha. Madrid e Barcelona tem tabela de precos propria no server.js;",
+    "todos os outros aeroportos usam o fallback nacional, que e a tabela",
+    "de Malaga.",
+    "",
+    "Os km de Madrid, Barcelona e Malaga vem do estudo da Transfeero de",
+    "29/08/2026, medidos no site deles. Os restantes sao distancias reais",
+    "de estrada — vale a pena confirmar antes de publicar.",
+    "",
+    "Sitges tem preco fixo: a formula de Barcelona dava 68 EUR e eles",
+    "cobram 135. E destino de resort com procura alta."
+  ],
+  "country": "Spain",
+  "countryCode": "ES",
+  "currency": "EUR",
+  "airports": [
+    {
+      "iata": "MAD",
+      "slug": "madrid",
+      "name": "Madrid Airport",
+      "official": "Adolfo Suárez Madrid–Barajas Airport",
+      "city": "Madrid",
+      "about": "Madrid–Barajas has four terminals spread over several kilometres, and T4 sits far enough from T1–T3 that a shuttle bus runs between them. Tell us your terminal when you book and the driver meets you at the right one. Most arrivals head into the centre on the A-2, about twenty minutes outside rush hour.",
+      "tips": [
+        "T4 and T4S handle Iberia and most Oneworld flights. T1, T2 and T3 are a 10-minute shuttle away — the wrong terminal costs you half an hour.",
+        "The metro charges a €3 airport supplement on top of the normal fare, which surprises most first-time visitors."
+      ],
+      "image": "madrid",
+      "local": [
+        [
+          "Four terminals, and the shuttle between them",
+          "T4 opened in 2006 and sits apart from the older T1–T3 block. A free shuttle links them every five minutes, but with luggage it adds twenty minutes. Your driver goes to the terminal you tell us, so the arrivals hall you name matters more here than at most airports."
+        ],
+        [
+          "The M-30 at rush hour",
+          "Between 07:30 and 09:30, and again from 18:00 to 20:00, the ring road adds twenty to thirty minutes to almost any journey into the centre. Our price is fixed either way — the meter of a taxi is not."
+        ],
+        [
+          "Spanish VTC licensing",
+          "Every driver holds a VTC licence issued by the regional authority. We check the licence and the insurance before a company takes its first ride."
+        ],
+        [
+          "Toledo, Segovia and the day trips",
+          "Madrid is the base for two of Spain's best day trips. Toledo is ninety kilometres south, Segovia a similar distance north — both comfortable as a private transfer with a fixed price, and both awkward by public transport with luggage."
+        ]
+      ],
+      "compare": [
+        [
+          "Metro line 8",
+          "15 min to Nuevos Ministerios",
+          "€5.00",
+          "Fast to the north of the centre.",
+          "€3 airport supplement. One change for most destinations. Steps and crowds with luggage."
+        ],
+        [
+          "Airport Express bus",
+          "40 min to Atocha",
+          "€5.00",
+          "Runs 24 hours.",
+          "Three stops only. Slow in traffic. No help with bags."
+        ],
+        [
+          "Official taxi",
+          "30 min to centre",
+          "€33 fixed",
+          "Fixed rate inside the M-30.",
+          "Queues at peak arrivals. The fixed rate ends at the M-30 — beyond it, the meter runs."
+        ],
+        [
+          "Hire car",
+          "Queue plus paperwork",
+          "€25–70 a day",
+          "Freedom to reach Toledo and Segovia.",
+          "Central Madrid is a low-emission zone with fines for the wrong plate. Parking is expensive and scarce."
+        ]
+      ],
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Madrid city centre",
+          "km": 20,
+          "minutes": 25,
+          "about": "Twenty kilometres on the A-2, about twenty-five minutes outside rush hour. Central Madrid is a low-emission zone: our licensed vehicles are cleared to enter, which is not true of every hire car. Give the street name — Gran Vía alone covers more than a kilometre."
+        },
+        {
+          "slug": "alcala-de-henares",
+          "name": "Alcalá de Henares",
+          "km": 29,
+          "minutes": 30,
+          "about": "Half an hour east on the A-2. Cervantes was born here and the university buildings are UNESCO-listed. The old centre is pedestrian, so the driver drops you at the nearest point to your hotel rather than at the door."
+        },
+        {
+          "slug": "toledo",
+          "name": "Toledo",
+          "km": 90,
+          "minutes": 60,
+          "about": "An hour south on the AP-41. Toledo sits on a hill inside a bend of the Tagus, and the old town is a maze of narrow streets closed to most traffic. Drivers use the Puerta de Bisagra or the Zocodover drop-off depending on where you are staying."
+        },
+        {
+          "slug": "segovia",
+          "name": "Segovia",
+          "km": 90,
+          "minutes": 70,
+          "about": "Seventy minutes north through the Guadarrama tunnel on the AP-6. The Roman aqueduct stands right at the entrance to the old town, and that square is where most drivers set down. In winter the mountain pass can be slow — the fixed price does not change."
+        },
+        {
+          "slug": "valencia",
+          "name": "Valencia",
+          "km": 351,
+          "minutes": 210,
+          "about": "Three and a half hours east on the A-3. A long transfer, but a single fixed price with one driver and no changes — worth comparing against two train tickets plus taxis at both ends if you are travelling with luggage or children."
+        }
+      ]
+    },
+    {
+      "iata": "BCN",
+      "slug": "barcelona",
+      "name": "Barcelona Airport",
+      "official": "Josep Tarradellas Barcelona–El Prat Airport",
+      "city": "Barcelona",
+      "about": "El Prat has two terminals four kilometres apart, linked by a free shuttle. T1 handles most long-haul and Vueling; T2 takes many low-cost carriers. The airport sits fifteen kilometres south of the city on the C-32, and the same road runs on to Sitges in the other direction.",
+      "tips": [
+        "T1 and T2 are 4 km apart with a shuttle between them. Check your terminal before you travel — walking between them is not possible.",
+        "The C-32 towards Sitges is a toll road. Our price includes the toll; a metered taxi adds it at the end."
+      ],
+      "image": "barcelona",
+      "local": [
+        [
+          "Two terminals, four kilometres apart",
+          "A free shuttle runs between T1 and T2 every ten minutes, but it takes fifteen minutes each way. Tell us the terminal and the driver is at the right one — this is the most common cause of a delayed pick-up at El Prat."
+        ],
+        [
+          "The C-32 and its tolls",
+          "Both Sitges and the Costa Brava involve toll roads. Our price includes them. A taxi meter does not, and the toll appears as an extra at the end of the journey."
+        ],
+        [
+          "Spanish VTC licensing",
+          "Catalonia regulates VTC licences tightly and the number in circulation is capped. Every company we work with holds a valid licence, and we check it before the first ride."
+        ],
+        [
+          "Cruise terminals and the port",
+          "Barcelona is Europe's busiest cruise port. The terminals are at Moll Adossat, a good twenty minutes from the airport, and you cannot walk in — port security requires a vehicle. Give the terminal letter if you know it."
+        ]
+      ],
+      "compare": [
+        [
+          "Aerobús",
+          "35 min to Plaça Catalunya",
+          "€7.25",
+          "Frequent and direct.",
+          "Four stops only. Luggage racks fill up. No use for anywhere off the route."
+        ],
+        [
+          "Renfe R2 Nord",
+          "25 min to Sants",
+          "€4.90",
+          "Cheap and quick to Sants.",
+          "T2 only — T1 needs a shuttle first. Every 30 minutes. Stairs with luggage."
+        ],
+        [
+          "Official taxi",
+          "25 min to centre",
+          "€35–45 metered",
+          "No booking needed.",
+          "€4.50 airport supplement plus €1 a bag. Tolls extra on the C-32. Long queues at peak arrivals."
+        ],
+        [
+          "Hire car",
+          "Queue plus paperwork",
+          "€25–65 a day",
+          "Useful for the Costa Brava.",
+          "Barcelona's low-emission zone covers the whole city. Parking is expensive and mostly underground."
+        ]
+      ],
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Barcelona city centre",
+          "km": 15,
+          "minutes": 25,
+          "about": "Fifteen kilometres north on the C-32 and Gran Via, about twenty-five minutes. Barcelona's low-emission zone covers the whole city and operates on weekdays — our licensed vehicles are cleared to enter. Give the street and number, since the Eixample blocks look identical from a car."
+        },
+        {
+          "slug": "sitges",
+          "name": "Sitges",
+          "km": 28,
+          "minutes": 30,
+          "about": "Half an hour south on the C-32, through the Garraf tunnels along the coast. Sitges is compact and much of the seafront is pedestrian, so drivers set down at the nearest accessible street. The tolls on that road are inside your fixed price."
+        },
+        {
+          "slug": "girona",
+          "name": "Girona",
+          "km": 103,
+          "minutes": 75,
+          "about": "An hour and a quarter north on the AP-7. Girona's old town straddles the Onyar and the medieval streets are closed to traffic, so expect a short walk from the drop-off. A common first stop for anyone heading on to the Costa Brava."
+        },
+        {
+          "slug": "lloret-de-mar",
+          "name": "Lloret de Mar",
+          "km": 85,
+          "minutes": 70,
+          "about": "Just over an hour up the AP-7 and then the coast road. Lloret spreads along several beaches and the hotels are scattered across the hillside — give the hotel name, not just the town, or the driver ends up circling."
+        },
+        {
+          "slug": "andorra-la-vella",
+          "name": "Andorra la Vella",
+          "km": 198,
+          "minutes": 165,
+          "about": "Nearly three hours north through the Pyrenees on the C-16, including the Túnel del Cadí. Andorra is outside the EU customs union, so there is a border check — usually quick. In winter the road can require chains and the driver carries them."
+        }
+      ]
+    },
+    {
+      "iata": "AGP",
+      "slug": "malaga",
+      "name": "Málaga Airport",
+      "official": "Málaga–Costa del Sol Airport",
+      "city": "Málaga",
+      "about": "Málaga is the gateway to the Costa del Sol, and most arrivals are not going to Málaga itself. Everything west — Torremolinos, Fuengirola, Marbella — runs along the A-7 and the AP-7 toll road. The terminal is single and modern, with arrivals on one level.",
+      "tips": [
+        "The AP-7 toll road saves twenty minutes to Marbella in summer. Our price includes the toll either way.",
+        "Resorts on the Costa del Sol spread over several kilometres. Give the hotel or urbanisation name, not just the town."
+      ],
+      "image": "malaga",
+      "local": [
+        [
+          "One terminal, three modules",
+          "Arrivals all come out at the same place, which makes Málaga one of the easier Spanish airports to meet a driver at. Summer Saturdays are busy but the hall is large."
+        ],
+        [
+          "The A-7 and the AP-7",
+          "The free A-7 hugs the coast through every town; the AP-7 toll road runs behind them and saves real time in July and August. Our drivers take whichever is faster and the toll is inside your fixed price."
+        ],
+        [
+          "Spanish VTC licensing",
+          "Andalusia issues VTC licences through the regional transport authority. We check the licence and the insurance of every company before its first ride."
+        ],
+        [
+          "Urbanisations, not addresses",
+          "Much of the Costa del Sol is built as gated urbanisations spread over kilometres of hillside. The name of the urbanisation matters more than the street, and it is the single most common cause of a late arrival here."
+        ]
+      ],
+      "compare": [
+        [
+          "Train C-1",
+          "12 min to Málaga centre",
+          "€1.80",
+          "Cheapest into the city.",
+          "Goes to Málaga and Fuengirola only. Every 20 minutes. No use for Marbella."
+        ],
+        [
+          "Bus A express",
+          "20 min to Málaga centre",
+          "€4.00",
+          "Direct to the city.",
+          "City only. Luggage space limited. Stops running late evening."
+        ],
+        [
+          "Official taxi",
+          "15 min to Málaga centre",
+          "€20–25 metered",
+          "No booking needed.",
+          "To Marbella expect €90–110 on the meter, plus tolls and a night supplement."
+        ],
+        [
+          "Hire car",
+          "Queue plus paperwork",
+          "€20–60 a day",
+          "Useful for exploring inland.",
+          "Queues of an hour in August. Fuel, parking and deposit on top."
+        ]
+      ],
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Málaga city centre",
+          "km": 11,
+          "minutes": 15,
+          "about": "A quarter of an hour east along the coast. Málaga's historic centre is largely pedestrian, so drivers set down at the nearest accessible point — usually Alameda Principal or the cathedral side. Give the street name if your hotel is inside the old town."
+        },
+        {
+          "slug": "torremolinos",
+          "name": "Torremolinos",
+          "km": 7,
+          "minutes": 12,
+          "about": "The closest resort to the airport, barely ten minutes down the coast. Hotels cluster around La Carihuela and the Bajondillo beach, and the two are a fair walk apart — the hotel name saves time."
+        },
+        {
+          "slug": "marbella",
+          "name": "Marbella",
+          "km": 51,
+          "minutes": 45,
+          "about": "Forty-five minutes west, faster on the AP-7 in summer. Marbella runs for more than twenty kilometres of coast, from Puerto Banús to the eastern urbanisations — the town name alone is not enough, so give the urbanisation."
+        },
+        {
+          "slug": "nerja",
+          "name": "Nerja",
+          "km": 66,
+          "minutes": 55,
+          "about": "Just under an hour east on the A-7, past the cliffs of La Herradura. Nerja is built into a hillside and the streets near the Balcón de Europa are narrow — drivers use the nearest accessible point rather than the door."
+        },
+        {
+          "slug": "granada",
+          "name": "Granada",
+          "km": 130,
+          "minutes": 95,
+          "about": "An hour and a half inland on the A-92, climbing to a plateau below the Sierra Nevada. If you are going to the Alhambra, note that the hotels in the Albaicín are reached by very narrow streets and drivers set down at the closest point that a car can reach."
+        }
+      ]
+    },
+    {
+      "iata": "ALC",
+      "slug": "alicante",
+      "name": "Alicante Airport",
+      "official": "Alicante–Elche Miguel Hernández Airport",
+      "city": "Alicante",
+      "about": "Alicante–Elche is the gateway to the Costa Blanca, and most arrivals head north to Benidorm or south to Torrevieja. One terminal, arrivals on the ground floor, and the AP-7 running the length of the coast in both directions.",
+      "tips": [
+        "Benidorm is 55 km north and Torrevieja 45 km south — opposite directions from the same terminal.",
+        "Summer Saturday arrivals are heavy. The hall is large but the taxi queue is not."
+      ],
+      "image": "alicante",
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Alicante city centre",
+          "km": 11,
+          "minutes": 15,
+          "about": "A quarter of an hour along the N-338 and into the city. The Explanada and the port are the usual drop-off area; the streets climbing to Santa Bárbara castle are narrow and mostly one-way."
+        },
+        {
+          "slug": "benidorm",
+          "name": "Benidorm",
+          "km": 55,
+          "minutes": 45,
+          "about": "Forty-five minutes north on the AP-7. Benidorm splits into Levante and Poniente beaches with the old town between them, and the two fronts are a long walk apart — the hotel name decides which side the driver takes."
+        },
+        {
+          "slug": "torrevieja",
+          "name": "Torrevieja",
+          "km": 45,
+          "minutes": 40,
+          "about": "Forty minutes south past the salt lagoons. Much of the area is built as urbanisations spread over several kilometres inland, so the urbanisation name matters more than the street."
+        },
+        {
+          "slug": "calpe",
+          "name": "Calpe",
+          "km": 70,
+          "minutes": 55,
+          "about": "Just under an hour north, past Altea. Calpe is built around the Peñón de Ifach and the seafront apartments run for two kilometres — give the building name."
+        },
+        {
+          "slug": "murcia",
+          "name": "Murcia",
+          "km": 75,
+          "minutes": 55,
+          "about": "Under an hour south-west on the A-7. A useful transfer when flights into Murcia's own airport do not fit, and a single fixed price beats a bus plus taxi with luggage."
+        }
+      ]
+    },
+    {
+      "iata": "PMI",
+      "slug": "palma",
+      "name": "Palma Airport",
+      "official": "Palma de Mallorca Airport",
+      "city": "Palma",
+      "about": "Son Sant Joan is one of Europe's busiest airports in August and one of the quietest in January. Arrivals come out at a single hall, and the Ma-19 motorway reaches Palma in fifteen minutes and the west coast in under an hour.",
+      "tips": [
+        "Peak summer Saturdays here are among the busiest in Europe. Allow extra time inside the terminal.",
+        "The Serra de Tramuntana roads to Sóller and Deià are narrow and winding — journey times are longer than the distance suggests."
+      ],
+      "image": "palma",
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Palma city centre",
+          "km": 8,
+          "minutes": 15,
+          "about": "A quarter of an hour on the Ma-19. The old town around the cathedral is a maze of narrow one-way streets, so drivers set down at the nearest accessible corner rather than the hotel door."
+        },
+        {
+          "slug": "magaluf",
+          "name": "Magaluf",
+          "km": 22,
+          "minutes": 25,
+          "about": "Twenty-five minutes west past Palma. Magaluf and Palmanova run into each other along the same bay, and the hotels are stacked up the hillside — the hotel name saves a lot of circling."
+        },
+        {
+          "slug": "alcudia",
+          "name": "Alcúdia",
+          "km": 55,
+          "minutes": 50,
+          "about": "Fifty minutes north across the island. The old walled town and the beach strip at Port d'Alcúdia are three kilometres apart, and most hotels are at the port end."
+        },
+        {
+          "slug": "soller",
+          "name": "Sóller",
+          "km": 42,
+          "minutes": 50,
+          "about": "Fifty minutes through the Sóller tunnel into the Tramuntana. The town sits inland from its port, which is another three kilometres down the valley — say which one you want."
+        },
+        {
+          "slug": "cala-dor",
+          "name": "Cala d'Or",
+          "km": 65,
+          "minutes": 55,
+          "about": "Just under an hour east. Cala d'Or is a series of small coves each with its own cluster of hotels, spread over several kilometres — the cove name is what the driver needs."
+        }
+      ]
+    },
+    {
+      "iata": "IBZ",
+      "slug": "ibiza",
+      "name": "Ibiza Airport",
+      "official": "Ibiza Airport",
+      "city": "Ibiza",
+      "about": "Ibiza's airport sits at the southern tip of the island, seven kilometres from Ibiza Town. Everything on the island is within forty minutes, but the roads to the north-west coves are narrow and slow in August.",
+      "tips": [
+        "Arrivals in July and August are relentless from Friday to Sunday. The taxi queue can pass an hour.",
+        "Many villas in the north are reached by unmade tracks. Send a pin location rather than an address if you have one."
+      ],
+      "image": "ibiza",
+      "destinations": [
+        {
+          "slug": "ibiza-town",
+          "name": "Ibiza Town",
+          "km": 7,
+          "minutes": 12,
+          "about": "Twelve minutes north. The walled Dalt Vila is closed to traffic, so drivers set down at the base of the ramp — expect a short uphill walk if your hotel is inside the walls."
+        },
+        {
+          "slug": "playa-den-bossa",
+          "name": "Playa d'en Bossa",
+          "km": 4,
+          "minutes": 8,
+          "about": "The closest resort to the airport, under ten minutes. The strip runs for two kilometres behind the beach and the hotels are spread along all of it."
+        },
+        {
+          "slug": "san-antonio",
+          "name": "San Antonio",
+          "km": 22,
+          "minutes": 25,
+          "about": "Twenty-five minutes across the island to the west coast. San Antonio's bay is where the sunset crowds gather; the quieter bays north of town are another ten minutes on."
+        },
+        {
+          "slug": "santa-eulalia",
+          "name": "Santa Eulalia",
+          "km": 23,
+          "minutes": 25,
+          "about": "Twenty-five minutes up the east coast. Quieter than the west, with hotels along the promenade and villas in the hills behind — the urbanisation name matters for the latter."
+        },
+        {
+          "slug": "cala-comte",
+          "name": "Cala Comte",
+          "km": 28,
+          "minutes": 35,
+          "about": "Thirty-five minutes west on narrow roads that slow to a crawl at sunset in August. Worth building extra time into a departure transfer from here."
+        }
+      ]
+    },
+    {
+      "iata": "TFS",
+      "slug": "tenerife-south",
+      "name": "Tenerife South Airport",
+      "official": "Tenerife South Airport",
+      "city": "Tenerife",
+      "about": "Tenerife South handles almost all holiday traffic to the island. The TF-1 motorway runs west to the resorts in twenty minutes and north to Santa Cruz and Puerto de la Cruz in about an hour.",
+      "tips": [
+        "Tenerife North is a separate airport an hour away. Check which one your flight uses.",
+        "The climb to Teide is a different climate — bring a jacket even in August."
+      ],
+      "image": "tenerife",
+      "destinations": [
+        {
+          "slug": "playa-de-las-americas",
+          "name": "Playa de las Américas",
+          "km": 18,
+          "minutes": 20,
+          "about": "Twenty minutes west on the TF-1. Las Américas, Los Cristianos and Costa Adeje run together along the same coast, so the resort name alone is often ambiguous — give the hotel."
+        },
+        {
+          "slug": "los-cristianos",
+          "name": "Los Cristianos",
+          "km": 15,
+          "minutes": 18,
+          "about": "Under twenty minutes. The ferry port for La Gomera is here, and departures are early — worth booking the transfer with margin."
+        },
+        {
+          "slug": "costa-adeje",
+          "name": "Costa Adeje",
+          "km": 22,
+          "minutes": 25,
+          "about": "Twenty-five minutes west, at the quieter end of the same strip. The hotels sit above the beach on terraces and the access roads loop — the hotel name saves time."
+        },
+        {
+          "slug": "puerto-de-la-cruz",
+          "name": "Puerto de la Cruz",
+          "km": 100,
+          "minutes": 75,
+          "about": "An hour and a quarter north, crossing the island. The climate changes completely on that side — greener, cloudier, and often ten degrees cooler."
+        },
+        {
+          "slug": "santa-cruz",
+          "name": "Santa Cruz de Tenerife",
+          "km": 60,
+          "minutes": 50,
+          "about": "Fifty minutes north-east on the TF-1. The capital, the cruise port and the auditorium are all within the same central area."
+        }
+      ]
+    },
+    {
+      "iata": "LPA",
+      "slug": "gran-canaria",
+      "name": "Gran Canaria Airport",
+      "official": "Gran Canaria Airport",
+      "city": "Gran Canaria",
+      "about": "Gran Canaria's airport sits on the east coast, roughly halfway between Las Palmas in the north and the southern resorts. Both directions are about half an hour on the GC-1.",
+      "tips": [
+        "North and south are opposite directions from the terminal — Las Palmas 25 km one way, Maspalomas 30 km the other.",
+        "The south is reliably sunny when the north is under cloud. It catches many first-time visitors out."
+      ],
+      "image": "gran-canaria",
+      "destinations": [
+        {
+          "slug": "las-palmas",
+          "name": "Las Palmas",
+          "km": 25,
+          "minutes": 25,
+          "about": "Twenty-five minutes north. The city runs along a narrow isthmus with Las Canteras beach on one side and the port on the other — say which side your hotel is."
+        },
+        {
+          "slug": "maspalomas",
+          "name": "Maspalomas",
+          "km": 30,
+          "minutes": 30,
+          "about": "Half an hour south. Maspalomas, Playa del Inglés and San Agustín form one continuous resort area behind the dunes, and the hotel name is what separates them."
+        },
+        {
+          "slug": "playa-del-ingles",
+          "name": "Playa del Inglés",
+          "km": 28,
+          "minutes": 28,
+          "about": "Under half an hour south, the busiest of the southern resorts. The bungalow complexes are spread across a grid of similar streets — the complex name matters."
+        },
+        {
+          "slug": "puerto-rico",
+          "name": "Puerto Rico",
+          "km": 50,
+          "minutes": 40,
+          "about": "Forty minutes down the south-west coast. Built into a steep ravine, with hotels stacked up both sides and reached by looping access roads."
+        },
+        {
+          "slug": "puerto-de-mogan",
+          "name": "Puerto de Mogán",
+          "km": 60,
+          "minutes": 45,
+          "about": "Three quarters of an hour along the coast, past Puerto Rico. The quietest of the resorts, built around a small harbour with canals."
+        }
+      ]
+    },
+    {
+      "iata": "ACE",
+      "slug": "lanzarote",
+      "name": "Lanzarote Airport",
+      "official": "César Manrique–Lanzarote Airport",
+      "city": "Lanzarote",
+      "about": "Lanzarote's airport is five kilometres from Arrecife and within forty minutes of everywhere on the island. The landscape is volcanic and the roads are good, but the resorts are spread along the coast in three separate clusters.",
+      "tips": [
+        "Puerto del Carmen, Costa Teguise and Playa Blanca are in three different directions from the airport.",
+        "Playa Blanca is the ferry port for Fuerteventura, and the crossings are early."
+      ],
+      "image": "lanzarote",
+      "destinations": [
+        {
+          "slug": "arrecife",
+          "name": "Arrecife",
+          "km": 6,
+          "minutes": 10,
+          "about": "Ten minutes north. The capital, the cruise port and the Charco de San Ginés are all within the same small centre."
+        },
+        {
+          "slug": "puerto-del-carmen",
+          "name": "Puerto del Carmen",
+          "km": 10,
+          "minutes": 12,
+          "about": "The closest resort, barely twelve minutes. The strip runs for six kilometres along the front, so the hotel name decides which end."
+        },
+        {
+          "slug": "playa-blanca",
+          "name": "Playa Blanca",
+          "km": 30,
+          "minutes": 30,
+          "about": "Half an hour south. The ferry to Fuerteventura leaves from here, and the resort spreads west towards Papagayo in a series of urbanisations."
+        },
+        {
+          "slug": "costa-teguise",
+          "name": "Costa Teguise",
+          "km": 15,
+          "minutes": 18,
+          "about": "Under twenty minutes north-east. Purpose-built and compact, with most hotels within walking distance of the same beach."
+        },
+        {
+          "slug": "famara",
+          "name": "Famara",
+          "km": 28,
+          "minutes": 30,
+          "about": "Half an hour north-west to the surf coast. The village is small and the access road is narrow — a very different island from the southern resorts."
+        }
+      ]
+    },
+    {
+      "iata": "FUE",
+      "slug": "fuerteventura",
+      "name": "Fuerteventura Airport",
+      "official": "Fuerteventura Airport",
+      "city": "Fuerteventura",
+      "about": "Fuerteventura is long and thin, and the airport sits in the middle. Corralejo is forty minutes north, Morro Jable ninety minutes south — the island is bigger than most visitors expect.",
+      "tips": [
+        "Morro Jable is 90 km from the airport. Allow for a real journey, not a hop.",
+        "The wind is constant on this island. It is why the surfers come, and why the beaches feel cooler than the temperature suggests."
+      ],
+      "image": "fuerteventura",
+      "destinations": [
+        {
+          "slug": "puerto-del-rosario",
+          "name": "Puerto del Rosario",
+          "km": 6,
+          "minutes": 10,
+          "about": "Ten minutes north. The capital and the ferry port, functional rather than a resort."
+        },
+        {
+          "slug": "caleta-de-fuste",
+          "name": "Caleta de Fuste",
+          "km": 8,
+          "minutes": 12,
+          "about": "Twelve minutes south, the closest resort to the airport. Compact and built around a marina."
+        },
+        {
+          "slug": "corralejo",
+          "name": "Corralejo",
+          "km": 38,
+          "minutes": 40,
+          "about": "Forty minutes north, past the dunes national park. The town runs along the front facing Lobos island, and the villa complexes spread inland."
+        },
+        {
+          "slug": "costa-calma",
+          "name": "Costa Calma",
+          "km": 70,
+          "minutes": 60,
+          "about": "An hour south along the FV-2. The resort is a line of hotels behind a very long beach, with little between them."
+        },
+        {
+          "slug": "morro-jable",
+          "name": "Morro Jable",
+          "km": 90,
+          "minutes": 80,
+          "about": "Eighty minutes to the southern tip. The longest transfer on the island and worth a fixed price — taxi meters here run high."
+        }
+      ]
+    },
+    {
+      "iata": "SVQ",
+      "slug": "seville",
+      "name": "Seville Airport",
+      "official": "Seville Airport",
+      "city": "Seville",
+      "about": "Seville's airport is ten kilometres from the centre on the A-4. The old town is a dense grid of narrow streets where cars barely fit, so drivers set down at the nearest accessible point.",
+      "tips": [
+        "Santa Cruz and much of the old town is closed to traffic. Expect a short walk from the drop-off.",
+        "Seville is the base for Jerez, Cádiz and Córdoba — all comfortable as day transfers."
+      ],
+      "image": "seville",
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Seville city centre",
+          "km": 10,
+          "minutes": 15,
+          "about": "A quarter of an hour on the A-4. The cathedral and Santa Cruz are pedestrian, and the driver stops at the closest street a car can enter."
+        },
+        {
+          "slug": "carmona",
+          "name": "Carmona",
+          "km": 30,
+          "minutes": 25,
+          "about": "Twenty-five minutes east on a hill above the plain. The parador sits inside the old Moorish fortress."
+        },
+        {
+          "slug": "jerez",
+          "name": "Jerez de la Frontera",
+          "km": 90,
+          "minutes": 60,
+          "about": "An hour south on the AP-4. The sherry bodegas and the equestrian school are both in town, within a few minutes of each other."
+        },
+        {
+          "slug": "cordoba",
+          "name": "Córdoba",
+          "km": 140,
+          "minutes": 95,
+          "about": "An hour and a half north-east. The Mezquita and the Judería are pedestrian, so the same rule applies as in Seville."
+        },
+        {
+          "slug": "cadiz",
+          "name": "Cádiz",
+          "km": 125,
+          "minutes": 85,
+          "about": "An hour and a half south-west, out onto the peninsula. The old town is entirely surrounded by water and the streets are very narrow."
+        }
+      ]
+    },
+    {
+      "iata": "VLC",
+      "slug": "valencia",
+      "name": "Valencia Airport",
+      "official": "Valencia Airport",
+      "city": "Valencia",
+      "about": "Valencia's airport is eight kilometres west of the city, close enough that most transfers are under twenty minutes. The city spreads along the old riverbed towards the port and the City of Arts and Sciences.",
+      "tips": [
+        "The City of Arts and Sciences is 5 km from the historic centre — they are not walkable from each other.",
+        "The A-7 north reaches the Costa del Azahar; south it runs towards Alicante."
+      ],
+      "image": "valencia",
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Valencia city centre",
+          "km": 9,
+          "minutes": 18,
+          "about": "Under twenty minutes east. The old town around the cathedral is largely pedestrian; the Eixample streets beyond it are wide and easy."
+        },
+        {
+          "slug": "port",
+          "name": "Valencia port and Marina",
+          "km": 13,
+          "minutes": 22,
+          "about": "Twenty minutes to the port and the America's Cup marina. The cruise terminal is a further two kilometres along the quay."
+        },
+        {
+          "slug": "sagunto",
+          "name": "Sagunto",
+          "km": 35,
+          "minutes": 30,
+          "about": "Half an hour north. The Roman theatre and the castle sit on the hill above the modern town."
+        },
+        {
+          "slug": "gandia",
+          "name": "Gandia",
+          "km": 75,
+          "minutes": 55,
+          "about": "Just under an hour south on the AP-7. The town is inland and the beach is another four kilometres on — say which you want."
+        },
+        {
+          "slug": "peniscola",
+          "name": "Peñíscola",
+          "km": 145,
+          "minutes": 95,
+          "about": "An hour and a half north up the coast. The old town sits on a rock in the sea, and cars stop at the base of it."
+        }
+      ]
+    },
+    {
+      "iata": "BIO",
+      "slug": "bilbao",
+      "name": "Bilbao Airport",
+      "official": "Bilbao Airport",
+      "city": "Bilbao",
+      "about": "Bilbao's airport is twelve kilometres north of the city, in the hills above the estuary. The Guggenheim and the old town are both in the centre, and San Sebastián is an hour east on the AP-8.",
+      "tips": [
+        "The Basque coast road is slower but far more scenic than the motorway.",
+        "San Sebastián has its own small airport, but most international flights arrive here."
+      ],
+      "image": "bilbao",
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Bilbao city centre",
+          "km": 12,
+          "minutes": 20,
+          "about": "Twenty minutes down into the valley. The Casco Viejo is pedestrian; the Guggenheim and Abandoibarra are on the riverside and easy to reach by car."
+        },
+        {
+          "slug": "getxo",
+          "name": "Getxo",
+          "km": 15,
+          "minutes": 22,
+          "about": "Twenty minutes down the estuary to the Vizcaya transporter bridge and the marina."
+        },
+        {
+          "slug": "san-sebastian",
+          "name": "San Sebastián",
+          "km": 100,
+          "minutes": 70,
+          "about": "An hour and ten east on the AP-8. La Concha and the old town are close together, and the Parte Vieja is pedestrian."
+        },
+        {
+          "slug": "vitoria",
+          "name": "Vitoria-Gasteiz",
+          "km": 75,
+          "minutes": 55,
+          "about": "Just under an hour south. The Basque capital, with a compact medieval centre."
+        },
+        {
+          "slug": "santander",
+          "name": "Santander",
+          "km": 110,
+          "minutes": 75,
+          "about": "An hour and a quarter west along the coast. A useful transfer for the Brittany Ferries crossings."
+        }
+      ]
+    },
+    {
+      "iata": "GRX",
+      "slug": "granada",
+      "name": "Granada Airport",
+      "official": "Federico García Lorca Granada-Jaén Airport",
+      "city": "Granada",
+      "about": "Granada's airport is seventeen kilometres west of the city on the A-92. The Alhambra sits above the city and the Albaicín below it is a hillside of stepped alleys where cars cannot go.",
+      "tips": [
+        "Hotels in the Albaicín are reached on foot. Drivers set down at the closest square.",
+        "Sierra Nevada is 45 minutes up from the city, and the road is cleared but slow in snow."
+      ],
+      "image": "granada",
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Granada city centre",
+          "km": 17,
+          "minutes": 25,
+          "about": "Twenty-five minutes east on the A-92. Gran Vía and the cathedral are the usual drop-off; anything above them is on foot."
+        },
+        {
+          "slug": "alhambra",
+          "name": "Alhambra area",
+          "km": 20,
+          "minutes": 30,
+          "about": "Half an hour, climbing behind the city. The hotels on the Alhambra hill have their own access road, separate from the centre."
+        },
+        {
+          "slug": "sierra-nevada",
+          "name": "Sierra Nevada",
+          "km": 50,
+          "minutes": 55,
+          "about": "Just under an hour, climbing to 2,100 metres. In winter the road is cleared but slow, and the fixed price does not change."
+        },
+        {
+          "slug": "malaga",
+          "name": "Málaga",
+          "km": 130,
+          "minutes": 95,
+          "about": "An hour and a half south-west on the A-92 and A-45, dropping from the plateau to the coast."
+        },
+        {
+          "slug": "nerja",
+          "name": "Nerja",
+          "km": 95,
+          "minutes": 80,
+          "about": "An hour and twenty south, over the mountains to the Axarquía coast."
+        }
+      ]
+    },
+    {
+      "iata": "SCQ",
+      "slug": "santiago",
+      "name": "Santiago Airport",
+      "official": "Santiago–Rosalía de Castro Airport",
+      "city": "Santiago de Compostela",
+      "about": "Santiago's airport is thirteen kilometres from the old town. The cathedral square is the end of the Camino and the medieval centre around it is closed to traffic.",
+      "tips": [
+        "The old town is pedestrian. Drivers stop at Praza de Galicia or the closest gate.",
+        "Galicia's rías are an hour or less away in several directions."
+      ],
+      "image": "santiago",
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Santiago city centre",
+          "km": 13,
+          "minutes": 20,
+          "about": "Twenty minutes. The Obradoiro square is reached on foot from the nearest vehicle access, a few minutes away."
+        },
+        {
+          "slug": "a-coruna",
+          "name": "A Coruña",
+          "km": 75,
+          "minutes": 55,
+          "about": "Just under an hour north. The Tower of Hercules and the glass-fronted Marina are the landmarks."
+        },
+        {
+          "slug": "pontevedra",
+          "name": "Pontevedra",
+          "km": 70,
+          "minutes": 50,
+          "about": "Fifty minutes south, at the head of its ría. The old town is compact and pedestrian."
+        },
+        {
+          "slug": "vigo",
+          "name": "Vigo",
+          "km": 95,
+          "minutes": 65,
+          "about": "An hour south. The port city and the ferry point for the Cíes islands."
+        },
+        {
+          "slug": "finisterre",
+          "name": "Finisterre",
+          "km": 100,
+          "minutes": 80,
+          "about": "An hour and twenty west to the end of the Camino, on narrow coastal roads."
+        }
+      ]
+    },
+    {
+      "iata": "ZAZ",
+      "slug": "zaragoza",
+      "name": "Zaragoza Airport",
+      "official": "Zaragoza Airport",
+      "city": "Zaragoza",
+      "about": "Zaragoza sits halfway between Madrid and Barcelona, and its airport is ten kilometres west of the city. The Basilica del Pilar is the centre of everything.",
+      "tips": [
+        "Zaragoza is a common stop on the Madrid–Barcelona road, and a fixed-price transfer beats splitting the journey by train.",
+        "The Pyrenees ski resorts are two hours north."
+      ],
+      "image": "zaragoza",
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Zaragoza city centre",
+          "km": 10,
+          "minutes": 18,
+          "about": "Under twenty minutes east. The Pilar basilica and the Roman forum are in the same square kilometre."
+        },
+        {
+          "slug": "huesca",
+          "name": "Huesca",
+          "km": 75,
+          "minutes": 55,
+          "about": "Just under an hour north, at the foot of the Pyrenees."
+        },
+        {
+          "slug": "teruel",
+          "name": "Teruel",
+          "km": 180,
+          "minutes": 110,
+          "about": "Just under two hours south, through the Maestrazgo. Mudéjar towers and a small walled centre."
+        },
+        {
+          "slug": "lleida",
+          "name": "Lleida",
+          "km": 150,
+          "minutes": 95,
+          "about": "An hour and a half east on the AP-2, halfway to Barcelona."
+        },
+        {
+          "slug": "jaca",
+          "name": "Jaca",
+          "km": 165,
+          "minutes": 110,
+          "about": "Nearly two hours north into the Pyrenees, the base for Astún and Candanchú."
+        }
+      ]
+    },
+    {
+      "iata": "GRO",
+      "slug": "girona-airport",
+      "name": "Girona Airport",
+      "official": "Girona–Costa Brava Airport",
+      "city": "Girona",
+      "about": "Girona's airport serves the Costa Brava and is also used for flights to Barcelona, ninety kilometres south. Lloret and Tossa are half an hour east.",
+      "tips": [
+        "This airport is 90 km from Barcelona, not a Barcelona airport. Budget for a real transfer.",
+        "The Costa Brava coast road is beautiful and slow — the motorway is faster."
+      ],
+      "image": "girona-airport",
+      "destinations": [
+        {
+          "slug": "girona-city",
+          "name": "Girona city centre",
+          "km": 13,
+          "minutes": 20,
+          "about": "Twenty minutes. The old Jewish quarter and the cathedral steps are pedestrian."
+        },
+        {
+          "slug": "lloret-de-mar",
+          "name": "Lloret de Mar",
+          "km": 35,
+          "minutes": 35,
+          "about": "Thirty-five minutes east. The hotels climb the hillside behind the beach — the hotel name matters."
+        },
+        {
+          "slug": "tossa-de-mar",
+          "name": "Tossa de Mar",
+          "km": 45,
+          "minutes": 45,
+          "about": "Forty-five minutes, on the coast road past Lloret. The walled old town sits above the bay."
+        },
+        {
+          "slug": "barcelona",
+          "name": "Barcelona city centre",
+          "km": 100,
+          "minutes": 75,
+          "about": "An hour and a quarter south on the AP-7. A real journey, and cheaper as one fixed transfer than a bus plus taxi."
+        },
+        {
+          "slug": "figueres",
+          "name": "Figueres",
+          "km": 45,
+          "minutes": 35,
+          "about": "Thirty-five minutes north. The Dalí museum is in the middle of town."
+        }
+      ]
+    },
+    {
+      "iata": "REU",
+      "slug": "reus",
+      "name": "Reus Airport",
+      "official": "Reus Airport",
+      "city": "Reus",
+      "about": "Reus serves the Costa Dorada and PortAventura. Salou and Cambrils are within twenty minutes, and Barcelona is an hour and a half north.",
+      "tips": [
+        "PortAventura is 12 km from the terminal — the closest theme park to any Spanish airport.",
+        "Salou and Cambrils run into each other along the same coast."
+      ],
+      "image": "reus",
+      "destinations": [
+        {
+          "slug": "salou",
+          "name": "Salou",
+          "km": 15,
+          "minutes": 18,
+          "about": "Under twenty minutes. The resort curves around a bay with the hotels behind it, and PortAventura is just inland."
+        },
+        {
+          "slug": "cambrils",
+          "name": "Cambrils",
+          "km": 18,
+          "minutes": 20,
+          "about": "Twenty minutes down the coast, quieter than Salou and built around a working harbour."
+        },
+        {
+          "slug": "tarragona",
+          "name": "Tarragona",
+          "km": 20,
+          "minutes": 22,
+          "about": "Twenty minutes east. The Roman amphitheatre sits above the sea and the old town behind it is walled."
+        },
+        {
+          "slug": "portaventura",
+          "name": "PortAventura",
+          "km": 12,
+          "minutes": 15,
+          "about": "A quarter of an hour. The park hotels have their own entrance road, separate from the main gate."
+        },
+        {
+          "slug": "barcelona",
+          "name": "Barcelona city centre",
+          "km": 110,
+          "minutes": 80,
+          "about": "An hour and twenty north on the AP-7."
+        }
+      ]
+    },
+    {
+      "iata": "RMU",
+      "slug": "murcia",
+      "name": "Murcia Airport",
+      "official": "Región de Murcia International Airport",
+      "city": "Murcia",
+      "about": "Murcia's airport at Corvera opened in 2019 and serves the Costa Cálida. Cartagena and La Manga are the main destinations, both under an hour.",
+      "tips": [
+        "This airport replaced San Javier, which is now military only. Check which your booking names.",
+        "La Manga is a 21-kilometre sandbar — the strip number is what the driver needs."
+      ],
+      "image": "murcia",
+      "destinations": [
+        {
+          "slug": "murcia-city",
+          "name": "Murcia city centre",
+          "km": 25,
+          "minutes": 25,
+          "about": "Twenty-five minutes north. The cathedral square and the Segura riverside are the centre."
+        },
+        {
+          "slug": "cartagena",
+          "name": "Cartagena",
+          "km": 35,
+          "minutes": 30,
+          "about": "Half an hour south-east. The Roman theatre and the naval port are both by the water."
+        },
+        {
+          "slug": "la-manga",
+          "name": "La Manga del Mar Menor",
+          "km": 55,
+          "minutes": 45,
+          "about": "Forty-five minutes east, then out along the sandbar. The strip runs 21 km with numbered access points — give the number."
+        },
+        {
+          "slug": "torrevieja",
+          "name": "Torrevieja",
+          "km": 60,
+          "minutes": 50,
+          "about": "Fifty minutes north-east into Alicante province."
+        },
+        {
+          "slug": "mazarron",
+          "name": "Mazarrón",
+          "km": 45,
+          "minutes": 40,
+          "about": "Forty minutes south-west, a quieter stretch of the same coast."
+        }
+      ]
+    },
+    {
+      "iata": "LEI",
+      "slug": "almeria",
+      "name": "Almería Airport",
+      "official": "Almería Airport",
+      "city": "Almería",
+      "about": "Almería's airport is nine kilometres east of the city, at the edge of Europe's only desert. The Cabo de Gata natural park begins twenty minutes away.",
+      "tips": [
+        "Cabo de Gata's beaches are reached by unmade tracks in places. A pin location helps.",
+        "The Tabernas desert, where the spaghetti westerns were filmed, is half an hour inland."
+      ],
+      "image": "almeria",
+      "destinations": [
+        {
+          "slug": "almeria-city",
+          "name": "Almería city centre",
+          "km": 9,
+          "minutes": 15,
+          "about": "A quarter of an hour west. The Alcazaba stands above the old town and the port."
+        },
+        {
+          "slug": "roquetas-de-mar",
+          "name": "Roquetas de Mar",
+          "km": 30,
+          "minutes": 30,
+          "about": "Half an hour west past the greenhouses. The resort runs along a long straight beach."
+        },
+        {
+          "slug": "cabo-de-gata",
+          "name": "Cabo de Gata",
+          "km": 30,
+          "minutes": 35,
+          "about": "Thirty-five minutes east into the natural park. Some beach access is on unmade road."
+        },
+        {
+          "slug": "mojacar",
+          "name": "Mojácar",
+          "km": 90,
+          "minutes": 65,
+          "about": "An hour north-east. The white village sits on a hill and the beach is two kilometres below it."
+        },
+        {
+          "slug": "granada",
+          "name": "Granada",
+          "km": 165,
+          "minutes": 110,
+          "about": "Just under two hours north-west, climbing to the plateau."
+        }
+      ]
+    },
+    {
+      "iata": "XRY",
+      "slug": "jerez",
+      "name": "Jerez Airport",
+      "official": "Jerez Airport",
+      "city": "Jerez de la Frontera",
+      "about": "Jerez is the sherry capital and its airport is eight kilometres from the centre. Cádiz is forty minutes south and the white villages begin inland.",
+      "tips": [
+        "Most bodegas require a booking and close early afternoon.",
+        "Tarifa, at the southern tip, is the ferry point for Tangier."
+      ],
+      "image": "jerez",
+      "destinations": [
+        {
+          "slug": "jerez-city",
+          "name": "Jerez city centre",
+          "km": 8,
+          "minutes": 12,
+          "about": "Twelve minutes. The bodegas and the equestrian school are within the same few streets."
+        },
+        {
+          "slug": "cadiz",
+          "name": "Cádiz",
+          "km": 45,
+          "minutes": 40,
+          "about": "Forty minutes south onto the peninsula. The old town is dense and very narrow."
+        },
+        {
+          "slug": "el-puerto-de-santa-maria",
+          "name": "El Puerto de Santa María",
+          "km": 20,
+          "minutes": 20,
+          "about": "Twenty minutes south, across the bay from Cádiz."
+        },
+        {
+          "slug": "seville",
+          "name": "Seville",
+          "km": 95,
+          "minutes": 65,
+          "about": "An hour north on the AP-4."
+        },
+        {
+          "slug": "tarifa",
+          "name": "Tarifa",
+          "km": 115,
+          "minutes": 85,
+          "about": "An hour and a half south to the strait. The ferry to Tangier leaves from the port."
+        }
+      ]
+    },
+    {
+      "iata": "SDR",
+      "slug": "santander",
+      "name": "Santander Airport",
+      "official": "Seve Ballesteros–Santander Airport",
+      "city": "Santander",
+      "about": "Santander's airport is five kilometres from the city and close to the ferry terminal. The Cantabrian coast and the Picos de Europa are both within reach.",
+      "tips": [
+        "The Brittany Ferries crossing to Plymouth and Portsmouth leaves from the city port, 6 km away.",
+        "Santillana del Mar and the Altamira caves are half an hour west."
+      ],
+      "image": "santander",
+      "destinations": [
+        {
+          "slug": "santander-city",
+          "name": "Santander city centre",
+          "km": 6,
+          "minutes": 12,
+          "about": "Twelve minutes. The Sardinero beaches are a further three kilometres round the headland."
+        },
+        {
+          "slug": "ferry-port",
+          "name": "Santander ferry terminal",
+          "km": 6,
+          "minutes": 12,
+          "about": "Twelve minutes to the Brittany Ferries berth, right in the city."
+        },
+        {
+          "slug": "santillana-del-mar",
+          "name": "Santillana del Mar",
+          "km": 30,
+          "minutes": 30,
+          "about": "Half an hour west. The whole village is a preserved medieval street, closed to traffic."
+        },
+        {
+          "slug": "bilbao",
+          "name": "Bilbao",
+          "km": 105,
+          "minutes": 75,
+          "about": "An hour and a quarter east along the coast motorway."
+        },
+        {
+          "slug": "potes",
+          "name": "Potes",
+          "km": 115,
+          "minutes": 95,
+          "about": "An hour and a half south-west into the Picos de Europa."
+        }
+      ]
+    },
+    {
+      "iata": "OVD",
+      "slug": "asturias",
+      "name": "Asturias Airport",
+      "official": "Asturias Airport",
+      "city": "Oviedo",
+      "about": "Asturias airport sits between Oviedo, Gijón and Avilés, roughly forty minutes from each. The Picos de Europa are an hour and a half east.",
+      "tips": [
+        "Three cities, three directions — Oviedo south, Gijón east, Avilés closest.",
+        "The Asturian coast is green and often wet, even in August."
+      ],
+      "image": "asturias",
+      "destinations": [
+        {
+          "slug": "oviedo",
+          "name": "Oviedo",
+          "km": 47,
+          "minutes": 40,
+          "about": "Forty minutes south. The old town around the cathedral is compact and pedestrian."
+        },
+        {
+          "slug": "gijon",
+          "name": "Gijón",
+          "km": 40,
+          "minutes": 35,
+          "about": "Thirty-five minutes east. The Cimadevilla headland and San Lorenzo beach are the centre."
+        },
+        {
+          "slug": "aviles",
+          "name": "Avilés",
+          "km": 15,
+          "minutes": 18,
+          "about": "Under twenty minutes, the closest city to the terminal."
+        },
+        {
+          "slug": "llanes",
+          "name": "Llanes",
+          "km": 130,
+          "minutes": 90,
+          "about": "An hour and a half east along the coast, at the edge of the Picos."
+        },
+        {
+          "slug": "cangas-de-onis",
+          "name": "Cangas de Onís",
+          "km": 115,
+          "minutes": 85,
+          "about": "An hour and a half south-east, the gateway to Covadonga and the lakes."
+        }
+      ]
+    },
+    {
+      "iata": "MAH",
+      "slug": "menorca",
+      "name": "Menorca Airport",
+      "official": "Menorca Airport",
+      "city": "Menorca",
+      "about": "Menorca's airport is four kilometres from Mahón. The island is small enough that nowhere is more than forty-five minutes away, and the two ends — Mahón and Ciutadella — are an hour apart.",
+      "tips": [
+        "Mahón is east, Ciutadella west. The island road connects them in 45 minutes.",
+        "Many of the best coves are reached on foot from a car park."
+      ],
+      "image": "menorca",
+      "destinations": [
+        {
+          "slug": "mahon",
+          "name": "Mahón",
+          "km": 5,
+          "minutes": 10,
+          "about": "Ten minutes. The port is below the town and reached by a steep road."
+        },
+        {
+          "slug": "ciutadella",
+          "name": "Ciutadella",
+          "km": 45,
+          "minutes": 45,
+          "about": "Forty-five minutes west along the Me-1. The old town is walled and pedestrian."
+        },
+        {
+          "slug": "cala-en-porter",
+          "name": "Cala en Porter",
+          "km": 12,
+          "minutes": 18,
+          "about": "Under twenty minutes south, built above a gorge running down to the beach."
+        },
+        {
+          "slug": "fornells",
+          "name": "Fornells",
+          "km": 30,
+          "minutes": 30,
+          "about": "Half an hour north to the fishing village on its bay."
+        },
+        {
+          "slug": "son-bou",
+          "name": "Son Bou",
+          "km": 25,
+          "minutes": 25,
+          "about": "Twenty-five minutes south-west to the island's longest beach."
+        }
+      ]
+    },
+    {
+      "iata": "TFN",
+      "slug": "tenerife-north",
+      "name": "Tenerife North Airport",
+      "official": "Tenerife North–Ciudad de La Laguna Airport",
+      "city": "Tenerife",
+      "about": "Tenerife North handles most inter-island and mainland flights. It sits above La Laguna in a zone that catches cloud, and the southern resorts are an hour away on the TF-1.",
+      "tips": [
+        "This is not Tenerife South. The two are an hour apart and easy to confuse when booking.",
+        "The north side is cooler and greener. Bring a layer."
+      ],
+      "image": "tenerife-north",
+      "destinations": [
+        {
+          "slug": "santa-cruz",
+          "name": "Santa Cruz de Tenerife",
+          "km": 13,
+          "minutes": 20,
+          "about": "Twenty minutes down to the capital and the cruise port."
+        },
+        {
+          "slug": "la-laguna",
+          "name": "La Laguna",
+          "km": 6,
+          "minutes": 12,
+          "about": "Twelve minutes. The UNESCO old town is a grid of colonial streets, largely pedestrian."
+        },
+        {
+          "slug": "puerto-de-la-cruz",
+          "name": "Puerto de la Cruz",
+          "km": 35,
+          "minutes": 35,
+          "about": "Thirty-five minutes west along the north coast."
+        },
+        {
+          "slug": "costa-adeje",
+          "name": "Costa Adeje",
+          "km": 85,
+          "minutes": 70,
+          "about": "An hour and ten south on the TF-1, crossing to the sunny side."
+        },
+        {
+          "slug": "playa-de-las-americas",
+          "name": "Playa de las Américas",
+          "km": 80,
+          "minutes": 65,
+          "about": "An hour and five south, the main resort strip."
+        }
+      ]
+    },
+    {
+      "iata": "VGO",
+      "slug": "vigo",
+      "name": "Vigo Airport",
+      "official": "Vigo Airport",
+      "city": "Vigo",
+      "about": "Vigo's airport is nine kilometres east of the city, above the ría. Portugal is forty minutes south and Santiago an hour north.",
+      "tips": [
+        "Porto is two hours south — often cheaper as one transfer than crossing by train.",
+        "The Cíes islands ferry leaves from the city port and needs a permit in summer."
+      ],
+      "image": "vigo",
+      "destinations": [
+        {
+          "slug": "vigo-city",
+          "name": "Vigo city centre",
+          "km": 9,
+          "minutes": 18,
+          "about": "Under twenty minutes down to the port and the old town."
+        },
+        {
+          "slug": "baiona",
+          "name": "Baiona",
+          "km": 30,
+          "minutes": 30,
+          "about": "Half an hour south-west, around the ría to the fortress hotel."
+        },
+        {
+          "slug": "pontevedra",
+          "name": "Pontevedra",
+          "km": 30,
+          "minutes": 28,
+          "about": "Half an hour north at the head of its own ría."
+        },
+        {
+          "slug": "santiago",
+          "name": "Santiago de Compostela",
+          "km": 90,
+          "minutes": 60,
+          "about": "An hour north on the AP-9."
+        },
+        {
+          "slug": "porto",
+          "name": "Porto",
+          "km": 150,
+          "minutes": 105,
+          "about": "An hour and three quarters south into Portugal. One fixed price, one driver, no border stop."
+        }
+      ]
+    },
+    {
+      "iata": "EAS",
+      "slug": "san-sebastian",
+      "name": "San Sebastián Airport",
+      "official": "San Sebastián Airport",
+      "city": "San Sebastián",
+      "about": "San Sebastián's airport is at Hondarribia, twenty kilometres east of the city and right on the French border. Biarritz is thirty minutes north.",
+      "tips": [
+        "The airport is on the French border — Biarritz is closer than some Spanish towns.",
+        "La Concha and the Parte Vieja are pedestrian."
+      ],
+      "image": "san-sebastian",
+      "destinations": [
+        {
+          "slug": "san-sebastian-city",
+          "name": "San Sebastián city centre",
+          "km": 20,
+          "minutes": 25,
+          "about": "Twenty-five minutes west along the coast. The old town is pedestrian and the drop-off is at its edge."
+        },
+        {
+          "slug": "hondarribia",
+          "name": "Hondarribia",
+          "km": 2,
+          "minutes": 6,
+          "about": "Six minutes. The walled town sits above the fishing port at the river mouth."
+        },
+        {
+          "slug": "biarritz",
+          "name": "Biarritz",
+          "km": 35,
+          "minutes": 30,
+          "about": "Half an hour north into France, along the coast."
+        },
+        {
+          "slug": "bilbao",
+          "name": "Bilbao",
+          "km": 100,
+          "minutes": 70,
+          "about": "An hour and ten west on the AP-8."
+        },
+        {
+          "slug": "zarautz",
+          "name": "Zarautz",
+          "km": 40,
+          "minutes": 35,
+          "about": "Thirty-five minutes west, a surf town on a long beach."
+        }
+      ]
+    },
+    {
+      "iata": "SPC",
+      "slug": "la-palma",
+      "name": "La Palma Airport",
+      "official": "La Palma Airport",
+      "city": "La Palma",
+      "about": "La Palma's airport is eight kilometres from Santa Cruz on the east coast. The island is steep and the road to the western side crosses the ridge — journeys take longer than the distances suggest.",
+      "tips": [
+        "The island is mountainous. A 35-kilometre journey can take an hour.",
+        "The Roque de los Muchachos observatory road climbs to 2,400 metres."
+      ],
+      "image": "la-palma",
+      "destinations": [
+        {
+          "slug": "santa-cruz-de-la-palma",
+          "name": "Santa Cruz de La Palma",
+          "km": 8,
+          "minutes": 12,
+          "about": "Twelve minutes north along the coast to the small colonial capital."
+        },
+        {
+          "slug": "los-cancajos",
+          "name": "Los Cancajos",
+          "km": 3,
+          "minutes": 8,
+          "about": "Eight minutes, the closest resort to the terminal."
+        },
+        {
+          "slug": "los-llanos",
+          "name": "Los Llanos de Aridane",
+          "km": 35,
+          "minutes": 50,
+          "about": "Fifty minutes across the island, over the ridge to the western side."
+        },
+        {
+          "slug": "puerto-naos",
+          "name": "Puerto Naos",
+          "km": 42,
+          "minutes": 60,
+          "about": "An hour to the west coast beach, below the volcano."
+        },
+        {
+          "slug": "tazacorte",
+          "name": "Tazacorte",
+          "km": 40,
+          "minutes": 55,
+          "about": "Fifty-five minutes west, the port below Los Llanos."
+        }
+      ]
+    }
+  ]
+}
