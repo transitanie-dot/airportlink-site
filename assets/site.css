@@ -352,8 +352,9 @@ html[data-theme="dark"] .phone-menu{box-shadow:0 18px 44px rgba(0,0,0,.5)}
 .lang-code{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;
   text-transform:uppercase}
 .lang-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;z-index:120;
-  min-width:168px;background:var(--surface);border:1px solid var(--rule-strong);
-  border-radius:14px;padding:5px;box-shadow:0 18px 40px rgba(20,26,40,.18);overflow:hidden}
+  min-width:186px;max-height:min(420px,70vh);overflow-y:auto;background:var(--surface);
+  border:1px solid var(--rule-strong);border-radius:14px;padding:5px;
+  box-shadow:0 18px 40px rgba(20,26,40,.18)}
 .lang-menu.on{display:block}
 .lang-menu button{display:flex;align-items:center;justify-content:space-between;gap:12px;
   width:100%;border:0;background:transparent;cursor:pointer;border-radius:10px;
@@ -365,3 +366,400 @@ html[data-theme="dark"] .lang-menu button[aria-current="true"]{background:#D8DEE
 .lang-tag{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;
   text-transform:uppercase;opacity:.6}
 @media (max-width:520px){.lang-btn .lang-code{display:none}.lang-btn{padding:0}}
+
+/* ---------- árabe: da direita para a esquerda ----------
+   O dir="rtl" espelha o texto e a ordem das colunas sozinho. Só as
+   setas e o menu de língua, que estão presos a um lado, precisam de
+   ser virados à mão. */
+html[dir="rtl"] .lang-menu{right:auto;left:0}
+html[dir="rtl"] .dest-nav.prev{left:auto;right:-14px;transform:translateY(-50%) scaleX(-1)}
+html[dir="rtl"] .dest-nav.next{right:auto;left:-14px;transform:translateY(-50%) scaleX(-1)}
+html[dir="rtl"] .leg-arrow svg,
+html[dir="rtl"] .acct-back{transform:scaleX(-1)}
+html[dir="rtl"] .path-line{left:auto;right:6px}
+@media (max-width:1100px){
+  html[dir="rtl"] .dest-nav.prev{right:4px}
+  html[dir="rtl"] .dest-nav.next{left:4px}
+}/* ============================================================
+   AIRPORTLINK — estilos partilhados
+   Carregado por TODAS as páginas, antes do <style> de cada uma.
+   Aqui vive o que se repete: variáveis, base, cabeçalho, rodapé,
+   botões, animações e as secções comuns.
+   O que for específico de uma página fica no <style> dela.
+   ============================================================ */
+
+:root{
+  --ink:#141A28;--slate:#333B50;--sage:#E8EBE7;--paper:#FBFBF8;
+  --amber:#E8A33D;--amber-ink:#8A5A12;--teal:#0F766E;--teal-soft:rgba(15,118,110,.10);
+
+  --bg:var(--sage);--surface:var(--paper);--surface-2:#F3F4F0;
+  --text:#141A28;--muted:#606A7B;
+  --rule:rgba(20,26,40,.12);--rule-strong:rgba(20,26,40,.22);
+  --field:#ffffff;--map-bg:#ECE7DF;
+
+  --ok-bg:#ECFDF5;--ok-text:#065F46;--ok-rule:#A7F3D0;
+  --warn-bg:#FDF6E7;--warn-text:#8A5A12;--warn-rule:#F0D9A8;
+  --err-bg:#FFF1F2;--err-text:#B42318;--err-rule:#FDA29B;
+
+  --display:'Bricolage Grotesque','Inter',system-ui,sans-serif;
+  --body:'Inter',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+
+  --header-h:70px;
+}
+html[data-theme="dark"]{
+  --bg:#0E1219;--surface:#161C27;--surface-2:#1C2431;
+  --text:#E9EDF3;--muted:#98A2B3;
+  --rule:rgba(255,255,255,.12);--rule-strong:rgba(255,255,255,.22);
+  --field:#0F141D;--map-bg:#121720;--amber-ink:#F0B95C;--teal-soft:rgba(79,179,159,.14);
+  --ok-bg:#052E22;--ok-text:#6EE7B7;--ok-rule:#14532D;
+  --warn-bg:#2A1F0F;--warn-text:#F0B95C;--warn-rule:#6B4F1D;
+  --err-bg:#2B1114;--err-text:#FDA4AF;--err-rule:#7F1D1D;
+}
+
+html{color-scheme:light;scroll-behavior:smooth}
+html[data-theme="dark"]{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+  font-family:var(--body);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+img{max-width:100%;display:block}
+.hidden{display:none!important}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.tag{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:#fff;
+  padding:12px 18px;border-radius:0 0 12px 0;z-index:200}
+.skip:focus{left:0}
+
+/* ---------- movimento ---------- */
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes drawLine{to{stroke-dashoffset:0}}
+@keyframes rollIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+@keyframes pricePop{0%{transform:scale(1)}38%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes growLine{to{transform:scaleY(1)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.rise{opacity:0;animation:riseIn .62s cubic-bezier(.22,.68,.35,1) forwards}
+.rise.d1{animation-delay:.06s}.rise.d2{animation-delay:.14s}
+.rise.d3{animation-delay:.22s}.rise.d4{animation-delay:.32s}
+.draw{stroke-dasharray:6 6;stroke-dashoffset:200;animation:drawLine 1.5s .45s ease-out forwards}
+.roll{opacity:0;animation:rollIn .7s .9s cubic-bezier(.22,.68,.35,1) forwards}
+.priced{animation:pricePop .45s ease-out}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rise,.roll{opacity:1;animation:none}
+  .draw{stroke-dashoffset:0;animation:none}
+  .priced{animation:none}
+}
+
+/* ============================================================
+   CABEÇALHO
+   ============================================================ */
+.site-header{position:sticky;top:0;z-index:100;background:var(--bg);
+  border-bottom:1px solid transparent;transition:border-color .2s ease}
+.site-header.stuck{border-bottom-color:var(--rule)}
+.header-inner{height:var(--header-h);display:flex;align-items:center;gap:20px;
+  max-width:1180px;margin:0 auto;padding:0 20px}
+.logo{display:inline-flex;align-items:center;gap:1px;font-family:var(--display);font-weight:800;
+  font-size:19px;letter-spacing:-.03em;text-decoration:none;color:var(--text);white-space:nowrap}
+.logo b{color:var(--teal);font-weight:800}
+/* No tema escuro o LINK continua verde, não âmbar: são as mesmas
+   cores do logótipo oficial. Só o tom clareia — o #0F766E tem
+   contraste 3.2:1 sobre o fundo escuro e ficaria a desaparecer. */
+html[data-theme="dark"] .logo b{color:#17A398}
+.logo .dot{width:6px;height:6px;border-radius:999px;background:#fd8a2b;
+  margin-left:3px;align-self:center;flex:0 0 auto}
+.site-nav{display:flex;align-items:center;gap:4px;margin-left:14px}
+.site-nav a{padding:9px 13px;border-radius:11px;text-decoration:none;color:var(--muted);
+  font-size:14.5px;font-weight:500;transition:color .15s ease,background .15s ease}
+.site-nav a:hover{color:var(--text);background:var(--surface)}
+.site-nav a.on{color:var(--text);font-weight:600}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--rule-strong);
+  background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.icon-btn svg{width:17px;height:17px}
+.icon-btn:hover{border-color:var(--teal)}
+.burger{display:none}
+.hbtn{display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 20px;
+  border:0;border-radius:13px;background:var(--ink);color:#fff;font-family:var(--mono);font-size:11.5px;
+  font-weight:600;letter-spacing:.09em;text-transform:uppercase;cursor:pointer;text-decoration:none;
+  transition:transform .12s ease;white-space:nowrap}
+.hbtn:hover{transform:translateY(-1px)}
+.hbtn.line{background:transparent;color:var(--text);border:1px solid var(--rule-strong)}
+.hbtn.amber{background:var(--amber);color:#141A28}
+html[data-theme="dark"] .hbtn{background:#E9EDF3;color:#141A28}
+.mobile-menu{position:fixed;inset:var(--header-h) 0 0;background:var(--bg);z-index:99;
+  padding:24px 20px;display:none;flex-direction:column;gap:6px;overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-menu a{padding:15px 14px;border-radius:14px;text-decoration:none;color:var(--text);
+  font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.02em;
+  border-bottom:1px solid var(--rule)}
+.mobile-menu .hbtn{margin-top:18px;height:52px}
+@media (max-width:900px){
+  .site-nav{display:none}
+  .burger{display:flex}
+  .header-right .hbtn.line{display:none}
+  /* O botão principal pode ser curto ("Get a price") ou longo
+     ("Become a partner"). Sem limite, o longo empurrava o
+     hambúrguer para fora da margem. */
+  .header-right .hbtn{max-width:44vw;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;padding:0 14px}
+}
+@media (max-width:560px){
+  /* Em ecrãs estreitos o botão sai de vez: está no menu, a dois
+     toques, e o hambúrguer precisa do espaço mais do que ele. */
+  .header-right .hbtn{display:none}
+  .header-inner{padding:0 14px;gap:12px}
+}
+
+/* ============================================================
+   RODAPÉ
+   ============================================================ */
+.site-footer{background:var(--ink);color:#B9C2D2;padding:56px 0 30px;margin-top:20px}
+.footer-grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:36px}
+.footer-grid h3{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:#6C7889;margin:0 0 16px}
+.footer-grid a{display:block;color:#B9C2D2;text-decoration:none;font-size:14.5px;
+  padding:6px 0;transition:color .15s ease}
+.footer-grid a:hover{color:#fff}
+/* O rodapé é sempre escuro, por isso o LINK fica âmbar como no tema
+   escuro do cabeçalho — não é uma inconsistência, é a mesma regra
+   aplicada ao fundo que ali existe. */
+/* span e não <a>: sem cursor de mão nem sublinhado ao passar. */
+.footer-brand .logo{color:#fff;font-size:21px;margin-bottom:14px;cursor:default}
+/* O LINK do rodapé segue a mesma regra do tema escuro. */
+.footer-brand .logo b{color:#17A398}
+.footer-brand p{margin:0;color:#8C97A8;font-size:14px;line-height:1.7;max-width:38ch}
+.footer-bottom{margin-top:40px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:#6C7889}
+@media (max-width:900px){
+  .footer-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .footer-brand{grid-column:1/-1}
+}
+@media (max-width:560px){.footer-grid{grid-template-columns:1fr}}
+
+/* ============================================================
+   SECÇÕES COMUNS
+   ============================================================ */
+.band{padding:62px 0}
+.band.alt{background:var(--surface)}
+.band-head{max-width:54ch;margin-bottom:34px}
+.band-head .tag{color:var(--teal);display:block;margin-bottom:12px}
+html[data-theme="dark"] .band-head .tag{color:var(--amber)}
+.band-head h2{font-family:var(--display);font-weight:700;letter-spacing:-.035em;
+  font-size:clamp(25px,3.3vw,36px);line-height:1.08;margin:0 0 12px}
+.band-head p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.68}
+
+.hero{padding:40px 0 20px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:
+  radial-gradient(720px 360px at 84% 6%, rgba(232,163,61,.20), transparent 64%),
+  radial-gradient(520px 320px at 2% 88%, rgba(15,118,110,.12), transparent 62%)}
+html[data-theme="dark"] .hero::after{background:
+  radial-gradient(720px 360px at 84% 6%, rgba(232,163,61,.10), transparent 64%),
+  radial-gradient(520px 320px at 2% 88%, rgba(15,118,110,.16), transparent 62%)}
+.hero-inner{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 20px}
+/* O ::after do hero é uma camada de cor por cima. Sem isto, qualquer
+   página que use .wrap em vez de .hero-inner fica com o conteúdo
+   por baixo do gradiente e parece desbotada. */
+.hero > .wrap{position:relative;z-index:1}
+.hero-grid{position:relative;z-index:1}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.kicker{display:inline-flex;align-items:center;gap:9px;color:var(--amber-ink);margin-bottom:14px}
+.kicker .bar{width:26px;height:2px;background:var(--amber)}
+.hero h1{font-family:var(--display);font-weight:800;letter-spacing:-.04em;line-height:1.02;
+  font-size:clamp(29px,3.9vw,44px);margin:0 0 14px;max-width:18ch}
+.hero h1 em{font-style:normal;color:var(--teal)}
+html[data-theme="dark"] .hero h1 em{color:var(--amber)}
+.hero .lead{margin:0 0 20px;font-size:15.5px;line-height:1.62;color:var(--muted);max-width:48ch}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-note{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:16px;letter-spacing:.03em}
+
+.flow{background:var(--surface);border:1px solid var(--rule);border-radius:24px;padding:20px 22px}
+.flow .tag{color:var(--muted);display:block;margin-bottom:16px}
+.flow-list{list-style:none;margin:0;padding:0;position:relative}
+.flow-list::before{content:"";position:absolute;left:19px;top:26px;bottom:26px;
+  border-left:2px dashed var(--rule-strong);transform:scaleY(0);transform-origin:top;
+  animation:growLine .9s .5s cubic-bezier(.22,.68,.35,1) forwards}
+.flow-step{display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:start;position:relative;z-index:1}
+.flow-step + .flow-step{margin-top:16px}
+.flow-dot{width:40px;height:40px;border-radius:999px;background:var(--teal-soft);
+  border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.flow-dot svg{width:19px;height:19px;color:var(--teal)}
+html[data-theme="dark"] .flow-dot svg{color:var(--amber)}
+.flow-step strong{display:block;font-family:var(--display);font-weight:700;font-size:15px;
+  letter-spacing:-.01em;margin-bottom:3px;padding-top:2px}
+.flow-step span{color:var(--muted);font-size:13.5px;line-height:1.55}
+@media (prefers-reduced-motion:reduce){.flow-list::before{transform:scaleY(1);animation:none}}
+
+.proofs{display:flex;gap:8px;flex-wrap:wrap;margin-top:0}
+.proof{display:inline-flex;align-items:center;gap:8px;background:var(--surface);
+  border:1px solid var(--rule);border-radius:999px;padding:8px 13px;font-size:12.5px;font-weight:600}
+.proof svg{width:15px;height:15px;color:var(--teal);flex:0 0 auto}
+html[data-theme="dark"] .proof svg{color:var(--amber)}
+
+.rail{position:relative;padding-left:34px}
+.rail::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;border-left:2px dashed var(--rule-strong)}
+.stop{position:relative;padding-bottom:32px}
+.stop:last-child{padding-bottom:0}
+.stop::before{content:"";position:absolute;left:-34px;top:3px;width:18px;height:18px;
+  border-radius:999px;background:var(--bg);border:2px solid var(--teal)}
+.stop:last-child::before{background:var(--teal)}
+.stop .tag{color:var(--muted);display:block;margin-bottom:6px}
+.stop h3{font-family:var(--display);font-weight:700;font-size:18px;margin:0 0 6px;letter-spacing:-.02em}
+.stop p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.65;max-width:56ch}
+
+.qa{border-top:1px solid var(--rule)}
+.qa-item{padding:20px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:32px 1fr;gap:15px}
+.qa-item .n{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--amber-ink);padding-top:2px}
+.qa-item h3{font-family:var(--display);font-weight:700;font-size:16px;margin:0 0 7px;letter-spacing:-.015em}
+.qa-item p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.68}
+
+.cta-band{border:1px solid var(--rule);border-radius:26px;padding:34px;background:var(--surface);
+  display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.cta-band h2{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.03em;margin:0 0 8px}
+.cta-band p{margin:0;color:var(--muted);font-size:15px;line-height:1.62;max-width:56ch}
+
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;gap:26px}
+  .cta-band{grid-template-columns:1fr}
+  .cta-band .hbtn{width:100%}
+}
+@media (max-width:600px){
+  .wrap,.hero-inner{padding:0 14px}
+  .hero{padding:36px 0 20px}
+  .band{padding:44px 0}
+}
+
+
+/* ============================================================
+   BARRA LATERAL DAS PÁGINAS DE CONTA
+   Usada pelo /myaccount e pelo /support. Era um bloco azul-escuro
+   que agora choca com o cabeçalho e o rodapé; passa a ser um cartão
+   do sistema, com as mesmas etiquetas em monoespaçado.
+   ============================================================ */
+.side{width:250px;flex:0 0 250px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:24px;padding:20px 16px;display:flex;flex-direction:column;gap:4px;
+  position:sticky;top:calc(var(--header-h) + 20px)}
+.side-title{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);padding:4px 12px 12px}
+.side-item{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  padding:11px 13px;border:0;border-radius:13px;background:transparent;color:var(--text);
+  font-size:14.5px;font-weight:500;cursor:pointer;transition:background .15s ease,color .15s ease}
+.side-item:hover{background:var(--surface-2)}
+.side-item.active{background:var(--teal-soft);color:var(--teal);font-weight:700}
+html[data-theme="dark"] .side-item.active{color:var(--amber)}
+.side-item svg{width:17px;height:17px;flex:0 0 auto;opacity:.9}
+.side-actions{margin-top:18px;padding-top:18px;border-top:1px solid var(--rule);
+  display:flex;flex-direction:column;gap:9px}
+.side-btn{display:inline-flex;align-items:center;justify-content:center;height:46px;
+  border:0;border-radius:14px;background:var(--ink);color:#fff;font-family:var(--mono);
+  font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  cursor:pointer;transition:transform .12s ease}
+.side-btn:hover:not(:disabled){transform:translateY(-1px)}
+.side-btn:disabled{opacity:.55;cursor:not-allowed}
+.side-btn.teal{background:var(--teal);color:#fff}
+.side-btn.line{background:transparent;color:var(--text);border:1px solid var(--rule-strong)}
+html[data-theme="dark"] .side-btn{background:#E9EDF3;color:#141A28}
+html[data-theme="dark"] .side-btn.teal{background:var(--teal);color:#fff}
+html[data-theme="dark"] .side-btn.line{background:transparent;color:var(--text)}
+@media (max-width:860px){
+  .side{width:100%;flex:0 0 auto;position:static;flex-direction:row;flex-wrap:wrap;
+    align-items:center;gap:8px;padding:14px}
+  .side-title{display:none}
+  .side-item{width:auto;flex:1 1 auto;justify-content:center;min-width:120px}
+  .side-actions{width:100%;margin-top:10px;padding-top:14px;
+    flex-direction:row;flex-wrap:wrap}
+  .side-actions .side-btn{flex:1 1 140px}
+}
+
+/* ============================================================
+   CAMPO DE TELEFONE
+   O <select> original fica escondido e continua a ser a fonte da
+   verdade; isto é a camada visível por cima.
+   ============================================================ */
+/* Antes do JS correr, o contentor mantém a linha de pé: sem isto o
+   campo saltava de posição ao carregar a página. */
+[data-phone-mount]{position:relative}
+[data-phone-mount] > select{width:100%}
+.phone-field{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px}
+.phone-pick{display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 14px;
+  border:1px solid var(--rule-strong);border-radius:15px;background:var(--field);
+  cursor:pointer;white-space:nowrap;transition:border-color .15s ease}
+.phone-pick:hover{border-color:var(--teal)}
+.phone-pick svg{width:15px;height:15px;color:var(--muted);margin-left:2px}
+.phone-flag{font-size:19px;line-height:1}
+/* O Windows não traz a fonte das bandeiras e mostra as duas letras.
+   Escondemos o nosso ISO aí, para não ficar escrito duas vezes. */
+.phone-iso{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted);
+  letter-spacing:.04em}
+.phone-dial{font-family:var(--mono);font-size:14px;font-weight:600}
+.phone-field > input{border-radius:15px}
+.phone-field.bad > input{border-color:var(--err-rule)}
+.phone-field.good > input{border-color:var(--teal)}
+
+.phone-menu{position:absolute;top:calc(100% + 6px);left:0;width:min(340px,100%);
+  background:var(--surface);border:1px solid var(--rule-strong);border-radius:18px;
+  box-shadow:0 18px 44px rgba(20,26,40,.18);z-index:60;display:none;overflow:hidden}
+html[data-theme="dark"] .phone-menu{box-shadow:0 18px 44px rgba(0,0,0,.5)}
+.phone-menu.show{display:block}
+.phone-search{width:100%;height:46px;border:0;border-bottom:1px solid var(--rule);
+  background:var(--surface-2);padding:0 16px;font-size:14px;outline:none;border-radius:0}
+.phone-list{max-height:268px;overflow-y:auto;padding:6px}
+.phone-row{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  padding:10px 12px;border:0;border-radius:11px;background:transparent;cursor:pointer;
+  color:var(--text);font-size:14px}
+.phone-row:hover{background:var(--surface-2)}
+.phone-row.on{background:var(--teal-soft)}
+.phone-row .phone-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.phone-row .phone-dial{color:var(--muted);font-size:12.5px}
+.phone-empty{padding:22px;text-align:center;color:var(--muted);font-size:13.5px}
+
+.phone-hint{margin-top:7px;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.phone-hint.good{color:var(--ok-text)}
+.phone-hint.bad{color:var(--err-text)}
+
+@media (max-width:560px){
+  .phone-field{grid-template-columns:1fr}
+  .phone-menu{width:100%}
+}
+
+/* ---------- o seletor de língua, no cabeçalho ----------
+   Um menu e não uma fila de botões: com mais línguas a caminho, os
+   botões deixariam de caber ao lado do logótipo no telemóvel. */
+.lang-wrap{position:relative}
+.lang-btn{display:inline-flex;align-items:center;gap:5px;width:auto;padding:0 10px}
+.lang-btn svg{width:17px;height:17px}
+.lang-code{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase}
+.lang-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;z-index:120;
+  min-width:186px;max-height:min(420px,70vh);overflow-y:auto;background:var(--surface);
+  border:1px solid var(--rule-strong);border-radius:14px;padding:5px;
+  box-shadow:0 18px 40px rgba(20,26,40,.18)}
+.lang-menu.on{display:block}
+.lang-menu button{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  width:100%;border:0;background:transparent;cursor:pointer;border-radius:10px;
+  padding:9px 12px;font-family:var(--body);font-size:13.5px;font-weight:500;color:var(--text);
+  text-align:left}
+.lang-menu button:hover{background:var(--surface-2)}
+.lang-menu button[aria-current="true"]{background:var(--ink);color:#fff}
+html[data-theme="dark"] .lang-menu button[aria-current="true"]{background:#D8DEE8;color:#141A28}
+.lang-tag{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;opacity:.6}
+@media (max-width:520px){.lang-btn .lang-code{display:none}.lang-btn{padding:0}}
+
+/* ---------- árabe: da direita para a esquerda ----------
+   O dir="rtl" espelha o texto e a ordem das colunas sozinho. Só as
+   setas e o menu de língua, que estão presos a um lado, precisam de
+   ser virados à mão. */
+html[dir="rtl"] .lang-menu{right:auto;left:0}
+html[dir="rtl"] .dest-nav.prev{left:auto;right:-14px;transform:translateY(-50%) scaleX(-1)}
+html[dir="rtl"] .dest-nav.next{right:auto;left:-14px;transform:translateY(-50%) scaleX(-1)}
+html[dir="rtl"] .leg-arrow svg,
+html[dir="rtl"] .acct-back{transform:scaleX(-1)}
+html[dir="rtl"] .path-line{left:auto;right:6px}
+@media (max-width:1100px){
+  html[dir="rtl"] .dest-nav.prev{right:4px}
+  html[dir="rtl"] .dest-nav.next{left:4px}
+}
