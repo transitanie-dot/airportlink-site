@@ -31,9 +31,9 @@
   }
 
   var ACCOUNT_LINK = {
-    agent: { href: '/travelagents', label: 'Partner dashboard' },
-    admin: { href: '/admin', label: 'Operations' },
-    customer: { href: '/myaccount', label: 'My account' }
+    agent: { href: '/travelagents', label: '<span data-i18n="nav.partnerDash">Partner dashboard</span>' },
+    admin: { href: '/admin', label: '<span data-i18n="nav.operations">Operations</span>' },
+    customer: { href: '/myaccount', label: '<span data-i18n="nav.myAccount">My account</span>' }
   };
 
   /**
@@ -64,41 +64,41 @@
 
   var account = signedIn
     ? (ACCOUNT_LINK[roleHint()] || ACCOUNT_LINK.customer)
-    : { href: '/login', label: 'Sign in' };
+    : { href: '/login', label: '<span data-i18n="nav.signIn">Sign in</span>' };
 
   // ---------- o menu vive aqui ----------
   var NAV = [
-    { href: '/',             label: 'Book a transfer' },
-    { href: '/travelagents', label: 'Travel agents' },
-    { href: '/drivers',      label: 'Drive with us' },
-    { href: '/support',      label: 'Support' }
+    { href: '/',             label: '<span data-i18n="nav.book">Book a transfer</span>' },
+    { href: '/travelagents', label: '<span data-i18n="nav.agents">Travel agents</span>' },
+    { href: '/drivers',      label: '<span data-i18n="nav.drivers">Drive with us</span>' },
+    { href: '/support',      label: '<span data-i18n="nav.support">Support</span>' }
   ];
 
   var FOOTER = [
-    { title: 'Book', links: signedIn
+    { title: '<span data-i18n="nav.bookShort">Book</span>', links: signedIn
       ? [
-          { href: '/#book',     label: 'Get a price' },
+          { href: '/#book',     label: '<span data-i18n="nav.getPrice">Get a price</span>' },
           { href: account.href, label: account.label }
         ]
       : [
-          { href: '/#book',         label: 'Get a price' },
-          { href: '/login',         label: 'Sign in' },
-          { href: '/createaccount', label: 'Create account' }
+          { href: '/#book',         label: '<span data-i18n="nav.getPrice">Get a price</span>' },
+          { href: '/login',         label: '<span data-i18n="nav.signIn">Sign in</span>' },
+          { href: '/createaccount', label: '<span data-i18n="nav.createAcc">Create account</span>' }
         ]
     },
-    { title: 'Partners', links: [
-      { href: '/travelagents',                   label: 'Travel agents' },
-      { href: '/drivers',                        label: 'Drive with us' },
-      { href: 'https://drivers.airportlink.app', label: 'Partner portal' }
+    { title: '<span data-i18n="nav.partners">Partners</span>', links: [
+      { href: '/travelagents',                   label: '<span data-i18n="nav.agents">Travel agents</span>' },
+      { href: '/drivers',                        label: '<span data-i18n="nav.drivers">Drive with us</span>' },
+      { href: 'https://drivers.airportlink.app', label: '<span data-i18n="nav.partnerPortal">Partner portal</span>' }
     ]},
-    { title: 'Help', links: [
-      { href: '/support',       label: 'Contact support' },
+    { title: '<span data-i18n="nav.help">Help</span>', links: [
+      { href: '/support',       label: '<span data-i18n="nav.contact">Contact support</span>' },
       // O /forgotpassword não existe: o formulário vive dentro do
       // /login, e um link para uma página inexistente é um 404 no
       // rodapé de todas as páginas.
-      { href: '/login',         label: 'Forgot password' },
-      { href: '/terms',         label: 'Terms' },
-      { href: '/privacypolicy', label: 'Privacy policy' }
+      { href: '/login',         label: '<span data-i18n="nav.forgotPass">Forgot password</span>' },
+      { href: '/terms',         label: '<span data-i18n="nav.terms">Terms</span>' },
+      { href: '/privacypolicy', label: '<span data-i18n="nav.privacy">Privacy policy</span>' }
     ]}
   ];
 
@@ -151,7 +151,7 @@
   // Sem isso, assume "Get a price" a apontar para a homepage.
   var body = document.body;
   var ctaHref = body.getAttribute('data-cta-href') || '/#book';
-  var ctaLabel = body.getAttribute('data-cta-label') || 'Get a price';
+  var ctaLabel = body.getAttribute('data-cta-label') || '<span data-i18n="nav.getPrice">Get a price</span>';
 
   var here = window.location.pathname.replace(/\/index\.html$/, '/').replace(/(.)\/$/, '$1');
   if (!here) here = '/';
@@ -198,7 +198,7 @@
   var skip = document.createElement('a');
   skip.className = 'skip';
   skip.href = '#main';
-  skip.textContent = 'Skip to content';
+  skip.textContent = '<span data-i18n="nav.skip">Skip to content</span>';
 
   body.insertBefore(menu, body.firstChild);
   body.insertBefore(header, body.firstChild);
@@ -262,6 +262,34 @@
       if (e.key === 'Escape') close();
     });
   })();
+
+  /**
+   * O cabeçalho nasce depois de o i18n já ter pintado a página, por
+   * isso traduz-se a si próprio aqui — e outra vez quando o
+   * dicionário chega, caso o fetch demore mais do que o desenho.
+   */
+  if (window.i18n) {
+    window.i18n.apply(document.getElementById('siteHeader'));
+    window.i18n.apply(document.querySelector('.site-footer'));
+  }
+
+  document.addEventListener('i18n:ready', function () {
+    if (!window.i18n) return;
+    window.i18n.apply(document.getElementById('siteHeader'));
+    window.i18n.apply(document.querySelector('.site-footer'));
+
+    // O código da língua no botão também muda.
+    var code = document.querySelector('#langBtn .lang-code');
+    if (code) code.textContent = window.i18n.lang;
+
+    document.querySelectorAll('#langMenu [data-lang]').forEach(function (b) {
+      if (b.getAttribute('data-lang') === window.i18n.lang) {
+        b.setAttribute('aria-current', 'true');
+      } else {
+        b.removeAttribute('aria-current');
+      }
+    });
+  });
 
   document.getElementById('themeBtn').addEventListener('click', function () {
     setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
