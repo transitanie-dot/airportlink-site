@@ -109,21 +109,16 @@
   /**
    * O seletor de língua, no cabeçalho.
    *
-   * Um menu e não três botões: com mais línguas a caminho, uma fila
-   * de botões deixaria de caber ao lado do logótipo no telemóvel.
-   * O código atual fica visível; as opções abrem-se ao toque.
+   * A lista vem do i18n.js — é lá que as línguas se acrescentam, e
+   * assim não há duas listas a divergir. Com catorze, o menu tem
+   * altura máxima e rola.
    */
-  var LANGS = [
-    { code: 'en', label: 'English' },
-    { code: 'es', label: 'Español' },
-    { code: 'de', label: 'Deutsch' }
-  ];
-
   var GLOBE =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
     'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg>';
 
+  var LANGS = (window.i18n && window.i18n.langs) || [{ code: 'en', label: 'English' }];
   var current = (window.i18n && window.i18n.lang) || 'en';
 
   var LANG_PICK =
