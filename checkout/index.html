@@ -22,6 +22,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/i18n.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -266,19 +267,19 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
     <span class="co-secure">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
            stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-      Secure checkout
+      <span data-i18n="co.secure">Secure checkout</span>
     </span>
   </div>
 </div>
 
 <div class="steps">
-  <span class="step done"><span class="n">&#10003;</span>Route</span>
+  <span class="step done"><span class="n">&#10003;</span><span data-i18n="co.stepRoute">Route</span></span>
   <span class="step-line"></span>
-  <span class="step done"><span class="n">&#10003;</span>Vehicle</span>
+  <span class="step done"><span class="n">&#10003;</span><span data-i18n="co.stepVehicle">Vehicle</span></span>
   <span class="step-line"></span>
-  <span class="step now"><span class="n">3</span>Your details</span>
+  <span class="step now"><span class="n">3</span><span data-i18n="co.stepDetails">Your details</span></span>
   <span class="step-line"></span>
-  <span class="step"><span class="n">4</span>Payment</span>
+  <span class="step"><span class="n">4</span><span data-i18n="co.stepPayment">Payment</span></span>
 </div>
 
 <main id="main">
@@ -293,8 +294,8 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
     <section class="card acct" id="acct">
       <div class="acct-row" id="acctIntro">
         <div>
-          <strong>Booked with us before?</strong>
-          <span>Sign in and your details fill themselves in.</span>
+          <strong data-i18n="co.bookedBefore">Booked with us before?</strong>
+          <span data-i18n="co.bookedBeforeText">Sign in and your details fill themselves in.</span>
         </div>
         <div class="acct-btns">
           <button class="acct-b" id="signInBtn" type="button">Sign in</button>
@@ -310,20 +311,20 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
       <div class="acct-form" id="acctForm">
         <div class="acct-head">
           <strong id="acctTitle">Sign in</strong>
-          <button class="acct-back" id="acctBack" type="button">&larr; Back</button>
+          <button class="acct-back" id="acctBack" type="button">&larr; <span data-i18n="common.back">Back</span></button>
         </div>
 
         <div class="grid">
           <div class="f wide" id="acctNameField" style="display:none">
-            <label for="acctName">Full name</label>
+            <label for="acctName" data-i18n="co.fullName">Full name</label>
             <input id="acctName" type="text" autocomplete="name">
           </div>
           <div class="f wide">
-            <label for="acctEmail">Email</label>
+            <label for="acctEmail" data-i18n="co.email">Email</label>
             <input id="acctEmail" type="email" autocomplete="email" inputmode="email">
           </div>
           <div class="f wide">
-            <label for="acctPass">Password</label>
+            <label for="acctPass" data-i18n="co.password">Password</label>
             <input id="acctPass" type="password" autocomplete="current-password">
           </div>
         </div>
@@ -343,42 +344,42 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
           <span id="acctDoneText">We create your account after the booking, so you can see
           the trip later. No password needed now.</span>
         </div>
-        <button class="acct-b ghost" id="acctChange" type="button">Change</button>
+        <button class="acct-b ghost" id="acctChange" type="button" data-i18n="common.change">Change</button>
       </div>
     </section>
 
     <!-- ---------- quem viaja ---------- -->
     <section class="card">
-      <h2>Who is travelling</h2>
+      <h2 data-i18n="co.who">Who is travelling</h2>
       <p class="sub">The driver gets the name and phone number the day before, and nothing
       else.</p>
 
       <div class="grid">
         <div class="f wide">
-          <label for="name">Full name</label>
+          <label for="name" data-i18n="co.fullName">Full name</label>
           <input id="name" type="text" autocomplete="name">
-          <span class="err">We need a name for the driver to look for.</span>
+          <span class="err" data-i18n="co.errName">We need a name for the driver to look for.</span>
         </div>
 
         <div class="f wide">
-          <label for="email">Email</label>
+          <label for="email" data-i18n="co.email">Email</label>
           <input id="email" type="email" autocomplete="email" inputmode="email">
           <span class="hint">Your confirmation and the driver's details go here.</span>
-          <span class="err">That email does not look right.</span>
+          <span class="err" data-i18n="co.errEmail">That email does not look right.</span>
         </div>
 
         <div class="f wide" id="phoneField">
-          <label for="phone">Phone</label>
+          <label for="phone" data-i18n="co.phone">Phone</label>
           <input id="phone" type="tel" autocomplete="tel">
           <span class="hint">The driver calls or messages this number on the day.</span>
-          <span class="err">We need a number the driver can reach on the day.</span>
+          <span class="err" data-i18n="co.errPhone">We need a number the driver can reach on the day.</span>
         </div>
       </div>
     </section>
 
     <!-- ---------- a viagem ---------- -->
     <section class="card">
-      <h2>The journey</h2>
+      <h2 data-i18n="co.journey">The journey</h2>
       <p class="sub">The more exact the address, the fewer phone calls on the day.</p>
 
       <div class="grid">
@@ -390,22 +391,22 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
         </div>
 
         <div class="f wide">
-          <label for="pickup">Pick-up address</label>
+          <label for="pickup" data-i18n="co.pickupAddress">Pick-up address</label>
           <input id="pickup" type="text">
           <span class="hint" id="pickupHint">Terminal, or the exact address if it is not
           an airport.</span>
         </div>
 
         <div class="f wide">
-          <label for="dropoff">Drop-off address</label>
+          <label for="dropoff" data-i18n="co.dropoffAddress">Drop-off address</label>
           <input id="dropoff" type="text">
           <span class="hint">Hotel name and street. Not just the town.</span>
-          <span class="err">We need somewhere to drop you.</span>
+          <span class="err" data-i18n="co.errDropoff">We need somewhere to drop you.</span>
         </div>
 
         <div class="f wide">
           <label for="notes">Anything we should know <span class="opt">optional</span></label>
-          <textarea id="notes" maxlength="600" placeholder="Child seats, extra luggage, a wheelchair, a second stop &mdash; tell us here and we arrange it."></textarea>
+          <textarea id="notes" maxlength="600" data-i18n-ph="co.notesPlaceholder" placeholder="Child seats, extra luggage, a wheelchair, a second stop &mdash; tell us here and we arrange it."></textarea>
           <span class="hint">Child seats are free. Just say the ages.</span>
         </div>
       </div>
@@ -413,17 +414,17 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
 
     <!-- ---------- pagamento ---------- -->
     <section class="card">
-      <h2>How you want to pay</h2>
+      <h2 data-i18n="co.howPay">How you want to pay</h2>
       <p class="sub">Either way, cancellation is free until 24 hours before pick-up.</p>
 
       <div class="pay">
         <button class="pay-opt on" id="payLater" data-mode="later" type="button">
-          <strong>Pay later</strong>
+          <strong data-i18n="co.payLater">Pay later</strong>
           <span id="payLaterDesc">Card saved now, charged 48 hours before you travel.</span>
         </button>
         <button class="pay-opt" id="payNow" data-mode="now" type="button">
-          <strong>Pay now</strong>
-          <span>Settle it today and forget about it.</span>
+          <strong data-i18n="co.payNow">Pay now</strong>
+          <span data-i18n="co.payNowDesc">Settle it today and forget about it.</span>
         </button>
       </div>
     </section>
@@ -432,7 +433,7 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
   <!-- ---------- o resumo ---------- -->
   <aside class="side">
     <div class="side-top">
-      <h2>Your transfer</h2>
+      <h2 data-i18n="co.yourTransfer">Your transfer</h2>
       <button class="side-edit" id="backBtn" type="button">Edit</button>
     </div>
 
@@ -442,12 +443,12 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
       <div class="path-line"></div>
       <div class="stop">
         <span class="pin a"></span>
-        <div><span class="k">Pick-up</span><span class="v" id="sFrom">&mdash;</span>
+        <div><span class="k" data-i18n="common.pickup">Pick-up</span><span class="v" id="sFrom">&mdash;</span>
         <span class="t" id="sWhen">&mdash;</span></div>
       </div>
       <div class="stop">
         <span class="pin b"></span>
-        <div><span class="k">Drop-off</span><span class="v" id="sTo">&mdash;</span>
+        <div><span class="k" data-i18n="common.dropoff">Drop-off</span><span class="v" id="sTo">&mdash;</span>
         <span class="t" id="sDur">&mdash;</span></div>
       </div>
     </div>
@@ -461,17 +462,17 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
     </div>
 
     <div class="lines">
-      <div class="row"><span>Transfer</span><span id="sOne">&mdash;</span></div>
+      <div class="row"><span data-i18n="co.transfer">Transfer</span><span id="sOne">&mdash;</span></div>
       <div class="row" id="sRetRow" style="display:none">
         <span id="sRetLabel">Return</span><span id="sRet">&mdash;</span></div>
-      <div class="row"><span>Tolls and taxes</span><span class="inc">Included</span></div>
-      <div class="row"><span>Waiting time</span><span class="inc">60 min</span></div>
+      <div class="row"><span data-i18n="co.tolls">Tolls and taxes</span><span class="inc" data-i18n="common.included">Included</span></div>
+      <div class="row"><span data-i18n="co.waiting">Waiting time</span><span class="inc">60 min</span></div>
     </div>
 
-    <div class="total"><span>Total</span><b id="sTotal">&mdash;</b></div>
+    <div class="total"><span data-i18n="common.total">Total</span><b id="sTotal">&mdash;</b></div>
     <p class="when" id="sPayWhen"></p>
 
-    <button class="go" id="goBtn">Confirm booking</button>
+    <button class="go" id="goBtn" data-i18n="co.confirm">Confirm booking</button>
 
     <p class="fine">By confirming you accept our <a href="/terms">terms</a> and
     <a href="/privacypolicy">privacy policy</a>. The price is recalculated on our servers
@@ -486,6 +487,12 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
 'use strict';
 
 var $ = function (id) { return document.getElementById(id); };
+
+/** A traducao, com o ingles como rede. */
+var T = function (k, en) { return (window.i18n ? window.i18n.t(k, en) : en); };
+var fmtDate = function (d, o) {
+  return window.i18n ? window.i18n.formatDate(d, o) : d.toLocaleDateString('en-GB', o);
+};
 
 /**
  * As mesmas classes da página de reserva.
@@ -764,7 +771,7 @@ function whenText(date, time) {
   if (!date) return '\u2014';
   var d = new Date(date + 'T' + (time || '12:00'));
   if (isNaN(d.getTime())) return date;
-  return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) +
+  return fmtDate(d, { weekday: 'short', day: 'numeric', month: 'short' }) +
     (time ? ' \u00b7 ' + time : '');
 }
 
@@ -776,9 +783,12 @@ function paint() {
   $('sWhen').textContent = whenText(trip.date, trip.time);
   $('sDur').textContent = trip.km ? Math.round(trip.km) + ' km' : '';
 
-  $('sVeh').textContent = c.name + (c.cars ? ' (' + c.cars + ' vehicles)' : '');
-  $('sPax').textContent = trip.pax + (trip.pax === 1 ? ' passenger' : ' passengers') +
-    ' \u00b7 up to ' + c.seats + ' seats';
+  $('sVeh').textContent = c.name +
+    (c.cars ? ' (' + c.cars + ' ' + T('common.vehicles', 'vehicles') + ')' : '');
+  $('sPax').textContent = trip.pax + ' ' +
+    T(trip.pax === 1 ? 'common.passenger' : 'common.passengersPlural',
+      trip.pax === 1 ? 'passenger' : 'passengers') +
+    ' \u00b7 ' + c.seats + ' ' + T('common.seats', 'seats');
   $('sArt').innerHTML = c.art || '';
 
   var hasReturn = Boolean(trip.returnDate);
@@ -787,7 +797,7 @@ function paint() {
 
   $('sOne').textContent = one ? '\u20ac' + one : '\u2014';
   $('sRetRow').style.display = hasReturn ? 'flex' : 'none';
-  $('sRetLabel').textContent = 'Return \u00b7 ' +
+  $('sRetLabel').textContent = T('book.return', 'Return') + ' \u00b7 ' +
     whenText(trip.returnDate, trip.returnTime).split(' \u00b7 ')[0];
   $('sRet').textContent = one ? '\u20ac' + one : '\u2014';
   $('sTotal').textContent = total ? '\u20ac' + total : '\u2014';
@@ -799,19 +809,19 @@ function paint() {
   var canLater = !isNaN(at.getTime()) && at > new Date();
 
   if (canLater) {
-    var d = at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
-    $('payLaterDesc').textContent = 'Card saved now, charged on ' + d +
-      ' \u2014 48 hours before you travel.';
+    var d = fmtDate(at, { day: 'numeric', month: 'long' });
+    $('payLaterDesc').textContent = T('co.payLaterDesc', 'Card saved now, charged on') +
+      ' ' + d + ' ' + T('co.payLaterDesc2', '\u2014 48 hours before you travel.');
     $('sPayWhen').textContent = payMode === 'later'
-      ? 'Book now, pay later (' + d + ')'
-      : 'Charged today';
+      ? T('book.payLater', 'Book now, pay later') + ' ' + d
+      : T('co.charged', 'Charged today');
   } else {
     // Dizer PORQUE não está disponível. "Not available" sozinho
     // parece uma avaria, e a razão é simples de perceber.
     $('payLater').classList.add('off');
     $('payLater').disabled = true;
-    $('payLaterDesc').textContent = 'Your transfer is less than 48 hours away, so there ' +
-      'is no later to wait for.';
+    $('payLaterDesc').textContent = T('co.payLaterNo',
+      'Your transfer is less than 48 hours away, so there is no later to wait for.');
 
     // Mudar o modo AQUI, sem chamar o setPay: ele volta a chamar o
     // paint, e o paint volta a cair neste ramo — ciclo infinito e
@@ -820,7 +830,7 @@ function paint() {
     $('payLater').classList.remove('on');
     $('payNow').classList.add('on');
 
-    $('sPayWhen').textContent = 'Charged today \u00b7 less than 48 hours to pick-up';
+    $('sPayWhen').textContent = T('co.charged', 'Charged today');
   }
 
   // Os campos de morada começam com o que já foi dito.
@@ -876,7 +886,7 @@ $('goBtn').addEventListener('click', function () {
   $('warn').classList.remove('on');
 
   if (!check()) {
-    $('warn').textContent = 'A couple of fields need fixing before we can go on.';
+    $('warn').textContent = T('co.fixFields', 'A couple of fields need fixing before we can go on.');
     $('warn').classList.add('on');
     document.querySelector('.f.bad input').focus();
     return;
@@ -932,10 +942,13 @@ function setMode(mode) {
   acctMode = mode;
   var creating = mode === 'signup';
 
-  $('acctTitle').textContent = creating ? 'Create your account' : 'Sign in';
-  $('acctGo').textContent = creating ? 'Create account' : 'Sign in';
+  $('acctTitle').textContent = creating
+    ? T('co.createAccount', 'Create account') : T('co.signIn', 'Sign in');
+  $('acctGo').textContent = creating
+    ? T('co.createAccount', 'Create account') : T('co.signIn', 'Sign in');
   $('acctSwap').textContent = creating
-    ? 'I already have an account' : 'Create an account instead';
+    ? T('co.swapToSignin', 'I already have an account')
+    : T('co.swapToSignup', 'Create an account instead');
   $('acctNameField').style.display = creating ? 'flex' : 'none';
   $('acctPass').setAttribute('autocomplete', creating ? 'new-password' : 'current-password');
   msg('');
@@ -958,9 +971,9 @@ $('acctBack').addEventListener('click', function () { showAcct('intro'); });
 $('acctChange').addEventListener('click', function () { showAcct('intro'); });
 
 $('guestBtn').addEventListener('click', function () {
-  $('acctDoneTitle').textContent = 'Continuing as a guest';
-  $('acctDoneText').textContent = 'We create your account after the booking, so you can ' +
-    'see the trip later. No password needed now.';
+  $('acctDoneTitle').textContent = T('co.guestTitle', 'Continuing as a guest');
+  $('acctDoneText').textContent = T('co.guestText',
+    'We create your account after the booking. No password needed now.');
   showAcct('done');
   $('name').focus();
 });
@@ -974,9 +987,10 @@ function fillFrom(user) {
   if (!$('email').value) $('email').value = user.email || '';
   if (!$('phone').value) $('phone').value = meta.phone || '';
 
-  $('acctDoneTitle').textContent = 'Signed in as ' + (user.email || 'your account');
-  $('acctDoneText').textContent = 'Your details are filled in below. This booking will ' +
-    'show up in your account.';
+  $('acctDoneTitle').textContent = T('co.signedInAs', 'Signed in as') + ' ' +
+    (user.email || '');
+  $('acctDoneText').textContent = T('co.signedInText',
+    'Your details are filled in below. This booking will show up in your account.');
   showAcct('done');
 }
 
