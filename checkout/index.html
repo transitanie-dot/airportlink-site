@@ -22,6 +22,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="stylesheet" href="/assets/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 /* ---------- a barra do topo ----------
@@ -100,8 +101,43 @@ html[data-theme="dark"] .f input:focus,html[data-theme="dark"] .f textarea:focus
 .acct-b:hover{border-color:var(--teal)}
 .acct-b.ghost{background:transparent;color:var(--muted)}
 .acct-b.ghost:hover{color:var(--text)}
-.acct.done{padding:13px 20px;background:var(--ok-bg);border-color:var(--ok-rule)}
-.acct.done .acct-row strong{color:var(--ok-text)}
+
+/* O formulário e o resumo, escondidos até fazerem falta. */
+.acct-form,.acct-done{display:none}
+.acct.mode-form .acct-form{display:block}
+.acct.mode-form .acct-row{display:none}
+.acct.mode-done .acct-done{display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap}
+.acct.mode-done .acct-row{display:none}
+.acct.mode-done{background:var(--ok-bg);border-color:var(--ok-rule)}
+.acct.mode-done .acct-done strong{color:var(--ok-text)}
+
+.acct-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  margin-bottom:14px}
+.acct-head strong{font-family:var(--display);font-weight:700;font-size:15px;
+  letter-spacing:-.018em}
+.acct-back{background:transparent;border:0;padding:0;color:var(--muted);cursor:pointer;
+  font-family:inherit;font-size:12.5px}
+.acct-back:hover{color:var(--text);text-decoration:underline}
+
+.acct-msg{display:none;margin:12px 0 0;font-size:12.5px;line-height:1.5}
+.acct-msg.on{display:block}
+.acct-msg.bad{color:var(--err-text)}
+.acct-msg.good{color:var(--ok-text)}
+
+.acct-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}
+.acct-go{height:46px;padding:0 24px;border:0;border-radius:12px;background:var(--teal);
+  color:#fff;cursor:pointer;font-family:inherit;font-size:14.5px;font-weight:600}
+html[data-theme="dark"] .acct-go{background:var(--amber);color:#141A28}
+.acct-go:disabled{opacity:.55;cursor:not-allowed}
+.acct-swap{background:transparent;border:0;padding:0;color:var(--teal);cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:600}
+html[data-theme="dark"] .acct-swap{color:var(--amber)}
+.acct-swap:hover{text-decoration:underline}
+
+.acct-done strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.015em;margin-bottom:3px}
+.acct-done span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5}
 
 /* ---------- pagamento ---------- */
 .pay{display:grid;grid-template-columns:1fr 1fr;gap:11px}
@@ -255,7 +291,7 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
          já reservou antes poupa três campos; quem nunca cá veio não
          é obrigado a criar conta para comprar. -->
     <section class="card acct" id="acct">
-      <div class="acct-row">
+      <div class="acct-row" id="acctIntro">
         <div>
           <strong>Booked with us before?</strong>
           <span>Sign in and your details fill themselves in.</span>
@@ -265,6 +301,49 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
           <button class="acct-b" id="createBtn" type="button">Create account</button>
           <button class="acct-b ghost" id="guestBtn" type="button">Continue as guest</button>
         </div>
+      </div>
+
+      <!-- Entrar e registar acontecem AQUI. Mandar a pessoa para
+           outra página a meio de uma reserva é o momento em que mais
+           se desiste — e ao voltar já ninguém se lembra do que tinha
+           escolhido. -->
+      <div class="acct-form" id="acctForm">
+        <div class="acct-head">
+          <strong id="acctTitle">Sign in</strong>
+          <button class="acct-back" id="acctBack" type="button">&larr; Back</button>
+        </div>
+
+        <div class="grid">
+          <div class="f wide" id="acctNameField" style="display:none">
+            <label for="acctName">Full name</label>
+            <input id="acctName" type="text" autocomplete="name">
+          </div>
+          <div class="f wide">
+            <label for="acctEmail">Email</label>
+            <input id="acctEmail" type="email" autocomplete="email" inputmode="email">
+          </div>
+          <div class="f wide">
+            <label for="acctPass">Password</label>
+            <input id="acctPass" type="password" autocomplete="current-password">
+          </div>
+        </div>
+
+        <p class="acct-msg" id="acctMsg"></p>
+
+        <div class="acct-actions">
+          <button class="acct-go" id="acctGo" type="button">Sign in</button>
+          <button class="acct-swap" id="acctSwap" type="button">Create an account instead</button>
+        </div>
+      </div>
+
+      <!-- Depois de escolher, um resumo com forma de voltar atrás. -->
+      <div class="acct-done" id="acctDone">
+        <div>
+          <strong id="acctDoneTitle">Continuing as a guest</strong>
+          <span id="acctDoneText">We create your account after the booking, so you can see
+          the trip later. No password needed now.</span>
+        </div>
+        <button class="acct-b ghost" id="acctChange" type="button">Change</button>
       </div>
     </section>
 
@@ -729,24 +808,159 @@ $('goBtn').addEventListener('click', function () {
   $('warn').classList.add('on');
 });
 
+/**
+ * Entrar e registar sem sair da página.
+ *
+ * Mandar a pessoa para /login a meio de uma reserva é o momento em
+ * que mais se desiste: ao voltar, já ninguém se lembra do que tinha
+ * escolhido. Aqui a sessão abre-se por baixo e o resto fica intacto.
+ */
+var sb = null;
+
+function supa() {
+  if (sb) return sb;
+  if (!window.supabase) return null;
+
+  sb = window.supabase.createClient(
+    'https://ujpagsccfiledbtfeyuq.supabase.co',
+    'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ',
+    { auth: { persistSession: true, autoRefreshToken: true } }
+  );
+  return sb;
+}
+
+var acctMode = 'signin';
+
+function showAcct(view) {
+  var el = $('acct');
+  el.classList.toggle('mode-form', view === 'form');
+  el.classList.toggle('mode-done', view === 'done');
+  msg('');
+}
+
+function msg(text, kind) {
+  var m = $('acctMsg');
+  m.textContent = text || '';
+  m.className = 'acct-msg' + (text ? ' on ' + (kind || 'bad') : '');
+}
+
+function setMode(mode) {
+  acctMode = mode;
+  var creating = mode === 'signup';
+
+  $('acctTitle').textContent = creating ? 'Create your account' : 'Sign in';
+  $('acctGo').textContent = creating ? 'Create account' : 'Sign in';
+  $('acctSwap').textContent = creating
+    ? 'I already have an account' : 'Create an account instead';
+  $('acctNameField').style.display = creating ? 'flex' : 'none';
+  $('acctPass').setAttribute('autocomplete', creating ? 'new-password' : 'current-password');
+  msg('');
+}
+
+$('signInBtn').addEventListener('click', function () {
+  setMode('signin'); showAcct('form'); $('acctEmail').focus();
+});
+
+$('createBtn').addEventListener('click', function () {
+  setMode('signup'); showAcct('form'); $('acctName').focus();
+});
+
+$('acctSwap').addEventListener('click', function () {
+  setMode(acctMode === 'signup' ? 'signin' : 'signup');
+});
+
+// Voltar atrás, de qualquer um dos dois estados.
+$('acctBack').addEventListener('click', function () { showAcct('intro'); });
+$('acctChange').addEventListener('click', function () { showAcct('intro'); });
+
 $('guestBtn').addEventListener('click', function () {
-  // Some e dá lugar a uma linha discreta. Deixá-lo lá depois de a
-  // pessoa escolher é ocupar o topo com uma decisão já tomada.
-  $('acct').classList.add('done');
-  $('acct').innerHTML = '<div class="acct-row"><div><strong>Continuing as a guest</strong>' +
-    '<span>We create your account after the booking, so you can see the trip later. ' +
-    'No password needed now.</span></div></div>';
+  $('acctDoneTitle').textContent = 'Continuing as a guest';
+  $('acctDoneText').textContent = 'We create your account after the booking, so you can ' +
+    'see the trip later. No password needed now.';
+  showAcct('done');
   $('name').focus();
 });
 
-// Ambos voltam aqui depois, com tudo o que já foi escolhido.
-function leaveAndReturn(where) {
-  var back = encodeURIComponent(window.location.pathname + window.location.search);
-  window.location.href = where + '?next=' + back;
+/** Preencher o formulário com quem entrou, para não repetir. */
+function fillFrom(user) {
+  if (!user) return;
+
+  var meta = user.user_metadata || {};
+  if (!$('name').value) $('name').value = meta.full_name || meta.name || '';
+  if (!$('email').value) $('email').value = user.email || '';
+  if (!$('phone').value) $('phone').value = meta.phone || '';
+
+  $('acctDoneTitle').textContent = 'Signed in as ' + (user.email || 'your account');
+  $('acctDoneText').textContent = 'Your details are filled in below. This booking will ' +
+    'show up in your account.';
+  showAcct('done');
 }
 
-$('signInBtn').addEventListener('click', function () { leaveAndReturn('/login'); });
-$('createBtn').addEventListener('click', function () { leaveAndReturn('/createaccount'); });
+$('acctGo').addEventListener('click', async function () {
+  var client = supa();
+  if (!client) return msg('We could not reach the sign-in service. Continue as a guest ' +
+    'and everything still works.');
+
+  var email = $('acctEmail').value.trim();
+  var pass = $('acctPass').value;
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return msg('That email does not look right.');
+  if (pass.length < 8) return msg('The password needs at least 8 characters.');
+
+  var name = $('acctName').value.trim();
+  if (acctMode === 'signup' && name.length < 2) return msg('We need a name for the driver.');
+
+  $('acctGo').disabled = true;
+  msg('One moment.', 'good');
+
+  try {
+    if (acctMode === 'signup') {
+      var reg = await client.auth.signUp({
+        email: email, password: pass,
+        options: { data: { full_name: name } }
+      });
+
+      if (reg.error) throw reg.error;
+
+      // Sem sessão imediata, o projeto pede confirmação por email.
+      if (!reg.data.session) {
+        msg('Check your inbox to confirm the account. You can carry on with this ' +
+          'booking as a guest in the meantime.', 'good');
+        $('acctGo').disabled = false;
+        return;
+      }
+
+      if (!$('name').value) $('name').value = name;
+      fillFrom(reg.data.user);
+      return;
+    }
+
+    var res = await client.auth.signInWithPassword({ email: email, password: pass });
+    if (res.error) throw res.error;
+    fillFrom(res.data.user);
+  } catch (e) {
+    msg(e && e.message ? e.message : 'That did not work. Try again.');
+  } finally {
+    $('acctGo').disabled = false;
+  }
+});
+
+// Entrar com o Enter, que é o que toda a gente faz.
+['acctEmail', 'acctPass', 'acctName'].forEach(function (id) {
+  $(id).addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); $('acctGo').click(); }
+  });
+});
+
+// Já com sessão aberta noutra altura: não voltar a pedir nada.
+(async function () {
+  var client = supa();
+  if (!client) return;
+  try {
+    var r = await client.auth.getSession();
+    if (r.data && r.data.session) fillFrom(r.data.session.user);
+  } catch (e) {}
+})();
 
 $('backBtn').addEventListener('click', function () {
   history.length > 1 ? history.back() : (window.location.href = '/booking/');
