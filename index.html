@@ -1735,15 +1735,18 @@ function ptZone(a, b) {
  * restante Espanha. Calibradas para nunca ficarem acima deles.
  */
 var ES_ZONES = {
-  madrid: { base: 39.87, perKm: 1.3316, premium: 1.447,
+  madrid: { base: 39.87, perKm: 1.3316, premium: 1.516,
+    van: 1.508, van_sedan: 3.737, two_vans: 4.189,
     words: ['madrid','barajas','alcala','alcalá','toledo','segovia','aranjuez',
       'avila','ávila','chinchon','chinchón'] },
-  barcelona: { base: 29.04, perKm: 1.3106, premium: 1.411,
+  barcelona: { base: 29.04, perKm: 1.3106, premium: 1.426,
+    van: 1.455, van_sedan: 3.605, two_vans: 4.041,
     words: ['barcelona','prat','rambla','sitges','girona','lloret','tossa',
       'andorra','figueres','tarragona','salou','reus'] }
 };
 
-var ES_FALLBACK = { base: 39.76, perKm: 1.2843, premium: 1.484 };
+var ES_FALLBACK = { base: 39.76, perKm: 1.2843, premium: 1.530,
+  van: 1.484, van_sedan: 3.678, two_vans: 4.123 };
 
 /** As outras cidades espanholas: usam a tabela de Málaga. */
 var ES_WORDS = ['malaga','málaga','torremolinos','marbella','nerja','granada',
@@ -1758,8 +1761,7 @@ var ES_WORDS = ['malaga','málaga','torremolinos','marbella','nerja','granada',
 /** Rotas com preço combinado — o Sitges custa-lhes o dobro da fórmula. */
 var ES_FIXED = { 'sitges': { sedan: 128.56, premium: 175.57 } };
 
-/* A Van 10% acima da deles; as combinações ao nível deles. */
-var ES_VEH = { van: 1.56, van_sedan: 3.39, two_vans: 3.80 };
+
 
 function hasWord(text, list) {
   var t = String(text || '').toLowerCase();
