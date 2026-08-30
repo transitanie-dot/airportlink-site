@@ -1758,7 +1758,8 @@ var ES_WORDS = ['malaga','málaga','torremolinos','marbella','nerja','granada',
 /** Rotas com preço combinado — o Sitges custa-lhes o dobro da fórmula. */
 var ES_FIXED = { 'sitges': { sedan: 128.56, premium: 175.57 } };
 
-var ES_VEH = { van: 1.368, van_sedan: 3.39, two_vans: 3.80 };
+/* A Van 10% acima da deles; as combinações ao nível deles. */
+var ES_VEH = { van: 1.56, van_sedan: 3.39, two_vans: 3.80 };
 
 function hasWord(text, list) {
   var t = String(text || '').toLowerCase();
