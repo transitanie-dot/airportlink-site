@@ -432,7 +432,8 @@ var ES_WORDS = ['malaga','málaga','torremolinos','marbella','nerja','granada',
 /** Rotas com preço combinado — o Sitges custa-lhes o dobro da fórmula. */
 var ES_FIXED = { 'sitges': { sedan: 128.56, premium: 175.57 } };
 
-var ES_VEH = { van: 1.368, van_sedan: 3.39, two_vans: 3.80 };
+/* A Van 10% acima da deles; as combinações ao nível deles. */
+var ES_VEH = { van: 1.56, van_sedan: 3.39, two_vans: 3.80 };
 
 function hasWord(text, list) {
   var t = String(text || '').toLowerCase();
@@ -621,11 +622,11 @@ var CLASSES = [
   // Acima de oito passageiros nao ha um veiculo so: mandamos dois.
   // Dize-lo e mais honesto do que chamar-lhe "minibus" e a pessoa
   // descobrir no aeroporto que sao duas viaturas.
-  { id: 'van_sedan', name: 'Van + Sedan', seats: 12, bags: 12, mult: 2.5, cars: 2,
+  { id: 'van_sedan', name: 'Van + Sedan', seats: 12, bags: 12, mult: 2.85, cars: 2,
     note: 'Two vehicles, two drivers. They travel together and arrive together.',
     art: ART.pair },
 
-  { id: 'two_vans', name: 'Two Vans', seats: 16, bags: 16, mult: 3.2, cars: 2,
+  { id: 'two_vans', name: 'Two Vans', seats: 16, bags: 16, mult: 3.6, cars: 2,
     note: 'Two minivans for a large group. One booking, one price.',
     art: ART.twoVans }
 ];
