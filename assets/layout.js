@@ -106,6 +106,42 @@
   // O cabeçalho leva só o nome. O ícone é do rodapé.
   var LOGO = 'AIRPORT<b>LINK</b><span class="dot"></span>';
 
+  /**
+   * O seletor de língua, no cabeçalho.
+   *
+   * Um menu e não três botões: com mais línguas a caminho, uma fila
+   * de botões deixaria de caber ao lado do logótipo no telemóvel.
+   * O código atual fica visível; as opções abrem-se ao toque.
+   */
+  var LANGS = [
+    { code: 'en', label: 'English' },
+    { code: 'es', label: 'Español' },
+    { code: 'de', label: 'Deutsch' }
+  ];
+
+  var GLOBE =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg>';
+
+  var current = (window.i18n && window.i18n.lang) || 'en';
+
+  var LANG_PICK =
+    '<div class="lang-wrap">' +
+      '<button class="icon-btn lang-btn" id="langBtn" type="button" ' +
+        'aria-label="Language" aria-expanded="false" aria-haspopup="true">' +
+        GLOBE + '<span class="lang-code">' + current + '</span>' +
+      '</button>' +
+      '<div class="lang-menu" id="langMenu" role="menu">' +
+        LANGS.map(function (l) {
+          return '<button type="button" role="menuitem" data-lang="' + l.code + '"' +
+            (l.code === current ? ' aria-current="true"' : '') + '>' +
+            '<span class="lang-name">' + l.label + '</span>' +
+            '<span class="lang-tag">' + l.code + '</span></button>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+
   var MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
     'stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
   var BARS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
@@ -144,6 +180,7 @@
         }).join('') +
       '</nav>' +
       '<div class="header-right">' +
+        LANG_PICK +
         '<button class="icon-btn" id="themeBtn" type="button" aria-label="Switch theme">' + MOON + '</button>' +
         '<a class="hbtn line" href="' + esc(account.href) + '">' + esc(account.label) + '</a>' +
         '<a class="hbtn" href="' + esc(ctaHref) + '">' + esc(ctaLabel) + '</a>' +
@@ -200,6 +237,36 @@
     document.documentElement.setAttribute('data-theme', v);
     try { localStorage.setItem(THEME_KEY, v); } catch (e) {}
   }
+
+  // ---------- o seletor de língua ----------
+  (function () {
+    var btn = document.getElementById('langBtn');
+    var menu = document.getElementById('langMenu');
+    if (!btn || !menu) return;
+
+    function close() {
+      menu.classList.remove('on');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = menu.classList.toggle('on');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    menu.addEventListener('click', function (e) {
+      var item = e.target.closest ? e.target.closest('[data-lang]') : null;
+      if (!item) return;
+      if (window.i18n) window.i18n.setLang(item.getAttribute('data-lang'));
+    });
+
+    // Clicar fora fecha, tal como Escape.
+    document.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') close();
+    });
+  })();
 
   document.getElementById('themeBtn').addEventListener('click', function () {
     setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
