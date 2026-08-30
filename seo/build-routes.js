@@ -64,18 +64,62 @@ const PT_ZONES = {
 };
 const PT_FALLBACK = { base: 11.61, perKm: 1.142 };
 
-function priceEUR(km, passengers, isPortugal, zoneSlug) {
-  const multiplier =
-    passengers <= 3 ? 1 :
-    passengers <= 4 ? 1.47 :
-    passengers <= 8 ? 1.7 :
-    passengers <= 13 ? 2.5 : 3.2;
+/** Espanha: Madrid e Barcelona com tabela própria, o resto usa Málaga. */
+const ES_ZONES = {
+  madrid:    { base: 39.87, perKm: 1.3316, premium: 1.516,
+               van: 1.508, van_sedan: 3.737, two_vans: 4.189 },
+  barcelona: { base: 29.04, perKm: 1.3106, premium: 1.426,
+               van: 1.455, van_sedan: 3.605, two_vans: 4.041 }
+};
+const ES_FALLBACK = { base: 39.76, perKm: 1.2843, premium: 1.530,
+  van: 1.484, van_sedan: 3.678, two_vans: 4.123 };
 
-  if (isPortugal) {
-    const z = PT_ZONES[zoneSlug] || PT_FALLBACK;
-    return Math.max(24, (z.base + km * z.perKm) * multiplier);
+/** Rotas com preço combinado. O Sitges custa-lhes o dobro da fórmula. */
+const ES_FIXED = { 'sitges': { sedan: 128.56, premium: 175.57 } };
+
+/** A tabela desta página: zona, multiplicadores e preço fixo se houver. */
+function zoneFor(cc, zoneSlug, dest) {
+  const PT_MULT = { premium: 1.47, van: 1.7, van_sedan: 2.85, two_vans: 3.6 };
+
+  if (cc === 'ES') {
+    const z = { ...(ES_ZONES[zoneSlug] || ES_FALLBACK) };
+    if (dest && ES_FIXED[dest.slug]) z.fixed = ES_FIXED[dest.slug];
+    return z;
   }
-  return Math.max(25, (20 + km * 3.5) * 1.3 * multiplier);
+  if (cc === 'PT') return { ...(PT_ZONES[zoneSlug] || PT_FALLBACK), ...PT_MULT };
+  return null;
+}
+
+function priceEUR(km, passengers, countryCode, zoneSlug, destSlug) {
+  const cls =
+    passengers <= 3 ? 'sedan' :
+    passengers <= 4 ? 'premium' :
+    passengers <= 8 ? 'van' :
+    passengers <= 13 ? 'van_sedan' : 'two_vans';
+
+  // Espanha tem multiplicadores por zona; Portugal um conjunto único.
+  if (countryCode === 'ES') {
+    const z = ES_ZONES[zoneSlug] || ES_FALLBACK;
+
+    const fixed = ES_FIXED[destSlug];
+    if (fixed) {
+      if (cls === 'sedan') return fixed.sedan;
+      if (cls === 'premium') return fixed.premium;
+      return fixed.sedan * z[cls];
+    }
+
+    return Math.max(24, (z.base + km * z.perKm) * (cls === 'sedan' ? 1 : z[cls]));
+  }
+
+  const m = cls === 'sedan' ? 1 : cls === 'premium' ? 1.47
+    : cls === 'van' ? 1.7 : cls === 'van_sedan' ? 2.85 : 3.6;
+
+  if (countryCode === 'PT') {
+    const z = PT_ZONES[zoneSlug] || PT_FALLBACK;
+    return Math.max(24, (z.base + km * z.perKm) * m);
+  }
+
+  return Math.max(25, (20 + km * 3.5) * 1.3 * m);
 }
 
 const money = (v) => '€' + Math.round(v);
@@ -463,19 +507,34 @@ function hero(airport, tag, title) {
   const inner = `<div class="veil"></div><div class="on">` +
     `<span class="tag">${esc(tag)}</span><h1>${esc(title)}</h1></div>`;
 
-  if (!airport.image) return `<div class="hero">${inner}</div>`;
+  // Sem "image" no JSON, usa-se a genérica em vez de um gradiente
+  // vazio — assim um aeroporto novo entra com aspecto decente antes
+  // de alguém ir procurar a foto dele.
+  const name = airport.image || 'default';
 
   // <picture> tenta os formatos por ordem e fica no primeiro que
   // existir. Assim tanto faz a foto ser .webp ou .jpg — poupa ter
   // de acertar a extensão no código sempre que se muda de fonte,
   // e nos países que vierem a seguir.
-  const base = `/assets/img/cities/${esc(airport.image)}`;
+  const base = `/assets/img/cities/${esc(name)}`;
+
+  // O <picture> escolhe pelo NOME, não sabe se o ficheiro existe —
+  // por isso a rede de segurança tem de ser o onerror do <img>: se
+  // a foto da cidade faltar, entra a genérica. Assim os aeroportos
+  // pequenos podem esperar sem deixarem um buraco na página.
+  //
+  // O this.onerror=null impede o ciclo se a própria genérica faltar.
+  const fallback = '/assets/img/cities/default.webp';
+  const onerr = `this.onerror=null;this.src='${fallback}';` +
+    `var p=this.parentNode;if(p&&p.tagName==='PICTURE'){` +
+    `p.querySelectorAll('source').forEach(function(s){s.remove();});}`;
 
   return `<div class="hero"><picture>` +
     `<source srcset="${base}.webp" type="image/webp">` +
     `<source srcset="${base}.jpg" type="image/jpeg">` +
     `<img src="${base}.jpg" alt="${esc(airport.city)}" ` +
-    `width="1600" height="600" loading="eager" fetchpriority="high">` +
+    `width="1600" height="600" loading="eager" fetchpriority="high" ` +
+    `onerror="${onerr}">` +
     `</picture>${inner}</div>`;
 }
 
@@ -491,7 +550,7 @@ function hero(airport, tag, title) {
  * pesquisa, a maioria das visitas nunca usa a calculadora, e
  * carregá-lo a todas custaria dinheiro por visita.
  */
-function calculator(airport, current, isPT, mapsKey) {
+function calculator(airport, current, cc, mapsKey) {
   const to = current ? current.name : '';
 
   return `<section class="ca" id="price">
@@ -592,12 +651,12 @@ function calculator(airport, current, isPT, mapsKey) {
   <script>
   // A tabela desta zona, impressa pelo gerador: a calculadora da
   // página usa-a sem adivinhar nada.
-  window.__ZONE = ${JSON.stringify(PT_ZONES[slugOf(airport)] || PT_FALLBACK)};
+  window.__ZONE = ${JSON.stringify(zoneFor(cc, slugOf(airport), current))};
   </script>
   <script>
   (function () {
     var KEY = ${JSON.stringify(mapsKey)};
-    var PT = ${JSON.stringify(isPT)};
+    var CC = ${JSON.stringify(cc)};
 
     var $$ = function (id) { return document.getElementById(id); };
     var cf = $$('cf'), ct = $$('ct'), cp = $$('cp');
@@ -620,12 +679,22 @@ function calculator(airport, current, isPT, mapsKey) {
 
     // ---------- a mesma fórmula do site ----------
     function fare(km, pax) {
-      // A zona vem impressa na página: cada aeroporto sabe a sua.
-      var p = PT ? (window.__ZONE || { base: 11.61, perKm: 1.142, min: 24 })
-                 : { base: 20, perKm: 3.5, min: 25, up: 1.3 };
-      if (PT) { p.min = 24; p.up = 1.0; }
-      var mult = pax <= 4 ? 1 : pax <= 8 ? 1.7 : pax <= 13 ? 2.5 : 3.2;
-      return Math.max(p.min, (p.base + km * p.perKm) * p.up * mult);
+      // A zona vem impressa na página: cada aeroporto traz a sua
+      // tabela e os seus multiplicadores, para a calculadora não ter
+      // de saber nada sobre países.
+      var z = window.__ZONE;
+      if (!z) return Math.max(25, (20 + km * 3.5) * 1.3);
+
+      var cls = pax <= 3 ? 'sedan' : pax <= 4 ? 'premium'
+        : pax <= 8 ? 'van' : pax <= 13 ? 'van_sedan' : 'two_vans';
+
+      if (z.fixed) {
+        if (cls === 'sedan') return z.fixed.sedan;
+        if (cls === 'premium') return z.fixed.premium;
+        return z.fixed.sedan * z[cls];
+      }
+
+      return Math.max(24, (z.base + km * z.perKm) * (cls === 'sedan' ? 1 : z[cls]));
     }
 
     /**
@@ -983,10 +1052,10 @@ function localInfo(airport) {
 // ============================================================
 
 function routePage(country, airport, dest, siblings) {
-  const isPT = country.countryCode === 'PT';
+  const cc = country.countryCode;
   const slug = slugOf(airport);
-  const p1 = priceEUR(dest.km, 1, isPT, slug);
-  const p5 = priceEUR(dest.km, 5, isPT, slug);
+  const p1 = priceEUR(dest.km, 1, cc, slug, dest.slug);
+  const p5 = priceEUR(dest.km, 5, cc, slug, dest.slug);
 
   const cslug = countrySlug(country);
   const url = `${SITE}/transfers/${cslug}/${slug}-to-${dest.slug}/`;
@@ -1060,7 +1129,7 @@ function routePage(country, airport, dest, siblings) {
     .filter((d) => d.slug !== dest.slug)
     .slice(0, 6)
     .map((d) => {
-      const price = priceEUR(d.km, 1, isPT, slug);
+      const price = priceEUR(d.km, 1, cc, slug, d.slug);
       return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}/">` +
         `<b>${esc(d.name)}</b><span>from ${money(price)}</span></a>`;
     }).join('\n      ');
@@ -1076,7 +1145,7 @@ function routePage(country, airport, dest, siblings) {
          `${airport.city} Airport to ${dest.name}`)}
 
 
-  ${calculator(airport, dest, isPT, MAPS_KEY)}
+  ${calculator(airport, dest, cc, MAPS_KEY)}
 
   <h2 id="included">What is included</h2>
   <ul class="ticks">
@@ -1133,12 +1202,12 @@ function routePage(country, airport, dest, siblings) {
 // ============================================================
 
 function airportPage(country, airport) {
-  const isPT = country.countryCode === 'PT';
+  const cc = country.countryCode;
   const slug = slugOf(airport);
   const cslug = countrySlug(country);
   const url = `${SITE}/airports/${cslug}/${slug}/`;
 
-  const cheapest = Math.min(...airport.destinations.map((d) => priceEUR(d.km, 1, isPT, slug)));
+  const cheapest = Math.min(...airport.destinations.map((d) => priceEUR(d.km, 1, cc, slug, d.slug)));
 
   const title = `${airport.city} Airport Transfers (${airport.iata}) | From ${money(cheapest)} | Airportlink`;
   const description =
@@ -1181,7 +1250,7 @@ function airportPage(country, airport) {
     .slice()
     .sort((a, b) => a.km - b.km)
     .map((d) => {
-      const price = priceEUR(d.km, 1, isPT, slug);
+      const price = priceEUR(d.km, 1, cc, slug, d.slug);
       return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}/">` +
         `<b>${esc(d.name)}</b>` +
         `<span>${esc(d.minutes)} min &middot; from ${money(price)}</span></a>`;
@@ -1193,7 +1262,7 @@ function airportPage(country, airport) {
     .filter((a) => a.iata !== airport.iata)
     .map((a) => {
       const s2 = slugOf(a);
-      const from = Math.min(...a.destinations.map((d) => priceEUR(d.km, 1, isPT, a.slug)));
+      const from = Math.min(...a.destinations.map((d) => priceEUR(d.km, 1, cc, a.slug, d.slug)));
       return `<a class="other" href="/airports/${cslug}/${s2}/">` +
         `<b>${esc(a.name)}</b><span>from ${money(from)}</span></a>`;
     }).join('\n      ');
