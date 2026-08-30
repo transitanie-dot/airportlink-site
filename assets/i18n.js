@@ -31,7 +31,11 @@
     { code: 'ar', label: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629', locale: 'ar', rtl: true },
     { code: 'zh', label: '\u4e2d\u6587', locale: 'zh-CN' },
     { code: 'ja', label: '\u65e5\u672c\u8a9e', locale: 'ja-JP' },
-    { code: 'th', label: '\u0e44\u0e17\u0e22', locale: 'th-TH' }
+    { code: 'th', label: '\u0e44\u0e17\u0e22', locale: 'th-TH' },
+    { code: 'ko', label: '\ud55c\uad6d\uc5b4', locale: 'ko-KR' },
+    { code: 'tr', label: 'T\u00fcrk\u00e7e',    locale: 'tr-TR' },
+    { code: 'sv', label: 'Svenska',    locale: 'sv-SE' },
+    { code: 'no', label: 'Norsk',      locale: 'nb-NO' }
   ];
 
   var CODES = LANGS.map(function (l) { return l.code; });
