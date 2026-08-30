@@ -602,8 +602,8 @@ var CLASSES = {
   sedan:     { name: 'Sedan',         seats: 4,  mult: 1,    art: ART.sedan },
   premium:   { name: 'Premium Sedan', seats: 4,  mult: 1.47, art: ART.premium },
   van:       { name: 'Van',           seats: 8,  mult: 1.7,  art: ART.van },
-  van_sedan: { name: 'Van + Sedan',   seats: 12, mult: 2.5,  art: ART.pair, cars: 2 },
-  two_vans:  { name: 'Two Vans',      seats: 16, mult: 3.2,  art: ART.twoVans, cars: 2 }
+  van_sedan: { name: 'Van + Sedan',   seats: 12, mult: 2.85,  art: ART.pair, cars: 2 },
+  two_vans:  { name: 'Two Vans',      seats: 16, mult: 3.6,  art: ART.twoVans, cars: 2 }
 };
 
 /**
@@ -676,7 +676,8 @@ var ES_WORDS = ['malaga','málaga','torremolinos','marbella','nerja','granada',
 /** Rotas com preço combinado — o Sitges custa-lhes o dobro da fórmula. */
 var ES_FIXED = { 'sitges': { sedan: 128.56, premium: 175.57 } };
 
-var ES_VEH = { van: 1.368, van_sedan: 3.39, two_vans: 3.80 };
+/* A Van 10% acima da deles; as combinações ao nível deles. */
+var ES_VEH = { van: 1.56, van_sedan: 3.39, two_vans: 3.80 };
 
 function hasWord(text, list) {
   var t = String(text || '').toLowerCase();
