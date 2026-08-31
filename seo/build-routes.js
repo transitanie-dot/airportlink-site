@@ -74,6 +74,60 @@ const LANGS = [
  */
 const T9N = {
   pt: {
+    "passenger": "passageiro",
+    "Pick-up": "Recolha",
+    "Drop-off": "Destino",
+    "Pick-up time": "Hora de recolha",
+    "Passengers": "Passageiros",
+    "Sedan": "Carro",
+    "Up to 4 passengers with hand luggage.": "Até 4 passageiros com bagagem de mão.",
+    "Whole car &middot; tolls and taxes in": "Carro completo · portagens e impostos incluídos",
+    "Book now, pay later": "Reserve agora, pague depois",
+    "payOn": "Reserve agora, pague a {data}",
+    "Continue &rarr;": "Continuar →",
+    "passengers": "passageiros",
+    "mins": "min",
+    "Free cancellation": "Cancelamento gratuito",
+    "Until 24 hours before, refunded in full": "Até 24 horas antes, com reembolso total",
+    "No card today": "Hoje não se cobra o cartão",
+    "Charged 48 hours before you travel": "Cobrado 48 horas antes de viajar",
+    "Flight tracked": "Voo seguido",
+    "Land late and the driver waits, free": "Se aterrar tarde, o motorista espera, sem custo",
+    "Licensed drivers": "Motoristas licenciados",
+    "Insurance and licence checked by us": "Seguro e licença verificados por nós",
+    "mapsSays": "O mapa diz {min} minutos. Isso é a condução. De porta a porta desde o momento em que aterra é outro número, e é esse que vale a pena planear.",
+    "Taxi and disembark": "Taxiar e desembarcar",
+    "Passport control": "Controlo de passaportes",
+    "None inside Schengen. 15&ndash;45 min from outside it.": "Nenhum dentro de Schengen. 15 a 45 min vindo de fora.",
+    "Baggage reclaim": "Recolha de bagagem",
+    "10&ndash;25 min with hold luggage": "10 a 25 min com bagagem de porão",
+    "Finding your driver": "Encontrar o motorista",
+    "2&ndash;5 min. Your name on a sign.": "2 a 5 min. O seu nome numa placa.",
+    "The drive": "A viagem",
+    "10&ndash;15 min": "10 a 15 min",
+    "realistically": "Realisticamente, {min1} a {min2} minutos depois de aterrar.",
+    "ifWaiting": "Se alguém estiver à sua espera, é este o número a dar.",
+    "bookEarly": "Reservar cedo custa o mesmo que reservar tarde — o preço não muda. O que muda é se ainda há carro.",
+    "A week ahead": "Uma semana antes",
+    "busyArrivals": "Julho, agosto, sextas e sábados. As chegadas mais movimentadas do ano{extra}.",
+    "longRun": ", e um percurso longo como este é o primeiro a esgotar",
+    "As soon as you have the flight": "Assim que tiver o voo",
+    "Groups of five or more. Vans and minibuses go first, always.": "Grupos de cinco ou mais. As carrinhas esgotam sempre primeiro.",
+    "Two or three days": "Dois ou três dias",
+    "Landing between 23:00 and 06:00. Fewer drivers are working.": "Aterragens entre as 23:00 e as 06:00. Há menos motoristas a trabalhar.",
+    "The day before is fine": "A véspera chega",
+    "Everything else. The same morning usually works too.": "Tudo o resto. Na própria manhã costuma também dar.",
+    "cancelFree": "O cancelamento é gratuito até 24 horas antes, por isso reservar cedo não lhe custa nada se os planos mudarem.",
+    "aHowLong": "Cerca de {min} minutos para os {km} km, fora das horas de ponta. O motorista conhece o caminho e segue o voo, por isso uma aterragem atrasada muda a hora da recolha em vez de lhe custar a viagem.",
+    "aHowMuch": "Desde {p1} para até quatro passageiros, e {p5} para um grupo de cinco a oito numa carrinha. O preço fica fixo quando reserva — portagens e impostos incluídos, nada acrescentado no fim.",
+    "aFlightLate": "Seguimos o número de voo que nos der. O motorista espera e ajusta-se à hora real da aterragem, com 60 minutos de espera gratuita depois de o avião tocar no solo.",
+    "aWhereMeet": "Na sala de chegadas, depois da alfândega. Na véspera enviamos-lhe o nome do motorista, o telefone e a viatura, e ele contacta-o com o ponto exato.",
+    "aCancel": "Gratuito até 24 horas antes da recolha, com reembolso total e automático. Em muitas rotas pode também reservar sem pagar, e só cobramos o cartão 48 horas antes.",
+    "allTransfers": "Todos os transfers do aeroporto de {cidade} ›",
+    "See prices &rarr;": "Ver preços →",
+    "From": "Desde",
+    "otherAirports": "Outros aeroportos em {pais}",
+    "What is included": "O que está incluído",
     "h1Route": "{cidade} para {destino}",
     "descRoute": "Transfer privado de {aeroporto} para {destino}: {min} minutos, {km} km, desde {preco} para até 4 pessoas. Preço fixo, voo seguido, cancelamento gratuito.",
     "qHowLong": "Quanto tempo demora de {cidade} para {destino}?",
@@ -751,14 +805,14 @@ function calculator(airport, current, cc, mapsKey, lang) {
 
     <div class="ca-grid">
       <div class="ca-f wide">
-        <label for="cf">Pick-up</label>
+        <label for="cf">${t9n(lang, 'Pick-up')}</label>
         <div class="ca-in"><span class="ca-pin a"></span>
           <input id="cf" type="text" value="${esc(airport.name)}" autocomplete="off"
                  placeholder="Airport, hotel or address"></div>
       </div>
 
       <div class="ca-f wide">
-        <label for="ct">Drop-off</label>
+        <label for="ct">${t9n(lang, 'Drop-off')}</label>
         <div class="ca-in"><span class="ca-pin b"></span>
           <input id="ct" type="text" value="${esc(to)}" autocomplete="off"
                  placeholder="Hotel, address or town"></div>
@@ -770,12 +824,12 @@ function calculator(airport, current, cc, mapsKey, lang) {
       </div>
 
       <div class="ca-f">
-        <label for="ctime">Pick-up time</label>
+        <label for="ctime">${t9n(lang, 'Pick-up time')}</label>
         <div class="ca-in"><input id="ctime" type="time" value="12:00"></div>
       </div>
 
       <div class="ca-f">
-        <label for="cp">Passengers <span class="hint">1 to 16</span></label>
+        <label for="cp">${t9n(lang, 'Passengers')} <span class="hint">1 &ndash; 16</span></label>
         <div class="ca-in">
           <input id="cp" type="number" min="1" max="16" step="1" value="2">
         </div>
@@ -787,8 +841,8 @@ function calculator(airport, current, cc, mapsKey, lang) {
         <div class="ca-veh">
           <div class="ca-art" id="cart"></div>
           <div class="ca-vt">
-            <strong id="cw">Sedan</strong>
-            <span id="cwn">Up to 4 passengers with hand luggage.</span>
+            <strong id="cw">${t9n(lang, 'Sedan')}</strong>
+            <span id="cwn">${t9n(lang, 'Up to 4 passengers with hand luggage.')}</span>
           </div>
         </div>
 
@@ -797,21 +851,21 @@ function calculator(airport, current, cc, mapsKey, lang) {
         <div class="ca-chips">
           <span class="chip" id="chDate">&mdash;</span>
           <span class="chip" id="chTime">12:00</span>
-          <span class="chip" id="chPax">2 passengers</span>
+          <span class="chip" id="chPax">2 ${t9n(lang, 'passengers')}</span>
           <span class="chip" id="chKm">&mdash;</span>
           <span class="chip" id="chDur">&mdash;</span>
         </div>
       </div>
 
       <div class="ca-pay">
-        <span class="k" id="ck">From</span>
+        <span class="k" id="ck">${t9n(lang, 'From')}</span>
         <span class="v" id="cv">&mdash;</span>
-        <span class="s" id="cs">Whole car &middot; tolls and taxes in</span>
+        <span class="s" id="cs">${t9n(lang, 'Whole car &middot; tolls and taxes in')}</span>
 
         <!-- A promessa fica por cima do botão, com a data do
              pagamento. O botão diz só o que faz. -->
-        <span class="ca-later" id="cl">Book now, pay later</span>
-        <a class="ca-book" id="cb" href="/booking/">See prices &rarr;</a>
+        <span class="ca-later" id="cl">${t9n(lang, 'Book now, pay later')}</span>
+        <a class="ca-book" id="cb" href="/booking/">${t9n(lang, 'See prices &rarr;')}</a>
       </div>
     </div>
 
@@ -821,13 +875,13 @@ function calculator(airport, current, cc, mapsKey, lang) {
     <div class="ca-trust">
       ${[
         ['M9 14l2 2 4-5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
-         'Free cancellation', 'Until 24 hours before, refunded in full'],
+         t9n(lang, 'Free cancellation'), t9n(lang, 'Until 24 hours before, refunded in full')],
         ['M2 9h20M2 9V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2M2 9v8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9M6 15h4',
-         'No card today', 'Charged 48 hours before you travel'],
+         t9n(lang, 'No card today'), t9n(lang, 'Charged 48 hours before you travel')],
         ['M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.4-2.1 2.1-2.4-.6a.5.5 0 0 0-.5.8L5 16l1.3 2.2a.5.5 0 0 0 .8-.1l.6-2.4 2.1-2.1 4.4 3.9a.5.5 0 0 0 .8-.5Z',
-         'Flight tracked', 'Land late and the driver waits, free'],
+         t9n(lang, 'Flight tracked'), t9n(lang, 'Land late and the driver waits, free')],
         ['M12 2 4 6v6c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V6l-8-4Z',
-         'Licensed drivers', 'Insurance and licence checked by us']
+         t9n(lang, 'Licensed drivers'), t9n(lang, 'Insurance and licence checked by us')]
       ].map(([d, t, sub]) => `<div class="tr">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -843,6 +897,15 @@ function calculator(airport, current, cc, mapsKey, lang) {
   // A tabela desta zona, impressa pelo gerador: a calculadora da
   // página usa-a sem adivinhar nada.
   window.__ZONE = ${JSON.stringify(zoneFor(cc, slugOf(airport), current))};
+
+  // A língua e as frases que o código da página precisa. Impressas
+  // aqui e não pedidas ao dicionário: esta página é estática e não
+  // carrega o i18n.js.
+  var LANG = ${JSON.stringify(lang || 'en')};
+  var PAY_ON = ${JSON.stringify(t9n(lang, 'payOn') !== 'payOn' ? t9n(lang, 'payOn') : 'Book now, pay on {data}')};
+  var L_FROM = ${JSON.stringify(t9n(lang, 'From'))};
+  var L_PAX  = ${JSON.stringify(t9n(lang, 'passengers'))};
+  var L_PAX1 = ${JSON.stringify(t9n(lang, 'passenger'))};
   </script>
   <script>
   (function () {
@@ -1013,8 +1076,11 @@ function calculator(airport, current, cc, mapsKey, lang) {
       // seria mentira.
       if (isNaN(at.getTime()) || at < new Date()) return '';
 
-      return 'Book now, pay on ' +
-        at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+      // A data no formato da língua, e a frase com marcador: em
+      // português a data vem depois de "a", em alemão depois de "am".
+      var loc = { pt: 'pt-PT', es: 'es-ES', de: 'de-DE', fr: 'fr-FR' }[LANG] || 'en-GB';
+      var quando = at.toLocaleDateString(loc, { day: 'numeric', month: 'long' });
+      return (PAY_ON || 'Book now, pay on {data}').split('{data}').join(quando);
     }
 
     /** As etiquetas com o que foi escolhido. */
@@ -1030,7 +1096,7 @@ function calculator(airport, current, cc, mapsKey, lang) {
       }
 
       chTime.textContent = ctime.value || '\u2014';
-      chPax.textContent = pax + (pax === 1 ? ' passenger' : ' passengers');
+      chPax.textContent = pax + ' ' + (pax === 1 ? L_PAX1 : L_PAX);
     }
 
     function paint(price) {
@@ -1071,7 +1137,7 @@ function calculator(airport, current, cc, mapsKey, lang) {
 
       if (!from || !to) {
         chKm.textContent = chDur.textContent = '\u2014';
-        ck.textContent = 'From';
+        ck.textContent = L_FROM;
         cn.textContent = '';
         paint(0);
         return;
@@ -1080,7 +1146,7 @@ function calculator(airport, current, cc, mapsKey, lang) {
       // Mudar passageiros, data ou hora não pede rota nova: a
       // distância é a mesma e já a temos.
       var key = from + '|' + to;
-      if (key === lastKey && km) { ck.textContent = 'From'; paint(fare(km, pax)); return; }
+      if (key === lastKey && km) { ck.textContent = L_FROM; paint(fare(km, pax)); return; }
 
       var stop = quota();
       if (stop) {
@@ -1115,7 +1181,7 @@ function calculator(airport, current, cc, mapsKey, lang) {
 
           chKm.textContent = km.toFixed(0) + ' km';
           chDur.textContent = leg.duration.text;
-          ck.textContent = 'From';
+          ck.textContent = L_FROM;
           cn.textContent = '';
           paint(fare(km, pax));
         });
@@ -1170,27 +1236,28 @@ function whenToBook(dest, lang) {
   const far = dest.km > 60;
 
   return `<h2 id="when">${t9n(lang, 'When to book')}</h2>
-  <p>Booking early costs the same as booking late &mdash; the price does not move. What
-  moves is whether there is a car left.</p>
+  <p>${t9n(lang, 'bookEarly') !== 'bookEarly' ? t9n(lang, 'bookEarly')
+    : 'Booking early costs the same as booking late &mdash; the price does not move. What moves is whether there is a car left.'}</p>
 
   <div class="when">
     ${[
-      ['bad', 'A week ahead',
-       `July, August, Fridays and Saturdays. The busiest arrivals of the year${
-         far ? ', and a long run like this one is the first to run out' : ''}.`],
-      ['bad', 'As soon as you have the flight',
-       'Groups of five or more. Vans and minibuses go first, always.'],
-      ['warn', 'Two or three days',
-       'Landing between 23:00 and 06:00. Fewer drivers are working.'],
-      ['ok', 'The day before is fine',
-       'Everything else. The same morning usually works too.']
+      ['bad', t9n(lang, 'A week ahead'),
+       (frase(lang, 'busyArrivals', { extra: far ? t9n(lang, 'longRun') : '' }) ||
+         `July, August, Fridays and Saturdays. The busiest arrivals of the year${
+           far ? ', and a long run like this one is the first to run out' : ''}.`)],
+      ['bad', t9n(lang, 'As soon as you have the flight'),
+       t9n(lang, 'Groups of five or more. Vans and minibuses go first, always.')],
+      ['warn', t9n(lang, 'Two or three days'),
+       t9n(lang, 'Landing between 23:00 and 06:00. Fewer drivers are working.')],
+      ['ok', t9n(lang, 'The day before is fine'),
+       t9n(lang, 'Everything else. The same morning usually works too.')]
     ].map(([tone, k, v]) => `<div class="when-i ${tone}">
       <strong>${k}</strong><span>${esc(v)}</span>
     </div>`).join('')}
   </div>
 
-  <p>Cancellation is free until 24 hours before, so booking early costs you nothing if the
-  plan changes.</p>`;
+  <p>${t9n(lang, 'cancelFree') !== 'cancelFree' ? t9n(lang, 'cancelFree')
+    : 'Cancellation is free until 24 hours before, so booking early costs you nothing if the plan changes.'}</p>`;
 }
 
 /**
@@ -1204,24 +1271,26 @@ function realTime(airport, dest, lang) {
   const d = dest.minutes;
 
   return `<h2 id="timing">${t9n(lang, 'How long it really takes')}</h2>
-  <p>Maps says ${d} minutes. That is the driving. Door to door from the moment you land is
-  a different number, and it is the one worth planning around.</p>
+  <p>${frase(lang, 'mapsSays', { min: d }) ||
+    `Maps says ${d} minutes. That is the driving. Door to door from the moment you land is a different number, and it is the one worth planning around.`}</p>
 
   <div class="steps">
     ${[
-      ['Taxi and disembark', '10&ndash;15 min'],
-      ['Passport control', 'None inside Schengen. 15&ndash;45 min from outside it.'],
-      ['Baggage reclaim', '10&ndash;25 min with hold luggage'],
-      ['Finding your driver', '2&ndash;5 min. Your name on a sign.'],
-      ['The drive', `${d} min`]
+      [t9n(lang, 'Taxi and disembark'), t9n(lang, '10&ndash;15 min')],
+      [t9n(lang, 'Passport control'), t9n(lang, 'None inside Schengen. 15&ndash;45 min from outside it.')],
+      [t9n(lang, 'Baggage reclaim'), t9n(lang, '10&ndash;25 min with hold luggage')],
+      [t9n(lang, 'Finding your driver'), t9n(lang, '2&ndash;5 min. Your name on a sign.')],
+      [t9n(lang, 'The drive'), `${d} min`]
     ].map(([k, v], i) => `<div class="step">
       <span class="n">${i + 1}</span>
       <div><strong>${k}</strong><span>${v}</span></div>
     </div>`).join('')}
   </div>
 
-  <p><strong>Realistically, ${d + 30} to ${d + 75} minutes after landing.</strong> If
-  someone is waiting for you, that is the number to give them.</p>`;
+  <p><strong>${frase(lang, 'realistically', { min1: d + 30, min2: d + 75 }) ||
+    `Realistically, ${d + 30} to ${d + 75} minutes after landing.`}</strong>
+  ${t9n(lang, 'ifWaiting') !== 'ifWaiting' ? t9n(lang, 'ifWaiting')
+    : 'If someone is waiting for you, that is the number to give them.'}</p>`;
 }
 
 
@@ -1274,23 +1343,28 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
 
   const faq = [
     [(frase(lang, 'qHowLong', { cidade: airport.city, destino: dest.name }) || `How long does it take to get from ${airport.city} Airport to ${dest.name}?`),
-     `About ${dest.minutes} minutes for the ${dest.km} km, outside peak traffic. ` +
-     `Your driver knows the route and follows the flight, so a delayed landing moves the ` +
-     `pick-up rather than costing you the transfer.`],
+     (frase(lang, 'aHowLong', { min: dest.minutes, km: dest.km }) ||
+      `About ${dest.minutes} minutes for the ${dest.km} km, outside peak traffic. ` +
+      `Your driver knows the route and follows the flight, so a delayed landing moves the ` +
+      `pick-up rather than costing you the transfer.`)],
     [(frase(lang, 'qHowMuch', { cidade: airport.city, destino: dest.name }) || `How much is a transfer from ${airport.city} Airport to ${dest.name}?`),
-     `From ${money(p1)} for up to four passengers, and ${money(p5)} for a group of five ` +
-     `to eight in a van. The price is fixed when you book — tolls and taxes included, ` +
-     `nothing added at the end.`],
+     (frase(lang, 'aHowMuch', { p1: money(p1), p5: money(p5) }) ||
+      `From ${money(p1)} for up to four passengers, and ${money(p5)} for a group of five ` +
+      `to eight in a van. The price is fixed when you book — tolls and taxes included, ` +
+      `nothing added at the end.`)],
     [t9n(lang, 'What happens if my flight is late?'),
-     `We track the flight number you give us. The driver waits and adjusts to the actual ` +
-     `landing time, with 60 minutes of free waiting after the plane touches down.`],
+     (t9n(lang, 'aFlightLate') !== 'aFlightLate' ? t9n(lang, 'aFlightLate') :
+      `We track the flight number you give us. The driver waits and adjusts to the actual ` +
+      `landing time, with 60 minutes of free waiting after the plane touches down.`)],
     [(frase(lang, 'qWhereMeet', { cidade: airport.city, destino: dest.name }) || `Where do I meet the driver at ${airport.city} Airport?`),
-     `In the arrivals hall after you clear customs. The day before your trip we send you ` +
-     `the driver's name, phone number and vehicle, and they contact you with the exact spot.`],
+     (t9n(lang, 'aWhereMeet') !== 'aWhereMeet' ? t9n(lang, 'aWhereMeet') :
+      `In the arrivals hall after you clear customs. The day before your trip we send you ` +
+      `the driver's name, phone number and vehicle, and they contact you with the exact spot.`)],
     [t9n(lang, 'Can I cancel?'),
-     `Free up to 24 hours before pick-up, refunded in full and automatically. On many ` +
-     `routes you can also book without paying and we only charge the card 48 hours before ` +
-     `you travel.`]
+     (t9n(lang, 'aCancel') !== 'aCancel' ? t9n(lang, 'aCancel') :
+      `Free up to 24 hours before pick-up, refunded in full and automatically. On many ` +
+      `routes you can also book without paying and we only charge the card 48 hours before ` +
+      `you travel.`)]
   ];
 
   const schema = {
@@ -1366,7 +1440,7 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
       ['M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
        '60 minutes of free waiting', 'after the flight lands.'],
       ['M9 14l2 2 4-5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
-       'Free cancellation', 'until 24 hours before pick-up.'],
+       t9n(lang, 'Free cancellation'), 'until 24 hours before pick-up.'],
       ['M6 8h12l1 12H5L6 8ZM9 8V6a3 3 0 0 1 6 0v2',
        'One suitcase and one bag per passenger.', 'More than that, tell us when you book.']
     ].map(([d, t, rest]) => `<li>
@@ -1519,7 +1593,7 @@ function airportPage(country, airport, lang, alternates) {
     ? '<ul>' + airport.tips.map((t) => `<li>${esc(t)}</li>`).join('') + '</ul>'
     : ''}
 
-  ${siblings ? `<h2>Other airports in ${esc(country.country)}</h2>
+  ${siblings ? `<h2>${frase(lang, 'otherAirports', { pais: esc(country.country) }) || `Other airports in ${esc(country.country)}`}</h2>
   <div class="others">
       ${siblings}
   </div>` : ''}
