@@ -1,0 +1,165 @@
+{
+  "_leia_me": [
+    "OS ARTIGOS DO BLOGUE",
+    "",
+    "Cada artigo tem um slug (que vai no endereço, sempre em inglês) e",
+    "um objeto por língua. Uma língua só gera página se estiver aqui —",
+    "não é preciso que todos os artigos existam em todas as línguas.",
+    "",
+    "Campos por língua:",
+    "  title     o título, que vai no <title> e no <h1>",
+    "  desc      a meta description, 140-160 caracteres",
+    "  lead      o parágrafo de abertura, a seguir ao título",
+    "  body      lista de blocos. Cada bloco é [tipo, ...conteúdo]:",
+    "              ['h2', 'Título da secção']",
+    "              ['p',  'Um parágrafo.']",
+    "              ['ul', 'ponto um', 'ponto dois']",
+    "              ['quote', 'Uma frase destacada.']",
+    "              ['link', '/transfers/portugal/faro-to-albufeira/', 'texto']",
+    "",
+    "As ligações internas são o que faz o blogue valer para SEO:",
+    "cada artigo deve apontar para as páginas de rota que menciona.",
+    "",
+    "Datas em ISO (2026-08-31). Ordena-se por data, mais recente primeiro."
+  ],
+
+  "posts": [
+    {
+      "slug": "airportlink-is-live",
+      "date": "2026-08-31",
+      "tag": "company",
+
+      "en": {
+        "title": "Airportlink is live",
+        "desc": "Private airport transfers with a price agreed before you pay, in Portugal and Spain. Here is what we built and why the price does not move.",
+        "lead": "We built Airportlink because the last thing you should worry about after a long flight is what the ride to your hotel will cost. Here is how it works, and why the number you see is the number you pay.",
+        "body": [
+          ["h2", "The problem with arriving somewhere"],
+          ["p", "You land after a delayed flight, at eleven at night, in a country whose language you do not speak. There is a taxi rank with a queue, a meter you cannot predict, and a driver who may or may not know the resort you booked. That is the moment we set out to remove."],
+          ["p", "A metered taxi charges you for traffic. A ride-hailing app raises the price when the arrivals hall is busy — precisely when you have least choice. Neither tells you the cost until you are already in the car."],
+
+          ["h2", "What we do instead"],
+          ["p", "You enter where you land and where you are going. You get a price. That price includes the tolls, the taxes and the whole car — and it does not change afterwards, whatever the traffic does."],
+          ["quote", "The number you see when you book is the number you pay."],
+          ["p", "Your driver tracks the flight you gave us. If you land ninety minutes late, the pick-up moves with you, and the first sixty minutes of waiting after touchdown are free."],
+
+          ["h2", "Who is actually driving"],
+          ["p", "We are not a fleet. Every transfer is run by a licensed local company — TVDE or taxi licensed in Portugal, VTC licensed in Spain — and we check the licence and the insurance before a company takes its first booking."],
+          ["p", "That matters more than it sounds. A licensed operator carries commercial insurance that covers paying passengers. A private car does not, and you would only discover that after something went wrong."],
+
+          ["h2", "Where we run today"],
+          ["p", "Portugal and Spain, with 160 routes across 31 airports. Lisbon, Porto and Faro cover the Algarve and both coasts; in Spain we run from Madrid and Barcelona through the Costa del Sol, the Costa Blanca and all seven Canary Islands."],
+          ["p", "The routes most people book are the ones where public transport is genuinely awkward with luggage:"],
+          ["link", "/transfers/portugal/faro-to-albufeira/", "Faro Airport to Albufeira"],
+          ["link", "/transfers/portugal/lisbon-to-cascais/", "Lisbon Airport to Cascais"],
+          ["link", "/transfers/spain/madrid-to-toledo/", "Madrid Airport to Toledo"],
+          ["link", "/transfers/spain/malaga-to-marbella/", "Malaga Airport to Marbella"],
+          ["p", "We are adding countries steadily. If your route is not listed yet, the calculator will still price it — we drive anywhere our partners cover."],
+
+          ["h2", "Free cancellation, and no card today"],
+          ["p", "Plans change. Cancel up to 24 hours before pick-up and the refund is automatic and complete. On many routes you can book without paying at all, and we only charge the card 48 hours before you travel."],
+          ["p", "That is the whole product. A driver waiting for you, at a price you already know."]
+        ]
+      },
+
+      "pt": {
+        "title": "A Airportlink chegou",
+        "desc": "Transfers privados de aeroporto com preço acordado antes de pagar, em Portugal e Espanha. O que construímos e porque o preço não muda.",
+        "lead": "Construímos a Airportlink porque a última coisa com que devia preocupar-se depois de um voo longo é quanto lhe vai custar a viagem até ao hotel. Eis como funciona, e porque o número que vê é o número que paga.",
+        "body": [
+          ["h2", "O problema de chegar a um sítio"],
+          ["p", "Aterra depois de um voo atrasado, às onze da noite, num país cuja língua não fala. Há uma praça de táxis com fila, um taxímetro que não consegue prever, e um motorista que pode ou não saber onde fica o hotel que reservou. É esse momento que quisemos eliminar."],
+          ["p", "Um táxi ao taxímetro cobra-lhe o trânsito. Uma aplicação sobe o preço quando as chegadas estão cheias — precisamente quando tem menos alternativa. Nenhum dos dois lhe diz o custo antes de já estar dentro do carro."],
+
+          ["h2", "O que fazemos em vez disso"],
+          ["p", "Introduz onde aterra e para onde vai. Recebe um preço. Esse preço inclui as portagens, os impostos e o carro inteiro — e não muda depois, faça o trânsito o que fizer."],
+          ["quote", "O número que vê quando reserva é o número que paga."],
+          ["p", "O motorista segue o voo que nos indicar. Se aterrar noventa minutos tarde, a recolha acompanha-o, e os primeiros sessenta minutos de espera depois de tocar no solo são gratuitos."],
+
+          ["h2", "Quem conduz, afinal"],
+          ["p", "Não somos uma frota. Cada transfer é feito por uma empresa local licenciada — com licença TVDE ou de táxi em Portugal, licença VTC em Espanha — e verificamos a licença e o seguro antes de essa empresa aceitar a primeira reserva."],
+          ["p", "Isso conta mais do que parece. Um operador licenciado tem seguro comercial que cobre passageiros pagantes. Um carro particular não tem, e só descobriria isso depois de alguma coisa correr mal."],
+
+          ["h2", "Onde operamos hoje"],
+          ["p", "Portugal e Espanha, com 160 rotas em 31 aeroportos. Lisboa, Porto e Faro cobrem o Algarve e as duas costas; em Espanha vamos de Madrid e Barcelona à Costa del Sol, à Costa Blanca e às sete ilhas Canárias."],
+          ["p", "As rotas que as pessoas mais reservam são aquelas em que o transporte público é mesmo incómodo com bagagem:"],
+          ["link", "/transfers/portugal/faro-to-albufeira/", "Aeroporto de Faro para Albufeira"],
+          ["link", "/transfers/portugal/lisbon-to-cascais/", "Aeroporto de Lisboa para Cascais"],
+          ["link", "/transfers/spain/madrid-to-toledo/", "Aeroporto de Madrid para Toledo"],
+          ["link", "/transfers/spain/malaga-to-marbella/", "Aeroporto de Málaga para Marbella"],
+          ["p", "Estamos a acrescentar países de forma constante. Se a sua rota ainda não estiver na lista, a calculadora dá-lhe preço na mesma — conduzimos para onde os nossos parceiros chegarem."],
+
+          ["h2", "Cancelamento gratuito, e hoje não se cobra o cartão"],
+          ["p", "Os planos mudam. Cancele até 24 horas antes da recolha e o reembolso é automático e total. Em muitas rotas pode reservar sem pagar nada, e só cobramos o cartão 48 horas antes de viajar."],
+          ["p", "É este o produto inteiro. Um motorista à sua espera, a um preço que já conhece."]
+        ]
+      },
+
+      "es": {
+        "title": "Airportlink ya está en marcha",
+        "desc": "Traslados privados de aeropuerto con un precio acordado antes de pagar, en Portugal y España. Qué hemos construido y por qué el precio no se mueve.",
+        "lead": "Creamos Airportlink porque lo último que deberías tener en la cabeza después de un vuelo largo es cuánto te va a costar llegar al hotel. Así funciona, y por eso la cifra que ves es la que pagas.",
+        "body": [
+          ["h2", "El problema de llegar a un sitio"],
+          ["p", "Aterrizas después de un vuelo con retraso, a las once de la noche, en un país cuyo idioma no hablas. Hay una parada de taxis con cola, un taxímetro que no puedes prever, y un conductor que puede saber o no dónde está el complejo que reservaste. Ese es el momento que quisimos eliminar."],
+          ["p", "Un taxi con taxímetro te cobra el tráfico. Una aplicación sube el precio cuando las llegadas están llenas — justo cuando menos alternativa tienes. Ninguno de los dos te dice el coste antes de que ya estés dentro del coche."],
+
+          ["h2", "Lo que hacemos en su lugar"],
+          ["p", "Pones dónde aterrizas y a dónde vas. Recibes un precio. Ese precio incluye los peajes, los impuestos y el coche entero — y no cambia después, haga lo que haga el tráfico."],
+          ["quote", "La cifra que ves al reservar es la que pagas."],
+          ["p", "Tu conductor sigue el vuelo que nos indiques. Si aterrizas noventa minutos tarde, la recogida se mueve contigo, y los primeros sesenta minutos de espera tras tomar tierra son gratuitos."],
+
+          ["h2", "Quién conduce realmente"],
+          ["p", "No somos una flota. Cada traslado lo realiza una empresa local con licencia — licencia TVDE o de taxi en Portugal, licencia VTC en España — y comprobamos la licencia y el seguro antes de que esa empresa acepte su primera reserva."],
+          ["p", "Eso importa más de lo que parece. Un operador con licencia tiene un seguro comercial que cubre a pasajeros de pago. Un coche particular no, y solo lo descubrirías después de que algo saliera mal."],
+
+          ["h2", "Dónde operamos hoy"],
+          ["p", "Portugal y España, con 160 rutas en 31 aeropuertos. Lisboa, Oporto y Faro cubren el Algarve y ambas costas; en España vamos de Madrid y Barcelona a la Costa del Sol, la Costa Blanca y las siete islas Canarias."],
+          ["p", "Las rutas que más se reservan son aquellas en las que el transporte público resulta realmente incómodo con equipaje:"],
+          ["link", "/transfers/spain/madrid-to-toledo/", "Aeropuerto de Madrid a Toledo"],
+          ["link", "/transfers/spain/malaga-to-marbella/", "Aeropuerto de Málaga a Marbella"],
+          ["link", "/transfers/spain/barcelona-to-sitges/", "Aeropuerto de Barcelona a Sitges"],
+          ["link", "/transfers/portugal/faro-to-albufeira/", "Aeropuerto de Faro a Albufeira"],
+          ["p", "Vamos añadiendo países de forma constante. Si tu ruta aún no aparece, la calculadora te da precio igualmente — conducimos allá donde llegan nuestros socios."],
+
+          ["h2", "Cancelación gratuita, y hoy no se cobra la tarjeta"],
+          ["p", "Los planes cambian. Cancela hasta 24 horas antes de la recogida y el reembolso es automático e íntegro. En muchas rutas puedes reservar sin pagar nada, y solo cobramos la tarjeta 48 horas antes de viajar."],
+          ["p", "Ese es el producto entero. Un conductor esperándote, a un precio que ya conoces."]
+        ]
+      },
+
+      "fr": {
+        "title": "Airportlink est lancé",
+        "desc": "Transferts privés d'aéroport à un prix convenu avant de payer, au Portugal et en Espagne. Ce que nous avons construit et pourquoi le prix ne bouge pas.",
+        "lead": "Nous avons créé Airportlink parce que la dernière chose qui devrait vous préoccuper après un long vol, c'est le coût du trajet jusqu'à votre hôtel. Voici comment cela fonctionne, et pourquoi le chiffre que vous voyez est celui que vous payez.",
+        "body": [
+          ["h2", "Le problème quand on arrive quelque part"],
+          ["p", "Vous atterrissez après un vol retardé, à onze heures du soir, dans un pays dont vous ne parlez pas la langue. Il y a une station de taxis avec une file, un compteur que vous ne pouvez pas prévoir, et un chauffeur qui connaît ou non la résidence que vous avez réservée. C'est ce moment-là que nous avons voulu supprimer."],
+          ["p", "Un taxi au compteur vous facture les embouteillages. Une application augmente le prix quand le hall des arrivées est plein — précisément quand vous avez le moins le choix. Ni l'un ni l'autre ne vous annonce le coût avant que vous soyez déjà dans la voiture."],
+
+          ["h2", "Ce que nous faisons à la place"],
+          ["p", "Vous indiquez où vous atterrissez et où vous allez. Vous obtenez un prix. Ce prix comprend les péages, les taxes et la voiture entière — et il ne change pas ensuite, quoi que fasse la circulation."],
+          ["quote", "Le chiffre que vous voyez à la réservation est celui que vous payez."],
+          ["p", "Votre chauffeur suit le vol que vous nous avez indiqué. Si vous atterrissez avec quatre-vingt-dix minutes de retard, la prise en charge se décale avec vous, et les soixante premières minutes d'attente après l'atterrissage sont offertes."],
+
+          ["h2", "Qui conduit réellement"],
+          ["p", "Nous ne sommes pas une flotte. Chaque transfert est assuré par une société locale agréée — licence TVDE ou taxi au Portugal, licence VTC en Espagne — et nous vérifions la licence et l'assurance avant qu'une société n'accepte sa première réservation."],
+          ["p", "Cela compte plus qu'il n'y paraît. Un opérateur agréé détient une assurance commerciale qui couvre les passagers payants. Une voiture particulière, non, et vous ne le découvririez qu'après un incident."],
+
+          ["h2", "Où nous roulons aujourd'hui"],
+          ["p", "Le Portugal et l'Espagne, avec 160 trajets depuis 31 aéroports. Lisbonne, Porto et Faro couvrent l'Algarve et les deux côtes ; en Espagne nous allons de Madrid et Barcelone à la Costa del Sol, la Costa Blanca et les sept îles Canaries."],
+          ["p", "Les trajets les plus réservés sont ceux où les transports publics sont réellement pénibles avec des bagages :"],
+          ["link", "/transfers/portugal/faro-to-albufeira/", "Aéroport de Faro vers Albufeira"],
+          ["link", "/transfers/spain/malaga-to-marbella/", "Aéroport de Malaga vers Marbella"],
+          ["link", "/transfers/spain/barcelona-to-sitges/", "Aéroport de Barcelone vers Sitges"],
+          ["link", "/transfers/portugal/lisbon-to-sintra/", "Aéroport de Lisbonne vers Sintra"],
+          ["p", "Nous ajoutons des pays régulièrement. Si votre trajet n'est pas encore listé, le calculateur vous donnera quand même un prix — nous roulons partout où nos partenaires opèrent."],
+
+          ["h2", "Annulation gratuite, et rien n'est débité aujourd'hui"],
+          ["p", "Les plans changent. Annulez jusqu'à 24 heures avant la prise en charge et le remboursement est automatique et intégral. Sur de nombreux trajets vous pouvez réserver sans rien payer, et nous ne débitons la carte que 48 heures avant votre départ."],
+          ["p", "C'est tout le produit. Un chauffeur qui vous attend, à un prix que vous connaissez déjà."]
+        ]
+      }
+    }
+  ]
+}
