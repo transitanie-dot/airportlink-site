@@ -1,3 +1,47 @@
-transfers/
-airports/
-sitemap.xml
+# ============================================================
+# PÁGINAS GERADAS
+# ============================================================
+#
+# Estas pastas são escritas pelo build no momento do deploy, a
+# partir dos JSON em seo/. Não devem entrar no repositório: são
+# centenas de ficheiros que mudam de cada vez que um preço muda,
+# e que tornam impossível ler um diff.
+#
+# A fonte da verdade é seo/routes-*.json e seo/posts.json.
+# Se apagares estas pastas localmente, o próximo build recria-as.
+
+# Rotas e aeroportos em inglês (na raiz)
+/transfers/
+/airports/
+
+# As mesmas, nas línguas que têm tradução
+/es/
+/pt/
+/fr/
+/de/
+
+# O blogue
+/blog/
+
+# Os sitemaps, escritos pelos dois geradores
+/sitemaps/
+/sitemap.xml
+
+
+# ============================================================
+# AMBIENTE
+# ============================================================
+
+node_modules/
+.env
+.env.local
+*.log
+npm-debug.log*
+
+# macOS e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
