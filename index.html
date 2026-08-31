@@ -614,7 +614,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
             removed without being charged.
           </div>
 
-          <div class="booking-summary" id="bookingSummary"><strong data-i18n="h.tripDetails">Trip details</strong><br>Date: &mdash;<br>Time: &mdash;<br>Passengers: &mdash;<br>Vehicle type: &mdash;</div>
+          <div class="booking-summary" id="bookingSummary"><strong data-i18n="h.tripDetails">Trip details</strong><br><span data-i18n="h.sumDate">Date</span>: <span id="sumDate">&mdash;</span><br><span data-i18n="h.sumTime">Time</span>: <span id="sumTime">&mdash;</span><br><span data-i18n="h.sumPax">Passengers</span>: <span id="sumPax">&mdash;</span><br><span data-i18n="h.sumVehicle">Vehicle type</span>: <span id="sumVehicle">&mdash;</span></div>
           <div class="status" id="statusText" data-i18n="h.tellUs">Tell us where you are going and we will show you the cars.</div>
 
           <button id="proceedBtn" class="btn proceed-btn" type="button" data-i18n="common.continue">Continue</button>
@@ -1998,19 +1998,19 @@ function vehicleProfile(count) {
   var n = Math.max(1, Math.min(16, parseInt(count || '1', 10) || 1));
 
   if (n <= 4) {
-    return { art: 'sedan', name: 'Sedan',
+    return { art: 'sedan', name: T('h.vehSedan', 'Sedan'),
       note: T('h.sedanFull', 'One vehicle for up to 4 passengers, with room for a case each.') };
   }
   if (n <= 8) {
-    return { art: 'van', name: 'Van',
-      note: 'One vehicle for up to 8 passengers, with luggage space behind the last row.' };
+    return { art: 'van', name: T('h.vehVan', 'Van'),
+      note: T('h.vanFull', 'One vehicle for up to 8 passengers, with luggage space behind the last row.') };
   }
   if (n <= 13) {
-    return { art: 'pair', name: 'Van and sedan',
-      note: 'Two vehicles travelling together, so the whole group arrives at the same time.' };
+    return { art: 'pair', name: T('h.vehPair', 'Van and sedan'),
+      note: T('h.pairFull', 'Two vehicles travelling together, so the whole group arrives at the same time.') };
   }
-  return { art: 'minibus', name: 'Two vans',
-    note: 'Two vehicles travelling together for larger groups and their luggage.' };
+  return { art: 'minibus', name: T('h.vehTwoVans', 'Two vans'),
+    note: T('h.twoVansFull', 'Two vehicles travelling together for larger groups and their luggage.') };
 }
 
 function updateVehicleCard() {
@@ -2025,12 +2025,21 @@ function updateVehicleCard() {
 // script — o cartão ficava vazio e nada mais reagia.
 updateVehicleCard();
 
+/**
+ * O resumo enche as caixas que já existem no HTML.
+ *
+ * Antes reescrevia o bloco inteiro com innerHTML, o que apagava as
+ * marcas de tradução e devolvia os rótulos ao inglês a cada mudança
+ * de campo. Agora os rótulos ficam quietos e só os valores mudam.
+ */
 function updateBookingSummary() {
   updateVehicleCard();
-  $('bookingSummary').innerHTML = '<strong>Trip details</strong><br>Date: ' +
-    ($('travelDate').value || '\u2014') + '<br>Time: ' + ($('travelTime').value || '\u2014') +
-    '<br>Passengers: ' + ($('passengers').value || '\u2014') +
-    '<br>Vehicle type: ' + getVehicleType($('passengers').value);
+
+  var traco = '\u2014';
+  $('sumDate').textContent = $('travelDate').value || traco;
+  $('sumTime').textContent = $('travelTime').value || traco;
+  $('sumPax').textContent = $('passengers').value || traco;
+  $('sumVehicle').textContent = getVehicleType($('passengers').value);
 }
 
 function updateCheckoutSummary() {
