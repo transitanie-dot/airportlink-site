@@ -1123,5 +1123,11 @@
         }
       }
     }
-  ]
+  ],
+  "countryI18n": {
+    "en": "Portugal",
+    "es": "Portugal",
+    "pt": "Portugal",
+    "fr": "Portugal"
+  }
 }
