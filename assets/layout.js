@@ -281,15 +281,24 @@
    * isso traduz-se a si próprio aqui — e outra vez quando o
    * dicionário chega, caso o fetch demore mais do que o desenho.
    */
-  if (window.i18n) {
+  /**
+   * Traduzir o que acabámos de desenhar.
+   *
+   * O i18n pode chegar antes ou depois de nós — o dicionário vem por
+   * fetch e a ordem não é garantida. Por isso traduzimos já (caso
+   * ele esteja pronto) E ficamos à escuta (caso ainda não esteja).
+   * Se já tiver acontecido, o ready é verdadeiro e a primeira
+   * chamada resolve.
+   */
+  function traduzChrome() {
+    if (!window.i18n) return;
     window.i18n.apply(document.getElementById('siteHeader'));
     window.i18n.apply(document.querySelector('.site-footer'));
   }
 
+  traduzChrome();
   document.addEventListener('i18n:ready', function () {
-    if (!window.i18n) return;
-    window.i18n.apply(document.getElementById('siteHeader'));
-    window.i18n.apply(document.querySelector('.site-footer'));
+    traduzChrome();
 
     // O código da língua no botão também muda.
     var code = document.querySelector('#langBtn .lang-code');
