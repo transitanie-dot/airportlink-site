@@ -2020,6 +2020,19 @@ function updateVehicleCard() {
   $('vehicleNote').textContent = v.note;
 }
 
+/**
+ * Repintar quando o dicionário chegar.
+ *
+ * O T() é síncrono mas o dicionário vem por fetch: o cartão do
+ * veículo e o resumo são desenhados no arranque, quando a tradução
+ * ainda está a caminho, e ficavam em inglês para sempre. Este evento
+ * chega quando o dicionário está pronto, e refaz os dois.
+ */
+document.addEventListener('i18n:ready', function () {
+  updateVehicleCard();
+  updateBookingSummary();
+});
+
 // Aqui e não mais acima: VEHICLE_ART é declarado com var, e chamar
 // isto antes da declaração dava um TypeError que matava o resto do
 // script — o cartão ficava vazio e nada mais reagia.
