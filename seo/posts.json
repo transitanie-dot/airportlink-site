@@ -560,7 +560,8 @@
             "/airports/portugal/faro/",
             "Todos os transfers de Faro"
           ]
-        ]
+        ],
+        "deck": "Os números, sem asteriscos"
       },
       "en": {
         "title": "What it actually costs to get from Faro Airport to the Algarve",
@@ -695,7 +696,8 @@
             "/airports/portugal/faro/",
             "All Faro transfers"
           ]
-        ]
+        ],
+        "deck": "The numbers, without the asterisks"
       },
       "es": {
         "title": "Cuánto cuesta de verdad ir del aeropuerto de Faro al Algarve",
@@ -830,7 +832,8 @@
             "/airports/portugal/faro/",
             "Todos los traslados de Faro"
           ]
-        ]
+        ],
+        "deck": "Las cifras, sin asteriscos"
       },
       "fr": {
         "title": "Ce que coûte vraiment un trajet de l'aéroport de Faro vers l'Algarve",
@@ -965,8 +968,11 @@
             "/airports/portugal/faro/",
             "Tous les transferts de Faro"
           ]
-        ]
-      }
+        ],
+        "deck": "Les chiffres, sans les astérisques"
+      },
+      "image": "/assets/img/blog/faro-algarve.jpg",
+      "heroStyle": "band"
     }
   ]
 }
