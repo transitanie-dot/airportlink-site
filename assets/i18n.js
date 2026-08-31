@@ -57,6 +57,13 @@
    * prefere inglês não quer ter de reescolher em cada visita.
    */
   function pick() {
+    // Uma página estática já escrita numa língua manda sobre tudo:
+    // o cabeçalho tem de sair na língua do texto, não na que a
+    // pessoa escolheu noutra visita.
+    if (window.__PAGE_LANG && CODES.indexOf(window.__PAGE_LANG) !== -1) {
+      return window.__PAGE_LANG;
+    }
+
     try {
       var saved = localStorage.getItem('airportlink-lang');
       if (CODES.indexOf(saved) !== -1) return saved;
