@@ -31,9 +31,9 @@
   }
 
   var ACCOUNT_LINK = {
-    agent: { href: '/travelagents', label: '<span data-i18n="nav.partnerDash">Partner dashboard</span>' },
-    admin: { href: '/admin', label: '<span data-i18n="nav.operations">Operations</span>' },
-    customer: { href: '/myaccount', label: '<span data-i18n="nav.myAccount">My account</span>' }
+    agent: { href: '/travelagents', label: 'Partner dashboard', i18nKey: 'nav.partnerDash' },
+    admin: { href: '/admin', label: 'Operations', i18nKey: 'nav.operations' },
+    customer: { href: '/myaccount', label: 'My account', i18nKey: 'nav.myAccount' }
   };
 
   /**
@@ -64,41 +64,41 @@
 
   var account = signedIn
     ? (ACCOUNT_LINK[roleHint()] || ACCOUNT_LINK.customer)
-    : { href: '/login', label: '<span data-i18n="nav.signIn">Sign in</span>' };
+    : { href: '/login', label: 'Sign in', i18nKey: 'nav.signIn' };
 
   // ---------- o menu vive aqui ----------
   var NAV = [
-    { href: '/',             label: '<span data-i18n="nav.book">Book a transfer</span>' },
-    { href: '/travelagents', label: '<span data-i18n="nav.agents">Travel agents</span>' },
-    { href: '/drivers',      label: '<span data-i18n="nav.drivers">Drive with us</span>' },
-    { href: '/support',      label: '<span data-i18n="nav.support">Support</span>' }
+    { href: '/',             label: 'Book a transfer', i18nKey: 'nav.book' },
+    { href: '/travelagents', label: 'Travel agents', i18nKey: 'nav.agents' },
+    { href: '/drivers',      label: 'Drive with us', i18nKey: 'nav.drivers' },
+    { href: '/support',      label: 'Support', i18nKey: 'nav.support' }
   ];
 
   var FOOTER = [
-    { title: '<span data-i18n="nav.bookShort">Book</span>', links: signedIn
+    { title: 'Book', i18nKey: 'nav.bookShort', links: signedIn
       ? [
-          { href: '/#book',     label: '<span data-i18n="nav.getPrice">Get a price</span>' },
+          { href: '/#book',     label: 'Get a price', i18nKey: 'nav.getPrice' },
           { href: account.href, label: account.label }
         ]
       : [
-          { href: '/#book',         label: '<span data-i18n="nav.getPrice">Get a price</span>' },
-          { href: '/login',         label: '<span data-i18n="nav.signIn">Sign in</span>' },
-          { href: '/createaccount', label: '<span data-i18n="nav.createAcc">Create account</span>' }
+          { href: '/#book',         label: 'Get a price', i18nKey: 'nav.getPrice' },
+          { href: '/login',         label: 'Sign in', i18nKey: 'nav.signIn' },
+          { href: '/createaccount', label: 'Create account', i18nKey: 'nav.createAcc' }
         ]
     },
-    { title: '<span data-i18n="nav.partners">Partners</span>', links: [
-      { href: '/travelagents',                   label: '<span data-i18n="nav.agents">Travel agents</span>' },
-      { href: '/drivers',                        label: '<span data-i18n="nav.drivers">Drive with us</span>' },
-      { href: 'https://drivers.airportlink.app', label: '<span data-i18n="nav.partnerPortal">Partner portal</span>' }
+    { title: 'Partners', i18nKey: 'nav.partners', links: [
+      { href: '/travelagents',                   label: 'Travel agents', i18nKey: 'nav.agents' },
+      { href: '/drivers',                        label: 'Drive with us', i18nKey: 'nav.drivers' },
+      { href: 'https://drivers.airportlink.app', label: 'Partner portal', i18nKey: 'nav.partnerPortal' }
     ]},
-    { title: '<span data-i18n="nav.help">Help</span>', links: [
-      { href: '/support',       label: '<span data-i18n="nav.contact">Contact support</span>' },
+    { title: 'Help', i18nKey: 'nav.help', links: [
+      { href: '/support',       label: 'Contact support', i18nKey: 'nav.contact' },
       // O /forgotpassword não existe: o formulário vive dentro do
       // /login, e um link para uma página inexistente é um 404 no
       // rodapé de todas as páginas.
-      { href: '/login',         label: '<span data-i18n="nav.forgotPass">Forgot password</span>' },
-      { href: '/terms',         label: '<span data-i18n="nav.terms">Terms</span>' },
-      { href: '/privacypolicy', label: '<span data-i18n="nav.privacy">Privacy policy</span>' }
+      { href: '/login',         label: 'Forgot password', i18nKey: 'nav.forgotPass' },
+      { href: '/terms',         label: 'Terms', i18nKey: 'nav.terms' },
+      { href: '/privacypolicy', label: 'Privacy policy', i18nKey: 'nav.privacy' }
     ]}
   ];
 
@@ -142,6 +142,11 @@
   var BARS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
     'stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>';
 
+  /** O atributo data-i18n, quando o item tem chave. */
+  function key(i) {
+    return i && i.i18nKey ? ' data-i18n="' + esc(i.i18nKey) + '"' : '';
+  }
+
   function esc(v) {
     return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -151,7 +156,7 @@
   // Sem isso, assume "Get a price" a apontar para a homepage.
   var body = document.body;
   var ctaHref = body.getAttribute('data-cta-href') || '/#book';
-  var ctaLabel = body.getAttribute('data-cta-label') || '<span data-i18n="nav.getPrice">Get a price</span>';
+  var ctaLabel = body.getAttribute('data-cta-label') || 'Get a price';
 
   var here = window.location.pathname.replace(/\/index\.html$/, '/').replace(/(.)\/$/, '$1');
   if (!here) here = '/';
@@ -170,15 +175,17 @@
       '<a class="logo" href="/" aria-label="Airportlink home">' + LOGO + '</a>' +
       '<nav class="site-nav" aria-label="Main">' +
         NAV.map(function (i) {
-          return '<a href="' + esc(i.href) + '"' + (isHere(i.href) ? ' class="on"' : '') + '>' +
-            esc(i.label) + '</a>';
+          return '<a href="' + esc(i.href) + '"' + (isHere(i.href) ? ' class="on"' : '') +
+            key(i) + '>' + esc(i.label) + '</a>';
         }).join('') +
       '</nav>' +
       '<div class="header-right">' +
         LANG_PICK +
         '<button class="icon-btn" id="themeBtn" type="button" aria-label="Switch theme">' + MOON + '</button>' +
-        '<a class="hbtn line" href="' + esc(account.href) + '">' + esc(account.label) + '</a>' +
-        '<a class="hbtn" href="' + esc(ctaHref) + '">' + esc(ctaLabel) + '</a>' +
+        '<a class="hbtn line" href="' + esc(account.href) + '"' + key(account) + '>' +
+          esc(account.label) + '</a>' +
+        '<a class="hbtn" href="' + esc(ctaHref) + '" data-i18n="nav.getPrice">' +
+          esc(ctaLabel) + '</a>' +
         '<button class="icon-btn burger" id="burger" type="button" aria-label="Menu" ' +
           'aria-expanded="false" aria-controls="mobileMenu">' + BARS + '</button>' +
       '</div>' +
@@ -189,16 +196,20 @@
   menu.id = 'mobileMenu';
   menu.setAttribute('aria-label', 'Mobile');
   menu.innerHTML =
-    NAV.map(function (i) { return '<a href="' + esc(i.href) + '">' + esc(i.label) + '</a>'; }).join('') +
-    '<a href="' + esc(account.href) + '">' + esc(account.label) + '</a>' +
+    NAV.map(function (i) {
+      return '<a href="' + esc(i.href) + '"' + key(i) + '>' + esc(i.label) + '</a>';
+    }).join('') +
+    '<a href="' + esc(account.href) + '"' + key(account) + '>' + esc(account.label) + '</a>' +
     (signedIn ? '' : '<a href="/createaccount">Create account</a>') +
     '<a href="/privacypolicy">Privacy policy</a>' +
-    '<a class="hbtn amber" href="' + esc(ctaHref) + '">' + esc(ctaLabel) + '</a>';
+    '<a class="hbtn amber" href="' + esc(ctaHref) + '" data-i18n="nav.getPrice">' +
+      esc(ctaLabel) + '</a>';
 
   var skip = document.createElement('a');
   skip.className = 'skip';
   skip.href = '#main';
-  skip.textContent = '<span data-i18n="nav.skip">Skip to content</span>';
+  skip.textContent = 'Skip to content';
+  skip.setAttribute('data-i18n', 'nav.skip');
 
   body.insertBefore(menu, body.firstChild);
   body.insertBefore(header, body.firstChild);
@@ -216,9 +227,10 @@
       '<p>Private airport transfers with a fixed price agreed before you pay. ' +
       'Door to door, flight tracked, driven by licensed local companies.</p></div>' +
       FOOTER.map(function (col) {
-        return '<div><h3>' + esc(col.title) + '</h3>' +
+        return '<div><h3' + (col.i18nKey ? ' data-i18n="' + esc(col.i18nKey) + '"' : '') +
+          '>' + esc(col.title) + '</h3>' +
           col.links.map(function (l) {
-            return '<a href="' + esc(l.href) + '">' + esc(l.label) + '</a>';
+            return '<a href="' + esc(l.href) + '"' + key(l) + '>' + esc(l.label) + '</a>';
           }).join('') + '</div>';
       }).join('') +
     '</div><div class="footer-bottom">' +
