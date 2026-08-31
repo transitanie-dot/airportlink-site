@@ -185,7 +185,7 @@ html[data-theme="dark"] .modal-msg{background:#2b1114;color:#fda4af;border-color
       <div id="chatActiveView" class="hidden" style="flex-direction:column;flex:1;min-width:0;">
         <div class="chat-panel-head">
           <div><h3 id="activeChatSubject">&mdash;</h3><p id="activeChatMeta">&mdash;</p></div>
-          <span id="activeChatStatus" class="status-badge open" data-i18n="sup.open">Open</span>
+          <span id="activeChatStatus" class="status-badge open" data-i18n="sup.openStatus">Open</span>
         </div>
         <div id="messagesScroll" class="messages-scroll"></div>
         <div id="chatNote" class="chat-note hidden"></div>
@@ -193,13 +193,13 @@ html[data-theme="dark"] .modal-msg{background:#2b1114;color:#fda4af;border-color
           <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
               <input type="file" id="fileInput" style="display:none;" accept="image/*,.pdf,.doc,.docx,.txt">
-              <button id="attachFileBtn" class="attach-btn" type="button" data-i18n="sup.attach">&#128206; Attach</button>
+              <button id="attachFileBtn" class="attach-btn" type="button" >&#128206; <span data-i18n="sup.attach">Attach</span></button>
               <span id="fileChip" class="file-chip">
                 <span class="name" id="fileChipName"></span>
                 <button class="remove" id="fileChipRemove" type="button" title="Remove file" aria-label="Remove file">&times;</button>
               </span>
             </div>
-            <textarea id="messageInput" rows="1" placeholder="Write your message..."></textarea>
+            <textarea id="messageInput" rows="1" data-i18n-ph="sup.writePh" placeholder="Write your message..."></textarea>
           </div>
           <button id="sendMessageBtn" class="send-btn" type="button" data-i18n="sup.send">Send</button>
         </div>
@@ -223,7 +223,7 @@ html[data-theme="dark"] .modal-msg{background:#2b1114;color:#fda4af;border-color
         <option value="Drivers" data-i18n="sup.drivers">Drivers</option><option value="Other" data-i18n="sup.other">Other</option>
       </select></div>
     <div class="field"><label for="newChatMessage" data-i18n="sup.message">Message</label>
-      <textarea id="newChatMessage" placeholder="Describe your question or issue..."></textarea>
+      <textarea id="newChatMessage" data-i18n-ph="sup.describePh" placeholder="Describe your question or issue..."></textarea>
       <div id="newChatMessageError" class="field-error" data-i18n="sup.needMessage">Please enter a message.</div></div>
     <div id="newChatError" class="modal-msg"></div>
     <div class="modal-actions">
@@ -293,7 +293,7 @@ function formatMsgTime(v) {
   var d = new Date(v);
   return isNaN(d.getTime()) ? '' : d.toLocaleString([], { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
 }
-function statusLabel(s) { return s === 'pending' ? T('sup.pending', 'Pending') : (s === 'resolved' ? T('sup.resolved', 'Resolved') : 'Open'); }
+function statusLabel(s) { return s === 'pending' ? T('sup.pending', 'Pending') : (s === 'resolved' ? T('sup.resolved', 'Resolved') : T('sup.openStatus', 'Open')); }
 function chatReference(c) { return c.ticket_number || String(c.id).slice(0, 8).toUpperCase(); }
 
 function showNote(text, isError) {
