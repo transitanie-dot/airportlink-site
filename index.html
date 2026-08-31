@@ -1140,10 +1140,6 @@ notifyParent('ready');
       b.classList.add('active');
       activeFilter = b.getAttribute('data-filter');
       updateFaq();
-
-  // O contador diz "9 respostas" e o plural muda de língua para
-  // língua: quando o dicionário chega, recontamos.
-  document.addEventListener('i18n:ready', updateFaq);
     });
   });
 
@@ -1167,6 +1163,10 @@ notifyParent('ready');
 
   searchInput.addEventListener('input', updateFaq);
   updateFaq();
+
+  // O contador diz "9 respostas", e o plural muda de língua para
+  // língua. Quando o dicionário chega, recontamos.
+  document.addEventListener('i18n:ready', updateFaq);
 })();
 
 // ============================================================
