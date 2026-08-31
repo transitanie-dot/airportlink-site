@@ -16,6 +16,9 @@
  * ---------------------------------------------------------------
  */
 (function (global) {
+
+  /** A tradução, com o inglês como rede. */
+  var T = function (k, en) { return (window.i18n ? window.i18n.t(k, en) : en); };
   'use strict';
 
   /**
@@ -275,13 +278,18 @@
       var ok = expected.indexOf(digits.length) !== -1;
 
       if (ok) {
-        hint.textContent = 'Looks right.';
+        hint.textContent = T('ph.looksRight', 'Looks right.');
         hint.className = 'phone-hint good';
         wrap.classList.remove('bad');
         wrap.classList.add('good');
       } else {
-        hint.textContent = digits.length + ' digit' + (digits.length === 1 ? '' : 's') +
-          ' entered. ' + chosen[1] + ' numbers usually have ' + expected.join(' or ') + '.';
+        // Com marcadores, e não texto colado: a ordem das palavras
+        // muda de língua para língua, e em alemão o país vem antes.
+        hint.textContent = T('ph.wrongLength',
+            '{n} digits entered. {pais} numbers usually have {esperado}.')
+          .replace('{n}', digits.length)
+          .replace('{pais}', chosen[1])
+          .replace('{esperado}', expected.join(' ' + T('ph.or', 'or') + ' '));
         hint.className = 'phone-hint bad';
         wrap.classList.remove('good');
         wrap.classList.add('bad');
