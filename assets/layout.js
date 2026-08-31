@@ -71,7 +71,8 @@
     { href: '/',             label: 'Book a transfer', i18nKey: 'nav.book' },
     { href: '/travelagents', label: 'Travel agents', i18nKey: 'nav.agents' },
     { href: '/drivers',      label: 'Drive with us', i18nKey: 'nav.drivers' },
-    { href: '/support',      label: 'Support', i18nKey: 'nav.support' }
+    { href: '/support',      label: 'Support', i18nKey: 'nav.support' },
+    { href: '/blog/',        label: 'Blog', i18nKey: 'nav.blog' }
   ];
 
   var FOOTER = [
