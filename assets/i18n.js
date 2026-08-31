@@ -41,6 +41,17 @@
   var CODES = LANGS.map(function (l) { return l.code; });
 
   /**
+   * A versão dos dicionários.
+   *
+   * Vai no endereço como ?v=..., por isso mudar este número faz o
+   * browser buscar os ficheiros de novo em vez de usar a cópia
+   * guardada. SEMPRE que se acrescentam ou corrigem traduções, subir
+   * este número — senão as pessoas continuam a ver as antigas
+   * durante dias, e não há forma de as avisar.
+   */
+  var DICT_VERSION = '2026-08-31-02';
+
+  /**
    * A língua, por esta ordem: o que a pessoa escolheu, o endereço, o
    * browser. A escolha manda sempre — alguém que vive na Alemanha e
    * prefere inglês não quer ter de reescolher em cada visita.
@@ -119,7 +130,9 @@
   function load(done) {
     if (lang === 'en' || typeof fetch !== 'function') { done(); return; }
 
-    fetch('/assets/i18n/' + lang + '.json', { cache: 'force-cache' })
+    // O ?v= identifica esta versão. O browser guarda cada versão em
+    // separado, por isso a antiga nunca é servida por engano.
+    fetch('/assets/i18n/' + lang + '.json?v=' + DICT_VERSION)
       .then(function (r) { return r.ok ? r.json() : {}; })
       .then(function (d) { dict = d || {}; })
       .catch(function () { dict = {}; })
