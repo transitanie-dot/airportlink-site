@@ -609,37 +609,78 @@
           "name": "Alicante city centre",
           "km": 11,
           "minutes": 15,
-          "about": "A quarter of an hour along the N-338 and into the city. The Explanada and the port are the usual drop-off area; the streets climbing to Santa Bárbara castle are narrow and mostly one-way."
+          "about": "A quarter of an hour along the N-338 and into the city. The Explanada and the port are the usual drop-off area; the streets climbing to Santa Bárbara castle are narrow and mostly one-way.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Alicante",
+              "about": "Un cuarto de hora por la N-338 hasta la ciudad. La Explanada y el puerto son la zona habitual de bajada; las calles que suben al castillo de Santa Bárbara son estrechas y casi todas de sentido único."
+            }
+          }
         },
         {
           "slug": "benidorm",
           "name": "Benidorm",
           "km": 55,
           "minutes": 45,
-          "about": "Forty-five minutes north on the AP-7. Benidorm splits into Levante and Poniente beaches with the old town between them, and the two fronts are a long walk apart — the hotel name decides which side the driver takes."
+          "about": "Forty-five minutes north on the AP-7. Benidorm splits into Levante and Poniente beaches with the old town between them, and the two fronts are a long walk apart — the hotel name decides which side the driver takes.",
+          "i18n": {
+            "es": {
+              "name": "Benidorm",
+              "about": "Cuarenta y cinco minutos al norte por la AP-7. Benidorm se divide entre las playas de Levante y Poniente con el casco antiguo en medio, y hay un buen trecho de una a otra — el nombre del hotel decide por qué lado entra el conductor."
+            }
+          }
         },
         {
           "slug": "torrevieja",
           "name": "Torrevieja",
           "km": 45,
           "minutes": 40,
-          "about": "Forty minutes south past the salt lagoons. Much of the area is built as urbanisations spread over several kilometres inland, so the urbanisation name matters more than the street."
+          "about": "Forty minutes south past the salt lagoons. Much of the area is built as urbanisations spread over several kilometres inland, so the urbanisation name matters more than the street.",
+          "i18n": {
+            "es": {
+              "name": "Torrevieja",
+              "about": "Cuarenta minutos al sur pasando las lagunas de sal. Buena parte de la zona son urbanizaciones repartidas por varios kilómetros hacia el interior, así que el nombre de la urbanización importa más que el de la calle."
+            }
+          }
         },
         {
           "slug": "calpe",
           "name": "Calpe",
           "km": 70,
           "minutes": 55,
-          "about": "Just under an hour north, past Altea. Calpe is built around the Peñón de Ifach and the seafront apartments run for two kilometres — give the building name."
+          "about": "Just under an hour north, past Altea. Calpe is built around the Peñón de Ifach and the seafront apartments run for two kilometres — give the building name.",
+          "i18n": {
+            "es": {
+              "name": "Calpe",
+              "about": "Algo menos de una hora al norte, pasado Altea. Calpe está construido alrededor del Peñón de Ifach y los apartamentos del paseo se extienden dos kilómetros — da el nombre del edificio."
+            }
+          }
         },
         {
           "slug": "murcia",
           "name": "Murcia",
           "km": 75,
           "minutes": 55,
-          "about": "Under an hour south-west on the A-7. A useful transfer when flights into Murcia's own airport do not fit, and a single fixed price beats a bus plus taxi with luggage."
+          "about": "Under an hour south-west on the A-7. A useful transfer when flights into Murcia's own airport do not fit, and a single fixed price beats a bus plus taxi with luggage.",
+          "i18n": {
+            "es": {
+              "name": "Murcia",
+              "about": "Menos de una hora al suroeste por la A-7. Un traslado útil cuando los vuelos al aeropuerto de Murcia no encajan, y un precio único gana a un autobús más taxi con equipaje."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Alicante",
+          "official": "Aeropuerto de Alicante–Elche Miguel Hernández",
+          "about": "Alicante–Elche es la puerta de la Costa Blanca, y la mayoría de las llegadas van al norte hacia Benidorm o al sur hacia Torrevieja. Una sola terminal, llegadas en la planta baja, y la AP-7 recorriendo la costa en ambas direcciones.",
+          "tips": [
+            "Benidorm está 55 km al norte y Torrevieja 45 km al sur — direcciones opuestas desde la misma terminal.",
+            "Los sábados de verano las llegadas van cargadas. La sala es amplia; la cola del taxi, no."
+          ]
+        }
+      }
     },
     {
       "iata": "PMI",
@@ -659,37 +700,78 @@
           "name": "Palma city centre",
           "km": 8,
           "minutes": 15,
-          "about": "A quarter of an hour on the Ma-19. The old town around the cathedral is a maze of narrow one-way streets, so drivers set down at the nearest accessible corner rather than the hotel door."
+          "about": "A quarter of an hour on the Ma-19. The old town around the cathedral is a maze of narrow one-way streets, so drivers set down at the nearest accessible corner rather than the hotel door.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Palma",
+              "about": "Un cuarto de hora por la Ma-19. El casco antiguo alrededor de la catedral es un laberinto de calles estrechas de sentido único, así que los conductores paran en la esquina accesible más cercana y no en la puerta del hotel."
+            }
+          }
         },
         {
           "slug": "magaluf",
           "name": "Magaluf",
           "km": 22,
           "minutes": 25,
-          "about": "Twenty-five minutes west past Palma. Magaluf and Palmanova run into each other along the same bay, and the hotels are stacked up the hillside — the hotel name saves a lot of circling."
+          "about": "Twenty-five minutes west past Palma. Magaluf and Palmanova run into each other along the same bay, and the hotels are stacked up the hillside — the hotel name saves a lot of circling.",
+          "i18n": {
+            "es": {
+              "name": "Magaluf",
+              "about": "Veinticinco minutos al oeste pasando Palma. Magaluf y Palmanova se funden en la misma bahía y los hoteles se escalonan por la ladera — el nombre del hotel evita muchas vueltas."
+            }
+          }
         },
         {
           "slug": "alcudia",
           "name": "Alcúdia",
           "km": 55,
           "minutes": 50,
-          "about": "Fifty minutes north across the island. The old walled town and the beach strip at Port d'Alcúdia are three kilometres apart, and most hotels are at the port end."
+          "about": "Fifty minutes north across the island. The old walled town and the beach strip at Port d'Alcúdia are three kilometres apart, and most hotels are at the port end.",
+          "i18n": {
+            "es": {
+              "name": "Alcúdia",
+              "about": "Cincuenta minutos al norte cruzando la isla. El casco antiguo amurallado y la franja de playa del Port d'Alcúdia están a tres kilómetros, y la mayoría de los hoteles quedan del lado del puerto."
+            }
+          }
         },
         {
           "slug": "soller",
           "name": "Sóller",
           "km": 42,
           "minutes": 50,
-          "about": "Fifty minutes through the Sóller tunnel into the Tramuntana. The town sits inland from its port, which is another three kilometres down the valley — say which one you want."
+          "about": "Fifty minutes through the Sóller tunnel into the Tramuntana. The town sits inland from its port, which is another three kilometres down the valley — say which one you want.",
+          "i18n": {
+            "es": {
+              "name": "Sóller",
+              "about": "Cincuenta minutos por el túnel de Sóller hacia la Tramuntana. El pueblo está tierra adentro respecto a su puerto, que queda tres kilómetros valle abajo — di cuál de los dos quieres."
+            }
+          }
         },
         {
           "slug": "cala-dor",
           "name": "Cala d'Or",
           "km": 65,
           "minutes": 55,
-          "about": "Just under an hour east. Cala d'Or is a series of small coves each with its own cluster of hotels, spread over several kilometres — the cove name is what the driver needs."
+          "about": "Just under an hour east. Cala d'Or is a series of small coves each with its own cluster of hotels, spread over several kilometres — the cove name is what the driver needs.",
+          "i18n": {
+            "es": {
+              "name": "Cala d'Or",
+              "about": "Algo menos de una hora al este. Cala d'Or es una sucesión de calas pequeñas, cada una con su grupo de hoteles, repartidas por varios kilómetros — el nombre de la cala es lo que necesita el conductor."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Palma",
+          "official": "Aeropuerto de Palma de Mallorca",
+          "about": "Son Sant Joan es uno de los aeropuertos más concurridos de Europa en agosto y uno de los más tranquilos en enero. Las llegadas salen por una sola sala, y la autopista Ma-19 llega a Palma en quince minutos y a la costa oeste en menos de una hora.",
+          "tips": [
+            "Los sábados de verano están entre los más cargados de Europa. Cuenta con tiempo extra dentro de la terminal.",
+            "Las carreteras de la Serra de Tramuntana hacia Sóller y Deià son estrechas y con curvas — los tiempos son mayores de lo que sugiere la distancia."
+          ]
+        }
+      }
     },
     {
       "iata": "IBZ",
@@ -709,37 +791,78 @@
           "name": "Ibiza Town",
           "km": 7,
           "minutes": 12,
-          "about": "Twelve minutes north. The walled Dalt Vila is closed to traffic, so drivers set down at the base of the ramp — expect a short uphill walk if your hotel is inside the walls."
+          "about": "Twelve minutes north. The walled Dalt Vila is closed to traffic, so drivers set down at the base of the ramp — expect a short uphill walk if your hotel is inside the walls.",
+          "i18n": {
+            "es": {
+              "name": "Ibiza ciudad",
+              "about": "Doce minutos al norte. Dalt Vila, el recinto amurallado, está cerrado al tráfico, así que los conductores paran al pie de la rampa — cuenta con una cuesta corta a pie si tu hotel está dentro."
+            }
+          }
         },
         {
           "slug": "playa-den-bossa",
           "name": "Playa d'en Bossa",
           "km": 4,
           "minutes": 8,
-          "about": "The closest resort to the airport, under ten minutes. The strip runs for two kilometres behind the beach and the hotels are spread along all of it."
+          "about": "The closest resort to the airport, under ten minutes. The strip runs for two kilometres behind the beach and the hotels are spread along all of it.",
+          "i18n": {
+            "es": {
+              "name": "Playa d'en Bossa",
+              "about": "El complejo más cercano al aeropuerto, a menos de diez minutos. La franja se extiende dos kilómetros detrás de la playa y los hoteles están repartidos por toda ella."
+            }
+          }
         },
         {
           "slug": "san-antonio",
           "name": "San Antonio",
           "km": 22,
           "minutes": 25,
-          "about": "Twenty-five minutes across the island to the west coast. San Antonio's bay is where the sunset crowds gather; the quieter bays north of town are another ten minutes on."
+          "about": "Twenty-five minutes across the island to the west coast. San Antonio's bay is where the sunset crowds gather; the quieter bays north of town are another ten minutes on.",
+          "i18n": {
+            "es": {
+              "name": "San Antonio",
+              "about": "Veinticinco minutos cruzando la isla hasta la costa oeste. La bahía de San Antonio es donde se junta la gente para la puesta de sol; las calas más tranquilas al norte quedan diez minutos más allá."
+            }
+          }
         },
         {
           "slug": "santa-eulalia",
           "name": "Santa Eulalia",
           "km": 23,
           "minutes": 25,
-          "about": "Twenty-five minutes up the east coast. Quieter than the west, with hotels along the promenade and villas in the hills behind — the urbanisation name matters for the latter."
+          "about": "Twenty-five minutes up the east coast. Quieter than the west, with hotels along the promenade and villas in the hills behind — the urbanisation name matters for the latter.",
+          "i18n": {
+            "es": {
+              "name": "Santa Eulalia",
+              "about": "Veinticinco minutos por la costa este. Más tranquila que el oeste, con hoteles en el paseo y villas en las lomas de detrás — para estas últimas, el nombre de la urbanización es lo que cuenta."
+            }
+          }
         },
         {
           "slug": "cala-comte",
           "name": "Cala Comte",
           "km": 28,
           "minutes": 35,
-          "about": "Thirty-five minutes west on narrow roads that slow to a crawl at sunset in August. Worth building extra time into a departure transfer from here."
+          "about": "Thirty-five minutes west on narrow roads that slow to a crawl at sunset in August. Worth building extra time into a departure transfer from here.",
+          "i18n": {
+            "es": {
+              "name": "Cala Comte",
+              "about": "Treinta y cinco minutos al oeste por carreteras estrechas que se colapsan al atardecer en agosto. Conviene dejar margen extra en un traslado de salida desde aquí."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Ibiza",
+          "official": "Aeropuerto de Ibiza",
+          "about": "El aeropuerto de Ibiza está en el extremo sur de la isla, a siete kilómetros de Ibiza ciudad. Todo en la isla queda a menos de cuarenta minutos, pero las carreteras hacia las calas del noroeste son estrechas y lentas en agosto.",
+          "tips": [
+            "En julio y agosto las llegadas no paran de viernes a domingo. La cola del taxi puede superar la hora.",
+            "A muchas villas del norte se llega por caminos sin asfaltar. Envía una ubicación en el mapa en lugar de una dirección si la tienes."
+          ]
+        }
+      }
     },
     {
       "iata": "TFS",
@@ -759,37 +882,78 @@
           "name": "Playa de las Américas",
           "km": 18,
           "minutes": 20,
-          "about": "Twenty minutes west on the TF-1. Las Américas, Los Cristianos and Costa Adeje run together along the same coast, so the resort name alone is often ambiguous — give the hotel."
+          "about": "Twenty minutes west on the TF-1. Las Américas, Los Cristianos and Costa Adeje run together along the same coast, so the resort name alone is often ambiguous — give the hotel.",
+          "i18n": {
+            "es": {
+              "name": "Playa de las Américas",
+              "about": "Veinte minutos al oeste por la TF-1. Las Américas, Los Cristianos y Costa Adeje se suceden en la misma costa, así que el nombre del complejo por sí solo suele ser ambiguo — da el del hotel."
+            }
+          }
         },
         {
           "slug": "los-cristianos",
           "name": "Los Cristianos",
           "km": 15,
           "minutes": 18,
-          "about": "Under twenty minutes. The ferry port for La Gomera is here, and departures are early — worth booking the transfer with margin."
+          "about": "Under twenty minutes. The ferry port for La Gomera is here, and departures are early — worth booking the transfer with margin.",
+          "i18n": {
+            "es": {
+              "name": "Los Cristianos",
+              "about": "Menos de veinte minutos. Aquí está el puerto del ferry a La Gomera, y las salidas son temprano — conviene reservar el traslado con margen."
+            }
+          }
         },
         {
           "slug": "costa-adeje",
           "name": "Costa Adeje",
           "km": 22,
           "minutes": 25,
-          "about": "Twenty-five minutes west, at the quieter end of the same strip. The hotels sit above the beach on terraces and the access roads loop — the hotel name saves time."
+          "about": "Twenty-five minutes west, at the quieter end of the same strip. The hotels sit above the beach on terraces and the access roads loop — the hotel name saves time.",
+          "i18n": {
+            "es": {
+              "name": "Costa Adeje",
+              "about": "Veinticinco minutos al oeste, en el extremo más tranquilo de la misma franja. Los hoteles se asientan sobre la playa en terrazas y los accesos hacen curvas — el nombre del hotel ahorra tiempo."
+            }
+          }
         },
         {
           "slug": "puerto-de-la-cruz",
           "name": "Puerto de la Cruz",
           "km": 100,
           "minutes": 75,
-          "about": "An hour and a quarter north, crossing the island. The climate changes completely on that side — greener, cloudier, and often ten degrees cooler."
+          "about": "An hour and a quarter north, crossing the island. The climate changes completely on that side — greener, cloudier, and often ten degrees cooler.",
+          "i18n": {
+            "es": {
+              "name": "Puerto de la Cruz",
+              "about": "Una hora y cuarto al norte, cruzando la isla. El clima cambia por completo en ese lado — más verde, más nublado y a menudo diez grados más fresco."
+            }
+          }
         },
         {
           "slug": "santa-cruz",
           "name": "Santa Cruz de Tenerife",
           "km": 60,
           "minutes": 50,
-          "about": "Fifty minutes north-east on the TF-1. The capital, the cruise port and the auditorium are all within the same central area."
+          "about": "Fifty minutes north-east on the TF-1. The capital, the cruise port and the auditorium are all within the same central area.",
+          "i18n": {
+            "es": {
+              "name": "Santa Cruz de Tenerife",
+              "about": "Cincuenta minutos al noreste por la TF-1. La capital, el puerto de cruceros y el auditorio están en la misma zona central."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Tenerife Sur",
+          "official": "Aeropuerto de Tenerife Sur",
+          "about": "Tenerife Sur concentra casi todo el tráfico vacacional de la isla. La autopista TF-1 lleva al oeste hasta los complejos en veinte minutos, y al norte hasta Santa Cruz y Puerto de la Cruz en cerca de una hora.",
+          "tips": [
+            "Tenerife Norte es otro aeropuerto, a una hora de distancia. Comprueba cuál usa tu vuelo.",
+            "Subir al Teide es entrar en otro clima — lleva una chaqueta aunque sea agosto."
+          ]
+        }
+      }
     },
     {
       "iata": "LPA",
@@ -809,37 +973,78 @@
           "name": "Las Palmas",
           "km": 25,
           "minutes": 25,
-          "about": "Twenty-five minutes north. The city runs along a narrow isthmus with Las Canteras beach on one side and the port on the other — say which side your hotel is."
+          "about": "Twenty-five minutes north. The city runs along a narrow isthmus with Las Canteras beach on one side and the port on the other — say which side your hotel is.",
+          "i18n": {
+            "es": {
+              "name": "Las Palmas",
+              "about": "Veinticinco minutos al norte. La ciudad se extiende sobre un istmo estrecho con la playa de Las Canteras a un lado y el puerto al otro — di de qué lado está tu hotel."
+            }
+          }
         },
         {
           "slug": "maspalomas",
           "name": "Maspalomas",
           "km": 30,
           "minutes": 30,
-          "about": "Half an hour south. Maspalomas, Playa del Inglés and San Agustín form one continuous resort area behind the dunes, and the hotel name is what separates them."
+          "about": "Half an hour south. Maspalomas, Playa del Inglés and San Agustín form one continuous resort area behind the dunes, and the hotel name is what separates them.",
+          "i18n": {
+            "es": {
+              "name": "Maspalomas",
+              "about": "Media hora al sur. Maspalomas, Playa del Inglés y San Agustín forman una zona turística continua detrás de las dunas, y es el nombre del hotel lo que las separa."
+            }
+          }
         },
         {
           "slug": "playa-del-ingles",
           "name": "Playa del Inglés",
           "km": 28,
           "minutes": 28,
-          "about": "Under half an hour south, the busiest of the southern resorts. The bungalow complexes are spread across a grid of similar streets — the complex name matters."
+          "about": "Under half an hour south, the busiest of the southern resorts. The bungalow complexes are spread across a grid of similar streets — the complex name matters.",
+          "i18n": {
+            "es": {
+              "name": "Playa del Inglés",
+              "about": "Menos de media hora al sur, el más animado de los complejos del sur. Los conjuntos de bungalows se reparten por una cuadrícula de calles parecidas — el nombre del complejo importa."
+            }
+          }
         },
         {
           "slug": "puerto-rico",
           "name": "Puerto Rico",
           "km": 50,
           "minutes": 40,
-          "about": "Forty minutes down the south-west coast. Built into a steep ravine, with hotels stacked up both sides and reached by looping access roads."
+          "about": "Forty minutes down the south-west coast. Built into a steep ravine, with hotels stacked up both sides and reached by looping access roads.",
+          "i18n": {
+            "es": {
+              "name": "Puerto Rico",
+              "about": "Cuarenta minutos por la costa suroeste. Construido en un barranco empinado, con hoteles escalonados a ambos lados y accesos que hacen curvas."
+            }
+          }
         },
         {
           "slug": "puerto-de-mogan",
           "name": "Puerto de Mogán",
           "km": 60,
           "minutes": 45,
-          "about": "Three quarters of an hour along the coast, past Puerto Rico. The quietest of the resorts, built around a small harbour with canals."
+          "about": "Three quarters of an hour along the coast, past Puerto Rico. The quietest of the resorts, built around a small harbour with canals.",
+          "i18n": {
+            "es": {
+              "name": "Puerto de Mogán",
+              "about": "Tres cuartos de hora por la costa, pasado Puerto Rico. El más tranquilo de los complejos, levantado en torno a un puerto pequeño con canales."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Gran Canaria",
+          "official": "Aeropuerto de Gran Canaria",
+          "about": "El aeropuerto de Gran Canaria está en la costa este, más o menos a mitad de camino entre Las Palmas al norte y los complejos del sur. Ambas direcciones quedan a una media hora por la GC-1.",
+          "tips": [
+            "Norte y sur son direcciones opuestas desde la terminal — Las Palmas a 25 km por un lado, Maspalomas a 30 km por el otro.",
+            "El sur está soleado de forma fiable cuando el norte está bajo nubes. Pilla desprevenido a muchos que vienen por primera vez."
+          ]
+        }
+      }
     },
     {
       "iata": "ACE",
@@ -859,37 +1064,78 @@
           "name": "Arrecife",
           "km": 6,
           "minutes": 10,
-          "about": "Ten minutes north. The capital, the cruise port and the Charco de San Ginés are all within the same small centre."
+          "about": "Ten minutes north. The capital, the cruise port and the Charco de San Ginés are all within the same small centre.",
+          "i18n": {
+            "es": {
+              "name": "Arrecife",
+              "about": "Diez minutos al norte. La capital, el puerto de cruceros y el Charco de San Ginés están en el mismo centro reducido."
+            }
+          }
         },
         {
           "slug": "puerto-del-carmen",
           "name": "Puerto del Carmen",
           "km": 10,
           "minutes": 12,
-          "about": "The closest resort, barely twelve minutes. The strip runs for six kilometres along the front, so the hotel name decides which end."
+          "about": "The closest resort, barely twelve minutes. The strip runs for six kilometres along the front, so the hotel name decides which end.",
+          "i18n": {
+            "es": {
+              "name": "Puerto del Carmen",
+              "about": "El complejo más cercano, a apenas doce minutos. La franja recorre seis kilómetros de paseo, así que el nombre del hotel decide en qué extremo paras."
+            }
+          }
         },
         {
           "slug": "playa-blanca",
           "name": "Playa Blanca",
           "km": 30,
           "minutes": 30,
-          "about": "Half an hour south. The ferry to Fuerteventura leaves from here, and the resort spreads west towards Papagayo in a series of urbanisations."
+          "about": "Half an hour south. The ferry to Fuerteventura leaves from here, and the resort spreads west towards Papagayo in a series of urbanisations.",
+          "i18n": {
+            "es": {
+              "name": "Playa Blanca",
+              "about": "Media hora al sur. De aquí sale el ferry a Fuerteventura, y el complejo se extiende hacia el oeste en dirección a Papagayo en una sucesión de urbanizaciones."
+            }
+          }
         },
         {
           "slug": "costa-teguise",
           "name": "Costa Teguise",
           "km": 15,
           "minutes": 18,
-          "about": "Under twenty minutes north-east. Purpose-built and compact, with most hotels within walking distance of the same beach."
+          "about": "Under twenty minutes north-east. Purpose-built and compact, with most hotels within walking distance of the same beach.",
+          "i18n": {
+            "es": {
+              "name": "Costa Teguise",
+              "about": "Menos de veinte minutos al noreste. Construido de una pieza y compacto, con casi todos los hoteles a poca distancia de la misma playa."
+            }
+          }
         },
         {
           "slug": "famara",
           "name": "Famara",
           "km": 28,
           "minutes": 30,
-          "about": "Half an hour north-west to the surf coast. The village is small and the access road is narrow — a very different island from the southern resorts."
+          "about": "Half an hour north-west to the surf coast. The village is small and the access road is narrow — a very different island from the southern resorts.",
+          "i18n": {
+            "es": {
+              "name": "Famara",
+              "about": "Media hora al noroeste hasta la costa del surf. El pueblo es pequeño y el acceso estrecho — una isla muy distinta de la de los complejos del sur."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Lanzarote",
+          "official": "Aeropuerto César Manrique–Lanzarote",
+          "about": "El aeropuerto de Lanzarote está a cinco kilómetros de Arrecife y a menos de cuarenta minutos de cualquier punto de la isla. El paisaje es volcánico y las carreteras son buenas, pero los complejos se reparten por la costa en tres grupos separados.",
+          "tips": [
+            "Puerto del Carmen, Costa Teguise y Playa Blanca quedan en tres direcciones distintas desde el aeropuerto.",
+            "Playa Blanca es el puerto del ferry a Fuerteventura, y las travesías salen temprano."
+          ]
+        }
+      }
     },
     {
       "iata": "FUE",
@@ -909,37 +1155,78 @@
           "name": "Puerto del Rosario",
           "km": 6,
           "minutes": 10,
-          "about": "Ten minutes north. The capital and the ferry port, functional rather than a resort."
+          "about": "Ten minutes north. The capital and the ferry port, functional rather than a resort.",
+          "i18n": {
+            "es": {
+              "name": "Puerto del Rosario",
+              "about": "Diez minutos al norte. La capital y el puerto del ferry, más funcional que turística."
+            }
+          }
         },
         {
           "slug": "caleta-de-fuste",
           "name": "Caleta de Fuste",
           "km": 8,
           "minutes": 12,
-          "about": "Twelve minutes south, the closest resort to the airport. Compact and built around a marina."
+          "about": "Twelve minutes south, the closest resort to the airport. Compact and built around a marina.",
+          "i18n": {
+            "es": {
+              "name": "Caleta de Fuste",
+              "about": "Doce minutos al sur, el complejo más cercano al aeropuerto. Compacto y construido alrededor de un puerto deportivo."
+            }
+          }
         },
         {
           "slug": "corralejo",
           "name": "Corralejo",
           "km": 38,
           "minutes": 40,
-          "about": "Forty minutes north, past the dunes national park. The town runs along the front facing Lobos island, and the villa complexes spread inland."
+          "about": "Forty minutes north, past the dunes national park. The town runs along the front facing Lobos island, and the villa complexes spread inland.",
+          "i18n": {
+            "es": {
+              "name": "Corralejo",
+              "about": "Cuarenta minutos al norte, pasando el parque natural de las dunas. El pueblo se extiende por el frente marítimo mirando a la isla de Lobos, y los conjuntos de villas quedan hacia el interior."
+            }
+          }
         },
         {
           "slug": "costa-calma",
           "name": "Costa Calma",
           "km": 70,
           "minutes": 60,
-          "about": "An hour south along the FV-2. The resort is a line of hotels behind a very long beach, with little between them."
+          "about": "An hour south along the FV-2. The resort is a line of hotels behind a very long beach, with little between them.",
+          "i18n": {
+            "es": {
+              "name": "Costa Calma",
+              "about": "Una hora al sur por la FV-2. El complejo es una hilera de hoteles detrás de una playa larguísima, con poco entre medias."
+            }
+          }
         },
         {
           "slug": "morro-jable",
           "name": "Morro Jable",
           "km": 90,
           "minutes": 80,
-          "about": "Eighty minutes to the southern tip. The longest transfer on the island and worth a fixed price — taxi meters here run high."
+          "about": "Eighty minutes to the southern tip. The longest transfer on the island and worth a fixed price — taxi meters here run high.",
+          "i18n": {
+            "es": {
+              "name": "Morro Jable",
+              "about": "Ochenta minutos hasta la punta sur. El traslado más largo de la isla y donde más se nota un precio cerrado — aquí los taxímetros suben rápido."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Fuerteventura",
+          "official": "Aeropuerto de Fuerteventura",
+          "about": "Fuerteventura es larga y estrecha, y el aeropuerto está en el medio. Corralejo queda cuarenta minutos al norte y Morro Jable noventa al sur — la isla es más grande de lo que casi todos esperan.",
+          "tips": [
+            "Morro Jable está a 90 km del aeropuerto. Cuenta con un trayecto de verdad, no con un salto.",
+            "El viento es constante en esta isla. Por eso vienen los surfistas, y por eso las playas se sienten más frescas de lo que marca el termómetro."
+          ]
+        }
+      }
     },
     {
       "iata": "SVQ",
@@ -959,37 +1246,78 @@
           "name": "Seville city centre",
           "km": 10,
           "minutes": 15,
-          "about": "A quarter of an hour on the A-4. The cathedral and Santa Cruz are pedestrian, and the driver stops at the closest street a car can enter."
+          "about": "A quarter of an hour on the A-4. The cathedral and Santa Cruz are pedestrian, and the driver stops at the closest street a car can enter.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Sevilla",
+              "about": "Un cuarto de hora por la A-4. La catedral y Santa Cruz son peatonales, y el conductor para en la calle más cercana a la que puede entrar un coche."
+            }
+          }
         },
         {
           "slug": "carmona",
           "name": "Carmona",
           "km": 30,
           "minutes": 25,
-          "about": "Twenty-five minutes east on a hill above the plain. The parador sits inside the old Moorish fortress."
+          "about": "Twenty-five minutes east on a hill above the plain. The parador sits inside the old Moorish fortress.",
+          "i18n": {
+            "es": {
+              "name": "Carmona",
+              "about": "Veinticinco minutos al este, sobre un cerro que domina la vega. El parador está dentro de la antigua fortaleza musulmana."
+            }
+          }
         },
         {
           "slug": "jerez",
           "name": "Jerez de la Frontera",
           "km": 90,
           "minutes": 60,
-          "about": "An hour south on the AP-4. The sherry bodegas and the equestrian school are both in town, within a few minutes of each other."
+          "about": "An hour south on the AP-4. The sherry bodegas and the equestrian school are both in town, within a few minutes of each other.",
+          "i18n": {
+            "es": {
+              "name": "Jerez de la Frontera",
+              "about": "Una hora al sur por la AP-4. Las bodegas y la escuela ecuestre están las dos en la ciudad, a pocos minutos una de otra."
+            }
+          }
         },
         {
           "slug": "cordoba",
           "name": "Córdoba",
           "km": 140,
           "minutes": 95,
-          "about": "An hour and a half north-east. The Mezquita and the Judería are pedestrian, so the same rule applies as in Seville."
+          "about": "An hour and a half north-east. The Mezquita and the Judería are pedestrian, so the same rule applies as in Seville.",
+          "i18n": {
+            "es": {
+              "name": "Córdoba",
+              "about": "Una hora y media al noreste. La Mezquita y la Judería son peatonales, así que vale la misma regla que en Sevilla."
+            }
+          }
         },
         {
           "slug": "cadiz",
           "name": "Cádiz",
           "km": 125,
           "minutes": 85,
-          "about": "An hour and a half south-west, out onto the peninsula. The old town is entirely surrounded by water and the streets are very narrow."
+          "about": "An hour and a half south-west, out onto the peninsula. The old town is entirely surrounded by water and the streets are very narrow.",
+          "i18n": {
+            "es": {
+              "name": "Cádiz",
+              "about": "Una hora y media al suroeste, hasta la península. El casco antiguo está rodeado de agua por completo y las calles son muy estrechas."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Sevilla",
+          "official": "Aeropuerto de Sevilla",
+          "about": "El aeropuerto de Sevilla está a diez kilómetros del centro por la A-4. El casco antiguo es una trama densa de calles estrechas donde los coches apenas caben, así que los conductores paran en el punto accesible más cercano.",
+          "tips": [
+            "Santa Cruz y buena parte del casco antiguo están cerrados al tráfico. Cuenta con un paseo corto desde donde te dejen.",
+            "Sevilla es la base para Jerez, Cádiz y Córdoba — las tres cómodas como traslado de un día."
+          ]
+        }
+      }
     },
     {
       "iata": "VLC",
@@ -1009,37 +1337,78 @@
           "name": "Valencia city centre",
           "km": 9,
           "minutes": 18,
-          "about": "Under twenty minutes east. The old town around the cathedral is largely pedestrian; the Eixample streets beyond it are wide and easy."
+          "about": "Under twenty minutes east. The old town around the cathedral is largely pedestrian; the Eixample streets beyond it are wide and easy.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Valencia",
+              "about": "Menos de veinte minutos al este. El casco antiguo alrededor de la catedral es en buena parte peatonal; las calles del Eixample que lo rodean son anchas y cómodas."
+            }
+          }
         },
         {
           "slug": "port",
           "name": "Valencia port and Marina",
           "km": 13,
           "minutes": 22,
-          "about": "Twenty minutes to the port and the America's Cup marina. The cruise terminal is a further two kilometres along the quay."
+          "about": "Twenty minutes to the port and the America's Cup marina. The cruise terminal is a further two kilometres along the quay.",
+          "i18n": {
+            "es": {
+              "name": "Puerto y Marina de Valencia",
+              "about": "Veinte minutos hasta el puerto y la marina de la Copa América. La terminal de cruceros queda dos kilómetros más allá por el muelle."
+            }
+          }
         },
         {
           "slug": "sagunto",
           "name": "Sagunto",
           "km": 35,
           "minutes": 30,
-          "about": "Half an hour north. The Roman theatre and the castle sit on the hill above the modern town."
+          "about": "Half an hour north. The Roman theatre and the castle sit on the hill above the modern town.",
+          "i18n": {
+            "es": {
+              "name": "Sagunto",
+              "about": "Media hora al norte. El teatro romano y el castillo coronan el cerro sobre la ciudad moderna."
+            }
+          }
         },
         {
           "slug": "gandia",
           "name": "Gandia",
           "km": 75,
           "minutes": 55,
-          "about": "Just under an hour south on the AP-7. The town is inland and the beach is another four kilometres on — say which you want."
+          "about": "Just under an hour south on the AP-7. The town is inland and the beach is another four kilometres on — say which you want.",
+          "i18n": {
+            "es": {
+              "name": "Gandía",
+              "about": "Algo menos de una hora al sur por la AP-7. La ciudad está tierra adentro y la playa queda cuatro kilómetros más allá — di cuál de las dos quieres."
+            }
+          }
         },
         {
           "slug": "peniscola",
           "name": "Peñíscola",
           "km": 145,
           "minutes": 95,
-          "about": "An hour and a half north up the coast. The old town sits on a rock in the sea, and cars stop at the base of it."
+          "about": "An hour and a half north up the coast. The old town sits on a rock in the sea, and cars stop at the base of it.",
+          "i18n": {
+            "es": {
+              "name": "Peñíscola",
+              "about": "Una hora y media al norte por la costa. El casco antiguo se levanta sobre una roca dentro del mar, y los coches paran al pie."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Valencia",
+          "official": "Aeropuerto de Valencia",
+          "about": "El aeropuerto de Valencia está ocho kilómetros al oeste de la ciudad, lo bastante cerca como para que la mayoría de los traslados queden por debajo de veinte minutos. La ciudad se extiende a lo largo del antiguo cauce hacia el puerto y la Ciudad de las Artes y las Ciencias.",
+          "tips": [
+            "La Ciudad de las Artes y las Ciencias está a 5 km del centro histórico — no se va andando de una a otra.",
+            "La A-7 hacia el norte llega a la Costa del Azahar; hacia el sur va camino de Alicante."
+          ]
+        }
+      }
     },
     {
       "iata": "BIO",
@@ -1059,37 +1428,78 @@
           "name": "Bilbao city centre",
           "km": 12,
           "minutes": 20,
-          "about": "Twenty minutes down into the valley. The Casco Viejo is pedestrian; the Guggenheim and Abandoibarra are on the riverside and easy to reach by car."
+          "about": "Twenty minutes down into the valley. The Casco Viejo is pedestrian; the Guggenheim and Abandoibarra are on the riverside and easy to reach by car.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Bilbao",
+              "about": "Veinte minutos bajando al valle. El Casco Viejo es peatonal; el Guggenheim y Abandoibarra están junto a la ría y se llega bien en coche."
+            }
+          }
         },
         {
           "slug": "getxo",
           "name": "Getxo",
           "km": 15,
           "minutes": 22,
-          "about": "Twenty minutes down the estuary to the Vizcaya transporter bridge and the marina."
+          "about": "Twenty minutes down the estuary to the Vizcaya transporter bridge and the marina.",
+          "i18n": {
+            "es": {
+              "name": "Getxo",
+              "about": "Veinte minutos ría abajo, hasta el puente colgante de Vizcaya y el puerto deportivo."
+            }
+          }
         },
         {
           "slug": "san-sebastian",
           "name": "San Sebastián",
           "km": 100,
           "minutes": 70,
-          "about": "An hour and ten east on the AP-8. La Concha and the old town are close together, and the Parte Vieja is pedestrian."
+          "about": "An hour and ten east on the AP-8. La Concha and the old town are close together, and the Parte Vieja is pedestrian.",
+          "i18n": {
+            "es": {
+              "name": "San Sebastián",
+              "about": "Una hora y diez al este por la AP-8. La Concha y el casco antiguo están cerca uno del otro, y la Parte Vieja es peatonal."
+            }
+          }
         },
         {
           "slug": "vitoria",
           "name": "Vitoria-Gasteiz",
           "km": 75,
           "minutes": 55,
-          "about": "Just under an hour south. The Basque capital, with a compact medieval centre."
+          "about": "Just under an hour south. The Basque capital, with a compact medieval centre.",
+          "i18n": {
+            "es": {
+              "name": "Vitoria-Gasteiz",
+              "about": "Algo menos de una hora al sur. La capital vasca, con un centro medieval compacto."
+            }
+          }
         },
         {
           "slug": "santander",
           "name": "Santander",
           "km": 110,
           "minutes": 75,
-          "about": "An hour and a quarter west along the coast. A useful transfer for the Brittany Ferries crossings."
+          "about": "An hour and a quarter west along the coast. A useful transfer for the Brittany Ferries crossings.",
+          "i18n": {
+            "es": {
+              "name": "Santander",
+              "about": "Una hora y cuarto al oeste por la costa. Un traslado útil para las travesías de Brittany Ferries."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Bilbao",
+          "official": "Aeropuerto de Bilbao",
+          "about": "El aeropuerto de Bilbao está doce kilómetros al norte de la ciudad, en las lomas sobre la ría. El Guggenheim y el casco viejo están los dos en el centro, y San Sebastián queda una hora al este por la AP-8.",
+          "tips": [
+            "La carretera de la costa vasca es más lenta pero mucho más bonita que la autopista.",
+            "San Sebastián tiene su propio aeropuerto pequeño, pero casi todos los vuelos internacionales llegan aquí."
+          ]
+        }
+      }
     },
     {
       "iata": "GRX",
@@ -1109,37 +1519,78 @@
           "name": "Granada city centre",
           "km": 17,
           "minutes": 25,
-          "about": "Twenty-five minutes east on the A-92. Gran Vía and the cathedral are the usual drop-off; anything above them is on foot."
+          "about": "Twenty-five minutes east on the A-92. Gran Vía and the cathedral are the usual drop-off; anything above them is on foot.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Granada",
+              "about": "Veinticinco minutos al este por la A-92. La Gran Vía y la catedral son la bajada habitual; todo lo que queda por encima se hace a pie."
+            }
+          }
         },
         {
           "slug": "alhambra",
           "name": "Alhambra area",
           "km": 20,
           "minutes": 30,
-          "about": "Half an hour, climbing behind the city. The hotels on the Alhambra hill have their own access road, separate from the centre."
+          "about": "Half an hour, climbing behind the city. The hotels on the Alhambra hill have their own access road, separate from the centre.",
+          "i18n": {
+            "es": {
+              "name": "Zona de la Alhambra",
+              "about": "Media hora, subiendo por detrás de la ciudad. Los hoteles del cerro de la Alhambra tienen su propio acceso, separado del centro."
+            }
+          }
         },
         {
           "slug": "sierra-nevada",
           "name": "Sierra Nevada",
           "km": 50,
           "minutes": 55,
-          "about": "Just under an hour, climbing to 2,100 metres. In winter the road is cleared but slow, and the fixed price does not change."
+          "about": "Just under an hour, climbing to 2,100 metres. In winter the road is cleared but slow, and the fixed price does not change.",
+          "i18n": {
+            "es": {
+              "name": "Sierra Nevada",
+              "about": "Algo menos de una hora, subiendo hasta los 2.100 metros. En invierno la carretera se limpia pero va lenta, y el precio fijo no cambia."
+            }
+          }
         },
         {
           "slug": "malaga",
           "name": "Málaga",
           "km": 130,
           "minutes": 95,
-          "about": "An hour and a half south-west on the A-92 and A-45, dropping from the plateau to the coast."
+          "about": "An hour and a half south-west on the A-92 and A-45, dropping from the plateau to the coast.",
+          "i18n": {
+            "es": {
+              "name": "Málaga",
+              "about": "Una hora y media al suroeste por la A-92 y la A-45, bajando de la meseta a la costa."
+            }
+          }
         },
         {
           "slug": "nerja",
           "name": "Nerja",
           "km": 95,
           "minutes": 80,
-          "about": "An hour and twenty south, over the mountains to the Axarquía coast."
+          "about": "An hour and twenty south, over the mountains to the Axarquía coast.",
+          "i18n": {
+            "es": {
+              "name": "Nerja",
+              "about": "Una hora y veinte al sur, cruzando la montaña hacia la costa de la Axarquía."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Granada",
+          "official": "Aeropuerto Federico García Lorca Granada-Jaén",
+          "about": "El aeropuerto de Granada está diecisiete kilómetros al oeste de la ciudad por la A-92. La Alhambra domina la ciudad y el Albaicín, debajo, es una ladera de callejones escalonados por donde no entran los coches.",
+          "tips": [
+            "A los hoteles del Albaicín se llega a pie. Los conductores paran en la plaza más cercana.",
+            "Sierra Nevada está a 45 minutos subiendo desde la ciudad, y la carretera se limpia pero va lenta con nieve."
+          ]
+        }
+      }
     },
     {
       "iata": "SCQ",
@@ -1159,37 +1610,78 @@
           "name": "Santiago city centre",
           "km": 13,
           "minutes": 20,
-          "about": "Twenty minutes. The Obradoiro square is reached on foot from the nearest vehicle access, a few minutes away."
+          "about": "Twenty minutes. The Obradoiro square is reached on foot from the nearest vehicle access, a few minutes away.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Santiago",
+              "about": "Veinte minutos. A la plaza del Obradoiro se llega a pie desde el acceso rodado más cercano, a unos minutos."
+            }
+          }
         },
         {
           "slug": "a-coruna",
           "name": "A Coruña",
           "km": 75,
           "minutes": 55,
-          "about": "Just under an hour north. The Tower of Hercules and the glass-fronted Marina are the landmarks."
+          "about": "Just under an hour north. The Tower of Hercules and the glass-fronted Marina are the landmarks.",
+          "i18n": {
+            "es": {
+              "name": "A Coruña",
+              "about": "Algo menos de una hora al norte. La Torre de Hércules y la Marina acristalada son las referencias."
+            }
+          }
         },
         {
           "slug": "pontevedra",
           "name": "Pontevedra",
           "km": 70,
           "minutes": 50,
-          "about": "Fifty minutes south, at the head of its ría. The old town is compact and pedestrian."
+          "about": "Fifty minutes south, at the head of its ría. The old town is compact and pedestrian.",
+          "i18n": {
+            "es": {
+              "name": "Pontevedra",
+              "about": "Cincuenta minutos al sur, al fondo de su ría. El casco antiguo es compacto y peatonal."
+            }
+          }
         },
         {
           "slug": "vigo",
           "name": "Vigo",
           "km": 95,
           "minutes": 65,
-          "about": "An hour south. The port city and the ferry point for the Cíes islands."
+          "about": "An hour south. The port city and the ferry point for the Cíes islands.",
+          "i18n": {
+            "es": {
+              "name": "Vigo",
+              "about": "Una hora al sur. La ciudad portuaria y el punto de embarque hacia las islas Cíes."
+            }
+          }
         },
         {
           "slug": "finisterre",
           "name": "Finisterre",
           "km": 100,
           "minutes": 80,
-          "about": "An hour and twenty west to the end of the Camino, on narrow coastal roads."
+          "about": "An hour and twenty west to the end of the Camino, on narrow coastal roads.",
+          "i18n": {
+            "es": {
+              "name": "Finisterre",
+              "about": "Una hora y veinte al oeste hasta el final del Camino, por carreteras costeras estrechas."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Santiago",
+          "official": "Aeropuerto de Santiago–Rosalía de Castro",
+          "about": "El aeropuerto de Santiago está a trece kilómetros del casco antiguo. La plaza de la catedral es el final del Camino y el centro medieval que la rodea está cerrado al tráfico.",
+          "tips": [
+            "El casco antiguo es peatonal. Los conductores paran en la Praza de Galicia o en la puerta más cercana.",
+            "Las rías gallegas quedan a una hora o menos en varias direcciones."
+          ]
+        }
+      }
     },
     {
       "iata": "ZAZ",
@@ -1209,37 +1701,78 @@
           "name": "Zaragoza city centre",
           "km": 10,
           "minutes": 18,
-          "about": "Under twenty minutes east. The Pilar basilica and the Roman forum are in the same square kilometre."
+          "about": "Under twenty minutes east. The Pilar basilica and the Roman forum are in the same square kilometre.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Zaragoza",
+              "about": "Menos de veinte minutos al este. La basílica del Pilar y el foro romano están en el mismo kilómetro cuadrado."
+            }
+          }
         },
         {
           "slug": "huesca",
           "name": "Huesca",
           "km": 75,
           "minutes": 55,
-          "about": "Just under an hour north, at the foot of the Pyrenees."
+          "about": "Just under an hour north, at the foot of the Pyrenees.",
+          "i18n": {
+            "es": {
+              "name": "Huesca",
+              "about": "Algo menos de una hora al norte, a los pies del Pirineo."
+            }
+          }
         },
         {
           "slug": "teruel",
           "name": "Teruel",
           "km": 180,
           "minutes": 110,
-          "about": "Just under two hours south, through the Maestrazgo. Mudéjar towers and a small walled centre."
+          "about": "Just under two hours south, through the Maestrazgo. Mudéjar towers and a small walled centre.",
+          "i18n": {
+            "es": {
+              "name": "Teruel",
+              "about": "Algo menos de dos horas al sur, cruzando el Maestrazgo. Torres mudéjares y un centro amurallado pequeño."
+            }
+          }
         },
         {
           "slug": "lleida",
           "name": "Lleida",
           "km": 150,
           "minutes": 95,
-          "about": "An hour and a half east on the AP-2, halfway to Barcelona."
+          "about": "An hour and a half east on the AP-2, halfway to Barcelona.",
+          "i18n": {
+            "es": {
+              "name": "Lleida",
+              "about": "Una hora y media al este por la AP-2, a mitad de camino de Barcelona."
+            }
+          }
         },
         {
           "slug": "jaca",
           "name": "Jaca",
           "km": 165,
           "minutes": 110,
-          "about": "Nearly two hours north into the Pyrenees, the base for Astún and Candanchú."
+          "about": "Nearly two hours north into the Pyrenees, the base for Astún and Candanchú.",
+          "i18n": {
+            "es": {
+              "name": "Jaca",
+              "about": "Casi dos horas al norte, entrando en el Pirineo. Es la base para Astún y Candanchú."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Zaragoza",
+          "official": "Aeropuerto de Zaragoza",
+          "about": "Zaragoza está a mitad de camino entre Madrid y Barcelona, y su aeropuerto queda diez kilómetros al oeste de la ciudad. La basílica del Pilar es el centro de todo.",
+          "tips": [
+            "Zaragoza es una parada habitual en la ruta Madrid–Barcelona, y un traslado con precio fijo gana a partir el viaje en tren.",
+            "Las estaciones de esquí del Pirineo están a dos horas al norte."
+          ]
+        }
+      }
     },
     {
       "iata": "GRO",
@@ -1259,37 +1792,78 @@
           "name": "Girona city centre",
           "km": 13,
           "minutes": 20,
-          "about": "Twenty minutes. The old Jewish quarter and the cathedral steps are pedestrian."
+          "about": "Twenty minutes. The old Jewish quarter and the cathedral steps are pedestrian.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Girona",
+              "about": "Veinte minutos. El Call judío y las escaleras de la catedral son peatonales."
+            }
+          }
         },
         {
           "slug": "lloret-de-mar",
           "name": "Lloret de Mar",
           "km": 35,
           "minutes": 35,
-          "about": "Thirty-five minutes east. The hotels climb the hillside behind the beach — the hotel name matters."
+          "about": "Thirty-five minutes east. The hotels climb the hillside behind the beach — the hotel name matters.",
+          "i18n": {
+            "es": {
+              "name": "Lloret de Mar",
+              "about": "Treinta y cinco minutos al este. Los hoteles trepan por la ladera detrás de la playa — el nombre del hotel importa."
+            }
+          }
         },
         {
           "slug": "tossa-de-mar",
           "name": "Tossa de Mar",
           "km": 45,
           "minutes": 45,
-          "about": "Forty-five minutes, on the coast road past Lloret. The walled old town sits above the bay."
+          "about": "Forty-five minutes, on the coast road past Lloret. The walled old town sits above the bay.",
+          "i18n": {
+            "es": {
+              "name": "Tossa de Mar",
+              "about": "Cuarenta y cinco minutos, por la carretera de la costa pasando Lloret. El casco antiguo amurallado domina la bahía."
+            }
+          }
         },
         {
           "slug": "barcelona",
           "name": "Barcelona city centre",
           "km": 100,
           "minutes": 75,
-          "about": "An hour and a quarter south on the AP-7. A real journey, and cheaper as one fixed transfer than a bus plus taxi."
+          "about": "An hour and a quarter south on the AP-7. A real journey, and cheaper as one fixed transfer than a bus plus taxi.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Barcelona",
+              "about": "Una hora y cuarto al sur por la AP-7. Un trayecto de verdad, y más barato como traslado con precio fijo que un autobús más taxi."
+            }
+          }
         },
         {
           "slug": "figueres",
           "name": "Figueres",
           "km": 45,
           "minutes": 35,
-          "about": "Thirty-five minutes north. The Dalí museum is in the middle of town."
+          "about": "Thirty-five minutes north. The Dalí museum is in the middle of town.",
+          "i18n": {
+            "es": {
+              "name": "Figueres",
+              "about": "Treinta y cinco minutos al norte. El museo Dalí está en pleno centro."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Girona",
+          "official": "Aeropuerto de Girona–Costa Brava",
+          "about": "El aeropuerto de Girona sirve a la Costa Brava y se usa también para vuelos a Barcelona, noventa kilómetros al sur. Lloret y Tossa quedan media hora al este.",
+          "tips": [
+            "Este aeropuerto está a 90 km de Barcelona, no es un aeropuerto de Barcelona. Cuenta con un traslado de verdad.",
+            "La carretera de la costa de la Costa Brava es preciosa y lenta — la autopista es más rápida."
+          ]
+        }
+      }
     },
     {
       "iata": "REU",
@@ -1309,37 +1883,78 @@
           "name": "Salou",
           "km": 15,
           "minutes": 18,
-          "about": "Under twenty minutes. The resort curves around a bay with the hotels behind it, and PortAventura is just inland."
+          "about": "Under twenty minutes. The resort curves around a bay with the hotels behind it, and PortAventura is just inland.",
+          "i18n": {
+            "es": {
+              "name": "Salou",
+              "about": "Menos de veinte minutos. El complejo se curva alrededor de una bahía con los hoteles detrás, y PortAventura queda justo tierra adentro."
+            }
+          }
         },
         {
           "slug": "cambrils",
           "name": "Cambrils",
           "km": 18,
           "minutes": 20,
-          "about": "Twenty minutes down the coast, quieter than Salou and built around a working harbour."
+          "about": "Twenty minutes down the coast, quieter than Salou and built around a working harbour.",
+          "i18n": {
+            "es": {
+              "name": "Cambrils",
+              "about": "Veinte minutos costa abajo, más tranquilo que Salou y levantado alrededor de un puerto pesquero en activo."
+            }
+          }
         },
         {
           "slug": "tarragona",
           "name": "Tarragona",
           "km": 20,
           "minutes": 22,
-          "about": "Twenty minutes east. The Roman amphitheatre sits above the sea and the old town behind it is walled."
+          "about": "Twenty minutes east. The Roman amphitheatre sits above the sea and the old town behind it is walled.",
+          "i18n": {
+            "es": {
+              "name": "Tarragona",
+              "about": "Veinte minutos al este. El anfiteatro romano domina el mar y el casco antiguo que queda detrás está amurallado."
+            }
+          }
         },
         {
           "slug": "portaventura",
           "name": "PortAventura",
           "km": 12,
           "minutes": 15,
-          "about": "A quarter of an hour. The park hotels have their own entrance road, separate from the main gate."
+          "about": "A quarter of an hour. The park hotels have their own entrance road, separate from the main gate.",
+          "i18n": {
+            "es": {
+              "name": "PortAventura",
+              "about": "Un cuarto de hora. Los hoteles del parque tienen su propio acceso, separado de la entrada principal."
+            }
+          }
         },
         {
           "slug": "barcelona",
           "name": "Barcelona city centre",
           "km": 110,
           "minutes": 80,
-          "about": "An hour and twenty north on the AP-7."
+          "about": "An hour and twenty north on the AP-7.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Barcelona",
+              "about": "Una hora y veinte al norte por la AP-7."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Reus",
+          "official": "Aeropuerto de Reus",
+          "about": "Reus sirve a la Costa Dorada y a PortAventura. Salou y Cambrils quedan a menos de veinte minutos, y Barcelona está una hora y media al norte.",
+          "tips": [
+            "PortAventura está a 12 km de la terminal — el parque temático más cercano a un aeropuerto en España.",
+            "Salou y Cambrils se funden a lo largo de la misma costa."
+          ]
+        }
+      }
     },
     {
       "iata": "RMU",
@@ -1359,37 +1974,78 @@
           "name": "Murcia city centre",
           "km": 25,
           "minutes": 25,
-          "about": "Twenty-five minutes north. The cathedral square and the Segura riverside are the centre."
+          "about": "Twenty-five minutes north. The cathedral square and the Segura riverside are the centre.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Murcia",
+              "about": "Veinticinco minutos al norte. La plaza de la catedral y la ribera del Segura son el centro."
+            }
+          }
         },
         {
           "slug": "cartagena",
           "name": "Cartagena",
           "km": 35,
           "minutes": 30,
-          "about": "Half an hour south-east. The Roman theatre and the naval port are both by the water."
+          "about": "Half an hour south-east. The Roman theatre and the naval port are both by the water.",
+          "i18n": {
+            "es": {
+              "name": "Cartagena",
+              "about": "Media hora al sureste. El teatro romano y el puerto militar están los dos junto al agua."
+            }
+          }
         },
         {
           "slug": "la-manga",
           "name": "La Manga del Mar Menor",
           "km": 55,
           "minutes": 45,
-          "about": "Forty-five minutes east, then out along the sandbar. The strip runs 21 km with numbered access points — give the number."
+          "about": "Forty-five minutes east, then out along the sandbar. The strip runs 21 km with numbered access points — give the number.",
+          "i18n": {
+            "es": {
+              "name": "La Manga del Mar Menor",
+              "about": "Cuarenta y cinco minutos al este, y después a lo largo de la lengua de arena. La franja recorre 21 km con accesos numerados — da el número."
+            }
+          }
         },
         {
           "slug": "torrevieja",
           "name": "Torrevieja",
           "km": 60,
           "minutes": 50,
-          "about": "Fifty minutes north-east into Alicante province."
+          "about": "Fifty minutes north-east into Alicante province.",
+          "i18n": {
+            "es": {
+              "name": "Torrevieja",
+              "about": "Cincuenta minutos al noreste, ya en la provincia de Alicante."
+            }
+          }
         },
         {
           "slug": "mazarron",
           "name": "Mazarrón",
           "km": 45,
           "minutes": 40,
-          "about": "Forty minutes south-west, a quieter stretch of the same coast."
+          "about": "Forty minutes south-west, a quieter stretch of the same coast.",
+          "i18n": {
+            "es": {
+              "name": "Mazarrón",
+              "about": "Cuarenta minutos al suroeste, un tramo más tranquilo de la misma costa."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Murcia",
+          "official": "Aeropuerto Internacional de la Región de Murcia",
+          "about": "El aeropuerto de Murcia, en Corvera, abrió en 2019 y sirve a la Costa Cálida. Cartagena y La Manga son los destinos principales, ambos a menos de una hora.",
+          "tips": [
+            "Este aeropuerto sustituyó a San Javier, que ahora es solo militar. Comprueba cuál figura en tu reserva.",
+            "La Manga es una lengua de arena de 21 kilómetros — lo que necesita el conductor es el número de la salida."
+          ]
+        }
+      }
     },
     {
       "iata": "LEI",
@@ -1409,37 +2065,78 @@
           "name": "Almería city centre",
           "km": 9,
           "minutes": 15,
-          "about": "A quarter of an hour west. The Alcazaba stands above the old town and the port."
+          "about": "A quarter of an hour west. The Alcazaba stands above the old town and the port.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Almería",
+              "about": "Un cuarto de hora al oeste. La Alcazaba domina el casco antiguo y el puerto."
+            }
+          }
         },
         {
           "slug": "roquetas-de-mar",
           "name": "Roquetas de Mar",
           "km": 30,
           "minutes": 30,
-          "about": "Half an hour west past the greenhouses. The resort runs along a long straight beach."
+          "about": "Half an hour west past the greenhouses. The resort runs along a long straight beach.",
+          "i18n": {
+            "es": {
+              "name": "Roquetas de Mar",
+              "about": "Media hora al oeste pasando los invernaderos. El complejo se extiende a lo largo de una playa larga y recta."
+            }
+          }
         },
         {
           "slug": "cabo-de-gata",
           "name": "Cabo de Gata",
           "km": 30,
           "minutes": 35,
-          "about": "Thirty-five minutes east into the natural park. Some beach access is on unmade road."
+          "about": "Thirty-five minutes east into the natural park. Some beach access is on unmade road.",
+          "i18n": {
+            "es": {
+              "name": "Cabo de Gata",
+              "about": "Treinta y cinco minutos al este, entrando en el parque natural. Algunos accesos a las playas son por pista sin asfaltar."
+            }
+          }
         },
         {
           "slug": "mojacar",
           "name": "Mojácar",
           "km": 90,
           "minutes": 65,
-          "about": "An hour north-east. The white village sits on a hill and the beach is two kilometres below it."
+          "about": "An hour north-east. The white village sits on a hill and the beach is two kilometres below it.",
+          "i18n": {
+            "es": {
+              "name": "Mojácar",
+              "about": "Una hora al noreste. El pueblo blanco corona un cerro y la playa queda dos kilómetros más abajo."
+            }
+          }
         },
         {
           "slug": "granada",
           "name": "Granada",
           "km": 165,
           "minutes": 110,
-          "about": "Just under two hours north-west, climbing to the plateau."
+          "about": "Just under two hours north-west, climbing to the plateau.",
+          "i18n": {
+            "es": {
+              "name": "Granada",
+              "about": "Algo menos de dos horas al noroeste, subiendo a la meseta."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Almería",
+          "official": "Aeropuerto de Almería",
+          "about": "El aeropuerto de Almería está nueve kilómetros al este de la ciudad, al borde del único desierto de Europa. El parque natural de Cabo de Gata empieza a veinte minutos.",
+          "tips": [
+            "A algunas playas de Cabo de Gata se llega por pistas sin asfaltar. Una ubicación en el mapa ayuda.",
+            "El desierto de Tabernas, donde se rodaron los spaghetti westerns, está a media hora tierra adentro."
+          ]
+        }
+      }
     },
     {
       "iata": "XRY",
@@ -1459,37 +2156,78 @@
           "name": "Jerez city centre",
           "km": 8,
           "minutes": 12,
-          "about": "Twelve minutes. The bodegas and the equestrian school are within the same few streets."
+          "about": "Twelve minutes. The bodegas and the equestrian school are within the same few streets.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Jerez",
+              "about": "Doce minutos. Las bodegas y la escuela ecuestre están en las mismas pocas calles."
+            }
+          }
         },
         {
           "slug": "cadiz",
           "name": "Cádiz",
           "km": 45,
           "minutes": 40,
-          "about": "Forty minutes south onto the peninsula. The old town is dense and very narrow."
+          "about": "Forty minutes south onto the peninsula. The old town is dense and very narrow.",
+          "i18n": {
+            "es": {
+              "name": "Cádiz",
+              "about": "Cuarenta minutos al sur, hasta la península. El casco antiguo es denso y de calles muy estrechas."
+            }
+          }
         },
         {
           "slug": "el-puerto-de-santa-maria",
           "name": "El Puerto de Santa María",
           "km": 20,
           "minutes": 20,
-          "about": "Twenty minutes south, across the bay from Cádiz."
+          "about": "Twenty minutes south, across the bay from Cádiz.",
+          "i18n": {
+            "es": {
+              "name": "El Puerto de Santa María",
+              "about": "Veinte minutos al sur, al otro lado de la bahía de Cádiz."
+            }
+          }
         },
         {
           "slug": "seville",
           "name": "Seville",
           "km": 95,
           "minutes": 65,
-          "about": "An hour north on the AP-4."
+          "about": "An hour north on the AP-4.",
+          "i18n": {
+            "es": {
+              "name": "Sevilla",
+              "about": "Una hora al norte por la AP-4."
+            }
+          }
         },
         {
           "slug": "tarifa",
           "name": "Tarifa",
           "km": 115,
           "minutes": 85,
-          "about": "An hour and a half south to the strait. The ferry to Tangier leaves from the port."
+          "about": "An hour and a half south to the strait. The ferry to Tangier leaves from the port.",
+          "i18n": {
+            "es": {
+              "name": "Tarifa",
+              "about": "Una hora y media al sur, hasta el estrecho. El ferry a Tánger sale del puerto."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Jerez",
+          "official": "Aeropuerto de Jerez",
+          "about": "Jerez es la capital del vino y su aeropuerto está a ocho kilómetros del centro. Cádiz queda cuarenta minutos al sur y los pueblos blancos empiezan tierra adentro.",
+          "tips": [
+            "La mayoría de las bodegas requieren reserva y cierran a primera hora de la tarde.",
+            "Tarifa, en la punta sur, es el puerto del ferry a Tánger."
+          ]
+        }
+      }
     },
     {
       "iata": "SDR",
@@ -1509,37 +2247,78 @@
           "name": "Santander city centre",
           "km": 6,
           "minutes": 12,
-          "about": "Twelve minutes. The Sardinero beaches are a further three kilometres round the headland."
+          "about": "Twelve minutes. The Sardinero beaches are a further three kilometres round the headland.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Santander",
+              "about": "Doce minutos. Las playas del Sardinero quedan tres kilómetros más allá, rodeando la península."
+            }
+          }
         },
         {
           "slug": "ferry-port",
           "name": "Santander ferry terminal",
           "km": 6,
           "minutes": 12,
-          "about": "Twelve minutes to the Brittany Ferries berth, right in the city."
+          "about": "Twelve minutes to the Brittany Ferries berth, right in the city.",
+          "i18n": {
+            "es": {
+              "name": "Terminal de ferry de Santander",
+              "about": "Doce minutos hasta el atraque de Brittany Ferries, en plena ciudad."
+            }
+          }
         },
         {
           "slug": "santillana-del-mar",
           "name": "Santillana del Mar",
           "km": 30,
           "minutes": 30,
-          "about": "Half an hour west. The whole village is a preserved medieval street, closed to traffic."
+          "about": "Half an hour west. The whole village is a preserved medieval street, closed to traffic.",
+          "i18n": {
+            "es": {
+              "name": "Santillana del Mar",
+              "about": "Media hora al oeste. El pueblo entero es una calle medieval conservada, cerrada al tráfico."
+            }
+          }
         },
         {
           "slug": "bilbao",
           "name": "Bilbao",
           "km": 105,
           "minutes": 75,
-          "about": "An hour and a quarter east along the coast motorway."
+          "about": "An hour and a quarter east along the coast motorway.",
+          "i18n": {
+            "es": {
+              "name": "Bilbao",
+              "about": "Una hora y cuarto al este por la autopista de la costa."
+            }
+          }
         },
         {
           "slug": "potes",
           "name": "Potes",
           "km": 115,
           "minutes": 95,
-          "about": "An hour and a half south-west into the Picos de Europa."
+          "about": "An hour and a half south-west into the Picos de Europa.",
+          "i18n": {
+            "es": {
+              "name": "Potes",
+              "about": "Una hora y media al suroeste, entrando en los Picos de Europa."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Santander",
+          "official": "Aeropuerto Seve Ballesteros–Santander",
+          "about": "El aeropuerto de Santander está a cinco kilómetros de la ciudad y cerca de la terminal del ferry. La costa cántabra y los Picos de Europa quedan los dos al alcance.",
+          "tips": [
+            "La travesía de Brittany Ferries a Plymouth y Portsmouth sale del puerto de la ciudad, a 6 km.",
+            "Santillana del Mar y las cuevas de Altamira están a media hora al oeste."
+          ]
+        }
+      }
     },
     {
       "iata": "OVD",
@@ -1559,37 +2338,78 @@
           "name": "Oviedo",
           "km": 47,
           "minutes": 40,
-          "about": "Forty minutes south. The old town around the cathedral is compact and pedestrian."
+          "about": "Forty minutes south. The old town around the cathedral is compact and pedestrian.",
+          "i18n": {
+            "es": {
+              "name": "Oviedo",
+              "about": "Cuarenta minutos al sur. El casco antiguo alrededor de la catedral es compacto y peatonal."
+            }
+          }
         },
         {
           "slug": "gijon",
           "name": "Gijón",
           "km": 40,
           "minutes": 35,
-          "about": "Thirty-five minutes east. The Cimadevilla headland and San Lorenzo beach are the centre."
+          "about": "Thirty-five minutes east. The Cimadevilla headland and San Lorenzo beach are the centre.",
+          "i18n": {
+            "es": {
+              "name": "Gijón",
+              "about": "Treinta y cinco minutos al este. El cerro de Cimadevilla y la playa de San Lorenzo son el centro."
+            }
+          }
         },
         {
           "slug": "aviles",
           "name": "Avilés",
           "km": 15,
           "minutes": 18,
-          "about": "Under twenty minutes, the closest city to the terminal."
+          "about": "Under twenty minutes, the closest city to the terminal.",
+          "i18n": {
+            "es": {
+              "name": "Avilés",
+              "about": "Menos de veinte minutos, la ciudad más cercana a la terminal."
+            }
+          }
         },
         {
           "slug": "llanes",
           "name": "Llanes",
           "km": 130,
           "minutes": 90,
-          "about": "An hour and a half east along the coast, at the edge of the Picos."
+          "about": "An hour and a half east along the coast, at the edge of the Picos.",
+          "i18n": {
+            "es": {
+              "name": "Llanes",
+              "about": "Hora y media al este por la costa, al borde de los Picos."
+            }
+          }
         },
         {
           "slug": "cangas-de-onis",
           "name": "Cangas de Onís",
           "km": 115,
           "minutes": 85,
-          "about": "An hour and a half south-east, the gateway to Covadonga and the lakes."
+          "about": "An hour and a half south-east, the gateway to Covadonga and the lakes.",
+          "i18n": {
+            "es": {
+              "name": "Cangas de Onís",
+              "about": "Hora y media al sureste, la puerta de Covadonga y los lagos."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Asturias",
+          "official": "Aeropuerto de Asturias",
+          "about": "El aeropuerto de Asturias está entre Oviedo, Gijón y Avilés, a unos cuarenta minutos de cada una. Los Picos de Europa quedan hora y media al este.",
+          "tips": [
+            "Tres ciudades, tres direcciones — Oviedo al sur, Gijón al este, Avilés la más cercana.",
+            "La costa asturiana es verde y a menudo lluviosa, incluso en agosto."
+          ]
+        }
+      }
     },
     {
       "iata": "MAH",
@@ -1609,37 +2429,78 @@
           "name": "Mahón",
           "km": 5,
           "minutes": 10,
-          "about": "Ten minutes. The port is below the town and reached by a steep road."
+          "about": "Ten minutes. The port is below the town and reached by a steep road.",
+          "i18n": {
+            "es": {
+              "name": "Mahón",
+              "about": "Diez minutos. El puerto queda por debajo de la ciudad y se baja por una carretera empinada."
+            }
+          }
         },
         {
           "slug": "ciutadella",
           "name": "Ciutadella",
           "km": 45,
           "minutes": 45,
-          "about": "Forty-five minutes west along the Me-1. The old town is walled and pedestrian."
+          "about": "Forty-five minutes west along the Me-1. The old town is walled and pedestrian.",
+          "i18n": {
+            "es": {
+              "name": "Ciutadella",
+              "about": "Cuarenta y cinco minutos al oeste por la Me-1. El casco antiguo es amurallado y peatonal."
+            }
+          }
         },
         {
           "slug": "cala-en-porter",
           "name": "Cala en Porter",
           "km": 12,
           "minutes": 18,
-          "about": "Under twenty minutes south, built above a gorge running down to the beach."
+          "about": "Under twenty minutes south, built above a gorge running down to the beach.",
+          "i18n": {
+            "es": {
+              "name": "Cala en Porter",
+              "about": "Menos de veinte minutos al sur, construida sobre un barranco que baja hasta la playa."
+            }
+          }
         },
         {
           "slug": "fornells",
           "name": "Fornells",
           "km": 30,
           "minutes": 30,
-          "about": "Half an hour north to the fishing village on its bay."
+          "about": "Half an hour north to the fishing village on its bay.",
+          "i18n": {
+            "es": {
+              "name": "Fornells",
+              "about": "Media hora al norte, hasta el pueblo pesquero en su bahía."
+            }
+          }
         },
         {
           "slug": "son-bou",
           "name": "Son Bou",
           "km": 25,
           "minutes": 25,
-          "about": "Twenty-five minutes south-west to the island's longest beach."
+          "about": "Twenty-five minutes south-west to the island's longest beach.",
+          "i18n": {
+            "es": {
+              "name": "Son Bou",
+              "about": "Veinticinco minutos al suroeste, hasta la playa más larga de la isla."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Menorca",
+          "official": "Aeropuerto de Menorca",
+          "about": "El aeropuerto de Menorca está a cuatro kilómetros de Mahón. La isla es lo bastante pequeña como para que nada quede a más de cuarenta y cinco minutos, y los dos extremos — Mahón y Ciutadella — están a una hora.",
+          "tips": [
+            "Mahón está al este y Ciutadella al oeste. La carretera de la isla las une en 45 minutos.",
+            "A muchas de las mejores calas se llega a pie desde un aparcamiento."
+          ]
+        }
+      }
     },
     {
       "iata": "TFN",
@@ -1659,37 +2520,78 @@
           "name": "Santa Cruz de Tenerife",
           "km": 13,
           "minutes": 20,
-          "about": "Twenty minutes down to the capital and the cruise port."
+          "about": "Twenty minutes down to the capital and the cruise port.",
+          "i18n": {
+            "es": {
+              "name": "Santa Cruz de Tenerife",
+              "about": "Veinte minutos bajando a la capital y al puerto de cruceros."
+            }
+          }
         },
         {
           "slug": "la-laguna",
           "name": "La Laguna",
           "km": 6,
           "minutes": 12,
-          "about": "Twelve minutes. The UNESCO old town is a grid of colonial streets, largely pedestrian."
+          "about": "Twelve minutes. The UNESCO old town is a grid of colonial streets, largely pedestrian.",
+          "i18n": {
+            "es": {
+              "name": "La Laguna",
+              "about": "Doce minutos. El casco antiguo, Patrimonio de la Humanidad, es una cuadrícula de calles coloniales en buena parte peatonal."
+            }
+          }
         },
         {
           "slug": "puerto-de-la-cruz",
           "name": "Puerto de la Cruz",
           "km": 35,
           "minutes": 35,
-          "about": "Thirty-five minutes west along the north coast."
+          "about": "Thirty-five minutes west along the north coast.",
+          "i18n": {
+            "es": {
+              "name": "Puerto de la Cruz",
+              "about": "Treinta y cinco minutos al oeste por la costa norte."
+            }
+          }
         },
         {
           "slug": "costa-adeje",
           "name": "Costa Adeje",
           "km": 85,
           "minutes": 70,
-          "about": "An hour and ten south on the TF-1, crossing to the sunny side."
+          "about": "An hour and ten south on the TF-1, crossing to the sunny side.",
+          "i18n": {
+            "es": {
+              "name": "Costa Adeje",
+              "about": "Una hora y diez al sur por la TF-1, cruzando al lado soleado."
+            }
+          }
         },
         {
           "slug": "playa-de-las-americas",
           "name": "Playa de las Américas",
           "km": 80,
           "minutes": 65,
-          "about": "An hour and five south, the main resort strip."
+          "about": "An hour and five south, the main resort strip.",
+          "i18n": {
+            "es": {
+              "name": "Playa de las Américas",
+              "about": "Una hora y cinco al sur, la franja turística principal."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Tenerife Norte",
+          "official": "Aeropuerto de Tenerife Norte–Ciudad de La Laguna",
+          "about": "Tenerife Norte concentra la mayoría de los vuelos interinsulares y peninsulares. Está sobre La Laguna, en una zona que atrapa nubes, y los complejos del sur quedan a una hora por la TF-1.",
+          "tips": [
+            "Este no es Tenerife Sur. Están a una hora uno del otro y es fácil confundirlos al reservar.",
+            "El lado norte es más fresco y más verde. Lleva algo de abrigo."
+          ]
+        }
+      }
     },
     {
       "iata": "VGO",
@@ -1709,37 +2611,78 @@
           "name": "Vigo city centre",
           "km": 9,
           "minutes": 18,
-          "about": "Under twenty minutes down to the port and the old town."
+          "about": "Under twenty minutes down to the port and the old town.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Vigo",
+              "about": "Menos de veinte minutos bajando al puerto y al casco viejo."
+            }
+          }
         },
         {
           "slug": "baiona",
           "name": "Baiona",
           "km": 30,
           "minutes": 30,
-          "about": "Half an hour south-west, around the ría to the fortress hotel."
+          "about": "Half an hour south-west, around the ría to the fortress hotel.",
+          "i18n": {
+            "es": {
+              "name": "Baiona",
+              "about": "Media hora al suroeste, rodeando la ría hasta el parador de la fortaleza."
+            }
+          }
         },
         {
           "slug": "pontevedra",
           "name": "Pontevedra",
           "km": 30,
           "minutes": 28,
-          "about": "Half an hour north at the head of its own ría."
+          "about": "Half an hour north at the head of its own ría.",
+          "i18n": {
+            "es": {
+              "name": "Pontevedra",
+              "about": "Media hora al norte, al fondo de su propia ría."
+            }
+          }
         },
         {
           "slug": "santiago",
           "name": "Santiago de Compostela",
           "km": 90,
           "minutes": 60,
-          "about": "An hour north on the AP-9."
+          "about": "An hour north on the AP-9.",
+          "i18n": {
+            "es": {
+              "name": "Santiago de Compostela",
+              "about": "Una hora al norte por la AP-9."
+            }
+          }
         },
         {
           "slug": "porto",
           "name": "Porto",
           "km": 150,
           "minutes": 105,
-          "about": "An hour and three quarters south into Portugal. One fixed price, one driver, no border stop."
+          "about": "An hour and three quarters south into Portugal. One fixed price, one driver, no border stop.",
+          "i18n": {
+            "es": {
+              "name": "Oporto",
+              "about": "Una hora y tres cuartos al sur, ya en Portugal. Un precio fijo, un conductor y ninguna parada en la frontera."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Vigo",
+          "official": "Aeropuerto de Vigo",
+          "about": "El aeropuerto de Vigo está nueve kilómetros al este de la ciudad, sobre la ría. Portugal queda cuarenta minutos al sur y Santiago una hora al norte.",
+          "tips": [
+            "Oporto está a dos horas al sur — a menudo sale más barato como un solo traslado que cruzando en tren.",
+            "El ferry a las islas Cíes sale del puerto de la ciudad y necesita permiso en verano."
+          ]
+        }
+      }
     },
     {
       "iata": "EAS",
@@ -1759,37 +2702,78 @@
           "name": "San Sebastián city centre",
           "km": 20,
           "minutes": 25,
-          "about": "Twenty-five minutes west along the coast. The old town is pedestrian and the drop-off is at its edge."
+          "about": "Twenty-five minutes west along the coast. The old town is pedestrian and the drop-off is at its edge.",
+          "i18n": {
+            "es": {
+              "name": "Centro de San Sebastián",
+              "about": "Veinticinco minutos al oeste por la costa. El casco viejo es peatonal y la bajada es en su borde."
+            }
+          }
         },
         {
           "slug": "hondarribia",
           "name": "Hondarribia",
           "km": 2,
           "minutes": 6,
-          "about": "Six minutes. The walled town sits above the fishing port at the river mouth."
+          "about": "Six minutes. The walled town sits above the fishing port at the river mouth.",
+          "i18n": {
+            "es": {
+              "name": "Hondarribia",
+              "about": "Seis minutos. La villa amurallada domina el puerto pesquero en la desembocadura."
+            }
+          }
         },
         {
           "slug": "biarritz",
           "name": "Biarritz",
           "km": 35,
           "minutes": 30,
-          "about": "Half an hour north into France, along the coast."
+          "about": "Half an hour north into France, along the coast.",
+          "i18n": {
+            "es": {
+              "name": "Biarritz",
+              "about": "Media hora al norte, ya en Francia, siguiendo la costa."
+            }
+          }
         },
         {
           "slug": "bilbao",
           "name": "Bilbao",
           "km": 100,
           "minutes": 70,
-          "about": "An hour and ten west on the AP-8."
+          "about": "An hour and ten west on the AP-8.",
+          "i18n": {
+            "es": {
+              "name": "Bilbao",
+              "about": "Una hora y diez al oeste por la AP-8."
+            }
+          }
         },
         {
           "slug": "zarautz",
           "name": "Zarautz",
           "km": 40,
           "minutes": 35,
-          "about": "Thirty-five minutes west, a surf town on a long beach."
+          "about": "Thirty-five minutes west, a surf town on a long beach.",
+          "i18n": {
+            "es": {
+              "name": "Zarautz",
+              "about": "Treinta y cinco minutos al oeste, un pueblo surfero sobre una playa larga."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de San Sebastián",
+          "official": "Aeropuerto de San Sebastián",
+          "about": "El aeropuerto de San Sebastián está en Hondarribia, veinte kilómetros al este de la ciudad y justo en la frontera francesa. Biarritz queda media hora al norte.",
+          "tips": [
+            "El aeropuerto está en la frontera francesa — Biarritz está más cerca que algunas localidades españolas.",
+            "La Concha y la Parte Vieja son peatonales."
+          ]
+        }
+      }
     },
     {
       "iata": "SPC",
@@ -1809,37 +2793,78 @@
           "name": "Santa Cruz de La Palma",
           "km": 8,
           "minutes": 12,
-          "about": "Twelve minutes north along the coast to the small colonial capital."
+          "about": "Twelve minutes north along the coast to the small colonial capital.",
+          "i18n": {
+            "es": {
+              "name": "Santa Cruz de La Palma",
+              "about": "Doce minutos al norte por la costa, hasta la pequeña capital colonial."
+            }
+          }
         },
         {
           "slug": "los-cancajos",
           "name": "Los Cancajos",
           "km": 3,
           "minutes": 8,
-          "about": "Eight minutes, the closest resort to the terminal."
+          "about": "Eight minutes, the closest resort to the terminal.",
+          "i18n": {
+            "es": {
+              "name": "Los Cancajos",
+              "about": "Ocho minutos, el complejo más cercano a la terminal."
+            }
+          }
         },
         {
           "slug": "los-llanos",
           "name": "Los Llanos de Aridane",
           "km": 35,
           "minutes": 50,
-          "about": "Fifty minutes across the island, over the ridge to the western side."
+          "about": "Fifty minutes across the island, over the ridge to the western side.",
+          "i18n": {
+            "es": {
+              "name": "Los Llanos de Aridane",
+              "about": "Cincuenta minutos cruzando la isla, por encima de la cumbre hasta el lado oeste."
+            }
+          }
         },
         {
           "slug": "puerto-naos",
           "name": "Puerto Naos",
           "km": 42,
           "minutes": 60,
-          "about": "An hour to the west coast beach, below the volcano."
+          "about": "An hour to the west coast beach, below the volcano.",
+          "i18n": {
+            "es": {
+              "name": "Puerto Naos",
+              "about": "Una hora hasta la playa de la costa oeste, al pie del volcán."
+            }
+          }
         },
         {
           "slug": "tazacorte",
           "name": "Tazacorte",
           "km": 40,
           "minutes": 55,
-          "about": "Fifty-five minutes west, the port below Los Llanos."
+          "about": "Fifty-five minutes west, the port below Los Llanos.",
+          "i18n": {
+            "es": {
+              "name": "Tazacorte",
+              "about": "Cincuenta y cinco minutos al oeste, el puerto que queda por debajo de Los Llanos."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de La Palma",
+          "official": "Aeropuerto de La Palma",
+          "about": "El aeropuerto de La Palma está a ocho kilómetros de Santa Cruz, en la costa este. La isla es abrupta y la carretera al lado oeste cruza la cumbre — los trayectos llevan más tiempo del que sugieren las distancias.",
+          "tips": [
+            "La isla es montañosa. Un trayecto de 35 kilómetros puede llevar una hora.",
+            "La carretera al observatorio del Roque de los Muchachos sube hasta los 2.400 metros."
+          ]
+        }
+      }
     }
   ]
 }
