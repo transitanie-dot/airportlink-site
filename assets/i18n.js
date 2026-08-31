@@ -126,6 +126,23 @@
       .then(done, done);
   }
 
+  /**
+   * Quem quiser correr algo quando a tradução estiver pronta usa
+   * isto, não o evento.
+   *
+   * O evento dispara uma vez e só apanha quem já estava à escuta —
+   * e a ordem entre o dicionário chegar e os blocos da página
+   * arrancarem não é garantida. Este método corre já se o dicionário
+   * estiver pronto, e fica à espera se não estiver.
+   */
+  var pendentes = [];
+
+  function onReady(fn) {
+    if (typeof fn !== 'function') return;
+    if (window.i18n.ready) { fn(); return; }
+    pendentes.push(fn);
+  }
+
   window.i18n = {
     lang: lang,
     langs: LANGS,
@@ -134,6 +151,7 @@
     apply: apply,
     formatDate: formatDate,
     setLang: setLang,
+    onReady: onReady,
     ready: false
   };
 
@@ -144,8 +162,15 @@
 
     function paint() {
       apply();
-      // O cabeçalho é desenhado pelo layout.js, que pode chegar
-      // depois de nós. Este evento diz-lhe para se retraduzir.
+
+      // Quem já se inscreveu, corre agora. Quem se inscrever depois
+      // corre de imediato, porque o ready já é verdadeiro.
+      pendentes.forEach(function (fn) {
+        try { fn(); } catch (e) { console.error('[i18n]', e); }
+      });
+      pendentes = [];
+
+      // O evento fica, para quem prefira escutá-lo.
       document.dispatchEvent(new CustomEvent('i18n:ready', { detail: { lang: lang } }));
     }
 
