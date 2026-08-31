@@ -648,5 +648,6 @@
  "st.scheduled": "Agendada",
  "ph.looksRight": "Parece certo.",
  "ph.wrongLength": "Introduziu {n} dígitos. Os números de {pais} costumam ter {esperado}.",
- "ph.or": "ou"
+ "ph.or": "ou",
+ "nav.blog": "Blogue"
 }
