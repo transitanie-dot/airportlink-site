@@ -421,6 +421,552 @@
       },
       "art": "noite",
       "image": "/assets/img/blog/airportlink-is-live.jpg"
+    },
+    {
+      "slug": "faro-airport-to-algarve-what-it-costs",
+      "date": "2026-09-01",
+      "tag": "prices",
+      "art": "costa",
+      "pt": {
+        "title": "Quanto custa mesmo ir do aeroporto de Faro ao Algarve",
+        "desc": "Táxi, autocarro, carro de aluguer ou transfer privado. Os números reais para Albufeira, Vilamoura, Lagos e mais quatro destinos, e onde cada opção falha.",
+        "lead": "O aeroporto de Faro serve todo o Algarve, e quase ninguém que lá aterra vai ficar em Faro. A pergunta que toda a gente faz antes de reservar é a mesma: quanto vai custar chegar ao hotel. Aqui estão os números, sem os asteriscos.",
+        "body": [
+          [
+            "h2",
+            "As quatro maneiras de sair do aeroporto"
+          ],
+          [
+            "p",
+            "Faro tem um terminal só e quatro formas de sair dele. Cada uma serve alguém, e cada uma falha alguém."
+          ],
+          [
+            "p",
+            "O autocarro da linha 16 leva-o a Faro cidade por 2,70 € em vinte minutos. É a opção mais barata que existe, e é inútil para a maioria dos passageiros — não vai a Albufeira, não vai a Vilamoura, não vai a Lagos. Para de circular antes das 20:00 e só aceita dinheiro."
+          ],
+          [
+            "p",
+            "O comboio parece atraente até perceber que não há ligação ao aeroporto. Tem de apanhar um táxi até à estação de Faro, esperar, e depois fazer transbordo. Com malas e crianças, o que poupou em bilhete perdeu em duas horas de vida."
+          ],
+          [
+            "h2",
+            "O táxi ao taxímetro"
+          ],
+          [
+            "p",
+            "A praça de táxis está sempre lá e não precisa de marcação, o que é a sua verdadeira vantagem. O problema é que o preço só se conhece no fim."
+          ],
+          [
+            "p",
+            "A viagem a Albufeira anda pelos 60 a 70 € ao taxímetro em condições normais. Num sábado de agosto às cinco da tarde, com a A22 carregada, pode passar dos 85 € — porque o taxímetro conta o tempo parado. Depois das 21:00 e ao fim de semana acresce cerca de 20%."
+          ],
+          [
+            "quote",
+            "Um taxímetro cobra-lhe o trânsito. Um preço fixo não."
+          ],
+          [
+            "p",
+            "Há ainda a fila. Num sábado de pico do verão, as chegadas de Faro são as mais movimentadas de Portugal, e a espera pela praça pode passar de meia hora."
+          ],
+          [
+            "h2",
+            "O carro de aluguer"
+          ],
+          [
+            "p",
+            "Faz sentido se planeia andar pelo Algarve todos os dias. Não faz sentido se vai ficar num resort e sair duas vezes."
+          ],
+          [
+            "p",
+            "O preço anunciado — 30 a 40 € por dia em época baixa — não é o que paga. Junte o seguro, o combustível, o estacionamento no hotel e a caução bloqueada no cartão. E em agosto os balcões do aeroporto fazem filas de uma hora, no fim de um dia de viagem."
+          ],
+          [
+            "h2",
+            "O transfer privado"
+          ],
+          [
+            "p",
+            "O preço é acordado antes de reservar e não muda. Inclui a viatura inteira, as portagens e os impostos. Estes são os nossos preços atuais a partir de Faro, para até quatro passageiros:"
+          ],
+          [
+            "prices",
+            "PT:faro"
+          ],
+          [
+            "p",
+            "Para grupos de cinco a oito pessoas o valor sobe para uma carrinha — Albufeira fica em 93 €, Lagos em 178 €. Repartido por seis pessoas, dá menos de 16 € por pessoa até Albufeira."
+          ],
+          [
+            "h2",
+            "Onde a conta muda de lado"
+          ],
+          [
+            "p",
+            "Para uma ou duas pessoas com pouca bagagem que fiquem em Faro cidade, o autocarro ganha e não há discussão. Dois euros e setenta contra qualquer outra coisa não se compara."
+          ],
+          [
+            "p",
+            "A partir de três pessoas, ou de qualquer destino a poente de Faro, a conta inverte-se. Uma família de quatro a caminho de Albufeira paga 55 € num transfer com preço fixo, contra 60 a 85 € num táxi cujo valor só descobre no fim."
+          ],
+          [
+            "p",
+            "E há uma variável que nenhuma tabela mostra: o voo atrasa. Se aterrar noventa minutos tarde, o táxi já não está reservado e o balcão do aluguer pode ter fechado. Um transfer segue o número de voo e ajusta-se sozinho."
+          ],
+          [
+            "h2",
+            "O que perguntar antes de reservar, seja a quem for"
+          ],
+          [
+            "ul",
+            "O preço inclui portagens? A A22 deixou de as ter em 2025, mas as ligações a norte ainda têm.",
+            "O que acontece se o voo atrasar? Sessenta minutos de espera gratuita é o padrão razoável.",
+            "Cabe a bagagem? Uma mala grande por pessoa num sedan de quatro lugares raramente cabe.",
+            "Onde é exatamente a recolha? Em Faro é a sala de chegadas, à saída da alfândega."
+          ],
+          [
+            "h2",
+            "Uma nota sobre os nomes dos sítios"
+          ],
+          [
+            "p",
+            "Albufeira tem três zonas hoteleiras a quilómetros umas das outras. Vilamoura estende-se por vários quilómetros à volta da marina. Dizer só o nome da vila é a causa mais frequente de uma chegada atrasada no Algarve."
+          ],
+          [
+            "p",
+            "Dê o nome do hotel ou do condomínio. É o único dado que o motorista precisa e que a maioria das pessoas esquece."
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-albufeira/",
+            "Faro para Albufeira"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-vilamoura/",
+            "Faro para Vilamoura"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-lagos/",
+            "Faro para Lagos"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-carvoeiro/",
+            "Faro para Carvoeiro"
+          ],
+          [
+            "link",
+            "/airports/portugal/faro/",
+            "Todos os transfers de Faro"
+          ]
+        ]
+      },
+      "en": {
+        "title": "What it actually costs to get from Faro Airport to the Algarve",
+        "desc": "Taxi, bus, hire car or private transfer. The real numbers for Albufeira, Vilamoura, Lagos and four more, and where each option falls down.",
+        "lead": "Faro Airport serves the whole Algarve, and almost nobody who lands there is staying in Faro. The question everyone asks before booking is the same one: what will it cost to reach the hotel. Here are the numbers, without the asterisks.",
+        "body": [
+          [
+            "h2",
+            "The four ways out of the airport"
+          ],
+          [
+            "p",
+            "Faro has one terminal and four ways to leave it. Each suits somebody, and each fails somebody."
+          ],
+          [
+            "p",
+            "The number 16 bus takes you into Faro town for €2.70 in twenty minutes. It is the cheapest thing available, and it is useless to most passengers — it does not go to Albufeira, Vilamoura or Lagos. It stops running before 20:00 and takes cash only."
+          ],
+          [
+            "p",
+            "The train looks appealing until you realise there is no airport connection. You need a taxi to Faro station, then a wait, then a change. With luggage and children, what you saved on the fare you lost in two hours of your life."
+          ],
+          [
+            "h2",
+            "The metered taxi"
+          ],
+          [
+            "p",
+            "The rank is always there and needs no booking, which is its real advantage. The problem is that you only learn the price at the end."
+          ],
+          [
+            "p",
+            "Albufeira runs €60 to €70 on the meter in normal conditions. On an August Saturday at five in the afternoon, with the A22 busy, it can pass €85 — because the meter charges you for sitting still. After 21:00 and at weekends, add roughly 20%."
+          ],
+          [
+            "quote",
+            "A meter charges you for traffic. A fixed price does not."
+          ],
+          [
+            "p",
+            "Then there is the queue. On a peak summer Saturday, Faro's arrivals are the busiest in Portugal, and the wait at the rank can pass half an hour."
+          ],
+          [
+            "h2",
+            "The hire car"
+          ],
+          [
+            "p",
+            "It makes sense if you plan to drive around the Algarve every day. It makes no sense if you are staying at a resort and going out twice."
+          ],
+          [
+            "p",
+            "The advertised price — €30 to €40 a day out of season — is not what you pay. Add the insurance, the fuel, the hotel parking and the deposit blocked on your card. And in August the airport desks run hour-long queues, at the end of a travel day."
+          ],
+          [
+            "h2",
+            "The private transfer"
+          ],
+          [
+            "p",
+            "The price is agreed before you book and does not move. It covers the whole car, the tolls and the taxes. These are our current prices from Faro, for up to four passengers:"
+          ],
+          [
+            "prices",
+            "PT:faro"
+          ],
+          [
+            "p",
+            "For groups of five to eight the vehicle becomes a van — Albufeira is €93, Lagos €178. Split across six people, that is under €16 each to Albufeira."
+          ],
+          [
+            "h2",
+            "Where the maths flips"
+          ],
+          [
+            "p",
+            "For one or two people with light luggage staying in Faro town, the bus wins and there is no argument. Two euros seventy against anything else is not a comparison."
+          ],
+          [
+            "p",
+            "From three people up, or for any destination west of Faro, the maths inverts. A family of four heading to Albufeira pays €55 on a fixed-price transfer, against €60 to €85 in a taxi whose total they only discover at the end."
+          ],
+          [
+            "p",
+            "And there is a variable no table shows: the flight is late. Land ninety minutes behind and the taxi is not booked for you, and the hire desk may have closed. A transfer follows the flight number and adjusts itself."
+          ],
+          [
+            "h2",
+            "What to ask before booking, whoever you book with"
+          ],
+          [
+            "ul",
+            "Does the price include tolls? The A22 dropped them in 2025, but the roads north still have them.",
+            "What happens if the flight is late? Sixty minutes of free waiting is the reasonable standard.",
+            "Will the luggage fit? One large case per person rarely fits a four-seat sedan.",
+            "Where exactly is the pick-up? At Faro it is the arrivals hall, just past customs."
+          ],
+          [
+            "h2",
+            "A note about place names"
+          ],
+          [
+            "p",
+            "Albufeira has three hotel areas kilometres apart. Vilamoura spreads for several kilometres around the marina. Giving only the town name is the most common cause of a late arrival in the Algarve."
+          ],
+          [
+            "p",
+            "Give the hotel or the resort name. It is the one piece of information the driver needs and the one most people forget."
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-albufeira/",
+            "Faro to Albufeira"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-vilamoura/",
+            "Faro to Vilamoura"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-lagos/",
+            "Faro to Lagos"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-carvoeiro/",
+            "Faro to Carvoeiro"
+          ],
+          [
+            "link",
+            "/airports/portugal/faro/",
+            "All Faro transfers"
+          ]
+        ]
+      },
+      "es": {
+        "title": "Cuánto cuesta de verdad ir del aeropuerto de Faro al Algarve",
+        "desc": "Taxi, autobús, coche de alquiler o traslado privado. Las cifras reales para Albufeira, Vilamoura, Lagos y cuatro destinos más, y dónde falla cada opción.",
+        "lead": "El aeropuerto de Faro sirve a todo el Algarve, y casi nadie que aterriza allí se queda en Faro. La pregunta que todo el mundo hace antes de reservar es la misma: cuánto va a costar llegar al hotel. Aquí están las cifras, sin asteriscos.",
+        "body": [
+          [
+            "h2",
+            "Las cuatro maneras de salir del aeropuerto"
+          ],
+          [
+            "p",
+            "Faro tiene una sola terminal y cuatro formas de salir de ella. Cada una le sirve a alguien, y cada una le falla a alguien."
+          ],
+          [
+            "p",
+            "El autobús de la línea 16 te lleva a Faro ciudad por 2,70 € en veinte minutos. Es lo más barato que existe, y es inútil para la mayoría de los pasajeros: no va a Albufeira, ni a Vilamoura, ni a Lagos. Deja de circular antes de las 20:00 y solo acepta efectivo."
+          ],
+          [
+            "p",
+            "El tren parece atractivo hasta que descubres que no hay conexión con el aeropuerto. Necesitas un taxi hasta la estación de Faro, luego esperar, luego hacer transbordo. Con equipaje y niños, lo que ahorraste en billete lo perdiste en dos horas de tu vida."
+          ],
+          [
+            "h2",
+            "El taxi con taxímetro"
+          ],
+          [
+            "p",
+            "La parada siempre está ahí y no requiere reserva, que es su verdadera ventaja. El problema es que solo conoces el precio al final."
+          ],
+          [
+            "p",
+            "Albufeira sale entre 60 y 70 € con taxímetro en condiciones normales. Un sábado de agosto a las cinco de la tarde, con la A22 cargada, puede pasar de 85 € — porque el taxímetro te cobra el tiempo parado. Después de las 21:00 y en fin de semana, suma alrededor de un 20%."
+          ],
+          [
+            "quote",
+            "Un taxímetro te cobra el tráfico. Un precio fijo no."
+          ],
+          [
+            "p",
+            "Y luego está la cola. Un sábado de pico del verano, las llegadas de Faro son las más movidas de Portugal, y la espera en la parada puede superar la media hora."
+          ],
+          [
+            "h2",
+            "El coche de alquiler"
+          ],
+          [
+            "p",
+            "Tiene sentido si piensas recorrer el Algarve todos los días. No lo tiene si te quedas en un complejo y sales dos veces."
+          ],
+          [
+            "p",
+            "El precio anunciado —30 a 40 € al día en temporada baja— no es lo que pagas. Suma el seguro, el combustible, el aparcamiento del hotel y la fianza bloqueada en la tarjeta. Y en agosto los mostradores del aeropuerto hacen colas de una hora, al final de un día de viaje."
+          ],
+          [
+            "h2",
+            "El traslado privado"
+          ],
+          [
+            "p",
+            "El precio se acuerda antes de reservar y no se mueve. Cubre el coche entero, los peajes y los impuestos. Estos son nuestros precios actuales desde Faro, para hasta cuatro pasajeros:"
+          ],
+          [
+            "prices",
+            "PT:faro"
+          ],
+          [
+            "p",
+            "Para grupos de cinco a ocho el vehículo pasa a ser una furgoneta: Albufeira son 93 €, Lagos 178 €. Repartido entre seis personas, sale a menos de 16 € por cabeza hasta Albufeira."
+          ],
+          [
+            "h2",
+            "Dónde cambian las cuentas"
+          ],
+          [
+            "p",
+            "Para una o dos personas con poco equipaje que se quedan en Faro ciudad, gana el autobús y no hay discusión. Dos euros setenta contra cualquier otra cosa no es comparación."
+          ],
+          [
+            "p",
+            "A partir de tres personas, o para cualquier destino al oeste de Faro, la cuenta se invierte. Una familia de cuatro camino de Albufeira paga 55 € en un traslado con precio fijo, frente a 60 u 85 € en un taxi cuyo total solo descubre al final."
+          ],
+          [
+            "p",
+            "Y hay una variable que ninguna tabla muestra: el vuelo se retrasa. Si aterrizas noventa minutos tarde, el taxi no está reservado para ti y el mostrador de alquiler puede haber cerrado. Un traslado sigue el número de vuelo y se ajusta solo."
+          ],
+          [
+            "h2",
+            "Qué preguntar antes de reservar, sea con quien sea"
+          ],
+          [
+            "ul",
+            "¿El precio incluye peajes? La A22 los eliminó en 2025, pero las carreteras del norte aún los tienen.",
+            "¿Qué pasa si el vuelo se retrasa? Sesenta minutos de espera gratuita es el estándar razonable.",
+            "¿Cabe el equipaje? Una maleta grande por persona rara vez cabe en un coche de cuatro plazas.",
+            "¿Dónde es exactamente la recogida? En Faro es la sala de llegadas, nada más pasar la aduana."
+          ],
+          [
+            "h2",
+            "Una nota sobre los nombres de los sitios"
+          ],
+          [
+            "p",
+            "Albufeira tiene tres zonas hoteleras a kilómetros unas de otras. Vilamoura se extiende varios kilómetros alrededor de la marina. Dar solo el nombre del pueblo es la causa más frecuente de una llegada tardía en el Algarve."
+          ],
+          [
+            "p",
+            "Da el nombre del hotel o del complejo. Es el único dato que el conductor necesita y el que más gente olvida."
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-albufeira/",
+            "Faro a Albufeira"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-vilamoura/",
+            "Faro a Vilamoura"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-lagos/",
+            "Faro a Lagos"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-carvoeiro/",
+            "Faro a Carvoeiro"
+          ],
+          [
+            "link",
+            "/airports/portugal/faro/",
+            "Todos los traslados de Faro"
+          ]
+        ]
+      },
+      "fr": {
+        "title": "Ce que coûte vraiment un trajet de l'aéroport de Faro vers l'Algarve",
+        "desc": "Taxi, bus, voiture de location ou transfert privé. Les chiffres réels pour Albufeira, Vilamoura, Lagos et quatre autres, et où chaque option pèche.",
+        "lead": "L'aéroport de Faro dessert tout l'Algarve, et presque personne qui y atterrit ne loge à Faro. La question que tout le monde se pose avant de réserver est la même : combien coûtera le trajet jusqu'à l'hôtel. Voici les chiffres, sans les astérisques.",
+        "body": [
+          [
+            "h2",
+            "Les quatre façons de quitter l'aéroport"
+          ],
+          [
+            "p",
+            "Faro a un seul terminal et quatre façons d'en sortir. Chacune convient à quelqu'un, et chacune laisse quelqu'un de côté."
+          ],
+          [
+            "p",
+            "Le bus de la ligne 16 vous emmène à Faro pour 2,70 € en vingt minutes. C'est ce qui existe de moins cher, et c'est inutile à la plupart des passagers : il ne va ni à Albufeira, ni à Vilamoura, ni à Lagos. Il s'arrête avant 20h00 et n'accepte que les espèces."
+          ],
+          [
+            "p",
+            "Le train paraît séduisant jusqu'à ce qu'on comprenne qu'il n'y a pas de liaison avec l'aéroport. Il faut un taxi jusqu'à la gare de Faro, puis une attente, puis une correspondance. Avec des bagages et des enfants, ce que vous avez économisé sur le billet, vous l'avez perdu en deux heures de votre vie."
+          ],
+          [
+            "h2",
+            "Le taxi au compteur"
+          ],
+          [
+            "p",
+            "La station est toujours là et ne demande aucune réservation, et c'est son vrai avantage. Le problème, c'est qu'on ne connaît le prix qu'à la fin."
+          ],
+          [
+            "p",
+            "Albufeira revient à 60 ou 70 € au compteur en conditions normales. Un samedi d'août à cinq heures de l'après-midi, avec l'A22 chargée, cela peut dépasser 85 € — parce que le compteur vous facture le temps à l'arrêt. Après 21h00 et le week-end, comptez environ 20 % de plus."
+          ],
+          [
+            "quote",
+            "Un compteur vous facture les embouteillages. Un prix fixe, non."
+          ],
+          [
+            "p",
+            "Et puis il y a la file. Un samedi de pointe en été, les arrivées de Faro sont les plus chargées du Portugal, et l'attente à la station peut dépasser la demi-heure."
+          ],
+          [
+            "h2",
+            "La voiture de location"
+          ],
+          [
+            "p",
+            "Elle se justifie si vous comptez sillonner l'Algarve tous les jours. Elle ne se justifie pas si vous logez dans une résidence et sortez deux fois."
+          ],
+          [
+            "p",
+            "Le prix affiché — 30 à 40 € par jour hors saison — n'est pas ce que vous payez. Ajoutez l'assurance, le carburant, le parking de l'hôtel et la caution bloquée sur la carte. Et en août les comptoirs de l'aéroport font des files d'une heure, au bout d'une journée de voyage."
+          ],
+          [
+            "h2",
+            "Le transfert privé"
+          ],
+          [
+            "p",
+            "Le prix est convenu avant la réservation et ne bouge pas. Il couvre la voiture entière, les péages et les taxes. Voici nos tarifs actuels au départ de Faro, pour quatre passagers maximum :"
+          ],
+          [
+            "prices",
+            "PT:faro"
+          ],
+          [
+            "p",
+            "Pour les groupes de cinq à huit, le véhicule devient un van : Albufeira à 93 €, Lagos à 178 €. Divisé par six personnes, cela fait moins de 16 € chacun jusqu'à Albufeira."
+          ],
+          [
+            "h2",
+            "Où le calcul bascule"
+          ],
+          [
+            "p",
+            "Pour une ou deux personnes avec peu de bagages qui logent à Faro, le bus gagne et la discussion est close. Deux euros soixante-dix contre n'importe quoi d'autre, ce n'est pas une comparaison."
+          ],
+          [
+            "p",
+            "À partir de trois personnes, ou pour toute destination à l'ouest de Faro, le calcul s'inverse. Une famille de quatre en route pour Albufeira paie 55 € en transfert à prix fixe, contre 60 à 85 € dans un taxi dont elle ne découvre le total qu'à l'arrivée."
+          ],
+          [
+            "p",
+            "Et il y a une variable qu'aucun tableau ne montre : le vol a du retard. Atterrissez avec quatre-vingt-dix minutes de retard et le taxi n'est pas réservé pour vous, et le comptoir de location a peut-être fermé. Un transfert suit le numéro de vol et s'ajuste tout seul."
+          ],
+          [
+            "h2",
+            "Les questions à poser avant de réserver, quel que soit le prestataire"
+          ],
+          [
+            "ul",
+            "Le prix comprend-il les péages ? L'A22 les a supprimés en 2025, mais les routes du nord en ont encore.",
+            "Que se passe-t-il si le vol est retardé ? Soixante minutes d'attente offertes est la norme raisonnable.",
+            "Les bagages tiendront-ils ? Une grande valise par personne tient rarement dans une berline de quatre places.",
+            "Où se fait exactement la prise en charge ? À Faro, c'est le hall des arrivées, juste après la douane."
+          ],
+          [
+            "h2",
+            "Une remarque sur les noms de lieux"
+          ],
+          [
+            "p",
+            "Albufeira compte trois zones hôtelières distantes de plusieurs kilomètres. Vilamoura s'étend sur plusieurs kilomètres autour de la marina. Ne donner que le nom de la ville est la cause la plus fréquente d'une arrivée tardive en Algarve."
+          ],
+          [
+            "p",
+            "Donnez le nom de l'hôtel ou de la résidence. C'est la seule information dont le chauffeur a besoin et celle que la plupart des gens oublient."
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-albufeira/",
+            "Faro vers Albufeira"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-vilamoura/",
+            "Faro vers Vilamoura"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-lagos/",
+            "Faro vers Lagos"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-carvoeiro/",
+            "Faro vers Carvoeiro"
+          ],
+          [
+            "link",
+            "/airports/portugal/faro/",
+            "Tous les transferts de Faro"
+          ]
+        ]
+      }
     }
   ]
 }
