@@ -101,6 +101,10 @@
             "es": {
               "name": "Centro de Madrid",
               "about": "Veinte kilómetros por la A-2, unos veinticinco minutos fuera de hora punta. El centro de Madrid es zona de bajas emisiones: nuestros vehículos con licencia pueden entrar, cosa que no ocurre con cualquier coche de alquiler. Danos el nombre de la calle — la Gran Vía sola mide más de un kilómetro."
+            },
+            "fr": {
+              "name": "Centre de Madrid",
+              "about": "Vingt kilomètres par l'A-2, environ vingt-cinq minutes hors heures de pointe. Le centre de Madrid est une zone à faibles émissions : nos véhicules agréés peuvent y entrer, ce qui n'est pas le cas de n'importe quelle voiture de location. Donnez-nous le nom de la rue — la Gran Vía à elle seule fait plus d'un kilomètre."
             }
           }
         },
@@ -114,6 +118,10 @@
             "es": {
               "name": "Alcalá de Henares",
               "about": "Media hora al este por la A-2. Aquí nació Cervantes y los edificios de la universidad son Patrimonio de la Humanidad. El casco antiguo es peatonal, así que el conductor te deja en el punto más cercano a tu hotel y no en la puerta."
+            },
+            "fr": {
+              "name": "Alcalá de Henares",
+              "about": "Une demi-heure à l'est par l'A-2. Cervantès y est né et les bâtiments de l'université sont classés au patrimoine mondial. Le centre historique est piéton, le chauffeur vous dépose donc au point le plus proche de votre hôtel et non devant la porte."
             }
           }
         },
@@ -127,6 +135,10 @@
             "es": {
               "name": "Toledo",
               "about": "Una hora al sur por la AP-41. Toledo se asienta sobre un cerro dentro de un meandro del Tajo, y el casco antiguo es un laberinto de calles estrechas cerradas a casi todo el tráfico. Los conductores usan la Puerta de Bisagra o la parada de Zocodover según dónde te alojes."
+            },
+            "fr": {
+              "name": "Tolède",
+              "about": "Une heure au sud par l'AP-41. Tolède est perchée sur un promontoire dans une boucle du Tage, et la vieille ville est un dédale de ruelles fermées à presque toute circulation. Les chauffeurs utilisent la Puerta de Bisagra ou l'arrêt de Zocodover selon votre hébergement."
             }
           }
         },
@@ -140,6 +152,10 @@
             "es": {
               "name": "Segovia",
               "about": "Setenta minutos al norte, atravesando el túnel de Guadarrama por la AP-6. El acueducto romano está justo a la entrada del casco antiguo, y esa plaza es donde para la mayoría de conductores. En invierno el puerto de montaña puede ir lento — el precio fijo no cambia."
+            },
+            "fr": {
+              "name": "Ségovie",
+              "about": "Soixante-dix minutes au nord, en traversant le tunnel de Guadarrama par l'AP-6. L'aqueduc romain se trouve juste à l'entrée de la vieille ville, et c'est sur cette place que s'arrêtent la plupart des chauffeurs. En hiver le col peut ralentir — le prix fixe ne change pas."
             }
           }
         },
@@ -153,6 +169,10 @@
             "es": {
               "name": "Valencia",
               "about": "Tres horas y media al este por la A-3. Es un trayecto largo, pero con un precio único, un solo conductor y ningún transbordo — vale la pena compararlo con dos billetes de tren más taxis en ambos extremos si viajas con equipaje o con niños."
+            },
+            "fr": {
+              "name": "Valence",
+              "about": "Trois heures et demie à l'est par l'A-3. C'est un long trajet, mais avec un prix unique, un seul chauffeur et aucune correspondance — cela vaut la comparaison avec deux billets de train plus des taxis aux deux bouts si vous voyagez avec des bagages ou des enfants."
             }
           }
         }
@@ -212,6 +232,63 @@
               "25–70 € al día",
               "Libertad para llegar a Toledo y Segovia.",
               "El centro de Madrid es zona de bajas emisiones con multas según la matrícula. Aparcar es caro y escaso."
+            ]
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Madrid",
+          "official": "Aéroport Adolfo Suárez Madrid–Barajas",
+          "about": "Madrid–Barajas compte quatre terminaux répartis sur plusieurs kilomètres, et le T4 est assez éloigné des T1–T3 pour qu'une navette relie les deux ensembles. Indiquez-nous votre terminal à la réservation et le chauffeur vous attendra au bon endroit. La plupart des arrivées rejoignent le centre par l'A-2, une vingtaine de minutes hors heures de pointe.",
+          "tips": [
+            "Le T4 et le T4S accueillent Iberia et presque toute l'alliance Oneworld. Les T1, T2 et T3 sont à 10 minutes de navette — se tromper de terminal coûte une demi-heure.",
+            "Le métro applique un supplément aéroport de 3 € en plus du billet normal, ce qui surprend presque tous les primo-visiteurs."
+          ],
+          "local": [
+            [
+              "Quatre terminaux, et la navette entre eux",
+              "Le T4 a ouvert en 2006 et il est séparé du bloc plus ancien des T1–T3. Une navette gratuite les relie toutes les cinq minutes, mais avec des bagages elle ajoute vingt minutes. Votre chauffeur se rend au terminal que vous nous indiquez : ici, le hall d'arrivée que vous précisez compte plus que dans la plupart des aéroports."
+            ],
+            [
+              "La M-30 aux heures de pointe",
+              "Entre 07h30 et 09h30, puis de 18h00 à 20h00, le périphérique ajoute vingt à trente minutes à presque tout trajet vers le centre. Notre prix reste fixe dans tous les cas — le compteur d'un taxi, non."
+            ],
+            [
+              "Les licences VTC en Espagne",
+              "Chaque chauffeur détient une licence VTC délivrée par l'autorité régionale des transports. Nous vérifions la licence et l'assurance avant qu'une société n'effectue sa première course."
+            ],
+            [
+              "Tolède, Ségovie et les excursions à la journée",
+              "Madrid est la base de deux des plus belles excursions d'Espagne. Tolède est à quatre-vingt-dix kilomètres au sud, Ségovie à une distance comparable au nord — les deux confortables en transfert privé à prix ferme, et les deux pénibles en transport public avec des bagages."
+            ]
+          ],
+          "compare": [
+            [
+              "Métro ligne 8",
+              "15 min jusqu'à Nuevos Ministerios",
+              "5,00 €",
+              "Rapide vers le nord du centre.",
+              "Supplément aéroport de 3 €. Une correspondance pour la plupart des destinations. Escaliers et affluence avec des bagages."
+            ],
+            [
+              "Bus Exprés",
+              "40 min jusqu'à Atocha",
+              "5,00 €",
+              "Fonctionne 24h/24.",
+              "Trois arrêts seulement. Lent dans les embouteillages. Personne ne vous aide avec les bagages."
+            ],
+            [
+              "Taxi officiel",
+              "30 min jusqu'au centre",
+              "33 € forfaitaires",
+              "Tarif fixe à l'intérieur de la M-30.",
+              "Files d'attente aux arrivées chargées. Le forfait s'arrête à la M-30 — au-delà, le compteur tourne."
+            ],
+            [
+              "Voiture de location",
+              "File d'attente et paperasse",
+              "25–70 € par jour",
+              "Liberté pour rejoindre Tolède et Ségovie.",
+              "Le centre de Madrid est une zone à faibles émissions avec des amendes selon la plaque. Le stationnement est cher et rare."
             ]
           ]
         }
@@ -288,6 +365,10 @@
             "es": {
               "name": "Centro de Barcelona",
               "about": "Quince kilómetros al norte por la C-32 y la Gran Via, unos veinticinco minutos. La zona de bajas emisiones cubre toda la ciudad y funciona entre semana — nuestros vehículos con licencia pueden entrar. Danos la calle y el número, porque desde el coche las manzanas del Eixample son idénticas."
+            },
+            "fr": {
+              "name": "Centre de Barcelone",
+              "about": "Quinze kilomètres au nord par la C-32 et la Gran Via, environ vingt-cinq minutes. La zone à faibles émissions couvre toute la ville et s'applique en semaine — nos véhicules agréés peuvent y entrer. Donnez la rue et le numéro, car depuis la voiture les pâtés de maisons de l'Eixample se ressemblent tous."
             }
           }
         },
@@ -301,6 +382,10 @@
             "es": {
               "name": "Sitges",
               "about": "Media hora al sur por la C-32, atravesando los túneles del Garraf junto a la costa. Sitges es compacto y buena parte del paseo marítimo es peatonal, así que los conductores paran en la calle accesible más próxima. Los peajes de esa carretera van dentro de tu precio fijo."
+            },
+            "fr": {
+              "name": "Sitges",
+              "about": "Une demi-heure au sud par la C-32, en traversant les tunnels du Garraf le long de la côte. Sitges est compact et une bonne partie du front de mer est piétonne, les chauffeurs s'arrêtent donc dans la rue accessible la plus proche. Les péages de cette route sont compris dans votre prix fixe."
             }
           }
         },
@@ -314,6 +399,10 @@
             "es": {
               "name": "Girona",
               "about": "Una hora y cuarto al norte por la AP-7. El casco antiguo de Girona se reparte a ambos lados del Onyar y las calles medievales están cerradas al tráfico, así que cuenta con un paseo corto desde donde te deje el conductor. Es la primera parada habitual de quien sigue hacia la Costa Brava."
+            },
+            "fr": {
+              "name": "Gérone",
+              "about": "Une heure et quart au nord par l'AP-7. La vieille ville de Gérone s'étend des deux côtés de l'Onyar et les ruelles médiévales sont fermées à la circulation, comptez donc une courte marche depuis le point de dépose. C'est la première étape habituelle de qui poursuit vers la Costa Brava."
             }
           }
         },
@@ -327,6 +416,10 @@
             "es": {
               "name": "Lloret de Mar",
               "about": "Poco más de una hora por la AP-7 y después la carretera de la costa. Lloret se extiende por varias playas y los hoteles están repartidos por la ladera — da el nombre del hotel y no solo el del pueblo, o el conductor acabará dando vueltas."
+            },
+            "fr": {
+              "name": "Lloret de Mar",
+              "about": "Un peu plus d'une heure par l'AP-7 puis la route côtière. Lloret s'étale sur plusieurs plages et les hôtels sont répartis à flanc de colline — donnez le nom de l'hôtel et pas seulement celui de la ville, sinon le chauffeur tournera en rond."
             }
           }
         },
@@ -340,6 +433,10 @@
             "es": {
               "name": "Andorra la Vella",
               "about": "Casi tres horas al norte por los Pirineos, por la C-16 y el Túnel del Cadí. Andorra está fuera de la unión aduanera europea, así que hay un control fronterizo — normalmente rápido. En invierno la carretera puede exigir cadenas, y el conductor las lleva."
+            },
+            "fr": {
+              "name": "Andorre-la-Vieille",
+              "about": "Près de trois heures au nord dans les Pyrénées, par la C-16 et le tunnel du Cadí. Andorre est hors de l'union douanière européenne, il y a donc un contrôle frontalier — d'ordinaire rapide. En hiver la route peut exiger des chaînes, et le chauffeur en a."
             }
           }
         }
@@ -399,6 +496,63 @@
               "25–65 € al día",
               "Útil para la Costa Brava.",
               "La zona de bajas emisiones cubre toda la ciudad. Aparcar es caro y casi siempre subterráneo."
+            ]
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Barcelone",
+          "official": "Aéroport Josep Tarradellas Barcelone–El Prat",
+          "about": "El Prat compte deux terminaux séparés par quatre kilomètres, reliés par une navette gratuite. Le T1 concentre presque tous les vols long-courriers et Vueling ; le T2 accueille de nombreuses compagnies à bas coût. L'aéroport est à quinze kilomètres au sud de la ville par la C-32, et cette même route continue vers Sitges dans l'autre sens.",
+          "tips": [
+            "Le T1 et le T2 sont distants de 4 km, avec une navette entre les deux. Vérifiez votre terminal avant de partir — on ne peut pas y aller à pied.",
+            "La C-32 vers Sitges est à péage. Notre prix le comprend ; un taxi au compteur l'ajoute à la fin."
+          ],
+          "local": [
+            [
+              "Deux terminaux, à quatre kilomètres",
+              "Une navette gratuite relie le T1 et le T2 toutes les dix minutes, mais met quinze minutes par trajet. Indiquez-nous le terminal et le chauffeur sera au bon endroit — c'est la cause la plus fréquente d'une prise en charge retardée à El Prat."
+            ],
+            [
+              "La C-32 et ses péages",
+              "Sitges comme la Costa Brava impliquent des autoroutes à péage. Notre prix les comprend. Le compteur d'un taxi, non, et le péage apparaît en supplément à la fin de la course."
+            ],
+            [
+              "Les licences VTC en Espagne",
+              "La Catalogne encadre strictement les licences VTC et leur nombre est plafonné. Toutes les sociétés avec lesquelles nous travaillons détiennent une licence valide, que nous vérifions avant la première course."
+            ],
+            [
+              "Les terminaux de croisière et le port",
+              "Barcelone est le port de croisière le plus actif d'Europe. Les terminaux se trouvent au Moll Adossat, à une bonne vingtaine de minutes de l'aéroport, et on ne peut pas y accéder à pied — la sécurité portuaire impose un véhicule. Donnez-nous la lettre du terminal si vous la connaissez."
+            ]
+          ],
+          "compare": [
+            [
+              "Aerobús",
+              "35 min jusqu'à la Plaça Catalunya",
+              "7,25 €",
+              "Fréquent et direct.",
+              "Quatre arrêts seulement. Les porte-bagages se remplissent. Inutile hors de son itinéraire."
+            ],
+            [
+              "Renfe R2 Nord",
+              "25 min jusqu'à Sants",
+              "4,90 €",
+              "Économique et rapide jusqu'à Sants.",
+              "Depuis le T2 uniquement — depuis le T1 il faut d'abord prendre la navette. Toutes les 30 minutes. Escaliers avec des bagages."
+            ],
+            [
+              "Taxi officiel",
+              "25 min jusqu'au centre",
+              "35–45 € au compteur",
+              "Sans réservation préalable.",
+              "Supplément aéroport de 4,50 € plus 1 € par valise. Péages en sus sur la C-32. Longues files aux arrivées chargées."
+            ],
+            [
+              "Voiture de location",
+              "File d'attente et paperasse",
+              "25–65 € par jour",
+              "Utile pour la Costa Brava.",
+              "La zone à faibles émissions couvre toute la ville. Le stationnement est cher et presque toujours souterrain."
             ]
           ]
         }
@@ -475,6 +629,10 @@
             "es": {
               "name": "Centro de Málaga",
               "about": "Un cuarto de hora hacia el este por la costa. El centro histórico de Málaga es en buena parte peatonal, así que los conductores paran en el punto accesible más cercano — normalmente la Alameda Principal o el lateral de la catedral. Danos el nombre de la calle si tu hotel está dentro del casco antiguo."
+            },
+            "fr": {
+              "name": "Centre de Malaga",
+              "about": "Un quart d'heure vers l'est le long de la côte. Le centre historique de Malaga est en grande partie piéton, les chauffeurs s'arrêtent donc au point accessible le plus proche — d'ordinaire l'Alameda Principal ou le flanc de la cathédrale. Donnez le nom de la rue si votre hôtel est dans la vieille ville."
             }
           }
         },
@@ -488,6 +646,10 @@
             "es": {
               "name": "Torremolinos",
               "about": "El complejo más cercano al aeropuerto, a apenas diez minutos por la costa. Los hoteles se concentran en La Carihuela y en la playa del Bajondillo, y hay un buen trecho entre ambas — el nombre del hotel ahorra tiempo."
+            },
+            "fr": {
+              "name": "Torremolinos",
+              "about": "La station la plus proche de l'aéroport, à peine dix minutes par la côte. Les hôtels se concentrent à La Carihuela et sur la plage du Bajondillo, et il y a une belle distance entre les deux — le nom de l'hôtel fait gagner du temps."
             }
           }
         },
@@ -501,6 +663,10 @@
             "es": {
               "name": "Marbella",
               "about": "Cuarenta y cinco minutos al oeste, más rápido por la AP-7 en verano. Marbella se extiende más de veinte kilómetros de costa, desde Puerto Banús hasta las urbanizaciones del este — el nombre del pueblo no basta, así que da el de la urbanización."
+            },
+            "fr": {
+              "name": "Marbella",
+              "about": "Quarante-cinq minutes à l'ouest, plus rapide par l'AP-7 en été. Marbella s'étire sur plus de vingt kilomètres de côte, de Puerto Banús aux résidences de l'est — le nom de la ville ne suffit pas, donnez celui de la résidence."
             }
           }
         },
@@ -514,6 +680,10 @@
             "es": {
               "name": "Nerja",
               "about": "Poco menos de una hora al este por la A-7, pasando los acantilados de La Herradura. Nerja está construida en una ladera y las calles junto al Balcón de Europa son estrechas — los conductores usan el punto accesible más cercano en lugar de la puerta."
+            },
+            "fr": {
+              "name": "Nerja",
+              "about": "Un peu moins d'une heure à l'est par l'A-7, après les falaises de La Herradura. Nerja est bâtie à flanc de coteau et les rues autour du Balcón de Europa sont étroites — les chauffeurs utilisent le point accessible le plus proche plutôt que la porte."
             }
           }
         },
@@ -527,6 +697,10 @@
             "es": {
               "name": "Granada",
               "about": "Una hora y media hacia el interior por la A-92, subiendo a una meseta bajo Sierra Nevada. Si vas a la Alhambra, ten en cuenta que a los hoteles del Albaicín se llega por calles muy estrechas y los conductores paran en el punto más cercano al que llega un coche."
+            },
+            "fr": {
+              "name": "Grenade",
+              "about": "Une heure et demie vers l'intérieur par l'A-92, en montant sur un plateau sous la Sierra Nevada. Si vous allez à l'Alhambra, sachez que les hôtels de l'Albaicín se rejoignent par des ruelles très étroites et que les chauffeurs s'arrêtent au point le plus proche accessible en voiture."
             }
           }
         }
@@ -588,6 +762,63 @@
               "Colas de una hora en agosto. Combustible, aparcamiento y fianza aparte."
             ]
           ]
+        },
+        "fr": {
+          "name": "Aéroport de Malaga",
+          "official": "Aéroport de Malaga–Costa del Sol",
+          "about": "Malaga est la porte d'entrée de la Costa del Sol, et la plupart des arrivées ne vont pas à Malaga même. Tout ce qui est à l'ouest — Torremolinos, Fuengirola, Marbella — se rejoint par l'A-7 et l'autoroute à péage AP-7. Le terminal est unique et moderne, avec les arrivées sur un seul niveau.",
+          "tips": [
+            "L'AP-7 à péage fait gagner vingt minutes jusqu'à Marbella en été. Notre prix comprend le péage dans tous les cas.",
+            "Les résidences de la Costa del Sol s'étendent sur plusieurs kilomètres. Donnez le nom de l'hôtel ou de la résidence, pas seulement celui de la ville."
+          ],
+          "local": [
+            [
+              "Un terminal, trois modules",
+              "Toutes les arrivées sortent au même endroit, ce qui fait de Malaga l'un des aéroports espagnols les plus simples pour retrouver son chauffeur. Les samedis d'été sont chargés, mais le hall est vaste."
+            ],
+            [
+              "L'A-7 et l'AP-7",
+              "L'A-7 est gratuite et longe la côte en traversant tous les villages ; l'AP-7 à péage passe derrière et fait gagner un temps réel en juillet et août. Nos chauffeurs prennent la plus rapide et le péage est compris dans votre prix fixe."
+            ],
+            [
+              "Les licences VTC en Espagne",
+              "L'Andalousie délivre les licences VTC par l'intermédiaire de l'autorité régionale des transports. Nous vérifions la licence et l'assurance de chaque société avant sa première course."
+            ],
+            [
+              "Des résidences, pas des adresses",
+              "Une grande partie de la Costa del Sol est bâtie en résidences fermées réparties sur des kilomètres de coteau. Le nom de la résidence compte plus que celui de la rue, et c'est ici la cause la plus fréquente d'une arrivée tardive."
+            ]
+          ],
+          "compare": [
+            [
+              "Train C-1",
+              "12 min jusqu'au centre de Malaga",
+              "1,80 €",
+              "Le moins cher pour entrer en ville.",
+              "Ne dessert que Malaga et Fuengirola. Toutes les 20 minutes. Inutile pour Marbella."
+            ],
+            [
+              "Bus A express",
+              "20 min jusqu'au centre",
+              "4,00 €",
+              "Direct vers la ville.",
+              "Malaga uniquement. Peu de place pour les bagages. S'arrête en fin d'après-midi."
+            ],
+            [
+              "Taxi officiel",
+              "15 min jusqu'au centre",
+              "20–25 € au compteur",
+              "Sans réservation préalable.",
+              "Pour Marbella comptez 90–110 € au compteur, plus les péages et le supplément de nuit."
+            ],
+            [
+              "Voiture de location",
+              "File d'attente et paperasse",
+              "20–60 € par jour",
+              "Utile pour circuler dans l'arrière-pays.",
+              "Files d'une heure en août. Carburant, stationnement et caution en plus."
+            ]
+          ]
         }
       }
     },
@@ -614,6 +845,10 @@
             "es": {
               "name": "Centro de Alicante",
               "about": "Un cuarto de hora por la N-338 hasta la ciudad. La Explanada y el puerto son la zona habitual de bajada; las calles que suben al castillo de Santa Bárbara son estrechas y casi todas de sentido único."
+            },
+            "fr": {
+              "name": "Centre d'Alicante",
+              "about": "Un quart d'heure par la N-338 jusqu'à la ville. L'Explanada et le port sont la zone habituelle de dépose ; les rues qui montent au château de Santa Bárbara sont étroites et presque toutes à sens unique."
             }
           }
         },
@@ -627,6 +862,10 @@
             "es": {
               "name": "Benidorm",
               "about": "Cuarenta y cinco minutos al norte por la AP-7. Benidorm se divide entre las playas de Levante y Poniente con el casco antiguo en medio, y hay un buen trecho de una a otra — el nombre del hotel decide por qué lado entra el conductor."
+            },
+            "fr": {
+              "name": "Benidorm",
+              "about": "Quarante-cinq minutes au nord par l'AP-7. Benidorm se partage entre les plages de Levante et Poniente avec la vieille ville entre les deux, et il y a une bonne distance de l'une à l'autre — le nom de l'hôtel décide du côté que prend le chauffeur."
             }
           }
         },
@@ -640,6 +879,10 @@
             "es": {
               "name": "Torrevieja",
               "about": "Cuarenta minutos al sur pasando las lagunas de sal. Buena parte de la zona son urbanizaciones repartidas por varios kilómetros hacia el interior, así que el nombre de la urbanización importa más que el de la calle."
+            },
+            "fr": {
+              "name": "Torrevieja",
+              "about": "Quarante minutes au sud, après les lagunes salées. Une bonne partie de la zone est bâtie en résidences réparties sur plusieurs kilomètres vers l'intérieur, le nom de la résidence compte donc plus que celui de la rue."
             }
           }
         },
@@ -653,6 +896,10 @@
             "es": {
               "name": "Calpe",
               "about": "Algo menos de una hora al norte, pasado Altea. Calpe está construido alrededor del Peñón de Ifach y los apartamentos del paseo se extienden dos kilómetros — da el nombre del edificio."
+            },
+            "fr": {
+              "name": "Calpe",
+              "about": "Un peu moins d'une heure au nord, après Altea. Calpe est bâtie autour du Peñón de Ifach et les appartements du front de mer s'étendent sur deux kilomètres — donnez le nom de la résidence."
             }
           }
         },
@@ -666,6 +913,10 @@
             "es": {
               "name": "Murcia",
               "about": "Menos de una hora al suroeste por la A-7. Un traslado útil cuando los vuelos al aeropuerto de Murcia no encajan, y un precio único gana a un autobús más taxi con equipaje."
+            },
+            "fr": {
+              "name": "Murcie",
+              "about": "Moins d'une heure au sud-ouest par l'A-7. Un transfert utile quand les vols vers l'aéroport de Murcie ne conviennent pas, et un prix unique vaut mieux qu'un bus plus un taxi avec des bagages."
             }
           }
         }
@@ -678,6 +929,15 @@
           "tips": [
             "Benidorm está 55 km al norte y Torrevieja 45 km al sur — direcciones opuestas desde la misma terminal.",
             "Los sábados de verano las llegadas van cargadas. La sala es amplia; la cola del taxi, no."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport d'Alicante",
+          "official": "Aéroport d'Alicante–Elche Miguel Hernández",
+          "about": "Alicante–Elche est la porte de la Costa Blanca, et la plupart des arrivées partent vers le nord à Benidorm ou vers le sud à Torrevieja. Un seul terminal, les arrivées au rez-de-chaussée, et l'AP-7 qui longe la côte dans les deux sens.",
+          "tips": [
+            "Benidorm est à 55 km au nord et Torrevieja à 45 km au sud — deux directions opposées depuis le même terminal.",
+            "Les samedis d'été, les arrivées sont chargées. Le hall est vaste ; la file de taxis, non."
           ]
         }
       }
@@ -705,6 +965,10 @@
             "es": {
               "name": "Centro de Palma",
               "about": "Un cuarto de hora por la Ma-19. El casco antiguo alrededor de la catedral es un laberinto de calles estrechas de sentido único, así que los conductores paran en la esquina accesible más cercana y no en la puerta del hotel."
+            },
+            "fr": {
+              "name": "Centre de Palma",
+              "about": "Un quart d'heure par la Ma-19. La vieille ville autour de la cathédrale est un dédale de ruelles à sens unique, les chauffeurs déposent donc au coin accessible le plus proche plutôt que devant l'hôtel."
             }
           }
         },
@@ -718,6 +982,10 @@
             "es": {
               "name": "Magaluf",
               "about": "Veinticinco minutos al oeste pasando Palma. Magaluf y Palmanova se funden en la misma bahía y los hoteles se escalonan por la ladera — el nombre del hotel evita muchas vueltas."
+            },
+            "fr": {
+              "name": "Magaluf",
+              "about": "Vingt-cinq minutes à l'ouest après Palma. Magaluf et Palmanova se rejoignent sur la même baie et les hôtels s'étagent à flanc de colline — le nom de l'hôtel évite bien des détours."
             }
           }
         },
@@ -731,6 +999,10 @@
             "es": {
               "name": "Alcúdia",
               "about": "Cincuenta minutos al norte cruzando la isla. El casco antiguo amurallado y la franja de playa del Port d'Alcúdia están a tres kilómetros, y la mayoría de los hoteles quedan del lado del puerto."
+            },
+            "fr": {
+              "name": "Alcúdia",
+              "about": "Cinquante minutes au nord en traversant l'île. La vieille ville fortifiée et la bande de plage du Port d'Alcúdia sont distantes de trois kilomètres, et la plupart des hôtels sont du côté du port."
             }
           }
         },
@@ -744,6 +1016,10 @@
             "es": {
               "name": "Sóller",
               "about": "Cincuenta minutos por el túnel de Sóller hacia la Tramuntana. El pueblo está tierra adentro respecto a su puerto, que queda tres kilómetros valle abajo — di cuál de los dos quieres."
+            },
+            "fr": {
+              "name": "Sóller",
+              "about": "Cinquante minutes par le tunnel de Sóller vers la Tramuntana. La ville est à l'intérieur des terres par rapport à son port, qui se trouve trois kilomètres plus bas dans la vallée — précisez lequel des deux."
             }
           }
         },
@@ -757,6 +1033,10 @@
             "es": {
               "name": "Cala d'Or",
               "about": "Algo menos de una hora al este. Cala d'Or es una sucesión de calas pequeñas, cada una con su grupo de hoteles, repartidas por varios kilómetros — el nombre de la cala es lo que necesita el conductor."
+            },
+            "fr": {
+              "name": "Cala d'Or",
+              "about": "Un peu moins d'une heure à l'est. Cala d'Or est une succession de petites criques, chacune avec son groupe d'hôtels, réparties sur plusieurs kilomètres — le nom de la crique est ce dont le chauffeur a besoin."
             }
           }
         }
@@ -769,6 +1049,15 @@
           "tips": [
             "Los sábados de verano están entre los más cargados de Europa. Cuenta con tiempo extra dentro de la terminal.",
             "Las carreteras de la Serra de Tramuntana hacia Sóller y Deià son estrechas y con curvas — los tiempos son mayores de lo que sugiere la distancia."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Palma",
+          "official": "Aéroport de Palma de Majorque",
+          "about": "Son Sant Joan est l'un des aéroports les plus fréquentés d'Europe en août et l'un des plus calmes en janvier. Les arrivées débouchent sur un hall unique, et l'autoroute Ma-19 atteint Palma en quinze minutes et la côte ouest en moins d'une heure.",
+          "tips": [
+            "Les samedis d'été comptent parmi les plus chargés d'Europe. Prévoyez du temps supplémentaire dans le terminal.",
+            "Les routes de la Serra de Tramuntana vers Sóller et Deià sont étroites et sinueuses — les durées dépassent ce que suggère la distance."
           ]
         }
       }
@@ -796,6 +1085,10 @@
             "es": {
               "name": "Ibiza ciudad",
               "about": "Doce minutos al norte. Dalt Vila, el recinto amurallado, está cerrado al tráfico, así que los conductores paran al pie de la rampa — cuenta con una cuesta corta a pie si tu hotel está dentro."
+            },
+            "fr": {
+              "name": "Ibiza-ville",
+              "about": "Douze minutes au nord. Dalt Vila, l'enceinte fortifiée, est fermée à la circulation : les chauffeurs déposent au pied de la rampe — comptez une courte montée à pied si votre hôtel est dans les murs."
             }
           }
         },
@@ -809,6 +1102,10 @@
             "es": {
               "name": "Playa d'en Bossa",
               "about": "El complejo más cercano al aeropuerto, a menos de diez minutos. La franja se extiende dos kilómetros detrás de la playa y los hoteles están repartidos por toda ella."
+            },
+            "fr": {
+              "name": "Playa d'en Bossa",
+              "about": "La station la plus proche de l'aéroport, à moins de dix minutes. La bande s'étend sur deux kilomètres derrière la plage et les hôtels sont répartis sur toute sa longueur."
             }
           }
         },
@@ -822,6 +1119,10 @@
             "es": {
               "name": "San Antonio",
               "about": "Veinticinco minutos cruzando la isla hasta la costa oeste. La bahía de San Antonio es donde se junta la gente para la puesta de sol; las calas más tranquilas al norte quedan diez minutos más allá."
+            },
+            "fr": {
+              "name": "San Antonio",
+              "about": "Vingt-cinq minutes en traversant l'île jusqu'à la côte ouest. C'est dans la baie de San Antonio que se rassemble la foule du coucher de soleil ; les criques plus calmes au nord sont dix minutes plus loin."
             }
           }
         },
@@ -835,6 +1136,10 @@
             "es": {
               "name": "Santa Eulalia",
               "about": "Veinticinco minutos por la costa este. Más tranquila que el oeste, con hoteles en el paseo y villas en las lomas de detrás — para estas últimas, el nombre de la urbanización es lo que cuenta."
+            },
+            "fr": {
+              "name": "Santa Eulalia",
+              "about": "Vingt-cinq minutes en remontant la côte est. Plus calme que l'ouest, avec des hôtels sur la promenade et des villas dans les collines derrière — pour ces dernières, le nom de la résidence compte."
             }
           }
         },
@@ -848,6 +1153,10 @@
             "es": {
               "name": "Cala Comte",
               "about": "Treinta y cinco minutos al oeste por carreteras estrechas que se colapsan al atardecer en agosto. Conviene dejar margen extra en un traslado de salida desde aquí."
+            },
+            "fr": {
+              "name": "Cala Comte",
+              "about": "Trente-cinq minutes à l'ouest par des routes étroites qui se bloquent au coucher du soleil en août. Prévoyez du temps supplémentaire pour un transfert de départ depuis cet endroit."
             }
           }
         }
@@ -860,6 +1169,15 @@
           "tips": [
             "En julio y agosto las llegadas no paran de viernes a domingo. La cola del taxi puede superar la hora.",
             "A muchas villas del norte se llega por caminos sin asfaltar. Envía una ubicación en el mapa en lugar de una dirección si la tienes."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport d'Ibiza",
+          "official": "Aéroport d'Ibiza",
+          "about": "L'aéroport d'Ibiza se trouve à la pointe sud de l'île, à sept kilomètres d'Ibiza-ville. Tout sur l'île est à moins de quarante minutes, mais les routes vers les criques du nord-ouest sont étroites et lentes en août.",
+          "tips": [
+            "En juillet et août les arrivées s'enchaînent du vendredi au dimanche. La file de taxis peut dépasser l'heure.",
+            "Beaucoup de villas du nord se rejoignent par des pistes non goudronnées. Envoyez une localisation plutôt qu'une adresse si vous en avez une."
           ]
         }
       }
@@ -887,6 +1205,10 @@
             "es": {
               "name": "Playa de las Américas",
               "about": "Veinte minutos al oeste por la TF-1. Las Américas, Los Cristianos y Costa Adeje se suceden en la misma costa, así que el nombre del complejo por sí solo suele ser ambiguo — da el del hotel."
+            },
+            "fr": {
+              "name": "Playa de las Américas",
+              "about": "Vingt minutes à l'ouest par la TF-1. Las Américas, Los Cristianos et Costa Adeje se succèdent sur la même côte, le nom de la station seul est donc souvent ambigu — donnez celui de l'hôtel."
             }
           }
         },
@@ -900,6 +1222,10 @@
             "es": {
               "name": "Los Cristianos",
               "about": "Menos de veinte minutos. Aquí está el puerto del ferry a La Gomera, y las salidas son temprano — conviene reservar el traslado con margen."
+            },
+            "fr": {
+              "name": "Los Cristianos",
+              "about": "Moins de vingt minutes. C'est ici le port du ferry vers La Gomera, et les départs sont matinaux — mieux vaut réserver le transfert avec de la marge."
             }
           }
         },
@@ -913,6 +1239,10 @@
             "es": {
               "name": "Costa Adeje",
               "about": "Veinticinco minutos al oeste, en el extremo más tranquilo de la misma franja. Los hoteles se asientan sobre la playa en terrazas y los accesos hacen curvas — el nombre del hotel ahorra tiempo."
+            },
+            "fr": {
+              "name": "Costa Adeje",
+              "about": "Vingt-cinq minutes à l'ouest, à l'extrémité plus calme de la même bande. Les hôtels s'étagent en terrasses au-dessus de la plage et les accès font des boucles — le nom de l'hôtel fait gagner du temps."
             }
           }
         },
@@ -926,6 +1256,10 @@
             "es": {
               "name": "Puerto de la Cruz",
               "about": "Una hora y cuarto al norte, cruzando la isla. El clima cambia por completo en ese lado — más verde, más nublado y a menudo diez grados más fresco."
+            },
+            "fr": {
+              "name": "Puerto de la Cruz",
+              "about": "Une heure et quart au nord, en traversant l'île. Le climat change complètement de ce côté — plus vert, plus nuageux, et souvent dix degrés plus frais."
             }
           }
         },
@@ -939,6 +1273,10 @@
             "es": {
               "name": "Santa Cruz de Tenerife",
               "about": "Cincuenta minutos al noreste por la TF-1. La capital, el puerto de cruceros y el auditorio están en la misma zona central."
+            },
+            "fr": {
+              "name": "Santa Cruz de Tenerife",
+              "about": "Cinquante minutes au nord-est par la TF-1. La capitale, le port de croisière et l'auditorium sont dans le même secteur central."
             }
           }
         }
@@ -951,6 +1289,15 @@
           "tips": [
             "Tenerife Norte es otro aeropuerto, a una hora de distancia. Comprueba cuál usa tu vuelo.",
             "Subir al Teide es entrar en otro clima — lleva una chaqueta aunque sea agosto."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Tenerife Sud",
+          "official": "Aéroport de Tenerife Sud",
+          "about": "Tenerife Sud concentre presque tout le trafic touristique de l'île. L'autoroute TF-1 mène à l'ouest vers les stations en vingt minutes, et au nord vers Santa Cruz et Puerto de la Cruz en une heure environ.",
+          "tips": [
+            "Tenerife Nord est un autre aéroport, à une heure de route. Vérifiez lequel votre vol utilise.",
+            "Monter au Teide, c'est changer de climat — emportez une veste même en août."
           ]
         }
       }
@@ -978,6 +1325,10 @@
             "es": {
               "name": "Las Palmas",
               "about": "Veinticinco minutos al norte. La ciudad se extiende sobre un istmo estrecho con la playa de Las Canteras a un lado y el puerto al otro — di de qué lado está tu hotel."
+            },
+            "fr": {
+              "name": "Las Palmas",
+              "about": "Vingt-cinq minutes au nord. La ville s'étire sur un isthme étroit avec la plage de Las Canteras d'un côté et le port de l'autre — précisez de quel côté se trouve votre hôtel."
             }
           }
         },
@@ -991,6 +1342,10 @@
             "es": {
               "name": "Maspalomas",
               "about": "Media hora al sur. Maspalomas, Playa del Inglés y San Agustín forman una zona turística continua detrás de las dunas, y es el nombre del hotel lo que las separa."
+            },
+            "fr": {
+              "name": "Maspalomas",
+              "about": "Une demi-heure au sud. Maspalomas, Playa del Inglés et San Agustín forment une zone touristique continue derrière les dunes, et c'est le nom de l'hôtel qui les distingue."
             }
           }
         },
@@ -1004,6 +1359,10 @@
             "es": {
               "name": "Playa del Inglés",
               "about": "Menos de media hora al sur, el más animado de los complejos del sur. Los conjuntos de bungalows se reparten por una cuadrícula de calles parecidas — el nombre del complejo importa."
+            },
+            "fr": {
+              "name": "Playa del Inglés",
+              "about": "Moins d'une demi-heure au sud, la plus animée des stations du sud. Les ensembles de bungalows se répartissent sur une trame de rues semblables — le nom de la résidence compte."
             }
           }
         },
@@ -1017,6 +1376,10 @@
             "es": {
               "name": "Puerto Rico",
               "about": "Cuarenta minutos por la costa suroeste. Construido en un barranco empinado, con hoteles escalonados a ambos lados y accesos que hacen curvas."
+            },
+            "fr": {
+              "name": "Puerto Rico",
+              "about": "Quarante minutes le long de la côte sud-ouest. Bâtie dans un ravin escarpé, avec des hôtels étagés des deux côtés et des accès en lacets."
             }
           }
         },
@@ -1030,6 +1393,10 @@
             "es": {
               "name": "Puerto de Mogán",
               "about": "Tres cuartos de hora por la costa, pasado Puerto Rico. El más tranquilo de los complejos, levantado en torno a un puerto pequeño con canales."
+            },
+            "fr": {
+              "name": "Puerto de Mogán",
+              "about": "Trois quarts d'heure le long de la côte, après Puerto Rico. La plus calme des stations, construite autour d'un petit port avec des canaux."
             }
           }
         }
@@ -1042,6 +1409,15 @@
           "tips": [
             "Norte y sur son direcciones opuestas desde la terminal — Las Palmas a 25 km por un lado, Maspalomas a 30 km por el otro.",
             "El sur está soleado de forma fiable cuando el norte está bajo nubes. Pilla desprevenido a muchos que vienen por primera vez."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Grande Canarie",
+          "official": "Aéroport de Grande Canarie",
+          "about": "L'aéroport de Grande Canarie est sur la côte est, à peu près à mi-chemin entre Las Palmas au nord et les stations du sud. Les deux directions sont à une demi-heure environ par la GC-1.",
+          "tips": [
+            "Nord et sud sont deux directions opposées depuis le terminal — Las Palmas à 25 km d'un côté, Maspalomas à 30 km de l'autre.",
+            "Le sud est ensoleillé de façon fiable quand le nord est sous les nuages. Cela surprend beaucoup de primo-visiteurs."
           ]
         }
       }
@@ -1069,6 +1445,10 @@
             "es": {
               "name": "Arrecife",
               "about": "Diez minutos al norte. La capital, el puerto de cruceros y el Charco de San Ginés están en el mismo centro reducido."
+            },
+            "fr": {
+              "name": "Arrecife",
+              "about": "Dix minutes au nord. La capitale, le port de croisière et le Charco de San Ginés sont dans le même petit centre."
             }
           }
         },
@@ -1082,6 +1462,10 @@
             "es": {
               "name": "Puerto del Carmen",
               "about": "El complejo más cercano, a apenas doce minutos. La franja recorre seis kilómetros de paseo, así que el nombre del hotel decide en qué extremo paras."
+            },
+            "fr": {
+              "name": "Puerto del Carmen",
+              "about": "La station la plus proche, à peine douze minutes. La bande longe six kilomètres de front de mer, le nom de l'hôtel décide donc à quelle extrémité vous vous arrêtez."
             }
           }
         },
@@ -1095,6 +1479,10 @@
             "es": {
               "name": "Playa Blanca",
               "about": "Media hora al sur. De aquí sale el ferry a Fuerteventura, y el complejo se extiende hacia el oeste en dirección a Papagayo en una sucesión de urbanizaciones."
+            },
+            "fr": {
+              "name": "Playa Blanca",
+              "about": "Une demi-heure au sud. C'est d'ici que part le ferry vers Fuerteventura, et la station s'étend vers l'ouest en direction de Papagayo en une succession de résidences."
             }
           }
         },
@@ -1108,6 +1496,10 @@
             "es": {
               "name": "Costa Teguise",
               "about": "Menos de veinte minutos al noreste. Construido de una pieza y compacto, con casi todos los hoteles a poca distancia de la misma playa."
+            },
+            "fr": {
+              "name": "Costa Teguise",
+              "about": "Moins de vingt minutes au nord-est. Construite d'un bloc et compacte, avec presque tous les hôtels à distance de marche de la même plage."
             }
           }
         },
@@ -1121,6 +1513,10 @@
             "es": {
               "name": "Famara",
               "about": "Media hora al noroeste hasta la costa del surf. El pueblo es pequeño y el acceso estrecho — una isla muy distinta de la de los complejos del sur."
+            },
+            "fr": {
+              "name": "Famara",
+              "about": "Une demi-heure au nord-ouest jusqu'à la côte du surf. Le village est petit et l'accès étroit — une île très différente de celle des stations du sud."
             }
           }
         }
@@ -1133,6 +1529,15 @@
           "tips": [
             "Puerto del Carmen, Costa Teguise y Playa Blanca quedan en tres direcciones distintas desde el aeropuerto.",
             "Playa Blanca es el puerto del ferry a Fuerteventura, y las travesías salen temprano."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Lanzarote",
+          "official": "Aéroport César Manrique–Lanzarote",
+          "about": "L'aéroport de Lanzarote est à cinq kilomètres d'Arrecife et à moins de quarante minutes de tout point de l'île. Le paysage est volcanique et les routes sont bonnes, mais les stations se répartissent sur la côte en trois groupes distincts.",
+          "tips": [
+            "Puerto del Carmen, Costa Teguise et Playa Blanca sont dans trois directions différentes depuis l'aéroport.",
+            "Playa Blanca est le port du ferry vers Fuerteventura, et les traversées partent tôt."
           ]
         }
       }
@@ -1160,6 +1565,10 @@
             "es": {
               "name": "Puerto del Rosario",
               "about": "Diez minutos al norte. La capital y el puerto del ferry, más funcional que turística."
+            },
+            "fr": {
+              "name": "Puerto del Rosario",
+              "about": "Dix minutes au nord. La capitale et le port du ferry, plus fonctionnelle que touristique."
             }
           }
         },
@@ -1173,6 +1582,10 @@
             "es": {
               "name": "Caleta de Fuste",
               "about": "Doce minutos al sur, el complejo más cercano al aeropuerto. Compacto y construido alrededor de un puerto deportivo."
+            },
+            "fr": {
+              "name": "Caleta de Fuste",
+              "about": "Douze minutes au sud, la station la plus proche de l'aéroport. Compacte et bâtie autour d'une marina."
             }
           }
         },
@@ -1186,6 +1599,10 @@
             "es": {
               "name": "Corralejo",
               "about": "Cuarenta minutos al norte, pasando el parque natural de las dunas. El pueblo se extiende por el frente marítimo mirando a la isla de Lobos, y los conjuntos de villas quedan hacia el interior."
+            },
+            "fr": {
+              "name": "Corralejo",
+              "about": "Quarante minutes au nord, après le parc naturel des dunes. La ville s'étire sur le front de mer face à l'île de Lobos, et les ensembles de villas sont en retrait."
             }
           }
         },
@@ -1199,6 +1616,10 @@
             "es": {
               "name": "Costa Calma",
               "about": "Una hora al sur por la FV-2. El complejo es una hilera de hoteles detrás de una playa larguísima, con poco entre medias."
+            },
+            "fr": {
+              "name": "Costa Calma",
+              "about": "Une heure au sud par la FV-2. La station est une rangée d'hôtels derrière une très longue plage, avec peu de chose entre les deux."
             }
           }
         },
@@ -1212,6 +1633,10 @@
             "es": {
               "name": "Morro Jable",
               "about": "Ochenta minutos hasta la punta sur. El traslado más largo de la isla y donde más se nota un precio cerrado — aquí los taxímetros suben rápido."
+            },
+            "fr": {
+              "name": "Morro Jable",
+              "about": "Quatre-vingts minutes jusqu'à la pointe sud. Le transfert le plus long de l'île et celui où un prix ferme se ressent le plus — les compteurs de taxi grimpent vite ici."
             }
           }
         }
@@ -1224,6 +1649,15 @@
           "tips": [
             "Morro Jable está a 90 km del aeropuerto. Cuenta con un trayecto de verdad, no con un salto.",
             "El viento es constante en esta isla. Por eso vienen los surfistas, y por eso las playas se sienten más frescas de lo que marca el termómetro."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Fuerteventura",
+          "official": "Aéroport de Fuerteventura",
+          "about": "Fuerteventura est longue et étroite, et l'aéroport se trouve au milieu. Corralejo est à quarante minutes au nord, Morro Jable à quatre-vingt-dix au sud — l'île est plus grande que la plupart des gens ne l'imaginent.",
+          "tips": [
+            "Morro Jable est à 90 km de l'aéroport. Comptez un vrai trajet, pas un saut de puce.",
+            "Le vent est constant sur cette île. C'est pour cela que les surfeurs viennent, et pourquoi les plages paraissent plus fraîches que ne l'indique le thermomètre."
           ]
         }
       }
@@ -1251,6 +1685,10 @@
             "es": {
               "name": "Centro de Sevilla",
               "about": "Un cuarto de hora por la A-4. La catedral y Santa Cruz son peatonales, y el conductor para en la calle más cercana a la que puede entrar un coche."
+            },
+            "fr": {
+              "name": "Centre de Séville",
+              "about": "Un quart d'heure par l'A-4. La cathédrale et Santa Cruz sont piétonnes, et le chauffeur s'arrête dans la rue la plus proche accessible en voiture."
             }
           }
         },
@@ -1264,6 +1702,10 @@
             "es": {
               "name": "Carmona",
               "about": "Veinticinco minutos al este, sobre un cerro que domina la vega. El parador está dentro de la antigua fortaleza musulmana."
+            },
+            "fr": {
+              "name": "Carmona",
+              "about": "Vingt-cinq minutes à l'est, sur une colline dominant la plaine. Le parador est installé dans l'ancienne forteresse maure."
             }
           }
         },
@@ -1277,6 +1719,10 @@
             "es": {
               "name": "Jerez de la Frontera",
               "about": "Una hora al sur por la AP-4. Las bodegas y la escuela ecuestre están las dos en la ciudad, a pocos minutos una de otra."
+            },
+            "fr": {
+              "name": "Jerez de la Frontera",
+              "about": "Une heure au sud par l'AP-4. Les bodegas de xérès et l'école équestre sont toutes deux en ville, à quelques minutes l'une de l'autre."
             }
           }
         },
@@ -1290,6 +1736,10 @@
             "es": {
               "name": "Córdoba",
               "about": "Una hora y media al noreste. La Mezquita y la Judería son peatonales, así que vale la misma regla que en Sevilla."
+            },
+            "fr": {
+              "name": "Cordoue",
+              "about": "Une heure et demie au nord-est. La Mezquita et la Judería sont piétonnes, la même règle qu'à Séville s'applique donc."
             }
           }
         },
@@ -1303,6 +1753,10 @@
             "es": {
               "name": "Cádiz",
               "about": "Una hora y media al suroeste, hasta la península. El casco antiguo está rodeado de agua por completo y las calles son muy estrechas."
+            },
+            "fr": {
+              "name": "Cadix",
+              "about": "Une heure et demie au sud-ouest, jusqu'à la péninsule. La vieille ville est entièrement entourée d'eau et les rues sont très étroites."
             }
           }
         }
@@ -1315,6 +1769,15 @@
           "tips": [
             "Santa Cruz y buena parte del casco antiguo están cerrados al tráfico. Cuenta con un paseo corto desde donde te dejen.",
             "Sevilla es la base para Jerez, Cádiz y Córdoba — las tres cómodas como traslado de un día."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Séville",
+          "official": "Aéroport de Séville",
+          "about": "L'aéroport de Séville est à dix kilomètres du centre par l'A-4. La vieille ville est un lacis dense de ruelles où les voitures passent à peine, les chauffeurs s'arrêtent donc au point accessible le plus proche.",
+          "tips": [
+            "Santa Cruz et une bonne partie de la vieille ville sont fermées à la circulation. Comptez une courte marche depuis la dépose.",
+            "Séville est la base pour Jerez, Cadix et Cordoue — les trois confortables en transfert à la journée."
           ]
         }
       }
@@ -1342,6 +1805,10 @@
             "es": {
               "name": "Centro de Valencia",
               "about": "Menos de veinte minutos al este. El casco antiguo alrededor de la catedral es en buena parte peatonal; las calles del Eixample que lo rodean son anchas y cómodas."
+            },
+            "fr": {
+              "name": "Centre de Valence",
+              "about": "Moins de vingt minutes à l'est. La vieille ville autour de la cathédrale est en grande partie piétonne ; les rues de l'Eixample qui l'entourent sont larges et faciles d'accès."
             }
           }
         },
@@ -1355,6 +1822,10 @@
             "es": {
               "name": "Puerto y Marina de Valencia",
               "about": "Veinte minutos hasta el puerto y la marina de la Copa América. La terminal de cruceros queda dos kilómetros más allá por el muelle."
+            },
+            "fr": {
+              "name": "Port et marina de Valence",
+              "about": "Vingt minutes jusqu'au port et à la marina de la Coupe de l'America. Le terminal de croisière est deux kilomètres plus loin le long du quai."
             }
           }
         },
@@ -1368,6 +1839,10 @@
             "es": {
               "name": "Sagunto",
               "about": "Media hora al norte. El teatro romano y el castillo coronan el cerro sobre la ciudad moderna."
+            },
+            "fr": {
+              "name": "Sagonte",
+              "about": "Une demi-heure au nord. Le théâtre romain et le château couronnent la colline au-dessus de la ville moderne."
             }
           }
         },
@@ -1381,6 +1856,10 @@
             "es": {
               "name": "Gandía",
               "about": "Algo menos de una hora al sur por la AP-7. La ciudad está tierra adentro y la playa queda cuatro kilómetros más allá — di cuál de las dos quieres."
+            },
+            "fr": {
+              "name": "Gandía",
+              "about": "Un peu moins d'une heure au sud par l'AP-7. La ville est à l'intérieur des terres et la plage se trouve quatre kilomètres plus loin — précisez laquelle vous voulez."
             }
           }
         },
@@ -1394,6 +1873,10 @@
             "es": {
               "name": "Peñíscola",
               "about": "Una hora y media al norte por la costa. El casco antiguo se levanta sobre una roca dentro del mar, y los coches paran al pie."
+            },
+            "fr": {
+              "name": "Peñíscola",
+              "about": "Une heure et demie au nord le long de la côte. La vieille ville se dresse sur un rocher dans la mer, et les voitures s'arrêtent à son pied."
             }
           }
         }
@@ -1406,6 +1889,15 @@
           "tips": [
             "La Ciudad de las Artes y las Ciencias está a 5 km del centro histórico — no se va andando de una a otra.",
             "La A-7 hacia el norte llega a la Costa del Azahar; hacia el sur va camino de Alicante."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Valence",
+          "official": "Aéroport de Valence",
+          "about": "L'aéroport de Valence est à huit kilomètres à l'ouest de la ville, assez près pour que la plupart des transferts durent moins de vingt minutes. La ville s'étire le long de l'ancien lit du fleuve vers le port et la Cité des arts et des sciences.",
+          "tips": [
+            "La Cité des arts et des sciences est à 5 km du centre historique — on ne va pas de l'une à l'autre à pied.",
+            "L'A-7 vers le nord rejoint la Costa del Azahar ; vers le sud elle file vers Alicante."
           ]
         }
       }
@@ -1433,6 +1925,10 @@
             "es": {
               "name": "Centro de Bilbao",
               "about": "Veinte minutos bajando al valle. El Casco Viejo es peatonal; el Guggenheim y Abandoibarra están junto a la ría y se llega bien en coche."
+            },
+            "fr": {
+              "name": "Centre de Bilbao",
+              "about": "Vingt minutes en descendant dans la vallée. Le Casco Viejo est piéton ; le Guggenheim et Abandoibarra sont au bord de la ria et accessibles en voiture."
             }
           }
         },
@@ -1446,6 +1942,10 @@
             "es": {
               "name": "Getxo",
               "about": "Veinte minutos ría abajo, hasta el puente colgante de Vizcaya y el puerto deportivo."
+            },
+            "fr": {
+              "name": "Getxo",
+              "about": "Vingt minutes en descendant la ria, jusqu'au pont transbordeur de Biscaye et à la marina."
             }
           }
         },
@@ -1459,6 +1959,10 @@
             "es": {
               "name": "San Sebastián",
               "about": "Una hora y diez al este por la AP-8. La Concha y el casco antiguo están cerca uno del otro, y la Parte Vieja es peatonal."
+            },
+            "fr": {
+              "name": "Saint-Sébastien",
+              "about": "Une heure dix à l'est par l'AP-8. La Concha et la vieille ville sont proches l'une de l'autre, et la Parte Vieja est piétonne."
             }
           }
         },
@@ -1472,6 +1976,10 @@
             "es": {
               "name": "Vitoria-Gasteiz",
               "about": "Algo menos de una hora al sur. La capital vasca, con un centro medieval compacto."
+            },
+            "fr": {
+              "name": "Vitoria-Gasteiz",
+              "about": "Un peu moins d'une heure au sud. La capitale basque, avec un centre médiéval compact."
             }
           }
         },
@@ -1485,6 +1993,10 @@
             "es": {
               "name": "Santander",
               "about": "Una hora y cuarto al oeste por la costa. Un traslado útil para las travesías de Brittany Ferries."
+            },
+            "fr": {
+              "name": "Santander",
+              "about": "Une heure et quart à l'ouest le long de la côte. Un transfert utile pour les traversées de Brittany Ferries."
             }
           }
         }
@@ -1497,6 +2009,15 @@
           "tips": [
             "La carretera de la costa vasca es más lenta pero mucho más bonita que la autopista.",
             "San Sebastián tiene su propio aeropuerto pequeño, pero casi todos los vuelos internacionales llegan aquí."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Bilbao",
+          "official": "Aéroport de Bilbao",
+          "about": "L'aéroport de Bilbao est à douze kilomètres au nord de la ville, sur les hauteurs dominant la ria. Le Guggenheim et la vieille ville sont tous deux au centre, et Saint-Sébastien est à une heure à l'est par l'AP-8.",
+          "tips": [
+            "La route de la côte basque est plus lente mais bien plus belle que l'autoroute.",
+            "Saint-Sébastien a son propre petit aéroport, mais la plupart des vols internationaux arrivent ici."
           ]
         }
       }
@@ -1524,6 +2045,10 @@
             "es": {
               "name": "Centro de Granada",
               "about": "Veinticinco minutos al este por la A-92. La Gran Vía y la catedral son la bajada habitual; todo lo que queda por encima se hace a pie."
+            },
+            "fr": {
+              "name": "Centre de Grenade",
+              "about": "Vingt-cinq minutes à l'est par l'A-92. La Gran Vía et la cathédrale sont la dépose habituelle ; tout ce qui est au-dessus se fait à pied."
             }
           }
         },
@@ -1537,6 +2062,10 @@
             "es": {
               "name": "Zona de la Alhambra",
               "about": "Media hora, subiendo por detrás de la ciudad. Los hoteles del cerro de la Alhambra tienen su propio acceso, separado del centro."
+            },
+            "fr": {
+              "name": "Quartier de l'Alhambra",
+              "about": "Une demi-heure, en montant derrière la ville. Les hôtels de la colline de l'Alhambra ont leur propre voie d'accès, séparée du centre."
             }
           }
         },
@@ -1550,6 +2079,10 @@
             "es": {
               "name": "Sierra Nevada",
               "about": "Algo menos de una hora, subiendo hasta los 2.100 metros. En invierno la carretera se limpia pero va lenta, y el precio fijo no cambia."
+            },
+            "fr": {
+              "name": "Sierra Nevada",
+              "about": "Un peu moins d'une heure, en montant à 2 100 mètres. En hiver la route est dégagée mais lente, et le prix fixe ne change pas."
             }
           }
         },
@@ -1563,6 +2096,10 @@
             "es": {
               "name": "Málaga",
               "about": "Una hora y media al suroeste por la A-92 y la A-45, bajando de la meseta a la costa."
+            },
+            "fr": {
+              "name": "Malaga",
+              "about": "Une heure et demie au sud-ouest par l'A-92 et l'A-45, en descendant du plateau vers la côte."
             }
           }
         },
@@ -1576,6 +2113,10 @@
             "es": {
               "name": "Nerja",
               "about": "Una hora y veinte al sur, cruzando la montaña hacia la costa de la Axarquía."
+            },
+            "fr": {
+              "name": "Nerja",
+              "about": "Une heure vingt au sud, en franchissant la montagne vers la côte de l'Axarquía."
             }
           }
         }
@@ -1588,6 +2129,15 @@
           "tips": [
             "A los hoteles del Albaicín se llega a pie. Los conductores paran en la plaza más cercana.",
             "Sierra Nevada está a 45 minutos subiendo desde la ciudad, y la carretera se limpia pero va lenta con nieve."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Grenade",
+          "official": "Aéroport Federico García Lorca Grenade-Jaén",
+          "about": "L'aéroport de Grenade est à dix-sept kilomètres à l'ouest de la ville par l'A-92. L'Alhambra domine la ville et l'Albaicín, en contrebas, est un coteau de ruelles en escalier où les voitures n'entrent pas.",
+          "tips": [
+            "On rejoint les hôtels de l'Albaicín à pied. Les chauffeurs déposent sur la place la plus proche.",
+            "La Sierra Nevada est à 45 minutes en montant depuis la ville, et la route est dégagée mais lente sous la neige."
           ]
         }
       }
@@ -1615,6 +2165,10 @@
             "es": {
               "name": "Centro de Santiago",
               "about": "Veinte minutos. A la plaza del Obradoiro se llega a pie desde el acceso rodado más cercano, a unos minutos."
+            },
+            "fr": {
+              "name": "Centre de Saint-Jacques",
+              "about": "Vingt minutes. On rejoint la place de l'Obradoiro à pied depuis l'accès routier le plus proche, à quelques minutes."
             }
           }
         },
@@ -1628,6 +2182,10 @@
             "es": {
               "name": "A Coruña",
               "about": "Algo menos de una hora al norte. La Torre de Hércules y la Marina acristalada son las referencias."
+            },
+            "fr": {
+              "name": "La Corogne",
+              "about": "Un peu moins d'une heure au nord. La tour d'Hercule et la Marina aux façades vitrées sont les repères."
             }
           }
         },
@@ -1641,6 +2199,10 @@
             "es": {
               "name": "Pontevedra",
               "about": "Cincuenta minutos al sur, al fondo de su ría. El casco antiguo es compacto y peatonal."
+            },
+            "fr": {
+              "name": "Pontevedra",
+              "about": "Cinquante minutes au sud, au fond de sa ria. La vieille ville est compacte et piétonne."
             }
           }
         },
@@ -1654,6 +2216,10 @@
             "es": {
               "name": "Vigo",
               "about": "Una hora al sur. La ciudad portuaria y el punto de embarque hacia las islas Cíes."
+            },
+            "fr": {
+              "name": "Vigo",
+              "about": "Une heure au sud. La ville portuaire et le point d'embarquement pour les îles Cíes."
             }
           }
         },
@@ -1667,6 +2233,10 @@
             "es": {
               "name": "Finisterre",
               "about": "Una hora y veinte al oeste hasta el final del Camino, por carreteras costeras estrechas."
+            },
+            "fr": {
+              "name": "Finisterre",
+              "about": "Une heure vingt à l'ouest jusqu'au bout du Chemin, par des routes côtières étroites."
             }
           }
         }
@@ -1679,6 +2249,15 @@
           "tips": [
             "El casco antiguo es peatonal. Los conductores paran en la Praza de Galicia o en la puerta más cercana.",
             "Las rías gallegas quedan a una hora o menos en varias direcciones."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Saint-Jacques-de-Compostelle",
+          "official": "Aéroport de Saint-Jacques–Rosalía de Castro",
+          "about": "L'aéroport de Saint-Jacques est à treize kilomètres de la vieille ville. La place de la cathédrale est le terme du Chemin et le centre médiéval qui l'entoure est fermé à la circulation.",
+          "tips": [
+            "La vieille ville est piétonne. Les chauffeurs s'arrêtent à la Praza de Galicia ou à la porte la plus proche.",
+            "Les rías galiciennes sont à une heure ou moins dans plusieurs directions."
           ]
         }
       }
@@ -1706,6 +2285,10 @@
             "es": {
               "name": "Centro de Zaragoza",
               "about": "Menos de veinte minutos al este. La basílica del Pilar y el foro romano están en el mismo kilómetro cuadrado."
+            },
+            "fr": {
+              "name": "Centre de Saragosse",
+              "about": "Moins de vingt minutes à l'est. La basilique du Pilar et le forum romain sont dans le même kilomètre carré."
             }
           }
         },
@@ -1719,6 +2302,10 @@
             "es": {
               "name": "Huesca",
               "about": "Algo menos de una hora al norte, a los pies del Pirineo."
+            },
+            "fr": {
+              "name": "Huesca",
+              "about": "Un peu moins d'une heure au nord, au pied des Pyrénées."
             }
           }
         },
@@ -1732,6 +2319,10 @@
             "es": {
               "name": "Teruel",
               "about": "Algo menos de dos horas al sur, cruzando el Maestrazgo. Torres mudéjares y un centro amurallado pequeño."
+            },
+            "fr": {
+              "name": "Teruel",
+              "about": "Un peu moins de deux heures au sud, à travers le Maestrazgo. Des tours mudéjares et un petit centre fortifié."
             }
           }
         },
@@ -1745,6 +2336,10 @@
             "es": {
               "name": "Lleida",
               "about": "Una hora y media al este por la AP-2, a mitad de camino de Barcelona."
+            },
+            "fr": {
+              "name": "Lérida",
+              "about": "Une heure et demie à l'est par l'AP-2, à mi-chemin de Barcelone."
             }
           }
         },
@@ -1758,6 +2353,10 @@
             "es": {
               "name": "Jaca",
               "about": "Casi dos horas al norte, entrando en el Pirineo. Es la base para Astún y Candanchú."
+            },
+            "fr": {
+              "name": "Jaca",
+              "about": "Près de deux heures au nord dans les Pyrénées, la base pour Astún et Candanchú."
             }
           }
         }
@@ -1770,6 +2369,15 @@
           "tips": [
             "Zaragoza es una parada habitual en la ruta Madrid–Barcelona, y un traslado con precio fijo gana a partir el viaje en tren.",
             "Las estaciones de esquí del Pirineo están a dos horas al norte."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Saragosse",
+          "official": "Aéroport de Saragosse",
+          "about": "Saragosse est à mi-chemin entre Madrid et Barcelone, et son aéroport se trouve à dix kilomètres à l'ouest de la ville. La basilique du Pilar est le centre de tout.",
+          "tips": [
+            "Saragosse est une étape courante sur la route Madrid–Barcelone, et un transfert à prix ferme vaut mieux que de couper le trajet en train.",
+            "Les stations de ski des Pyrénées sont à deux heures au nord."
           ]
         }
       }
@@ -1797,6 +2405,10 @@
             "es": {
               "name": "Centro de Girona",
               "about": "Veinte minutos. El Call judío y las escaleras de la catedral son peatonales."
+            },
+            "fr": {
+              "name": "Centre de Gérone",
+              "about": "Vingt minutes. Le quartier juif et les marches de la cathédrale sont piétons."
             }
           }
         },
@@ -1810,6 +2422,10 @@
             "es": {
               "name": "Lloret de Mar",
               "about": "Treinta y cinco minutos al este. Los hoteles trepan por la ladera detrás de la playa — el nombre del hotel importa."
+            },
+            "fr": {
+              "name": "Lloret de Mar",
+              "about": "Trente-cinq minutes à l'est. Les hôtels grimpent à flanc de colline derrière la plage — le nom de l'hôtel compte."
             }
           }
         },
@@ -1823,6 +2439,10 @@
             "es": {
               "name": "Tossa de Mar",
               "about": "Cuarenta y cinco minutos, por la carretera de la costa pasando Lloret. El casco antiguo amurallado domina la bahía."
+            },
+            "fr": {
+              "name": "Tossa de Mar",
+              "about": "Quarante-cinq minutes, par la route côtière après Lloret. La vieille ville fortifiée domine la baie."
             }
           }
         },
@@ -1836,6 +2456,10 @@
             "es": {
               "name": "Centro de Barcelona",
               "about": "Una hora y cuarto al sur por la AP-7. Un trayecto de verdad, y más barato como traslado con precio fijo que un autobús más taxi."
+            },
+            "fr": {
+              "name": "Centre de Barcelone",
+              "about": "Une heure et quart au sud par l'AP-7. Un vrai trajet, et moins cher en un transfert à prix ferme qu'un bus plus un taxi."
             }
           }
         },
@@ -1849,6 +2473,10 @@
             "es": {
               "name": "Figueres",
               "about": "Treinta y cinco minutos al norte. El museo Dalí está en pleno centro."
+            },
+            "fr": {
+              "name": "Figueres",
+              "about": "Trente-cinq minutes au nord. Le musée Dalí est en plein centre-ville."
             }
           }
         }
@@ -1861,6 +2489,15 @@
           "tips": [
             "Este aeropuerto está a 90 km de Barcelona, no es un aeropuerto de Barcelona. Cuenta con un traslado de verdad.",
             "La carretera de la costa de la Costa Brava es preciosa y lenta — la autopista es más rápida."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Gérone",
+          "official": "Aéroport de Gérone–Costa Brava",
+          "about": "L'aéroport de Gérone dessert la Costa Brava et sert aussi pour des vols vers Barcelone, quatre-vingt-dix kilomètres au sud. Lloret et Tossa sont à une demi-heure à l'est.",
+          "tips": [
+            "Cet aéroport est à 90 km de Barcelone, ce n'est pas un aéroport de Barcelone. Prévoyez un vrai transfert.",
+            "La route côtière de la Costa Brava est superbe et lente — l'autoroute est plus rapide."
           ]
         }
       }
@@ -1888,6 +2525,10 @@
             "es": {
               "name": "Salou",
               "about": "Menos de veinte minutos. El complejo se curva alrededor de una bahía con los hoteles detrás, y PortAventura queda justo tierra adentro."
+            },
+            "fr": {
+              "name": "Salou",
+              "about": "Moins de vingt minutes. La station épouse une baie avec les hôtels en retrait, et PortAventura est juste à l'intérieur des terres."
             }
           }
         },
@@ -1901,6 +2542,10 @@
             "es": {
               "name": "Cambrils",
               "about": "Veinte minutos costa abajo, más tranquilo que Salou y levantado alrededor de un puerto pesquero en activo."
+            },
+            "fr": {
+              "name": "Cambrils",
+              "about": "Vingt minutes en descendant la côte, plus calme que Salou et bâtie autour d'un port de pêche en activité."
             }
           }
         },
@@ -1914,6 +2559,10 @@
             "es": {
               "name": "Tarragona",
               "about": "Veinte minutos al este. El anfiteatro romano domina el mar y el casco antiguo que queda detrás está amurallado."
+            },
+            "fr": {
+              "name": "Tarragone",
+              "about": "Vingt minutes à l'est. L'amphithéâtre romain domine la mer et la vieille ville derrière est fortifiée."
             }
           }
         },
@@ -1927,6 +2576,10 @@
             "es": {
               "name": "PortAventura",
               "about": "Un cuarto de hora. Los hoteles del parque tienen su propio acceso, separado de la entrada principal."
+            },
+            "fr": {
+              "name": "PortAventura",
+              "about": "Un quart d'heure. Les hôtels du parc ont leur propre voie d'accès, distincte de l'entrée principale."
             }
           }
         },
@@ -1940,6 +2593,10 @@
             "es": {
               "name": "Centro de Barcelona",
               "about": "Una hora y veinte al norte por la AP-7."
+            },
+            "fr": {
+              "name": "Centre de Barcelone",
+              "about": "Une heure vingt au nord par l'AP-7."
             }
           }
         }
@@ -1952,6 +2609,15 @@
           "tips": [
             "PortAventura está a 12 km de la terminal — el parque temático más cercano a un aeropuerto en España.",
             "Salou y Cambrils se funden a lo largo de la misma costa."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Reus",
+          "official": "Aéroport de Reus",
+          "about": "Reus dessert la Costa Dorada et PortAventura. Salou et Cambrils sont à moins de vingt minutes, et Barcelone à une heure et demie au nord.",
+          "tips": [
+            "PortAventura est à 12 km du terminal — le parc d'attractions le plus proche d'un aéroport en Espagne.",
+            "Salou et Cambrils se rejoignent le long de la même côte."
           ]
         }
       }
@@ -1979,6 +2645,10 @@
             "es": {
               "name": "Centro de Murcia",
               "about": "Veinticinco minutos al norte. La plaza de la catedral y la ribera del Segura son el centro."
+            },
+            "fr": {
+              "name": "Centre de Murcie",
+              "about": "Vingt-cinq minutes au nord. La place de la cathédrale et les berges du Segura forment le centre."
             }
           }
         },
@@ -1992,6 +2662,10 @@
             "es": {
               "name": "Cartagena",
               "about": "Media hora al sureste. El teatro romano y el puerto militar están los dos junto al agua."
+            },
+            "fr": {
+              "name": "Carthagène",
+              "about": "Une demi-heure au sud-est. Le théâtre romain et le port militaire sont tous deux au bord de l'eau."
             }
           }
         },
@@ -2005,6 +2679,10 @@
             "es": {
               "name": "La Manga del Mar Menor",
               "about": "Cuarenta y cinco minutos al este, y después a lo largo de la lengua de arena. La franja recorre 21 km con accesos numerados — da el número."
+            },
+            "fr": {
+              "name": "La Manga del Mar Menor",
+              "about": "Quarante-cinq minutes à l'est, puis le long du cordon de sable. La bande fait 21 km avec des accès numérotés — donnez le numéro."
             }
           }
         },
@@ -2018,6 +2696,10 @@
             "es": {
               "name": "Torrevieja",
               "about": "Cincuenta minutos al noreste, ya en la provincia de Alicante."
+            },
+            "fr": {
+              "name": "Torrevieja",
+              "about": "Cinquante minutes au nord-est, déjà dans la province d'Alicante."
             }
           }
         },
@@ -2031,6 +2713,10 @@
             "es": {
               "name": "Mazarrón",
               "about": "Cuarenta minutos al suroeste, un tramo más tranquilo de la misma costa."
+            },
+            "fr": {
+              "name": "Mazarrón",
+              "about": "Quarante minutes au sud-ouest, une portion plus calme de la même côte."
             }
           }
         }
@@ -2043,6 +2729,15 @@
           "tips": [
             "Este aeropuerto sustituyó a San Javier, que ahora es solo militar. Comprueba cuál figura en tu reserva.",
             "La Manga es una lengua de arena de 21 kilómetros — lo que necesita el conductor es el número de la salida."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Murcie",
+          "official": "Aéroport international de la région de Murcie",
+          "about": "L'aéroport de Murcie, à Corvera, a ouvert en 2019 et dessert la Costa Cálida. Carthagène et La Manga sont les principales destinations, toutes deux à moins d'une heure.",
+          "tips": [
+            "Cet aéroport a remplacé San Javier, désormais militaire uniquement. Vérifiez lequel figure sur votre réservation.",
+            "La Manga est un cordon de sable de 21 kilomètres — ce dont le chauffeur a besoin, c'est le numéro de l'accès."
           ]
         }
       }
@@ -2070,6 +2765,10 @@
             "es": {
               "name": "Centro de Almería",
               "about": "Un cuarto de hora al oeste. La Alcazaba domina el casco antiguo y el puerto."
+            },
+            "fr": {
+              "name": "Centre d'Almería",
+              "about": "Un quart d'heure à l'ouest. L'Alcazaba domine la vieille ville et le port."
             }
           }
         },
@@ -2083,6 +2782,10 @@
             "es": {
               "name": "Roquetas de Mar",
               "about": "Media hora al oeste pasando los invernaderos. El complejo se extiende a lo largo de una playa larga y recta."
+            },
+            "fr": {
+              "name": "Roquetas de Mar",
+              "about": "Une demi-heure à l'ouest, après les serres. La station longe une plage droite et longue."
             }
           }
         },
@@ -2096,6 +2799,10 @@
             "es": {
               "name": "Cabo de Gata",
               "about": "Treinta y cinco minutos al este, entrando en el parque natural. Algunos accesos a las playas son por pista sin asfaltar."
+            },
+            "fr": {
+              "name": "Cabo de Gata",
+              "about": "Trente-cinq minutes à l'est, dans le parc naturel. Certains accès aux plages se font par piste non goudronnée."
             }
           }
         },
@@ -2109,6 +2816,10 @@
             "es": {
               "name": "Mojácar",
               "about": "Una hora al noreste. El pueblo blanco corona un cerro y la playa queda dos kilómetros más abajo."
+            },
+            "fr": {
+              "name": "Mojácar",
+              "about": "Une heure au nord-est. Le village blanc couronne une colline et la plage est deux kilomètres plus bas."
             }
           }
         },
@@ -2122,6 +2833,10 @@
             "es": {
               "name": "Granada",
               "about": "Algo menos de dos horas al noroeste, subiendo a la meseta."
+            },
+            "fr": {
+              "name": "Grenade",
+              "about": "Un peu moins de deux heures au nord-ouest, en montant sur le plateau."
             }
           }
         }
@@ -2134,6 +2849,15 @@
           "tips": [
             "A algunas playas de Cabo de Gata se llega por pistas sin asfaltar. Una ubicación en el mapa ayuda.",
             "El desierto de Tabernas, donde se rodaron los spaghetti westerns, está a media hora tierra adentro."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport d'Almería",
+          "official": "Aéroport d'Almería",
+          "about": "L'aéroport d'Almería est à neuf kilomètres à l'est de la ville, en bordure du seul désert d'Europe. Le parc naturel de Cabo de Gata commence à vingt minutes.",
+          "tips": [
+            "Certaines plages de Cabo de Gata se rejoignent par des pistes non goudronnées. Une localisation sur la carte aide.",
+            "Le désert de Tabernas, où furent tournés les westerns spaghetti, est à une demi-heure dans les terres."
           ]
         }
       }
@@ -2161,6 +2885,10 @@
             "es": {
               "name": "Centro de Jerez",
               "about": "Doce minutos. Las bodegas y la escuela ecuestre están en las mismas pocas calles."
+            },
+            "fr": {
+              "name": "Centre de Jerez",
+              "about": "Douze minutes. Les bodegas et l'école équestre sont dans les mêmes quelques rues."
             }
           }
         },
@@ -2174,6 +2902,10 @@
             "es": {
               "name": "Cádiz",
               "about": "Cuarenta minutos al sur, hasta la península. El casco antiguo es denso y de calles muy estrechas."
+            },
+            "fr": {
+              "name": "Cadix",
+              "about": "Quarante minutes au sud, jusqu'à la péninsule. La vieille ville est dense et les rues très étroites."
             }
           }
         },
@@ -2187,6 +2919,10 @@
             "es": {
               "name": "El Puerto de Santa María",
               "about": "Veinte minutos al sur, al otro lado de la bahía de Cádiz."
+            },
+            "fr": {
+              "name": "El Puerto de Santa María",
+              "about": "Vingt minutes au sud, de l'autre côté de la baie de Cadix."
             }
           }
         },
@@ -2200,6 +2936,10 @@
             "es": {
               "name": "Sevilla",
               "about": "Una hora al norte por la AP-4."
+            },
+            "fr": {
+              "name": "Séville",
+              "about": "Une heure au nord par l'AP-4."
             }
           }
         },
@@ -2213,6 +2953,10 @@
             "es": {
               "name": "Tarifa",
               "about": "Una hora y media al sur, hasta el estrecho. El ferry a Tánger sale del puerto."
+            },
+            "fr": {
+              "name": "Tarifa",
+              "about": "Une heure et demie au sud, jusqu'au détroit. Le ferry vers Tanger part du port."
             }
           }
         }
@@ -2225,6 +2969,15 @@
           "tips": [
             "La mayoría de las bodegas requieren reserva y cierran a primera hora de la tarde.",
             "Tarifa, en la punta sur, es el puerto del ferry a Tánger."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Jerez",
+          "official": "Aéroport de Jerez",
+          "about": "Jerez est la capitale du xérès et son aéroport est à huit kilomètres du centre. Cadix est à quarante minutes au sud et les villages blancs commencent dans les terres.",
+          "tips": [
+            "La plupart des bodegas se visitent sur réservation et ferment en début d'après-midi.",
+            "Tarifa, à la pointe sud, est le port du ferry vers Tanger."
           ]
         }
       }
@@ -2252,6 +3005,10 @@
             "es": {
               "name": "Centro de Santander",
               "about": "Doce minutos. Las playas del Sardinero quedan tres kilómetros más allá, rodeando la península."
+            },
+            "fr": {
+              "name": "Centre de Santander",
+              "about": "Douze minutes. Les plages du Sardinero sont trois kilomètres plus loin, en contournant la presqu'île."
             }
           }
         },
@@ -2265,6 +3022,10 @@
             "es": {
               "name": "Terminal de ferry de Santander",
               "about": "Doce minutos hasta el atraque de Brittany Ferries, en plena ciudad."
+            },
+            "fr": {
+              "name": "Terminal ferry de Santander",
+              "about": "Douze minutes jusqu'au poste d'amarrage de Brittany Ferries, en pleine ville."
             }
           }
         },
@@ -2278,6 +3039,10 @@
             "es": {
               "name": "Santillana del Mar",
               "about": "Media hora al oeste. El pueblo entero es una calle medieval conservada, cerrada al tráfico."
+            },
+            "fr": {
+              "name": "Santillana del Mar",
+              "about": "Une demi-heure à l'ouest. Le village entier est une rue médiévale préservée, fermée à la circulation."
             }
           }
         },
@@ -2291,6 +3056,10 @@
             "es": {
               "name": "Bilbao",
               "about": "Una hora y cuarto al este por la autopista de la costa."
+            },
+            "fr": {
+              "name": "Bilbao",
+              "about": "Une heure et quart à l'est par l'autoroute côtière."
             }
           }
         },
@@ -2304,6 +3073,10 @@
             "es": {
               "name": "Potes",
               "about": "Una hora y media al suroeste, entrando en los Picos de Europa."
+            },
+            "fr": {
+              "name": "Potes",
+              "about": "Une heure et demie au sud-ouest, dans les Picos de Europa."
             }
           }
         }
@@ -2316,6 +3089,15 @@
           "tips": [
             "La travesía de Brittany Ferries a Plymouth y Portsmouth sale del puerto de la ciudad, a 6 km.",
             "Santillana del Mar y las cuevas de Altamira están a media hora al oeste."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Santander",
+          "official": "Aéroport Seve Ballesteros–Santander",
+          "about": "L'aéroport de Santander est à cinq kilomètres de la ville et proche du terminal de ferry. La côte cantabrique et les Picos de Europa sont tous deux à portée.",
+          "tips": [
+            "La traversée Brittany Ferries vers Plymouth et Portsmouth part du port de la ville, à 6 km.",
+            "Santillana del Mar et les grottes d'Altamira sont à une demi-heure à l'ouest."
           ]
         }
       }
@@ -2343,6 +3125,10 @@
             "es": {
               "name": "Oviedo",
               "about": "Cuarenta minutos al sur. El casco antiguo alrededor de la catedral es compacto y peatonal."
+            },
+            "fr": {
+              "name": "Oviedo",
+              "about": "Quarante minutes au sud. La vieille ville autour de la cathédrale est compacte et piétonne."
             }
           }
         },
@@ -2356,6 +3142,10 @@
             "es": {
               "name": "Gijón",
               "about": "Treinta y cinco minutos al este. El cerro de Cimadevilla y la playa de San Lorenzo son el centro."
+            },
+            "fr": {
+              "name": "Gijón",
+              "about": "Trente-cinq minutes à l'est. Le promontoire de Cimadevilla et la plage de San Lorenzo forment le centre."
             }
           }
         },
@@ -2369,6 +3159,10 @@
             "es": {
               "name": "Avilés",
               "about": "Menos de veinte minutos, la ciudad más cercana a la terminal."
+            },
+            "fr": {
+              "name": "Avilés",
+              "about": "Moins de vingt minutes, la ville la plus proche du terminal."
             }
           }
         },
@@ -2382,6 +3176,10 @@
             "es": {
               "name": "Llanes",
               "about": "Hora y media al este por la costa, al borde de los Picos."
+            },
+            "fr": {
+              "name": "Llanes",
+              "about": "Une heure et demie à l'est le long de la côte, en lisière des Picos."
             }
           }
         },
@@ -2395,6 +3193,10 @@
             "es": {
               "name": "Cangas de Onís",
               "about": "Hora y media al sureste, la puerta de Covadonga y los lagos."
+            },
+            "fr": {
+              "name": "Cangas de Onís",
+              "about": "Une heure et demie au sud-est, la porte de Covadonga et des lacs."
             }
           }
         }
@@ -2407,6 +3209,15 @@
           "tips": [
             "Tres ciudades, tres direcciones — Oviedo al sur, Gijón al este, Avilés la más cercana.",
             "La costa asturiana es verde y a menudo lluviosa, incluso en agosto."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport des Asturies",
+          "official": "Aéroport des Asturies",
+          "about": "L'aéroport des Asturies se situe entre Oviedo, Gijón et Avilés, à une quarantaine de minutes de chacune. Les Picos de Europa sont à une heure et demie à l'est.",
+          "tips": [
+            "Trois villes, trois directions — Oviedo au sud, Gijón à l'est, Avilés la plus proche.",
+            "La côte asturienne est verte et souvent pluvieuse, même en août."
           ]
         }
       }
@@ -2434,6 +3245,10 @@
             "es": {
               "name": "Mahón",
               "about": "Diez minutos. El puerto queda por debajo de la ciudad y se baja por una carretera empinada."
+            },
+            "fr": {
+              "name": "Mahón",
+              "about": "Dix minutes. Le port est en contrebas de la ville et se rejoint par une route escarpée."
             }
           }
         },
@@ -2447,6 +3262,10 @@
             "es": {
               "name": "Ciutadella",
               "about": "Cuarenta y cinco minutos al oeste por la Me-1. El casco antiguo es amurallado y peatonal."
+            },
+            "fr": {
+              "name": "Ciutadella",
+              "about": "Quarante-cinq minutes à l'ouest par la Me-1. La vieille ville est fortifiée et piétonne."
             }
           }
         },
@@ -2460,6 +3279,10 @@
             "es": {
               "name": "Cala en Porter",
               "about": "Menos de veinte minutos al sur, construida sobre un barranco que baja hasta la playa."
+            },
+            "fr": {
+              "name": "Cala en Porter",
+              "about": "Moins de vingt minutes au sud, bâtie au-dessus d'une gorge qui descend vers la plage."
             }
           }
         },
@@ -2473,6 +3296,10 @@
             "es": {
               "name": "Fornells",
               "about": "Media hora al norte, hasta el pueblo pesquero en su bahía."
+            },
+            "fr": {
+              "name": "Fornells",
+              "about": "Une demi-heure au nord, jusqu'au village de pêcheurs sur sa baie."
             }
           }
         },
@@ -2486,6 +3313,10 @@
             "es": {
               "name": "Son Bou",
               "about": "Veinticinco minutos al suroeste, hasta la playa más larga de la isla."
+            },
+            "fr": {
+              "name": "Son Bou",
+              "about": "Vingt-cinq minutes au sud-ouest, jusqu'à la plus longue plage de l'île."
             }
           }
         }
@@ -2498,6 +3329,15 @@
           "tips": [
             "Mahón está al este y Ciutadella al oeste. La carretera de la isla las une en 45 minutos.",
             "A muchas de las mejores calas se llega a pie desde un aparcamiento."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Minorque",
+          "official": "Aéroport de Minorque",
+          "about": "L'aéroport de Minorque est à quatre kilomètres de Mahón. L'île est assez petite pour que rien ne soit à plus de quarante-cinq minutes, et les deux extrémités — Mahón et Ciutadella — sont à une heure l'une de l'autre.",
+          "tips": [
+            "Mahón est à l'est, Ciutadella à l'ouest. La route de l'île les relie en 45 minutes.",
+            "On rejoint beaucoup des plus belles criques à pied depuis un parking."
           ]
         }
       }
@@ -2525,6 +3365,10 @@
             "es": {
               "name": "Santa Cruz de Tenerife",
               "about": "Veinte minutos bajando a la capital y al puerto de cruceros."
+            },
+            "fr": {
+              "name": "Santa Cruz de Tenerife",
+              "about": "Vingt minutes en descendant vers la capitale et le port de croisière."
             }
           }
         },
@@ -2538,6 +3382,10 @@
             "es": {
               "name": "La Laguna",
               "about": "Doce minutos. El casco antiguo, Patrimonio de la Humanidad, es una cuadrícula de calles coloniales en buena parte peatonal."
+            },
+            "fr": {
+              "name": "La Laguna",
+              "about": "Douze minutes. La vieille ville classée à l'UNESCO est une trame de rues coloniales, en grande partie piétonne."
             }
           }
         },
@@ -2551,6 +3399,10 @@
             "es": {
               "name": "Puerto de la Cruz",
               "about": "Treinta y cinco minutos al oeste por la costa norte."
+            },
+            "fr": {
+              "name": "Puerto de la Cruz",
+              "about": "Trente-cinq minutes à l'ouest le long de la côte nord."
             }
           }
         },
@@ -2564,6 +3416,10 @@
             "es": {
               "name": "Costa Adeje",
               "about": "Una hora y diez al sur por la TF-1, cruzando al lado soleado."
+            },
+            "fr": {
+              "name": "Costa Adeje",
+              "about": "Une heure dix au sud par la TF-1, en passant du côté ensoleillé."
             }
           }
         },
@@ -2577,6 +3433,10 @@
             "es": {
               "name": "Playa de las Américas",
               "about": "Una hora y cinco al sur, la franja turística principal."
+            },
+            "fr": {
+              "name": "Playa de las Américas",
+              "about": "Une heure cinq au sud, la principale bande touristique."
             }
           }
         }
@@ -2589,6 +3449,15 @@
           "tips": [
             "Este no es Tenerife Sur. Están a una hora uno del otro y es fácil confundirlos al reservar.",
             "El lado norte es más fresco y más verde. Lleva algo de abrigo."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Tenerife Nord",
+          "official": "Aéroport de Tenerife Nord–Ciudad de La Laguna",
+          "about": "Tenerife Nord concentre la plupart des vols inter-îles et vers la péninsule. Il domine La Laguna, dans une zone qui accroche les nuages, et les stations du sud sont à une heure par la TF-1.",
+          "tips": [
+            "Ce n'est pas Tenerife Sud. Les deux sont à une heure l'un de l'autre et faciles à confondre à la réservation.",
+            "Le versant nord est plus frais et plus vert. Emportez une couche supplémentaire."
           ]
         }
       }
@@ -2616,6 +3485,10 @@
             "es": {
               "name": "Centro de Vigo",
               "about": "Menos de veinte minutos bajando al puerto y al casco viejo."
+            },
+            "fr": {
+              "name": "Centre de Vigo",
+              "about": "Moins de vingt minutes en descendant vers le port et la vieille ville."
             }
           }
         },
@@ -2629,6 +3502,10 @@
             "es": {
               "name": "Baiona",
               "about": "Media hora al suroeste, rodeando la ría hasta el parador de la fortaleza."
+            },
+            "fr": {
+              "name": "Baiona",
+              "about": "Une demi-heure au sud-ouest, en contournant la ria jusqu'au parador de la forteresse."
             }
           }
         },
@@ -2642,6 +3519,10 @@
             "es": {
               "name": "Pontevedra",
               "about": "Media hora al norte, al fondo de su propia ría."
+            },
+            "fr": {
+              "name": "Pontevedra",
+              "about": "Une demi-heure au nord, au fond de sa propre ria."
             }
           }
         },
@@ -2655,6 +3536,10 @@
             "es": {
               "name": "Santiago de Compostela",
               "about": "Una hora al norte por la AP-9."
+            },
+            "fr": {
+              "name": "Saint-Jacques-de-Compostelle",
+              "about": "Une heure au nord par l'AP-9."
             }
           }
         },
@@ -2668,6 +3553,10 @@
             "es": {
               "name": "Oporto",
               "about": "Una hora y tres cuartos al sur, ya en Portugal. Un precio fijo, un conductor y ninguna parada en la frontera."
+            },
+            "fr": {
+              "name": "Porto",
+              "about": "Une heure trois quarts au sud, au Portugal. Un prix ferme, un chauffeur, aucun arrêt à la frontière."
             }
           }
         }
@@ -2680,6 +3569,15 @@
           "tips": [
             "Oporto está a dos horas al sur — a menudo sale más barato como un solo traslado que cruzando en tren.",
             "El ferry a las islas Cíes sale del puerto de la ciudad y necesita permiso en verano."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Vigo",
+          "official": "Aéroport de Vigo",
+          "about": "L'aéroport de Vigo est à neuf kilomètres à l'est de la ville, au-dessus de la ria. Le Portugal est à quarante minutes au sud et Saint-Jacques à une heure au nord.",
+          "tips": [
+            "Porto est à deux heures au sud — souvent moins cher en un seul transfert qu'en passant par le train.",
+            "Le ferry vers les îles Cíes part du port de la ville et nécessite une autorisation en été."
           ]
         }
       }
@@ -2707,6 +3605,10 @@
             "es": {
               "name": "Centro de San Sebastián",
               "about": "Veinticinco minutos al oeste por la costa. El casco viejo es peatonal y la bajada es en su borde."
+            },
+            "fr": {
+              "name": "Centre de Saint-Sébastien",
+              "about": "Vingt-cinq minutes à l'ouest le long de la côte. La vieille ville est piétonne et la dépose se fait en bordure."
             }
           }
         },
@@ -2720,6 +3622,10 @@
             "es": {
               "name": "Hondarribia",
               "about": "Seis minutos. La villa amurallada domina el puerto pesquero en la desembocadura."
+            },
+            "fr": {
+              "name": "Hondarribia",
+              "about": "Six minutes. La ville fortifiée domine le port de pêche à l'embouchure du fleuve."
             }
           }
         },
@@ -2733,6 +3639,10 @@
             "es": {
               "name": "Biarritz",
               "about": "Media hora al norte, ya en Francia, siguiendo la costa."
+            },
+            "fr": {
+              "name": "Biarritz",
+              "about": "Une demi-heure au nord, en France, le long de la côte."
             }
           }
         },
@@ -2746,6 +3656,10 @@
             "es": {
               "name": "Bilbao",
               "about": "Una hora y diez al oeste por la AP-8."
+            },
+            "fr": {
+              "name": "Bilbao",
+              "about": "Une heure dix à l'ouest par l'AP-8."
             }
           }
         },
@@ -2759,6 +3673,10 @@
             "es": {
               "name": "Zarautz",
               "about": "Treinta y cinco minutos al oeste, un pueblo surfero sobre una playa larga."
+            },
+            "fr": {
+              "name": "Zarautz",
+              "about": "Trente-cinq minutes à l'ouest, une ville de surf sur une longue plage."
             }
           }
         }
@@ -2771,6 +3689,15 @@
           "tips": [
             "El aeropuerto está en la frontera francesa — Biarritz está más cerca que algunas localidades españolas.",
             "La Concha y la Parte Vieja son peatonales."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de Saint-Sébastien",
+          "official": "Aéroport de Saint-Sébastien",
+          "about": "L'aéroport de Saint-Sébastien se trouve à Hondarribia, vingt kilomètres à l'est de la ville et juste sur la frontière française. Biarritz est à trente minutes au nord.",
+          "tips": [
+            "L'aéroport est sur la frontière française — Biarritz est plus proche que certaines villes espagnoles.",
+            "La Concha et la Parte Vieja sont piétonnes."
           ]
         }
       }
@@ -2798,6 +3725,10 @@
             "es": {
               "name": "Santa Cruz de La Palma",
               "about": "Doce minutos al norte por la costa, hasta la pequeña capital colonial."
+            },
+            "fr": {
+              "name": "Santa Cruz de La Palma",
+              "about": "Douze minutes au nord le long de la côte, jusqu'à la petite capitale coloniale."
             }
           }
         },
@@ -2811,6 +3742,10 @@
             "es": {
               "name": "Los Cancajos",
               "about": "Ocho minutos, el complejo más cercano a la terminal."
+            },
+            "fr": {
+              "name": "Los Cancajos",
+              "about": "Huit minutes, la station la plus proche du terminal."
             }
           }
         },
@@ -2824,6 +3759,10 @@
             "es": {
               "name": "Los Llanos de Aridane",
               "about": "Cincuenta minutos cruzando la isla, por encima de la cumbre hasta el lado oeste."
+            },
+            "fr": {
+              "name": "Los Llanos de Aridane",
+              "about": "Cinquante minutes en traversant l'île, par-dessus la crête jusqu'au versant ouest."
             }
           }
         },
@@ -2837,6 +3776,10 @@
             "es": {
               "name": "Puerto Naos",
               "about": "Una hora hasta la playa de la costa oeste, al pie del volcán."
+            },
+            "fr": {
+              "name": "Puerto Naos",
+              "about": "Une heure jusqu'à la plage de la côte ouest, au pied du volcan."
             }
           }
         },
@@ -2850,6 +3793,10 @@
             "es": {
               "name": "Tazacorte",
               "about": "Cincuenta y cinco minutos al oeste, el puerto que queda por debajo de Los Llanos."
+            },
+            "fr": {
+              "name": "Tazacorte",
+              "about": "Cinquante-cinq minutes à l'ouest, le port en contrebas de Los Llanos."
             }
           }
         }
@@ -2862,6 +3809,15 @@
           "tips": [
             "La isla es montañosa. Un trayecto de 35 kilómetros puede llevar una hora.",
             "La carretera al observatorio del Roque de los Muchachos sube hasta los 2.400 metros."
+          ]
+        },
+        "fr": {
+          "name": "Aéroport de La Palma",
+          "official": "Aéroport de La Palma",
+          "about": "L'aéroport de La Palma est à huit kilomètres de Santa Cruz, sur la côte est. L'île est escarpée et la route vers le versant ouest franchit la crête — les trajets prennent plus longtemps que les distances ne le laissent croire.",
+          "tips": [
+            "L'île est montagneuse. Un trajet de 35 kilomètres peut prendre une heure.",
+            "La route de l'observatoire du Roque de los Muchachos monte à 2 400 mètres."
           ]
         }
       }
