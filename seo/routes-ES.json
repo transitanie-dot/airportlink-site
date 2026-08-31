@@ -96,37 +96,126 @@
           "name": "Madrid city centre",
           "km": 20,
           "minutes": 25,
-          "about": "Twenty kilometres on the A-2, about twenty-five minutes outside rush hour. Central Madrid is a low-emission zone: our licensed vehicles are cleared to enter, which is not true of every hire car. Give the street name — Gran Vía alone covers more than a kilometre."
+          "about": "Twenty kilometres on the A-2, about twenty-five minutes outside rush hour. Central Madrid is a low-emission zone: our licensed vehicles are cleared to enter, which is not true of every hire car. Give the street name — Gran Vía alone covers more than a kilometre.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Madrid",
+              "about": "Veinte kilómetros por la A-2, unos veinticinco minutos fuera de hora punta. El centro de Madrid es zona de bajas emisiones: nuestros vehículos con licencia pueden entrar, cosa que no ocurre con cualquier coche de alquiler. Danos el nombre de la calle — la Gran Vía sola mide más de un kilómetro."
+            }
+          }
         },
         {
           "slug": "alcala-de-henares",
           "name": "Alcalá de Henares",
           "km": 29,
           "minutes": 30,
-          "about": "Half an hour east on the A-2. Cervantes was born here and the university buildings are UNESCO-listed. The old centre is pedestrian, so the driver drops you at the nearest point to your hotel rather than at the door."
+          "about": "Half an hour east on the A-2. Cervantes was born here and the university buildings are UNESCO-listed. The old centre is pedestrian, so the driver drops you at the nearest point to your hotel rather than at the door.",
+          "i18n": {
+            "es": {
+              "name": "Alcalá de Henares",
+              "about": "Media hora al este por la A-2. Aquí nació Cervantes y los edificios de la universidad son Patrimonio de la Humanidad. El casco antiguo es peatonal, así que el conductor te deja en el punto más cercano a tu hotel y no en la puerta."
+            }
+          }
         },
         {
           "slug": "toledo",
           "name": "Toledo",
           "km": 90,
           "minutes": 60,
-          "about": "An hour south on the AP-41. Toledo sits on a hill inside a bend of the Tagus, and the old town is a maze of narrow streets closed to most traffic. Drivers use the Puerta de Bisagra or the Zocodover drop-off depending on where you are staying."
+          "about": "An hour south on the AP-41. Toledo sits on a hill inside a bend of the Tagus, and the old town is a maze of narrow streets closed to most traffic. Drivers use the Puerta de Bisagra or the Zocodover drop-off depending on where you are staying.",
+          "i18n": {
+            "es": {
+              "name": "Toledo",
+              "about": "Una hora al sur por la AP-41. Toledo se asienta sobre un cerro dentro de un meandro del Tajo, y el casco antiguo es un laberinto de calles estrechas cerradas a casi todo el tráfico. Los conductores usan la Puerta de Bisagra o la parada de Zocodover según dónde te alojes."
+            }
+          }
         },
         {
           "slug": "segovia",
           "name": "Segovia",
           "km": 90,
           "minutes": 70,
-          "about": "Seventy minutes north through the Guadarrama tunnel on the AP-6. The Roman aqueduct stands right at the entrance to the old town, and that square is where most drivers set down. In winter the mountain pass can be slow — the fixed price does not change."
+          "about": "Seventy minutes north through the Guadarrama tunnel on the AP-6. The Roman aqueduct stands right at the entrance to the old town, and that square is where most drivers set down. In winter the mountain pass can be slow — the fixed price does not change.",
+          "i18n": {
+            "es": {
+              "name": "Segovia",
+              "about": "Setenta minutos al norte, atravesando el túnel de Guadarrama por la AP-6. El acueducto romano está justo a la entrada del casco antiguo, y esa plaza es donde para la mayoría de conductores. En invierno el puerto de montaña puede ir lento — el precio fijo no cambia."
+            }
+          }
         },
         {
           "slug": "valencia",
           "name": "Valencia",
           "km": 351,
           "minutes": 210,
-          "about": "Three and a half hours east on the A-3. A long transfer, but a single fixed price with one driver and no changes — worth comparing against two train tickets plus taxis at both ends if you are travelling with luggage or children."
+          "about": "Three and a half hours east on the A-3. A long transfer, but a single fixed price with one driver and no changes — worth comparing against two train tickets plus taxis at both ends if you are travelling with luggage or children.",
+          "i18n": {
+            "es": {
+              "name": "Valencia",
+              "about": "Tres horas y media al este por la A-3. Es un trayecto largo, pero con un precio único, un solo conductor y ningún transbordo — vale la pena compararlo con dos billetes de tren más taxis en ambos extremos si viajas con equipaje o con niños."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Madrid",
+          "official": "Aeropuerto Adolfo Suárez Madrid–Barajas",
+          "about": "Madrid–Barajas tiene cuatro terminales repartidas por varios kilómetros, y la T4 está lo bastante lejos de la T1–T3 como para que haya un autobús lanzadera entre ellas. Dinos tu terminal al reservar y el conductor te espera en la correcta. La mayoría de las llegadas entran al centro por la A-2, unos veinte minutos fuera de hora punta.",
+          "tips": [
+            "La T4 y la T4S son de Iberia y de casi toda Oneworld. La T1, T2 y T3 están a 10 minutos en lanzadera — equivocarse de terminal cuesta media hora.",
+            "El metro cobra un suplemento de 3 € por el aeropuerto además del billete normal, algo que sorprende a casi todos los que vienen por primera vez."
+          ],
+          "local": [
+            [
+              "Cuatro terminales, y la lanzadera entre ellas",
+              "La T4 se abrió en 2006 y está separada del bloque más antiguo de la T1–T3. Una lanzadera gratuita las une cada cinco minutos, pero con maletas añade veinte. Tu conductor va a la terminal que nos indiques, así que aquí la sala de llegadas que nos digas importa más que en la mayoría de los aeropuertos."
+            ],
+            [
+              "La M-30 en hora punta",
+              "Entre las 07:30 y las 09:30, y otra vez de 18:00 a 20:00, la circunvalación añade veinte o treinta minutos a casi cualquier trayecto al centro. Nuestro precio es fijo en cualquier caso — el taxímetro de un taxi no lo es."
+            ],
+            [
+              "Licencias VTC en España",
+              "Todos los conductores tienen licencia VTC emitida por la autoridad regional de transporte. Comprobamos la licencia y el seguro antes de que una empresa haga su primer servicio."
+            ],
+            [
+              "Toledo, Segovia y las excursiones de un día",
+              "Madrid es la base de dos de las mejores excursiones de España. Toledo está noventa kilómetros al sur, Segovia a una distancia parecida al norte — las dos cómodas en traslado privado con precio cerrado, y las dos incómodas en transporte público con equipaje."
+            ]
+          ],
+          "compare": [
+            [
+              "Metro línea 8",
+              "15 min a Nuevos Ministerios",
+              "5,00 €",
+              "Rápido hacia el norte del centro.",
+              "Suplemento de 3 € por el aeropuerto. Un transbordo para la mayoría de destinos. Escaleras y aglomeraciones con maletas."
+            ],
+            [
+              "Autobús Exprés",
+              "40 min a Atocha",
+              "5,00 €",
+              "Funciona 24 horas.",
+              "Solo tres paradas. Lento con tráfico. Nadie te ayuda con el equipaje."
+            ],
+            [
+              "Taxi oficial",
+              "30 min al centro",
+              "33 € fijos",
+              "Tarifa fija dentro de la M-30.",
+              "Colas en las llegadas de más afluencia. La tarifa fija acaba en la M-30 — más allá, corre el taxímetro."
+            ],
+            [
+              "Coche de alquiler",
+              "Cola más papeleo",
+              "25–70 € al día",
+              "Libertad para llegar a Toledo y Segovia.",
+              "El centro de Madrid es zona de bajas emisiones con multas según la matrícula. Aparcar es caro y escaso."
+            ]
+          ]
+        }
+      }
     },
     {
       "iata": "BCN",
@@ -194,37 +283,126 @@
           "name": "Barcelona city centre",
           "km": 15,
           "minutes": 25,
-          "about": "Fifteen kilometres north on the C-32 and Gran Via, about twenty-five minutes. Barcelona's low-emission zone covers the whole city and operates on weekdays — our licensed vehicles are cleared to enter. Give the street and number, since the Eixample blocks look identical from a car."
+          "about": "Fifteen kilometres north on the C-32 and Gran Via, about twenty-five minutes. Barcelona's low-emission zone covers the whole city and operates on weekdays — our licensed vehicles are cleared to enter. Give the street and number, since the Eixample blocks look identical from a car.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Barcelona",
+              "about": "Quince kilómetros al norte por la C-32 y la Gran Via, unos veinticinco minutos. La zona de bajas emisiones cubre toda la ciudad y funciona entre semana — nuestros vehículos con licencia pueden entrar. Danos la calle y el número, porque desde el coche las manzanas del Eixample son idénticas."
+            }
+          }
         },
         {
           "slug": "sitges",
           "name": "Sitges",
           "km": 28,
           "minutes": 30,
-          "about": "Half an hour south on the C-32, through the Garraf tunnels along the coast. Sitges is compact and much of the seafront is pedestrian, so drivers set down at the nearest accessible street. The tolls on that road are inside your fixed price."
+          "about": "Half an hour south on the C-32, through the Garraf tunnels along the coast. Sitges is compact and much of the seafront is pedestrian, so drivers set down at the nearest accessible street. The tolls on that road are inside your fixed price.",
+          "i18n": {
+            "es": {
+              "name": "Sitges",
+              "about": "Media hora al sur por la C-32, atravesando los túneles del Garraf junto a la costa. Sitges es compacto y buena parte del paseo marítimo es peatonal, así que los conductores paran en la calle accesible más próxima. Los peajes de esa carretera van dentro de tu precio fijo."
+            }
+          }
         },
         {
           "slug": "girona",
           "name": "Girona",
           "km": 103,
           "minutes": 75,
-          "about": "An hour and a quarter north on the AP-7. Girona's old town straddles the Onyar and the medieval streets are closed to traffic, so expect a short walk from the drop-off. A common first stop for anyone heading on to the Costa Brava."
+          "about": "An hour and a quarter north on the AP-7. Girona's old town straddles the Onyar and the medieval streets are closed to traffic, so expect a short walk from the drop-off. A common first stop for anyone heading on to the Costa Brava.",
+          "i18n": {
+            "es": {
+              "name": "Girona",
+              "about": "Una hora y cuarto al norte por la AP-7. El casco antiguo de Girona se reparte a ambos lados del Onyar y las calles medievales están cerradas al tráfico, así que cuenta con un paseo corto desde donde te deje el conductor. Es la primera parada habitual de quien sigue hacia la Costa Brava."
+            }
+          }
         },
         {
           "slug": "lloret-de-mar",
           "name": "Lloret de Mar",
           "km": 85,
           "minutes": 70,
-          "about": "Just over an hour up the AP-7 and then the coast road. Lloret spreads along several beaches and the hotels are scattered across the hillside — give the hotel name, not just the town, or the driver ends up circling."
+          "about": "Just over an hour up the AP-7 and then the coast road. Lloret spreads along several beaches and the hotels are scattered across the hillside — give the hotel name, not just the town, or the driver ends up circling.",
+          "i18n": {
+            "es": {
+              "name": "Lloret de Mar",
+              "about": "Poco más de una hora por la AP-7 y después la carretera de la costa. Lloret se extiende por varias playas y los hoteles están repartidos por la ladera — da el nombre del hotel y no solo el del pueblo, o el conductor acabará dando vueltas."
+            }
+          }
         },
         {
           "slug": "andorra-la-vella",
           "name": "Andorra la Vella",
           "km": 198,
           "minutes": 165,
-          "about": "Nearly three hours north through the Pyrenees on the C-16, including the Túnel del Cadí. Andorra is outside the EU customs union, so there is a border check — usually quick. In winter the road can require chains and the driver carries them."
+          "about": "Nearly three hours north through the Pyrenees on the C-16, including the Túnel del Cadí. Andorra is outside the EU customs union, so there is a border check — usually quick. In winter the road can require chains and the driver carries them.",
+          "i18n": {
+            "es": {
+              "name": "Andorra la Vella",
+              "about": "Casi tres horas al norte por los Pirineos, por la C-16 y el Túnel del Cadí. Andorra está fuera de la unión aduanera europea, así que hay un control fronterizo — normalmente rápido. En invierno la carretera puede exigir cadenas, y el conductor las lleva."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Barcelona",
+          "official": "Aeropuerto Josep Tarradellas Barcelona–El Prat",
+          "about": "El Prat tiene dos terminales separadas por cuatro kilómetros, unidas por una lanzadera gratuita. La T1 concentra casi todos los vuelos de largo radio y Vueling; la T2 recibe a muchas aerolíneas de bajo coste. El aeropuerto está quince kilómetros al sur de la ciudad por la C-32, y esa misma carretera continúa hacia Sitges en dirección contraria.",
+          "tips": [
+            "La T1 y la T2 están a 4 km una de otra, con lanzadera entre ellas. Comprueba tu terminal antes de viajar — no se puede ir andando.",
+            "La C-32 hacia Sitges es de peaje. Nuestro precio lo incluye; un taxi con taxímetro lo añade al final."
+          ],
+          "local": [
+            [
+              "Dos terminales, a cuatro kilómetros",
+              "Una lanzadera gratuita une la T1 y la T2 cada diez minutos, pero tarda quince por trayecto. Dinos la terminal y el conductor estará en la correcta — es la causa más frecuente de una recogida retrasada en El Prat."
+            ],
+            [
+              "La C-32 y sus peajes",
+              "Tanto Sitges como la Costa Brava implican autopistas de peaje. Nuestro precio los incluye. El taxímetro de un taxi no, y el peaje aparece como extra al final del trayecto."
+            ],
+            [
+              "Licencias VTC en España",
+              "Cataluña regula las licencias VTC de forma estricta y su número está limitado. Todas las empresas con las que trabajamos tienen licencia válida, y la comprobamos antes del primer servicio."
+            ],
+            [
+              "Terminales de cruceros y el puerto",
+              "Barcelona es el puerto de cruceros más activo de Europa. Las terminales están en el Moll Adossat, a unos buenos veinte minutos del aeropuerto, y no se puede entrar andando — seguridad portuaria exige vehículo. Danos la letra de la terminal si la sabes."
+            ]
+          ],
+          "compare": [
+            [
+              "Aerobús",
+              "35 min a Plaça Catalunya",
+              "7,25 €",
+              "Frecuente y directo.",
+              "Solo cuatro paradas. Los portaequipajes se llenan. No sirve para nada fuera de la ruta."
+            ],
+            [
+              "Renfe R2 Nord",
+              "25 min a Sants",
+              "4,90 €",
+              "Barato y rápido hasta Sants.",
+              "Solo desde la T2 — desde la T1 hay que coger antes la lanzadera. Cada 30 minutos. Escaleras con maletas."
+            ],
+            [
+              "Taxi oficial",
+              "25 min al centro",
+              "35–45 € con taxímetro",
+              "Sin reserva previa.",
+              "Suplemento de 4,50 € por aeropuerto más 1 € por maleta. Peajes aparte en la C-32. Colas largas en las llegadas de más afluencia."
+            ],
+            [
+              "Coche de alquiler",
+              "Cola más papeleo",
+              "25–65 € al día",
+              "Útil para la Costa Brava.",
+              "La zona de bajas emisiones cubre toda la ciudad. Aparcar es caro y casi siempre subterráneo."
+            ]
+          ]
+        }
+      }
     },
     {
       "iata": "AGP",
@@ -292,37 +470,126 @@
           "name": "Málaga city centre",
           "km": 11,
           "minutes": 15,
-          "about": "A quarter of an hour east along the coast. Málaga's historic centre is largely pedestrian, so drivers set down at the nearest accessible point — usually Alameda Principal or the cathedral side. Give the street name if your hotel is inside the old town."
+          "about": "A quarter of an hour east along the coast. Málaga's historic centre is largely pedestrian, so drivers set down at the nearest accessible point — usually Alameda Principal or the cathedral side. Give the street name if your hotel is inside the old town.",
+          "i18n": {
+            "es": {
+              "name": "Centro de Málaga",
+              "about": "Un cuarto de hora hacia el este por la costa. El centro histórico de Málaga es en buena parte peatonal, así que los conductores paran en el punto accesible más cercano — normalmente la Alameda Principal o el lateral de la catedral. Danos el nombre de la calle si tu hotel está dentro del casco antiguo."
+            }
+          }
         },
         {
           "slug": "torremolinos",
           "name": "Torremolinos",
           "km": 7,
           "minutes": 12,
-          "about": "The closest resort to the airport, barely ten minutes down the coast. Hotels cluster around La Carihuela and the Bajondillo beach, and the two are a fair walk apart — the hotel name saves time."
+          "about": "The closest resort to the airport, barely ten minutes down the coast. Hotels cluster around La Carihuela and the Bajondillo beach, and the two are a fair walk apart — the hotel name saves time.",
+          "i18n": {
+            "es": {
+              "name": "Torremolinos",
+              "about": "El complejo más cercano al aeropuerto, a apenas diez minutos por la costa. Los hoteles se concentran en La Carihuela y en la playa del Bajondillo, y hay un buen trecho entre ambas — el nombre del hotel ahorra tiempo."
+            }
+          }
         },
         {
           "slug": "marbella",
           "name": "Marbella",
           "km": 51,
           "minutes": 45,
-          "about": "Forty-five minutes west, faster on the AP-7 in summer. Marbella runs for more than twenty kilometres of coast, from Puerto Banús to the eastern urbanisations — the town name alone is not enough, so give the urbanisation."
+          "about": "Forty-five minutes west, faster on the AP-7 in summer. Marbella runs for more than twenty kilometres of coast, from Puerto Banús to the eastern urbanisations — the town name alone is not enough, so give the urbanisation.",
+          "i18n": {
+            "es": {
+              "name": "Marbella",
+              "about": "Cuarenta y cinco minutos al oeste, más rápido por la AP-7 en verano. Marbella se extiende más de veinte kilómetros de costa, desde Puerto Banús hasta las urbanizaciones del este — el nombre del pueblo no basta, así que da el de la urbanización."
+            }
+          }
         },
         {
           "slug": "nerja",
           "name": "Nerja",
           "km": 66,
           "minutes": 55,
-          "about": "Just under an hour east on the A-7, past the cliffs of La Herradura. Nerja is built into a hillside and the streets near the Balcón de Europa are narrow — drivers use the nearest accessible point rather than the door."
+          "about": "Just under an hour east on the A-7, past the cliffs of La Herradura. Nerja is built into a hillside and the streets near the Balcón de Europa are narrow — drivers use the nearest accessible point rather than the door.",
+          "i18n": {
+            "es": {
+              "name": "Nerja",
+              "about": "Poco menos de una hora al este por la A-7, pasando los acantilados de La Herradura. Nerja está construida en una ladera y las calles junto al Balcón de Europa son estrechas — los conductores usan el punto accesible más cercano en lugar de la puerta."
+            }
+          }
         },
         {
           "slug": "granada",
           "name": "Granada",
           "km": 130,
           "minutes": 95,
-          "about": "An hour and a half inland on the A-92, climbing to a plateau below the Sierra Nevada. If you are going to the Alhambra, note that the hotels in the Albaicín are reached by very narrow streets and drivers set down at the closest point that a car can reach."
+          "about": "An hour and a half inland on the A-92, climbing to a plateau below the Sierra Nevada. If you are going to the Alhambra, note that the hotels in the Albaicín are reached by very narrow streets and drivers set down at the closest point that a car can reach.",
+          "i18n": {
+            "es": {
+              "name": "Granada",
+              "about": "Una hora y media hacia el interior por la A-92, subiendo a una meseta bajo Sierra Nevada. Si vas a la Alhambra, ten en cuenta que a los hoteles del Albaicín se llega por calles muy estrechas y los conductores paran en el punto más cercano al que llega un coche."
+            }
+          }
         }
-      ]
+      ],
+      "i18n": {
+        "es": {
+          "name": "Aeropuerto de Málaga",
+          "official": "Aeropuerto de Málaga–Costa del Sol",
+          "about": "Málaga es la puerta de entrada a la Costa del Sol, y la mayoría de las llegadas no van a Málaga capital. Todo lo que queda al oeste — Torremolinos, Fuengirola, Marbella — se alcanza por la A-7 y la autopista de peaje AP-7. La terminal es única y moderna, con las llegadas en una sola planta.",
+          "tips": [
+            "La AP-7 de peaje ahorra veinte minutos hasta Marbella en verano. Nuestro precio incluye el peaje en cualquier caso.",
+            "Los complejos de la Costa del Sol se extienden varios kilómetros. Da el nombre del hotel o de la urbanización, no solo el del pueblo."
+          ],
+          "local": [
+            [
+              "Una terminal, tres módulos",
+              "Todas las llegadas salen por el mismo punto, lo que hace de Málaga uno de los aeropuertos españoles más fáciles para encontrarse con el conductor. Los sábados de verano hay mucho movimiento, pero la sala es amplia."
+            ],
+            [
+              "La A-7 y la AP-7",
+              "La A-7 es gratuita y bordea la costa atravesando todos los pueblos; la AP-7 de peaje pasa por detrás y ahorra tiempo real en julio y agosto. Nuestros conductores toman la que sea más rápida y el peaje va dentro de tu precio fijo."
+            ],
+            [
+              "Licencias VTC en España",
+              "Andalucía emite las licencias VTC a través de la autoridad regional de transporte. Comprobamos la licencia y el seguro de cada empresa antes de su primer servicio."
+            ],
+            [
+              "Urbanizaciones, no direcciones",
+              "Buena parte de la Costa del Sol está construida como urbanizaciones cerradas repartidas por kilómetros de ladera. El nombre de la urbanización importa más que el de la calle, y es la causa más frecuente de una llegada tardía por aquí."
+            ]
+          ],
+          "compare": [
+            [
+              "Tren C-1",
+              "12 min al centro de Málaga",
+              "1,80 €",
+              "Lo más barato para entrar en la ciudad.",
+              "Solo llega a Málaga y Fuengirola. Cada 20 minutos. No sirve para Marbella."
+            ],
+            [
+              "Autobús A exprés",
+              "20 min al centro",
+              "4,00 €",
+              "Directo a la ciudad.",
+              "Solo capital. Espacio limitado para maletas. Deja de funcionar a última hora de la tarde."
+            ],
+            [
+              "Taxi oficial",
+              "15 min al centro",
+              "20–25 € con taxímetro",
+              "Sin reserva previa.",
+              "A Marbella cuenta 90–110 € con taxímetro, más peajes y suplemento nocturno."
+            ],
+            [
+              "Coche de alquiler",
+              "Cola más papeleo",
+              "20–60 € al día",
+              "Útil para moverse por el interior.",
+              "Colas de una hora en agosto. Combustible, aparcamiento y fianza aparte."
+            ]
+          ]
+        }
+      }
     },
     {
       "iata": "ALC",
