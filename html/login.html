@@ -26,6 +26,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/i18n.js"></script>
 <script src="/assets/layout.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -77,69 +78,69 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
 <main id="main">
 <div class="auth-page">
   <div class="auth-card">
-    <div id="bootView" class="boot">Checking your session...</div>
+    <div id="bootView" class="boot" data-i18n="lg.checking">Checking your session...</div>
 
     <div id="loginView" class="hidden">
-      <h1>Sign in</h1>
-      <p class="sub">Your trips, receipts and support conversations are inside.</p>
+      <h1 data-i18n="co.signIn">Sign in</h1>
+      <p class="sub" data-i18n="lg.lead">Your trips, receipts and support conversations are inside.</p>
 
       <div class="field">
-        <label for="email">Email</label>
+        <label for="email" data-i18n="co.email">Email</label>
         <input id="email" type="email" placeholder="you@email.com" autocomplete="email">
       </div>
 
       <div class="field">
-        <label for="password">Password</label>
+        <label for="password" data-i18n="co.password">Password</label>
         <input id="password" type="password" placeholder="Your password" autocomplete="current-password">
       </div>
 
-      <button id="loginBtn" class="btn" type="button">Sign in</button>
+      <button id="loginBtn" class="btn" type="button" data-i18n="co.signIn">Sign in</button>
 
       <div id="loginError" class="msg err"></div>
       <div id="loginSuccess" class="msg ok"></div>
 
       <div class="links">
-        <button class="linkish" id="signupLink" type="button">Create an account</button>
-        <button class="linkish" id="forgotLink" type="button">Forgot your password?</button>
+        <button class="linkish" id="signupLink" type="button" data-i18n="lg.createAcc">Create an account</button>
+        <button class="linkish" id="forgotLink" type="button" data-i18n="h.forgotPass">Forgot your password?</button>
       </div>
     </div>
 
     <div id="newPwView" class="hidden">
-      <h2>>Set a new password</h2>
-      <p class="sub" id="newPwSub">Choose something you will remember. Longer is better than complicated.</p>
+      <h2 data-i18n="lg.setNew">>Set a new password</h2>
+      <p class="sub" id="newPwSub" data-i18n="lg.setNewB">Choose something you will remember. Longer is better than complicated.</p>
 
       <div class="field">
-        <label for="newPw1">New password</label>
+        <label for="newPw1" data-i18n="lg.newPass">New password</label>
         <input id="newPw1" type="password" placeholder="At least 8 characters" autocomplete="new-password">
         <div class="pw-meter"><div class="pw-fill" id="newPwFill"></div></div>
-        <div class="help" id="newPwHint">Use at least 8 characters.</div>
+        <div class="help" id="newPwHint" data-i18n="lg.min8">Use at least 8 characters.</div>
       </div>
 
       <div class="field">
-        <label for="newPw2">Repeat it</label>
+        <label for="newPw2" data-i18n="lg.repeat">Repeat it</label>
         <input id="newPw2" type="password" autocomplete="new-password">
       </div>
 
-      <button id="newPwBtn" class="btn teal" type="button">Save my password</button>
+      <button id="newPwBtn" class="btn teal" type="button" data-i18n="lg.savePass">Save my password</button>
       <div id="newPwErr" class="msg err"></div>
       <div id="newPwOk" class="msg ok"></div>
     </div>
 
     <div id="forgotView" class="hidden">
-      <h2>>Forgot password</h2>
-      <p class="sub">Enter your email and we will send you a reset link.</p>
+      <h2 data-i18n="lg.forgotTitle">>Forgot password</h2>
+      <p class="sub" data-i18n="lg.forgotB">Enter your email and we will send you a reset link.</p>
 
       <div class="field">
-        <label for="resetEmail">Email</label>
+        <label for="resetEmail" data-i18n="co.email">Email</label>
         <input id="resetEmail" type="email" placeholder="you@email.com" autocomplete="email">
       </div>
 
-      <button id="sendVerificationBtn" class="btn teal" type="button">Send reset link</button>
+      <button id="sendVerificationBtn" class="btn teal" type="button" data-i18n="lg.sendLink">Send reset link</button>
 
       <div id="resetError" class="msg err"></div>
       <div id="resetSuccess" class="msg ok"></div>
 
-      <div class="links"><button class="linkish" id="backToLoginLink" type="button">Back to sign in</button></div>
+      <div class="links"><button class="linkish" id="backToLoginLink" type="button" data-i18n="lg.backSignin">Back to sign in</button></div>
     </div>
   </div>
 </div>
