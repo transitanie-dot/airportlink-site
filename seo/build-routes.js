@@ -43,6 +43,38 @@ const OUT_TRANSFERS = path.join(ROOT, 'transfers');
 const OUT_AIRPORTS = path.join(ROOT, 'airports');
 const SITE = 'https://www.airportlink.app';
 
+/**
+ * As línguas que ganham páginas próprias e indexáveis.
+ *
+ * NÃO são as dezoito do site. Uma página só vale a pena indexar se
+ * o conteúdo estiver realmente traduzido; caso contrário o Google
+ * trata o conjunto como texto gerado em massa e desvaloriza também
+ * a versão inglesa.
+ *
+ * O inglês é a base e vive na raiz. As outras vivem em /es/, /de/
+ * e /fr/, e só são geradas para as rotas que tiverem tradução.
+ */
+const LANGS = [
+  { code: 'en', prefix: '',     nome: 'English'  },
+  { code: 'es', prefix: '/es',  nome: 'Espanol'  },
+  { code: 'de', prefix: '/de',  nome: 'Deutsch'  },
+  { code: 'fr', prefix: '/fr',  nome: 'Francais' }
+];
+
+/**
+ * O texto de uma rota na língua pedida.
+ *
+ * O JSON guarda o inglês nos campos normais e as traduções num
+ * objeto `i18n`. Se a língua não estiver lá, devolve null — e a
+ * página nessa língua simplesmente não é gerada, em vez de sair
+ * meio traduzida.
+ */
+function traduz(obj, lang) {
+  if (lang === 'en') return obj;
+  const t = obj && obj.i18n && obj.i18n[lang];
+  return t ? Object.assign({}, obj, t) : null;
+}
+
 // A mesma chave que o index.html usa. É pública por natureza — vive
 // no browser — e a protecção faz-se no painel do Google, limitando-a
 // ao domínio airportlink.app.
@@ -166,27 +198,39 @@ const today = new Date().toISOString().slice(0, 10);
 // O MOLDE
 // ============================================================
 
-function head({ title, description, canonical, schema }) {
+function head({ title, description, canonical, schema, lang, alternates }) {
+  lang = lang || 'en';
+
+  // Cada versão declara-se a si própria E a todas as outras. Se a
+  // espanhola não apontar de volta para a inglesa, o Google ignora
+  // o grupo inteiro e nenhuma delas beneficia.
+  const hreflang = (alternates || [])
+    .map((a) => `<link rel="alternate" hreflang="${a.lang}" href="${a.url}">`)
+    .join('\n');
+
+  const xdefault = (alternates || []).find((a) => a.lang === 'en');
+
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${canonical}">
+${hreflang}${xdefault ? `\n<link rel="alternate" hreflang="x-default" href="${xdefault.url}">` : ''}
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${canonical}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Airportlink">
-<meta property="og:image" content="${SITE}/assets/og-image.jpg">
+<meta property="og:image" content="${SITE}/assets/og-square.jpg">
 <meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:height" content="1200">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(description)}">
-<meta name="twitter:image" content="${SITE}/assets/og-image.jpg">
+<meta name="twitter:image" content="${SITE}/assets/og-square.jpg">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
@@ -1060,14 +1104,22 @@ function localInfo(airport) {
 // PÁGINA DE ROTA
 // ============================================================
 
-function routePage(country, airport, dest, siblings) {
+function routePage(country, airport, dest, siblings, lang, alternates) {
+  lang = lang || 'en';
+
+  // O texto traduzido substitui o inglês; o resto — quilómetros,
+  // slug, preços — é o mesmo em todas as línguas.
+  airport = traduz(airport, lang) || airport;
+  dest = traduz(dest, lang) || dest;
+
   const cc = country.countryCode;
   const slug = slugOf(airport);
   const p1 = priceEUR(dest.km, 1, cc, slug, dest.slug);
   const p5 = priceEUR(dest.km, 5, cc, slug, dest.slug);
 
   const cslug = countrySlug(country);
-  const url = `${SITE}/transfers/${cslug}/${slug}-to-${dest.slug}/`;
+  const pref = (LANGS.find((l) => l.code === lang) || LANGS[0]).prefix;
+  const url = `${SITE}${pref}/transfers/${cslug}/${slug}-to-${dest.slug}/`;
   const title = `${airport.city} Airport to ${dest.name} Transfer | From ${money(p1)} | Airportlink`;
   const description =
     `Private transfer from ${airport.name} to ${dest.name}: ${dest.minutes} minutes, ` +
@@ -1143,7 +1195,7 @@ function routePage(country, airport, dest, siblings) {
         `<b>${esc(d.name)}</b><span>from ${money(price)}</span></a>`;
     }).join('\n      ');
 
-  return head({ title, description, canonical: url, schema }) + `
+  return head({ title, description, canonical: url, schema, lang, alternates }) + `
   <div class="crumb">
     <a href="/">Airportlink</a> &rsaquo;
     <a href="/airports/${cslug}/${slug}/">${esc(airport.name)}</a> &rsaquo;
@@ -1210,11 +1262,16 @@ function routePage(country, airport, dest, siblings) {
 // PÁGINA DE AEROPORTO
 // ============================================================
 
-function airportPage(country, airport) {
+function airportPage(country, airport, lang, alternates) {
+  lang = lang || 'en';
+  const original = airport;
+  airport = traduz(airport, lang) || airport;
+
   const cc = country.countryCode;
-  const slug = slugOf(airport);
+  const slug = slugOf(original);
   const cslug = countrySlug(country);
-  const url = `${SITE}/airports/${cslug}/${slug}/`;
+  const pref = (LANGS.find((l) => l.code === lang) || LANGS[0]).prefix;
+  const url = `${SITE}${pref}/airports/${cslug}/${slug}/`;
 
   const cheapest = Math.min(...airport.destinations.map((d) => priceEUR(d.km, 1, cc, slug, d.slug)));
 
@@ -1276,7 +1333,7 @@ function airportPage(country, airport) {
         `<b>${esc(a.name)}</b><span>from ${money(from)}</span></a>`;
     }).join('\n      ');
 
-  return head({ title, description, canonical: url, schema }) + `
+  return head({ title, description, canonical: url, schema, lang, alternates }) + `
   <div class="crumb"><a href="/">Airportlink</a> &rsaquo; ${esc(airport.name)}</div>
 
   ${hero(airport, `${airport.iata} \u00b7 ${country.country}`,
@@ -1353,6 +1410,15 @@ for (const file of files) {
   for (const airport of country.airports) {
     const slug = slugOf(airport);
 
+    /**
+     * As línguas em que este aeroporto tem tradução.
+     *
+     * Uma língua só entra se o aeroporto E o destino tiverem texto
+     * traduzido. Meia página traduzida é pior do que nenhuma: o
+     * Google vê texto duplicado e desconfia do conjunto.
+     */
+    const langsAeroporto = LANGS.filter((l) => traduz(airport, l.code));
+
     // Cada página é uma PASTA com um index.html lá dentro.
     //
     // É o que dá um endereço limpo sem depender de regra nenhuma:
@@ -1362,20 +1428,50 @@ for (const file of files) {
     //
     //   airports/portugal/faro/index.html
     //   /airports/portugal/faro
-    ensure(path.join(airportsDir, slug));
-    fs.writeFileSync(path.join(airportsDir, slug, 'index.html'),
-      airportPage(country, airport));
-    urls.push({ loc: `${SITE}/airports/${cslug}/${slug}/`, priority: '0.8', freq: 'weekly' });
+    // As alternativas deste aeroporto: uma entrada por língua em
+    // que ele existe. Todas as versões recebem a mesma lista.
+    const altAeroporto = langsAeroporto.map((l) => ({
+      lang: l.code,
+      url: `${SITE}${l.prefix}/airports/${cslug}/${slug}/`
+    }));
+
+    for (const l of langsAeroporto) {
+      const dir = l.prefix
+        ? path.join(ROOT, l.prefix.slice(1), 'airports', cslug, slug)
+        : path.join(airportsDir, slug);
+      ensure(dir);
+      fs.writeFileSync(path.join(dir, 'index.html'),
+        airportPage(country, airport, l.code, altAeroporto));
+      urls.push({
+        loc: `${SITE}${l.prefix}/airports/${cslug}/${slug}/`,
+        priority: '0.8', freq: 'weekly', lang: l.code
+      });
+    }
 
     for (const dest of airport.destinations) {
-      const folder = path.join(transfersDir, `${slug}-to-${dest.slug}`);
-      ensure(folder);
-      fs.writeFileSync(path.join(folder, 'index.html'),
-        routePage(country, airport, dest, airport.destinations));
+      // A rota só existe numa língua se o aeroporto E o destino
+      // estiverem traduzidos. O inglês está sempre.
+      const langsRota = langsAeroporto.filter((l) => traduz(dest, l.code));
 
-      urls.push({ loc: `${SITE}/transfers/${cslug}/${slug}-to-${dest.slug}/`,
-                  priority: '0.7', freq: 'monthly' });
-      routeCount += 1;
+      const altRota = langsRota.map((l) => ({
+        lang: l.code,
+        url: `${SITE}${l.prefix}/transfers/${cslug}/${slug}-to-${dest.slug}/`
+      }));
+
+      for (const l of langsRota) {
+        const folder = l.prefix
+          ? path.join(ROOT, l.prefix.slice(1), 'transfers', cslug, `${slug}-to-${dest.slug}`)
+          : path.join(transfersDir, `${slug}-to-${dest.slug}`);
+        ensure(folder);
+        fs.writeFileSync(path.join(folder, 'index.html'),
+          routePage(country, airport, dest, airport.destinations, l.code, altRota));
+
+        urls.push({
+          loc: `${SITE}${l.prefix}/transfers/${cslug}/${slug}-to-${dest.slug}/`,
+          priority: '0.7', freq: 'monthly', lang: l.code
+        });
+        routeCount += 1;
+      }
     }
   }
 
