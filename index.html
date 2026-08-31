@@ -983,7 +983,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
       <button class="faq-filter" data-filter="service" type="button" data-i18n="h.fService">Service</button>
       <button class="faq-filter" data-filter="pricing" type="button" data-i18n="h.fPricing">Pricing</button>
     </div>
-    <div class="faq-results" id="faqResults">9 answers</div>
+    <div class="faq-results"><span id="faqCount">9</span> <span id="faqWord" data-i18n="h.faqAnswers">answers</span></div>
     <div class="faq-list" id="faqList">
       <article class="faq-item" data-category="booking" data-search="cancel cancellation refund free 24 hours money back">
         <button class="faq-question" type="button"><div><p class="faq-question-title" data-i18n="h.q1">Can I cancel my booking?</p><span class="faq-question-tag" data-i18n="h.fBooking">Booking</span></div><span class="faq-icon">+</span></button>
@@ -1136,10 +1136,18 @@ notifyParent('ready');
         if (a) a.style.maxHeight = null;
       } else visible++;
     });
-    // O plural muda de língua para língua, por isso são duas chaves
-    // e não um 's' colado ao fim.
-    $('faqResults').textContent = visible + ' ' +
-      T(visible === 1 ? 'h.faqAnswer' : 'h.faqAnswers', visible === 1 ? 'answer' : 'answers');
+    // Número e palavra em caixas separadas: a palavra tem a sua
+    // marca de tradução e é o i18n que a pinta, sem depender de o
+    // dicionário já ter chegado quando isto corre.
+    $('faqCount').textContent = visible;
+
+    var chave = visible === 1 ? 'h.faqAnswer' : 'h.faqAnswers';
+    $('faqWord').setAttribute('data-i18n', chave);
+    $('faqWord').textContent = T(chave, visible === 1 ? 'answer' : 'answers');
+
+    // Se o dicionário ainda não tinha chegado quando o T() correu,
+    // o apply() do i18n corrige aqui.
+    if (window.i18n && window.i18n.ready) window.i18n.apply($('faqWord').parentNode);
     $('faqEmpty').style.display = visible === 0 ? 'block' : 'none';
     reportHeight();
   }
