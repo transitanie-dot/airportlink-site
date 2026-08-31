@@ -71,8 +71,7 @@
     { href: '/',             label: 'Book a transfer', i18nKey: 'nav.book' },
     { href: '/travelagents', label: 'Travel agents', i18nKey: 'nav.agents' },
     { href: '/drivers',      label: 'Drive with us', i18nKey: 'nav.drivers' },
-    { href: '/support',      label: 'Support', i18nKey: 'nav.support' },
-    { href: '/blog/',        label: 'Blog', i18nKey: 'nav.blog' }
+    { href: '/support',      label: 'Support', i18nKey: 'nav.support' }
   ];
 
   var FOOTER = [
@@ -94,6 +93,7 @@
     ]},
     { title: 'Help', i18nKey: 'nav.help', links: [
       { href: '/support',       label: 'Contact support', i18nKey: 'nav.contact' },
+      { href: '/blog/',         label: 'Blog', i18nKey: 'nav.blog' },
       // O /forgotpassword não existe: o formulário vive dentro do
       // /login, e um link para uma página inexistente é um 404 no
       // rodapé de todas as páginas.
