@@ -975,7 +975,8 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
       <span class="tag" data-i18n="h.questions">Questions</span>
       <h2 data-i18n="h.qTitle">Before you book.</h2>
     </div>
-    <input id="faqSearch" class="faq-search" type="text" placeholder="Search questions..." />
+    <input id="faqSearch" class="faq-search" type="text" placeholder="Search questions..."
+      data-i18n-ph="h.faqSearch" />
     <div class="faq-filters">
       <button class="faq-filter active" data-filter="all" type="button" data-i18n="h.fAll">All</button>
       <button class="faq-filter" data-filter="booking" type="button" data-i18n="h.fBooking">Booking</button>
@@ -1125,7 +1126,10 @@ notifyParent('ready');
         if (a) a.style.maxHeight = null;
       } else visible++;
     });
-    $('faqResults').textContent = visible + ' answer' + (visible === 1 ? '' : 's');
+    // O plural muda de língua para língua, por isso são duas chaves
+    // e não um 's' colado ao fim.
+    $('faqResults').textContent = visible + ' ' +
+      T(visible === 1 ? 'h.faqAnswer' : 'h.faqAnswers', visible === 1 ? 'answer' : 'answers');
     $('faqEmpty').style.display = visible === 0 ? 'block' : 'none';
     reportHeight();
   }
@@ -1136,6 +1140,10 @@ notifyParent('ready');
       b.classList.add('active');
       activeFilter = b.getAttribute('data-filter');
       updateFaq();
+
+  // O contador diz "9 respostas" e o plural muda de língua para
+  // língua: quando o dicionário chega, recontamos.
+  document.addEventListener('i18n:ready', updateFaq);
     });
   });
 
