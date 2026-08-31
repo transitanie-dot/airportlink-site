@@ -81,6 +81,9 @@
             "Portugal and Spain, with 160 routes across 31 airports. Lisbon, Porto and Faro cover the Algarve and both coasts; in Spain we run from Madrid and Barcelona through the Costa del Sol, the Costa Blanca and all seven Canary Islands."
           ],
           [
+            "explorer"
+          ],
+          [
             "p",
             "The routes most people book are the ones where public transport is genuinely awkward with luggage:"
           ],
@@ -174,6 +177,9 @@
           [
             "p",
             "Portugal e Espanha, com 160 rotas em 31 aeroportos. Lisboa, Porto e Faro cobrem o Algarve e as duas costas; em Espanha vamos de Madrid e Barcelona à Costa del Sol, à Costa Blanca e às sete ilhas Canárias."
+          ],
+          [
+            "explorer"
           ],
           [
             "p",
@@ -271,6 +277,9 @@
             "Portugal y España, con 160 rutas en 31 aeropuertos. Lisboa, Oporto y Faro cubren el Algarve y ambas costas; en España vamos de Madrid y Barcelona a la Costa del Sol, la Costa Blanca y las siete islas Canarias."
           ],
           [
+            "explorer"
+          ],
+          [
             "p",
             "Las rutas que más se reservan son aquellas en las que el transporte público resulta realmente incómodo con equipaje:"
           ],
@@ -366,6 +375,9 @@
             "Le Portugal et l'Espagne, avec 160 trajets depuis 31 aéroports. Lisbonne, Porto et Faro couvrent l'Algarve et les deux côtes ; en Espagne nous allons de Madrid et Barcelone à la Costa del Sol, la Costa Blanca et les sept îles Canaries."
           ],
           [
+            "explorer"
+          ],
+          [
             "p",
             "Les trajets les plus réservés sont ceux où les transports publics sont réellement pénibles avec des bagages :"
           ],
@@ -407,7 +419,8 @@
           ]
         ]
       },
-      "art": "noite"
+      "art": "noite",
+      "image": "/assets/img/blog/airportlink-is-live.jpg"
     }
   ]
 }
