@@ -234,6 +234,8 @@ html[data-theme="dark"] .modal-msg{background:#2b1114;color:#fda4af;border-color
 </div></div>
 
 <script>
+/** A tradução, com o inglês como rede. */
+var T = function (k, en) { return (window.i18n ? window.i18n.t(k, en) : en); };
 (function () {
 'use strict';
 
@@ -291,7 +293,7 @@ function formatMsgTime(v) {
   var d = new Date(v);
   return isNaN(d.getTime()) ? '' : d.toLocaleString([], { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
 }
-function statusLabel(s) { return s === 'pending' ? 'Pending' : (s === 'resolved' ? 'Resolved' : 'Open'); }
+function statusLabel(s) { return s === 'pending' ? T('sup.pending', 'Pending') : (s === 'resolved' ? T('sup.resolved', 'Resolved') : 'Open'); }
 function chatReference(c) { return c.ticket_number || String(c.id).slice(0, 8).toUpperCase(); }
 
 function showNote(text, isError) {
@@ -314,7 +316,7 @@ async function openAttachment(att) {
     var marker = '/' + STORAGE_BUCKET + '/';
     if (att.file_url.indexOf(marker) !== -1) path = att.file_url.split(marker)[1].split('?')[0];
   }
-  if (!path) return alert('This attachment is no longer available.');
+  if (!path) return alert(T('sup.attachGone', 'This attachment is no longer available.'));
 
   path = decodeURIComponent(path);
   var res = await supabaseClient.storage.from(STORAGE_BUCKET)
@@ -322,7 +324,7 @@ async function openAttachment(att) {
 
   if (res.error || !res.data) {
     console.error('signed url error:', res.error, '| path:', path);
-    return alert('Could not open the attachment.\n\nPath: ' + path +
+    return alert((T('sup.attachFail', 'Could not open the attachment.') + '\n\nPath: ') + path +
       '\nError: ' + ((res.error && res.error.message) || 'unknown'));
   }
   window.open(res.data.signedUrl, '_blank', 'noopener');
@@ -381,7 +383,7 @@ $('fileInput').addEventListener('change', function (e) {
   var f = e.target.files && e.target.files[0];
   if (!f) return;
   if (f.size > MAX_FILE_BYTES) {
-    alert('That file is too large. The limit is 10 MB.');
+    alert(T('sup.tooLarge', 'That file is too large. The limit is 10 MB.'));
     setSelectedFile(null);
     return;
   }
@@ -408,7 +410,7 @@ function renderChatList() {
     return '<div class="chat-item ' + (chat.id === activeChatId ? 'active' : '') + '" data-id="' + escapeHtml(chat.id) + '">' +
       '<div class="chat-item-subject">' + escapeHtml(chat.subject) +
       ' <span style="font-size:11px;color:var(--muted);font-weight:400;">#' + escapeHtml(chatReference(chat)) + '</span></div>' +
-      '<div class="chat-item-snippet">' + escapeHtml(chat.last_message || 'No messages yet') + '</div>' +
+      '<div class="chat-item-snippet">' + escapeHtml(chat.last_message || T('sup.noMessages', 'No messages yet')) + '</div>' +
       '<div class="chat-item-bottom"><span class="chat-item-time">' + escapeHtml(formatListTime(chat.updated_at)) + '</span>' +
       '<span class="status-badge ' + escapeHtml(chat.status) + '">' + escapeHtml(statusLabel(chat.status)) + '</span></div></div>';
   }).join('');
@@ -468,7 +470,7 @@ function renderActiveChatHeader() {
   var chat = chats.find(function (c) { return c.id === activeChatId; });
   if (!chat) return;
   $('activeChatSubject').textContent = chat.subject;
-  $('activeChatMeta').textContent = 'Ticket #' + chatReference(chat) + ' \u00b7 opened ' + formatListTime(chat.created_at);
+  $('activeChatMeta').textContent = T('sup.ticket', 'Ticket #') + chatReference(chat) + ' \u00b7 opened ' + formatListTime(chat.created_at);
   $('activeChatStatus').textContent = statusLabel(chat.status);
   $('activeChatStatus').className = 'status-badge ' + chat.status;
 }
@@ -485,7 +487,7 @@ async function appendMessageBubble(msg) {
   bubble.className = 'chat-msg ' + (isAdmin ? 'admin' : 'customer');
   bubble.setAttribute('data-msg-id', msg.id);
   bubble.innerHTML = escapeHtml(msg.message) +
-    '<div class="chat-msg-meta">' + (isAdmin ? 'Support team' : 'You') +
+    '<div class="chat-msg-meta">' + (isAdmin ? T('sup.team', 'Support team') : 'You') +
     ' \u00b7 ' + escapeHtml(formatMsgTime(msg.created_at)) + '</div>';
 
   $('messagesScroll').appendChild(bubble);
@@ -573,10 +575,10 @@ function updateInputState() {
   if (blocked) {
     setSelectedFile(null);
     $('messageInput').placeholder = chat.status === 'resolved'
-      ? 'This conversation has been resolved.'
-      : 'Waiting for the support team to reply...';
+      ? T('sup.wasResolved', 'This conversation has been resolved.')
+      : T('sup.waiting', 'Waiting for the support team to reply...');
   } else {
-    $('messageInput').placeholder = 'Write your message...';
+    $('messageInput').placeholder = T('sup.writeMsg', 'Write your message...');
   }
 }
 
@@ -614,7 +616,7 @@ async function sendMessage() {
 
       if (up.error) {
         console.error('upload error:', up.error);
-        showNote('The file could not be uploaded, so nothing was sent: ' + up.error.message, true);
+        showNote((T('sup.uploadFail', 'The file could not be uploaded, so nothing was sent:') + ' ') + up.error.message, true);
         return;
       }
     }
@@ -628,7 +630,7 @@ async function sendMessage() {
 
     if (msgRes.error) {
       console.error('send message error:', msgRes.error);
-      showNote('Could not send your message: ' + msgRes.error.message, true);
+      showNote((T('sup.sendFail', 'Could not send your message:') + ' ') + msgRes.error.message, true);
       return;
     }
 
@@ -645,7 +647,7 @@ async function sendMessage() {
       });
       if (ins.error) {
         console.error('attachment insert error:', ins.error);
-        showNote('The file was uploaded but could not be attached: ' +
+        showNote((T('sup.attachFail2', 'The file was uploaded but could not be attached:') + ' ') +
           ins.error.message + ' (code ' + (ins.error.code || 'n/a') + ')', true);
       }
     }
@@ -721,7 +723,7 @@ async function submitNewChat() {
     }).select().single();
 
     if (chatRes.error) {
-      $('newChatError').textContent = chatRes.error.message || 'Could not start the conversation.';
+      $('newChatError').textContent = chatRes.error.message || T('sup.startFail', 'Could not start the conversation.');
       $('newChatError').style.display = 'block';
       return;
     }
@@ -734,7 +736,7 @@ async function submitNewChat() {
     });
 
     if (msgRes.error) {
-      $('newChatError').textContent = msgRes.error.message || 'Could not send the first message.';
+      $('newChatError').textContent = msgRes.error.message || T('sup.firstFail', 'Could not send the first message.');
       $('newChatError').style.display = 'block';
       return;
     }
@@ -770,13 +772,13 @@ supabaseClient.auth.onAuthStateChange(function (event) {
   try {
     var sessionRes = await supabaseClient.auth.getSession();
     if (!sessionRes.data || !sessionRes.data.session) {
-      $('bootView').textContent = 'Please sign in to access support. Redirecting...';
+      $('bootView').textContent = T('sup.needSignin', 'Please sign in to access support. Redirecting...');
       return bounceToLogin();
     }
 
     var userRes = await supabaseClient.auth.getUser();
     if (userRes.error || !userRes.data || !userRes.data.user) {
-      $('bootView').textContent = 'Session expired. Redirecting to login...';
+      $('bootView').textContent = T('sup.expired', 'Session expired. Redirecting to login...');
       return bounceToLogin();
     }
 
@@ -797,7 +799,7 @@ supabaseClient.auth.onAuthStateChange(function (event) {
     console.log('[support] sessao valida:', currentUser.email);
   } catch (e) {
     console.error('boot error:', e);
-    $('bootView').textContent = 'Something went wrong. Redirecting to login...';
+    $('bootView').textContent = T('sup.wrong', 'Something went wrong. Redirecting to login...');
     bounceToLogin();
   }
 })();
