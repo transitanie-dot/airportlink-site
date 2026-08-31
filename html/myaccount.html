@@ -615,6 +615,20 @@ function normalizeStatus(s) {
   return String(s || 'pending').toLowerCase().replace(/[^a-z0-9]+/g, '-');
 }
 
+/**
+ * O estado que se mostra à pessoa.
+ *
+ * O valor vem da base de dados em inglês — 'paid', 'confirmed' — e
+ * é um identificador, não texto para ler. Traduzimo-lo aqui; se
+ * aparecer um estado novo que ainda não conste do dicionário,
+ * mostra-se o valor em bruto em vez de nada.
+ */
+function statusText(s) {
+  var chave = String(s || 'pending').toLowerCase().replace(/[^a-z0-9]+/g, '_');
+  var legivel = chave.replace(/_/g, ' ');
+  return T('st.' + chave, legivel.charAt(0).toUpperCase() + legivel.slice(1));
+}
+
 /** Horas até à recolha. A janela de cancelamento conta a partir da
  *  HORA DE RECOLHA, não da data em que a reserva foi feita. */
 function hoursUntilPickup(trip) {
@@ -823,7 +837,7 @@ $('cancelConfirmBtn').addEventListener('click', async function () {
 // ============================================================
 function renderTripCard(trip, key, type) {
   var status = normalizeStatus(trip.status);
-  var statusText = trip.status || (type === 'future' ? 'pending' : 'completed');
+  var statusLabel = statusText(trip.status || (type === 'future' ? 'pending' : 'completed'));
   var badge = type === 'future'
     ? T('ma.upcomingTrip', 'Upcoming trip')
     : T('ma.pastTrip', 'Past trip');
@@ -865,7 +879,7 @@ function renderTripCard(trip, key, type) {
     '<path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>' +
     esc(tripReference(trip)) + '</button>' +
     '<div class="trip-top"><span class="trip-label">' + esc(badge) + '</span>' +
-    '<div class="trip-top-right"><span class="trip-status ' + esc(status) + '">' + esc(statusText) + '</span>' +
+    '<div class="trip-top-right"><span class="trip-status ' + esc(status) + '">' + esc(statusLabel) + '</span>' +
     receiptButton + '</div></div>' +
     '<div class="trip-route">' +
     '<div class="route-stop"><span class="route-marker pickup">P</span><div>' +
