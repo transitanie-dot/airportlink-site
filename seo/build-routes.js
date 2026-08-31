@@ -933,6 +933,7 @@ function calculator(airport, current, cc, mapsKey, lang) {
   var L_FROM = ${JSON.stringify(t9n(lang, 'From'))};
   var L_PAX  = ${JSON.stringify(t9n(lang, 'passengers'))};
   var L_PAX1 = ${JSON.stringify(t9n(lang, 'passenger'))};
+  var DATE_LOC = ${JSON.stringify({ pt:'pt-PT', es:'es-ES', de:'de-DE', fr:'fr-FR' }[lang] || 'en-GB')};
 
   // As etiquetas que o código da calculadora reescreve. Impressas
   // aqui porque esta página é estática e não pede nada ao servidor.
@@ -1131,7 +1132,7 @@ function calculator(airport, current, cc, mapsKey, lang) {
       if (cdate.value) {
         var d = new Date(cdate.value + 'T12:00');
         chDate.textContent = isNaN(d) ? '\u2014'
-          : d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+          : d.toLocaleDateString(DATE_LOC, { weekday: 'short', day: 'numeric', month: 'short' });
       } else {
         chDate.textContent = '\u2014';
       }
@@ -1452,14 +1453,14 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
     .slice(0, 6)
     .map((d) => {
       const price = priceEUR(d.km, 1, cc, slug, d.slug);
-      return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}/">` +
+      return `<a class="other" href="${pref}/transfers/${cslug}/${slug}-to-${d.slug}/">` +
         `<b>${esc(d.name)}</b><span>${t9n(lang, 'from')} ${money(price)}</span></a>`;
     }).join('\n      ');
 
   return head({ title, description, canonical: url, schema, lang, alternates }) + `
   <div class="crumb">
     <a href="/">Airportlink</a> &rsaquo;
-    <a href="/airports/${cslug}/${slug}/">${esc(airport.name)}</a> &rsaquo;
+    <a href="${pref}/airports/${cslug}/${slug}/">${esc(airport.name)}</a> &rsaquo;
     ${esc(dest.name)}
   </div>
 
@@ -1514,8 +1515,9 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
   <div class="others">
       ${others}
   </div>
-  <p style="margin-top:16px"><a href="/airports/${cslug}/${slug}/">All
-  ${esc(airport.city)} Airport transfers &rsaquo;</a></p>
+  <p style="margin-top:16px"><a href="${pref}/airports/${cslug}/${slug}/">${
+    frase(lang, 'allTransfers', { cidade: esc(airport.city) })
+    || `All ${esc(airport.city)} Airport transfers &rsaquo;`}</a></p>
 ` + foot;
 }
 
@@ -1583,7 +1585,7 @@ function airportPage(country, airport, lang, alternates) {
     .sort((a, b) => a.km - b.km)
     .map((d) => {
       const price = priceEUR(d.km, 1, cc, slug, d.slug);
-      return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}/">` +
+      return `<a class="other" href="${pref}/transfers/${cslug}/${slug}-to-${d.slug}/">` +
         `<b>${esc(d.name)}</b>` +
         `<span>${esc(d.minutes)} min &middot; from ${money(price)}</span></a>`;
     }).join('\n      ');
@@ -1595,7 +1597,7 @@ function airportPage(country, airport, lang, alternates) {
     .map((a) => {
       const s2 = slugOf(a);
       const from = Math.min(...a.destinations.map((d) => priceEUR(d.km, 1, cc, a.slug, d.slug)));
-      return `<a class="other" href="/airports/${cslug}/${s2}/">` +
+      return `<a class="other" href="${pref}/airports/${cslug}/${s2}/">` +
         `<b>${esc(a.name)}</b><span>from ${money(from)}</span></a>`;
     }).join('\n      ');
 
