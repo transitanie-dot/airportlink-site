@@ -296,8 +296,15 @@
     window.i18n.apply(document.querySelector('.site-footer'));
   }
 
-  traduzChrome();
-  document.addEventListener('i18n:ready', function () {
+  // onReady em vez do evento: se o dicionário já chegou antes de o
+  // cabeçalho existir, o evento já disparou e nunca mais volta.
+  if (window.i18n && window.i18n.onReady) {
+    window.i18n.onReady(atualizaChrome);
+  } else {
+    document.addEventListener('i18n:ready', atualizaChrome);
+  }
+
+  function atualizaChrome() {
     traduzChrome();
 
     // O código da língua no botão também muda.
@@ -311,7 +318,7 @@
         b.removeAttribute('aria-current');
       }
     });
-  });
+  }
 
   document.getElementById('themeBtn').addEventListener('click', function () {
     setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
