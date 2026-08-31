@@ -270,6 +270,55 @@ function minutos(c) {
  * As variáveis da marca vêm do site.css, carregado antes disto.
  */
 const estilo = `
+/* ------------------------------------------------------------
+   O papel do blogue.
+
+   Duas camadas sobrepostas ao fundo, ambas fixas e sem capturar
+   cliques: um brilho quente muito ténue no topo, e um grão fino
+   por cima. O grão é uma textura SVG gerada pelo próprio browser,
+   por isso não pesa um único byte de imagem.
+
+   As opacidades são deliberadamente baixas. Grão a mais lê-se
+   como sujidade, não como papel — o efeito deve notar-se se se
+   procurar e desaparecer quando se lê.
+   ------------------------------------------------------------ */
+body{background:var(--bg)}
+body::before,body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0}
+
+body::before{
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(232,163,61,.10), transparent 60%),
+    radial-gradient(90% 55% at 12% 4%, rgba(15,118,110,.06), transparent 65%);
+}
+/* No escuro o âmbar tem de ser mais discreto e o grão tem de
+   clarear em vez de escurecer, senão o fundo empasta. */
+[data-theme="dark"] body::before{
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(232,163,61,.07), transparent 60%),
+    radial-gradient(90% 55% at 12% 4%, rgba(79,179,159,.05), transparent 65%);
+}
+[data-theme="dark"] body::after{ mix-blend-mode:screen; opacity:.045 }
+
+body::after{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  opacity:.055;
+  mix-blend-mode:multiply;
+}
+
+main{position:relative;z-index:1}
+
+/* Nos blocos escuros o grão tem de clarear em vez de escurecer,
+   senão empasta. Um segundo passe local resolve. */
+.exp,.cta,.hero{position:relative;overflow:hidden}
+.exp::after,.cta::after,.hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n2)' opacity='.5'/%3E%3C/svg%3E");
+  opacity:.07;mix-blend-mode:overlay}
+.exp>*,.cta>*,.hero>*{position:relative;z-index:1}
+
+/* O grão é textura, não informação: quem pediu menos movimento e
+   quem usa contraste elevado passa sem ele. */
+@media (prefers-contrast:more){ body::after{display:none} }
+
 .wrap{max-width:1100px;margin:0 auto;padding:0 24px}
 
 .b-head{padding:72px 0 44px;max-width:640px}
