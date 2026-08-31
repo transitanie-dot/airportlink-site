@@ -1176,7 +1176,7 @@ notifyParent('ready');
 
   // O contador diz "9 respostas", e o plural muda de língua para
   // língua. Quando o dicionário chega, recontamos.
-  document.addEventListener('i18n:ready', updateFaq);
+  if (window.i18n) window.i18n.onReady(updateFaq);
 })();
 
 // ============================================================
@@ -2043,10 +2043,12 @@ function updateVehicleCard() {
  * ainda está a caminho, e ficavam em inglês para sempre. Este evento
  * chega quando o dicionário está pronto, e refaz os dois.
  */
-document.addEventListener('i18n:ready', function () {
-  updateVehicleCard();
-  updateBookingSummary();
-});
+if (window.i18n) {
+  window.i18n.onReady(function () {
+    updateVehicleCard();
+    updateBookingSummary();
+  });
+}
 
 // Aqui e não mais acima: VEHICLE_ART é declarado com var, e chamar
 // isto antes da declaração dava um TypeError que matava o resto do
