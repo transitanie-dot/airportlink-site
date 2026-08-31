@@ -1960,6 +1960,13 @@ fs.mkdirSync(SM_DIR, { recursive: true });
 fs.writeFileSync(path.join(SM_DIR, 'static.xml'), urlsetXml(fixed));
 
 const parts = ['sitemaps/static.xml'];
+
+// O blogue tem sitemap próprio, escrito pelo build-blog.js. Entra
+// no índice se existir, para se poder acompanhar à parte no
+// Search Console — o blogue indexa a ritmo diferente das rotas.
+if (fs.existsSync(path.join(ROOT, 'sitemaps/blog.xml'))) {
+  parts.push('sitemaps/blog.xml');
+}
 for (const [cc, list] of Object.entries(byCountry)) {
   const name = `${cc}.xml`;
   fs.writeFileSync(path.join(SM_DIR, name), urlsetXml(list));
