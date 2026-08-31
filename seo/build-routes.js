@@ -74,6 +74,7 @@ const LANGS = [
  */
 const T9N = {
   pt: {
+    "Home": "Início",
     "Van": "Carrinha",
     "Minibus": "Miniautocarro",
     "Coach": "Autocarro",
@@ -175,6 +176,7 @@ const T9N = {
     'titleAirport': 'Transfers do Aeroporto de {cidade} ({iata}) | Desde {preco} | Airportlink'
   },
   es: {
+    "Home": "Inicio",
     "Pick-up": "Recogida",
     "Drop-off": "Destino",
     "Pick-up time": "Hora de recogida",
@@ -298,6 +300,78 @@ const T9N = {
     'titleAirport': 'Flughafentransfers {cidade} ({iata}) | Ab {preco} | Airportlink'
   },
   fr: {
+    "Home": "Accueil",
+    "Pick-up": "Prise en charge",
+    "Drop-off": "Destination",
+    "Pick-up time": "Heure de prise en charge",
+    "Passengers": "Passagers",
+    "passengers": "passagers",
+    "passenger": "passager",
+    "Date": "Date",
+    "From": "Dès",
+    "from": "dès",
+    "Sedan": "Voiture",
+    "Van": "Van",
+    "Minibus": "Minibus",
+    "Coach": "Autocar",
+    "Up to 4 passengers with hand luggage.": "Jusqu'à 4 passagers avec bagage à main.",
+    "Up to 8 passengers with a suitcase each.": "Jusqu'à 8 passagers avec une valise chacun.",
+    "Whole car &middot; tolls and taxes in": "Voiture entière · péages et taxes compris",
+    "Book now, pay later": "Réservez maintenant, payez plus tard",
+    "payOn": "Réservez maintenant, payez le {data}",
+    "Continue &rarr;": "Continuer →",
+    "Airport, hotel or address": "Aéroport, hôtel ou adresse",
+    "Hotel, address or town": "Hôtel, adresse ou ville",
+    "Free cancellation": "Annulation gratuite",
+    "Until 24 hours before, refunded in full": "Jusqu'à 24 heures avant, remboursement intégral",
+    "No card today": "Rien n'est débité aujourd'hui",
+    "Charged 48 hours before you travel": "Débité 48 heures avant votre départ",
+    "Flight tracked": "Vol suivi",
+    "Land late and the driver waits, free": "En cas de retard, le chauffeur attend, sans supplément",
+    "Licensed drivers": "Chauffeurs agréés",
+    "Insurance and licence checked by us": "Assurance et licence vérifiées par nos soins",
+    "A private vehicle": "Un véhicule privé",
+    "for your group. No sharing, no other stops.": "pour votre groupe. Sans partage et sans autre arrêt.",
+    "A fixed price": "Un prix fixe",
+    "with tolls and taxes in. Nothing is added at the end.": "péages et taxes compris. Rien n'est ajouté à la fin.",
+    "Flight tracking.": "Suivi du vol.",
+    "Land late and the pick-up moves, not the price.": "En cas de retard, c'est la prise en charge qui bouge, pas le prix.",
+    "60 minutes of free waiting": "60 minutes d'attente offertes",
+    "after the flight lands.": "après l'atterrissage.",
+    "until 24 hours before pick-up.": "jusqu'à 24 heures avant la prise en charge.",
+    "One suitcase and one bag per passenger.": "Une valise et un bagage à main par passager.",
+    "More than that, tell us when you book.": "Au-delà, dites-le nous à la réservation.",
+    "mapsSays": "La carte indique {min} minutes. C'est le temps de route. De porte à porte à partir de l'atterrissage, c'est un autre chiffre, et c'est celui qu'il faut prévoir.",
+    "Taxi and disembark": "Roulage et débarquement",
+    "Passport control": "Contrôle des passeports",
+    "None inside Schengen. 15&ndash;45 min from outside it.": "Aucun à l'intérieur de Schengen. De 15 à 45 min en venant de l'extérieur.",
+    "Baggage reclaim": "Récupération des bagages",
+    "10&ndash;25 min with hold luggage": "De 10 à 25 min avec bagage en soute",
+    "Finding your driver": "Retrouver le chauffeur",
+    "2&ndash;5 min. Your name on a sign.": "De 2 à 5 min. Votre nom sur une pancarte.",
+    "The drive": "Le trajet",
+    "10&ndash;15 min": "De 10 à 15 min",
+    "realistically": "Réalistement, de {min1} à {min2} minutes après l'atterrissage.",
+    "ifWaiting": "Si quelqu'un vous attend, c'est ce chiffre qu'il faut lui donner.",
+    "bookEarly": "Réserver tôt coûte la même chose que réserver tard — le prix ne bouge pas. Ce qui bouge, c'est de savoir s'il reste une voiture.",
+    "A week ahead": "Une semaine à l'avance",
+    "busyArrivals": "Juillet, août, vendredis et samedis. Les arrivées les plus chargées de l'année{extra}.",
+    "longRun": ", et un long trajet comme celui-ci est le premier à manquer",
+    "As soon as you have the flight": "Dès que vous avez le vol",
+    "Groups of five or more. Vans and minibuses go first, always.": "Groupes de cinq personnes ou plus. Les vans partent toujours en premier.",
+    "Two or three days": "Deux ou trois jours",
+    "Landing between 23:00 and 06:00. Fewer drivers are working.": "Atterrissage entre 23h00 et 06h00. Il y a moins de chauffeurs en service.",
+    "The day before is fine": "La veille suffit",
+    "Everything else. The same morning usually works too.": "Tout le reste. Le matin même fonctionne aussi la plupart du temps.",
+    "cancelFree": "L'annulation est gratuite jusqu'à 24 heures avant, donc réserver tôt ne vous coûte rien si les plans changent.",
+    "aHowLong": "Environ {min} minutes pour les {km} km, hors heures de pointe. Le chauffeur connaît la route et suit le vol : un atterrissage retardé décale la prise en charge au lieu de vous coûter le transfert.",
+    "aHowMuch": "Dès {p1} pour quatre passagers maximum, et {p5} pour un groupe de cinq à huit en van. Le prix est fixé à la réservation — péages et taxes compris, rien n'est ajouté à la fin.",
+    "aFlightLate": "Nous suivons le numéro de vol que vous nous donnez. Le chauffeur attend et s'adapte à l'heure réelle d'atterrissage, avec 60 minutes d'attente offertes après que l'avion a touché le sol.",
+    "aWhereMeet": "Dans le hall des arrivées, après la douane. La veille de votre voyage nous vous envoyons le nom du chauffeur, son téléphone et le véhicule, et il vous contacte avec le point de rendez-vous exact.",
+    "aCancel": "Gratuite jusqu'à 24 heures avant la prise en charge, remboursée intégralement et automatiquement. Sur de nombreux trajets vous pouvez aussi réserver sans payer, et nous ne débitons la carte que 48 heures avant.",
+    "allTransfers": "Tous les transferts de l'aéroport de {cidade} ›",
+    "See prices &rarr;": "Voir les prix →",
+    "otherAirports": "Autres aéroports en {pais}",
     "h1Route": "{cidade} vers {destino}",
     "descRoute": "Transfert privé de {aeroporto} vers {destino} : {min} minutes, {km} km, dès {preco} pour 4 personnes maximum. Prix fixe, vol suivi, annulation gratuite.",
     "qHowLong": "Combien de temps faut-il de {cidade} vers {destino} ?",
@@ -324,6 +398,17 @@ const T9N = {
     'titleAirport': "Transferts aéroport de {cidade} ({iata}) | Dès {preco} | Airportlink"
   }
 };
+
+/**
+ * O nome do país na língua da página.
+ *
+ * O slug do endereço fica sempre em inglês — mudá-lo partiria as
+ * ligações e obrigaria a redireccionamentos. O que muda é só o
+ * nome que a pessoa lê.
+ */
+function pais(country, lang) {
+  return (country.countryI18n && country.countryI18n[lang]) || country.country;
+}
 
 /** Uma frase do modelo, com o inglês como rede. */
 function t9n(lang, en) {
@@ -1489,7 +1574,7 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
         name: `Airport transfer from ${airport.name} to ${dest.name}`,
         serviceType: 'Airport transfer',
         provider: { '@type': 'Organization', name: 'Airportlink', url: SITE + '/' },
-        areaServed: { '@type': 'Place', name: `${dest.name}, ${country.country}` },
+        areaServed: { '@type': 'Place', name: `${dest.name}, ${pais(country, lang)}` },
         offers: {
           '@type': 'Offer',
           price: Math.round(p1),
@@ -1510,9 +1595,12 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+          // A raiz aponta sempre para SITE/ e não para /pt/ ou /fr/:
+          // a homepage é uma só, traduzida no browser, e não existe
+          // como página separada por língua.
+          { '@type': 'ListItem', position: 1, name: t9n(lang, 'Home'), item: SITE + '/' },
           { '@type': 'ListItem', position: 2, name: airport.name,
-            item: `${SITE}/airports/${cslug}/${slug}/` },
+            item: `${SITE}${pref}/airports/${cslug}/${slug}/` },
           { '@type': 'ListItem', position: 3, name: dest.name, item: url }
         ]
       }
@@ -1535,7 +1623,7 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
     ${esc(dest.name)}
   </div>
 
-  ${hero(airport, `${airport.iata} · ${country.country}`,
+  ${hero(airport, `${airport.iata} · ${pais(country, lang)}`,
          (frase(lang, 'h1Route', { cidade: airport.city, destino: dest.name }) || `${airport.city} Airport to ${dest.name}`))}
 
 
@@ -1644,7 +1732,7 @@ function airportPage(country, airport, lang, alternates) {
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+          { '@type': 'ListItem', position: 1, name: t9n(lang, 'Home'), item: SITE + '/' },
           { '@type': 'ListItem', position: 2, name: airport.name, item: url }
         ]
       }
@@ -1675,7 +1763,7 @@ function airportPage(country, airport, lang, alternates) {
   return head({ title, description, canonical: url, schema, lang, alternates }) + `
   <div class="crumb"><a href="/">Airportlink</a> &rsaquo; ${esc(airport.name)}</div>
 
-  ${hero(airport, `${airport.iata} \u00b7 ${country.country}`,
+  ${hero(airport, `${airport.iata} \u00b7 ${pais(country, lang)}`,
          `${airport.name} transfers`)}
 
 
@@ -1707,7 +1795,7 @@ function airportPage(country, airport, lang, alternates) {
     ? '<ul>' + airport.tips.map((t) => `<li>${esc(t)}</li>`).join('') + '</ul>'
     : ''}
 
-  ${siblings ? `<h2>${frase(lang, 'otherAirports', { pais: esc(country.country) }) || `Other airports in ${esc(country.country)}`}</h2>
+  ${siblings ? `<h2>${frase(lang, 'otherAirports', { pais: esc(pais(country, lang)) }) || `Other airports in ${esc(pais(country, lang))}`}</h2>
   <div class="others">
       ${siblings}
   </div>` : ''}
