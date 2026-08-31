@@ -21,6 +21,86 @@ import { arte } from './blog-art.js';
  * preços aqui criaria uma segunda fonte de verdade que divergiria
  * da primeira à primeira recalibração.
  */
+/**
+ * A fórmula de preço, lida do build-routes.js.
+ *
+ * Extraída em vez de copiada: uma cópia divergiria da original à
+ * primeira recalibração, e o blogue passaria a anunciar preços que
+ * as páginas de rota já não praticam.
+ */
+function carregarPrecos() {
+  const src = fs.readFileSync(path.join(ROOT, 'seo/build-routes.js'), 'utf8');
+  const nomes = ['const PT_ZONES', 'const PT_FALLBACK', 'const ES_ZONES',
+                 'const ES_FALLBACK', 'const ES_FIXED', 'function priceEUR'];
+  let code = '';
+  for (const n of nomes) {
+    const i = src.indexOf(n);
+    if (i < 0) continue;
+    let j = i, d = 0, dentro = false;
+    while (j < src.length) {
+      const c = src[j];
+      if (c === '{') { d++; dentro = true; }
+      if (c === '}') { d--; if (dentro && d === 0) { j++; break; } }
+      j++;
+    }
+    code += src.slice(i, j) + (src[j] === ';' ? ';' : '') + '\n';
+  }
+  try {
+    return new Function(code + 'return priceEUR;')();
+  } catch (e) {
+    console.warn('Blog: pricing unavailable, tables will be skipped.');
+    return null;
+  }
+}
+
+/**
+ * Uma tabela de preços reais para um aeroporto.
+ *
+ * Os números saem da mesma fórmula que gera as páginas de rota, por
+ * isso o artigo nunca anuncia um preço diferente do que a pessoa
+ * encontra ao clicar.
+ */
+function tabela(aeroporto, lang, pref, precos) {
+  if (!precos) return '';
+  const [cc, slug] = aeroporto.split(':');
+  const f = cc === 'PT' ? 'seo/routes-PT.json' : 'seo/routes-ES.json';
+  const caminho = path.join(ROOT, f);
+  if (!fs.existsSync(caminho)) return '';
+
+  const d = JSON.parse(fs.readFileSync(caminho, 'utf8'));
+  const a = d.airports.find((x) => x.slug === slug);
+  if (!a) return '';
+
+  const cslug = (d.country || '').toLowerCase().replace(/\s+/g, '-');
+  const nomeAero = (a.i18n && a.i18n[lang] && a.i18n[lang].name) || a.name;
+
+  const linhas = a.destinations.map((x) => {
+    const nome = (x.i18n && x.i18n[lang] && x.i18n[lang].name) || x.name;
+    const p = Math.round(precos(x.km, 1, cc, slug, x.slug));
+    return `      <a class="tab-row" href="${pref}/transfers/${cslug}/${slug}-to-${x.slug}/">
+        <b>${esc(nome)}</b>
+        <span>${x.km} km</span>
+        <span>${x.minutes} min</span>
+        <em>&euro;${p}</em>
+      </a>`;
+  }).join('\n');
+
+  return `  <section class="ptab">
+    <div class="ptab-head">
+      <p class="ptab-t">${esc(nomeAero)}</p>
+      <p class="ptab-n">${esc(t(lang, 'upTo4'))}</p>
+    </div>
+    <div class="ptab-cols">
+      <span>${esc(t(lang, 'destination'))}</span>
+      <span>${esc(t(lang, 'distance'))}</span>
+      <span>${esc(t(lang, 'time'))}</span>
+      <span>${esc(t(lang, 'price'))}</span>
+    </div>
+${linhas}
+    <p class="ptab-foot">${esc(t(lang, 'tableNote'))}</p>
+  </section>`;
+}
+
 function lerRotas() {
   const paises = [];
   for (const f of ['seo/routes-PT.json', 'seo/routes-ES.json']) {
@@ -55,6 +135,13 @@ const LANGS = [
 
 const T = {
   en: {
+    "upTo4": "Up to 4 passengers, whole car",
+    "destination": "Destination",
+    "distance": "Distance",
+    "time": "Time",
+    "price": "From",
+    "tableNote": "Tolls and taxes included. Free cancellation until 24 hours before pick-up.",
+    "prices": "Prices",
     "coverage": "Where we drive today",
     "airports": "airports",
     "route1": "route",
@@ -73,6 +160,13 @@ const T = {
     minRead: 'min read'
   },
   pt: {
+    "upTo4": "Até 4 passageiros, carro inteiro",
+    "destination": "Destino",
+    "distance": "Distância",
+    "time": "Tempo",
+    "price": "Desde",
+    "tableNote": "Portagens e impostos incluídos. Cancelamento gratuito até 24 horas antes da recolha.",
+    "prices": "Preços",
     "coverage": "Onde conduzimos hoje",
     "airports": "aeroportos",
     "route1": "rota",
@@ -91,6 +185,13 @@ const T = {
     minRead: 'min de leitura'
   },
   es: {
+    "upTo4": "Hasta 4 pasajeros, coche entero",
+    "destination": "Destino",
+    "distance": "Distancia",
+    "time": "Tiempo",
+    "price": "Desde",
+    "tableNote": "Peajes e impuestos incluidos. Cancelación gratuita hasta 24 horas antes de la recogida.",
+    "prices": "Precios",
     "coverage": "Dónde conducimos hoy",
     "airports": "aeropuertos",
     "route1": "ruta",
@@ -109,6 +210,13 @@ const T = {
     minRead: 'min de lectura'
   },
   fr: {
+    "upTo4": "Jusqu'à 4 passagers, voiture entière",
+    "destination": "Destination",
+    "distance": "Distance",
+    "time": "Durée",
+    "price": "Dès",
+    "tableNote": "Péages et taxes compris. Annulation gratuite jusqu'à 24 heures avant la prise en charge.",
+    "prices": "Prix",
     "coverage": "Où nous roulons aujourd'hui",
     "airports": "aéroports",
     "route1": "trajet",
@@ -245,6 +353,29 @@ const estilo = `
   margin:0 0 16px;letter-spacing:.01em}
 .lead{font-size:21.5px;line-height:1.56;color:var(--slate);margin:0}
 
+.ptab{margin:44px -28px;padding:26px 28px 20px;background:var(--sage);border-radius:18px}
+.ptab-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  flex-wrap:wrap;margin-bottom:18px}
+.ptab-t{font-family:var(--display);font-size:19px;margin:0;color:var(--ink)}
+.ptab-n{font-size:13px;color:var(--muted);margin:0}
+.ptab-cols{display:grid;grid-template-columns:1fr 70px 70px 74px;gap:10px;padding:0 12px 8px;
+  font-size:12px;color:var(--muted);border-bottom:1px solid rgba(20,26,40,.14)}
+.ptab-cols span:not(:first-child){text-align:right}
+.tab-row{display:grid;grid-template-columns:1fr 70px 70px 74px;gap:10px;align-items:baseline;
+  padding:13px 12px;text-decoration:none;border-bottom:1px solid rgba(20,26,40,.08);
+  border-radius:8px}
+.tab-row:hover{background:rgba(255,255,255,.6)}
+.tab-row b{font-size:16px;color:var(--ink);font-weight:600}
+.tab-row span{font-size:13.5px;color:var(--muted);text-align:right}
+.tab-row em{font-style:normal;font-size:17px;color:var(--teal);font-weight:700;text-align:right}
+.ptab-foot{font-size:12.5px;color:var(--muted);margin:16px 0 0;line-height:1.5}
+@media (max-width:560px){
+  .ptab-cols{grid-template-columns:1fr 60px;gap:8px}
+  .ptab-cols span:nth-child(2),.ptab-cols span:nth-child(3){display:none}
+  .tab-row{grid-template-columns:1fr 60px}
+  .tab-row span{display:none}
+}
+
 .exp{margin:46px -28px;padding:30px 28px 24px;background:var(--ink);border-radius:18px;color:#fff}
 .exp-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
   flex-wrap:wrap;margin-bottom:22px}
@@ -344,7 +475,7 @@ const foot = `
  * ficarem soltas no meio do texto: assim lêem-se como uma lista de
  * preços e não como notas de rodapé.
  */
-function corpo(body, pref, lang, paises) {
+function corpo(body, pref, lang, paises, precos) {
   const saida = [];
   let rotas = [];
 
@@ -364,6 +495,7 @@ ${rotas.map((r) => `    <a class="route" href="${pref}${r[1]}">
     if (tipo === 'link') { rotas.push(b); continue; }
     despeja();
     if (tipo === 'explorer') { saida.push(explorador(paises || [], lang, pref)); continue; }
+    if (tipo === 'prices') { saida.push(tabela(resto[0], lang, pref, precos)); continue; }
     if (tipo === 'h2') saida.push(`  <h2>${esc(resto[0])}</h2>`);
     else if (tipo === 'p') saida.push(`  <p>${esc(resto[0])}</p>`);
     else if (tipo === 'quote') saida.push(`  <aside class="pull"><p>${esc(resto[0])}</p></aside>`);
@@ -418,7 +550,7 @@ ${paineis}
   </section>`;
 }
 
-function postPage(post, lang, alternates, paises) {
+function postPage(post, lang, alternates, paises, precos) {
   const c = post[lang];
   const pref = LANGS.find((x) => x.code === lang).prefix;
   const url = `${SITE}${pref}/blog/${post.slug}/`;
@@ -473,7 +605,7 @@ function postPage(post, lang, alternates, paises) {
     <p class="deck-t">${esc(t(lang, 'deck'))}</p>
     <p class="lead">${esc(c.lead)}</p>
   </div>
-${corpo(c.body, pref, lang, paises)}
+${corpo(c.body, pref, lang, paises, precos)}
 
   <div class="cta">
     <p>${esc(t(lang, 'ctaLead'))}</p>
@@ -572,6 +704,7 @@ ${resto.map(cartao).join('\n')}
 const dados = JSON.parse(fs.readFileSync(path.join(ROOT, 'seo/posts.json'), 'utf8'));
 const posts = dados.posts.slice().sort((a, b) => b.date.localeCompare(a.date));
 const paises = lerRotas();
+const precos = carregarPrecos();
 
 const urls = [];
 let n = 0;
@@ -583,7 +716,7 @@ for (const post of posts) {
   for (const l of langs) {
     const dir = path.join(ROOT, l.prefix.slice(1), 'blog', post.slug);
     ensure(dir);
-    fs.writeFileSync(path.join(dir, 'index.html'), postPage(post, l.code, alt, paises));
+    fs.writeFileSync(path.join(dir, 'index.html'), postPage(post, l.code, alt, paises, precos));
     urls.push(`${SITE}${l.prefix}/blog/${post.slug}/`);
     n += 1;
   }
