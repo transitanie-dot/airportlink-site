@@ -49,7 +49,7 @@
    * este número — senão as pessoas continuam a ver as antigas
    * durante dias, e não há forma de as avisar.
    */
-  var DICT_VERSION = '2026-08-31-03';
+  var DICT_VERSION = '2026-08-31-04';
 
   /**
    * A língua, por esta ordem: o que a pessoa escolheu, o endereço, o
