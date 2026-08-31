@@ -270,5 +270,8 @@
  "h.vehPair": "Carrinha e carro",
  "h.vehTwoVans": "Duas carrinhas",
  "h.vehSedan": "Carro",
- "foot.blurb": "Transferências privadas de aeroporto com preço fixo acordado antes de pagar. Porta a porta, com seguimento do voo e conduzidas por empresas locais licenciadas."
+ "foot.blurb": "Transferências privadas de aeroporto com preço fixo acordado antes de pagar. Porta a porta, com seguimento do voo e conduzidas por empresas locais licenciadas.",
+ "h.faqSearch": "Procurar perguntas...",
+ "h.faqAnswer": "resposta",
+ "h.faqAnswers": "respostas"
 }
