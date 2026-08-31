@@ -531,7 +531,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
           </div>
 
           <div class="field">
-            <div class="label-row"><label for="pickup">Pick-up</label><span class="hint" data-i18n="h.whereCollect">Where we collect you</span></div>
+            <div class="label-row"><label for="pickup" data-i18n="common.pickup">Pick-up</label><span class="hint" data-i18n="h.whereCollect">Where we collect you</span></div>
             <div class="input-wrap"><span class="pin pickup"></span><input id="pickup" name="al-pickup" type="text" placeholder="Porto Airport, Portugal"
               readonly autocomplete="al-no-fill" autocorrect="off" autocapitalize="off"
               spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" /></div>
@@ -539,7 +539,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
           </div>
 
           <div class="field">
-            <div class="label-row"><label for="dropoff">Drop-off</label><span class="hint" data-i18n="h.yourDest">Your destination</span></div>
+            <div class="label-row"><label for="dropoff" data-i18n="common.dropoff">Drop-off</label><span class="hint" data-i18n="h.yourDest">Your destination</span></div>
             <div class="input-wrap"><span class="pin dropoff"></span><input id="dropoff" name="al-dropoff" type="text" placeholder="Aliados, Porto"
               readonly autocomplete="al-no-fill" autocorrect="off" autocapitalize="off"
               spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" /></div>
@@ -575,8 +575,8 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
           <div class="return-box hidden" id="returnBox">
             <div class="rt-route" id="returnRoute">&mdash;</div>
             <div class="two-col">
-              <div class="field"><div class="label-row"><label for="returnDate">Return date</label></div><input id="returnDate" type="date" /></div>
-              <div class="field"><div class="label-row"><label for="returnTime">Pick-up time</label></div><input id="returnTime" type="time" /></div>
+              <div class="field"><div class="label-row"><label for="returnDate" data-i18n="book.returnDate">Return date</label></div><input id="returnDate" type="date" /></div>
+              <div class="field"><div class="label-row"><label for="returnTime" data-i18n="h.pickupTime">Pick-up time</label></div><input id="returnTime" type="time" /></div>
             </div>
             <button class="link-btn" id="swapReturnBtn" type="button" style="margin-top:0" data-i18n="h.retElsewhere">Pick up somewhere else on the way back</button>
             <div class="two-col hidden" id="returnCustom" style="margin-top:12px">
@@ -594,7 +594,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
 
           <div class="pay-choice hidden" id="payChoice">
             <button class="pay-opt on" id="payNowOpt" data-mode="now" type="button">
-              <span class="t">Pay now</span>
+              <span class="t" data-i18n="co.payNow">Pay now</span>
               <span class="d" data-i18n="h.payNowNote">Card charged today. Free cancellation until 24 hours before pick-up.</span>
             </button>
             <button class="pay-opt" id="payLaterOpt" data-mode="later" type="button">
@@ -609,7 +609,7 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
 
           <div class="mandate hidden" id="payMandate">
             <b data-i18n="h.cardWhat">What happens with your card.</b> We save it securely with Stripe and charge
-            <b id="mandateAmount">the fare</b> once, <b id="mandateWhen">48 hours before pick-up</b>.
+            <b id="mandateAmount" data-i18n="h.theFare">the fare</b> once, <b id="mandateWhen" data-i18n="h.48before">48 hours before pick-up</b>.
             Nothing is taken today. Cancel any time before that from your account and the card is
             removed without being charged.
           </div>
@@ -623,18 +623,18 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
             <h3 data-i18n="h.signInCont">Sign in to continue</h3>
             <p>Your account keeps the booking, the receipt and the cancel button in one place, and lets you message us about this specific transfer.</p>
             <div class="auth-tabs">
-              <button class="auth-tab active" id="tabSignIn" type="button">Sign in</button>
-              <button class="auth-tab" id="tabSignUp" type="button">Create account</button>
+              <button class="auth-tab active" id="tabSignIn" type="button" data-i18n="nav.signIn">Sign in</button>
+              <button class="auth-tab" id="tabSignUp" type="button" data-i18n="nav.createAcc">Create account</button>
             </div>
             <div id="signUpNameField" class="field hidden">
-              <div class="label-row"><label for="authName">Full name</label></div>
+              <div class="label-row"><label for="authName" data-i18n="co.fullName">Full name</label></div>
               <input id="authName" type="text" placeholder="Your full name" autocomplete="name" />
             </div>
-            <div class="field"><div class="label-row"><label for="authEmail">Email</label></div>
+            <div class="field"><div class="label-row"><label for="authEmail" data-i18n="co.email">Email</label></div>
               <input id="authEmail" type="email" placeholder="you@email.com" autocomplete="email" /></div>
-            <div class="field"><div class="label-row"><label for="authPassword">Password</label><span class="hint" id="passwordHint">&nbsp;</span></div>
+            <div class="field"><div class="label-row"><label for="authPassword" data-i18n="co.password">Password</label><span class="hint" id="passwordHint">&nbsp;</span></div>
               <input id="authPassword" type="password" autocomplete="current-password" /></div>
-            <button id="authSubmitBtn" class="btn auth-btn" type="button">Sign in and continue</button>
+            <button id="authSubmitBtn" class="btn auth-btn" type="button" data-i18n="h.signInCont2">Sign in and continue</button>
             <button id="forgotBtn" class="link-btn" type="button" data-i18n="h.forgotPass">Forgot your password?</button>
 
             <div class="guest-split">
@@ -655,34 +655,34 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
             </div>
 
             <div class="guest-chip hidden" id="guestChip">
-              <span>Booking without an account. We email everything to the address below.</span>
+              <span data-i18n="h.noAccountNote">Booking without an account. We email everything to the address below.</span>
               <button id="guestBackBtn" class="link-btn" type="button" style="margin:0" data-i18n="h.signInInstead">Sign in instead</button>
             </div>
 
             <div class="field hidden" id="guestEmailField">
-              <div class="label-row"><label for="guestEmail">Email</label><span class="hint" data-i18n="h.required">Required</span></div>
+              <div class="label-row"><label for="guestEmail" data-i18n="co.email">Email</label><span class="hint" data-i18n="h.required">Required</span></div>
               <input id="guestEmail" type="email" placeholder="you@email.com" autocomplete="email">
               <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)" data-i18n="h.emailNote">Your confirmation, the receipt and the driver details all go here.</div>
             </div>
-            <div class="field"><div class="label-row"><label for="fullName" id="fullNameLabel">Full name</label><span class="hint">Required</span></div><input id="fullName" type="text" placeholder="Your full name" /></div>
-            <div class="field"><div class="label-row"><label for="email" id="emailLabel">Email</label><span class="hint" id="emailHint" data-i18n="h.fromAccount">From your account</span></div><input id="email" type="email" readonly /></div>
+            <div class="field"><div class="label-row"><label for="fullName" id="fullNameLabel" data-i18n="co.fullName">Full name</label><span class="hint" data-i18n="h.required">Required</span></div><input id="fullName" type="text" placeholder="Your full name" /></div>
+            <div class="field"><div class="label-row"><label for="email" id="emailLabel" data-i18n="co.email">Email</label><span class="hint" id="emailHint" data-i18n="h.fromAccount">From your account</span></div><input id="email" type="email" readonly /></div>
             <div class="field hidden" id="travellerField">
               <div class="label-row"><label for="travellerPick" data-i18n="h.savedTrav">Saved traveller</label><span class="hint" data-i18n="h.optional">Optional</span></div>
               <select id="travellerPick">
                 <option value="" data-i18n="h.newTrav">New traveller</option>
               </select>
-              <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)">Pick someone you have booked before and the details fill in.</div>
+              <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)" data-i18n="h.savedTravNote">Pick someone you have booked before and the details fill in.</div>
             </div>
 
             <div class="field hidden" id="agentRefField">
-              <div class="label-row"><label for="agentReference" data-i18n="h.yourRef">Your reference</label><span class="hint">Optional</span></div>
+              <div class="label-row"><label for="agentReference" data-i18n="h.yourRef">Your reference</label><span class="hint" data-i18n="h.optional">Optional</span></div>
               <input id="agentReference" type="text" placeholder="Your own file or booking number" maxlength="60">
-              <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)">Shown on your dashboard, the voucher and the monthly statement.</div>
+              <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)" data-i18n="h.refNote">Shown on your dashboard, the voucher and the monthly statement.</div>
             </div>
 
-            <div class="field hidden" id="passengerEmailField"><div class="label-row"><label for="passengerEmail" data-i18n="h.paxEmail">Passenger email</label><span class="hint">Optional</span></div><input id="passengerEmail" type="email" placeholder="If they should get the details too" /></div>
+            <div class="field hidden" id="passengerEmailField"><div class="label-row"><label for="passengerEmail" data-i18n="h.paxEmail">Passenger email</label><span class="hint" data-i18n="h.optional">Optional</span></div><input id="passengerEmail" type="email" placeholder="If they should get the details too" /></div>
             <div class="field">
-              <div class="label-row"><label for="phoneNumber" id="phoneLabel">Phone</label><span class="hint">Required</span></div>
+              <div class="label-row"><label for="phoneNumber" id="phoneLabel" data-i18n="co.phone">Phone</label><span class="hint" data-i18n="h.required">Required</span></div>
               <div data-phone-mount>
                 <select id="phoneCode" aria-label="Country dialling code">
                   <option value="351">Portugal +351</option>
@@ -746,11 +746,11 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
               <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)" data-i18n="h.phoneNote">The driver calls this if they cannot find you on the day.</div>
             </div>
             <div class="field">
-              <div class="label-row"><label for="flightNumber">Flight number</label><span class="hint">Optional</span></div>
+              <div class="label-row"><label for="flightNumber" data-i18n="co.flight">Flight number</label><span class="hint" data-i18n="h.optional">Optional</span></div>
               <input id="flightNumber" type="text" placeholder="TP1949" />
               <div class="hint" style="margin-top:7px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:12.5px;color:var(--muted)" data-i18n="h.flightNote">Give us the flight and we track it. If it lands late, the driver waits.</div>
             </div>
-            <div class="field"><div class="label-row"><label for="notes" data-i18n="h.notes">Notes</label><span class="hint">Optional</span></div><input id="notes" type="text" placeholder="Child seat, extra luggage, anything else" /></div>
+            <div class="field"><div class="label-row"><label for="notes" data-i18n="h.notes">Notes</label><span class="hint" data-i18n="h.optional">Optional</span></div><input id="notes" type="text" placeholder="Child seat, extra luggage, anything else" /></div>
 
             <label class="save-traveller hidden" id="saveTravellerRow">
               <input type="checkbox" id="saveTraveller">
@@ -780,22 +780,22 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
         <h2 class="checkout-title" data-i18n="h.checkBooking">Check your booking</h2>
         <p class="checkout-text" data-i18n="h.checkNote">Everything below is what the driver receives. Change anything above before paying.</p>
         <div class="summary-grid">
-          <div class="summary-item"><div class="summary-label">Full name</div><div class="summary-value" id="summaryName">&mdash;</div></div>
-          <div class="summary-item"><div class="summary-label">Email</div><div class="summary-value" id="summaryEmail">&mdash;</div></div>
-          <div class="summary-item"><div class="summary-label">Phone</div><div class="summary-value" id="summaryPhone">&mdash;</div></div>
-          <div class="summary-item"><div class="summary-label">Pick-up</div><div class="summary-value" id="summaryPickup">&mdash;</div></div>
-          <div class="summary-item"><div class="summary-label">Drop-off</div><div class="summary-value" id="summaryDropoff">&mdash;</div></div>
-          <div class="summary-item"><div class="summary-label">Passengers</div><div class="summary-value" id="summaryPassengers">&mdash;</div></div>
-          <div class="summary-item"><div class="summary-label">Date</div><div class="summary-value" id="summaryDate">&mdash;</div></div>
-          <div class="summary-item"><div class="summary-label">Pick-up time</div><div class="summary-value" id="summaryTime">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label" data-i18n="co.fullName">Full name</div><div class="summary-value" id="summaryName">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label" data-i18n="co.email">Email</div><div class="summary-value" id="summaryEmail">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label" data-i18n="co.phone">Phone</div><div class="summary-value" id="summaryPhone">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label" data-i18n="common.pickup">Pick-up</div><div class="summary-value" id="summaryPickup">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label" data-i18n="common.dropoff">Drop-off</div><div class="summary-value" id="summaryDropoff">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label" data-i18n="common.passengers">Passengers</div><div class="summary-value" id="summaryPassengers">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label" data-i18n="common.date">Date</div><div class="summary-value" id="summaryDate">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label" data-i18n="h.pickupTime">Pick-up time</div><div class="summary-value" id="summaryTime">&mdash;</div></div>
           <div class="summary-item"><div class="summary-label" data-i18n="h.flight">Flight</div><div class="summary-value" id="summaryFlight">&mdash;</div></div>
-          <div class="summary-item"><div class="summary-label">Distance</div><div class="summary-value" id="summaryDistance">&mdash;</div></div>
-          <div class="summary-item"><div class="summary-label">Duration</div><div class="summary-value" id="summaryDuration">&mdash;</div></div>
-          <div class="summary-item"><div class="summary-label">Price</div><div class="summary-value" id="summaryPrice">&mdash;</div><div class="price-eur hidden" id="summaryPriceEur"></div></div>
+          <div class="summary-item"><div class="summary-label" data-i18n="h.distance">Distance</div><div class="summary-value" id="summaryDistance">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label" data-i18n="h.duration">Duration</div><div class="summary-value" id="summaryDuration">&mdash;</div></div>
+          <div class="summary-item"><div class="summary-label" data-i18n="h.price">Price</div><div class="summary-value" id="summaryPrice">&mdash;</div><div class="price-eur hidden" id="summaryPriceEur"></div></div>
           <div class="summary-item hidden" id="summaryReturnItem" style="grid-column:1/-1"><div class="summary-label" data-i18n="h.returnTrip">Return trip</div><div class="summary-value" id="summaryReturn">&mdash;</div></div>
           <div class="summary-item"><div class="summary-label" data-i18n="h.payment">Payment</div><div class="summary-value" id="summaryPayment">&mdash;</div></div>
-          <div class="summary-item hidden" id="summaryRefItem"><div class="summary-label">Your reference</div><div class="summary-value" id="summaryRef">&mdash;</div></div>
-          <div class="summary-item" style="grid-column:1/-1"><div class="summary-label">Notes</div><div class="summary-value" id="summaryNotes">&mdash;</div></div>
+          <div class="summary-item hidden" id="summaryRefItem"><div class="summary-label" data-i18n="h.yourRef">Your reference</div><div class="summary-value" id="summaryRef">&mdash;</div></div>
+          <div class="summary-item" style="grid-column:1/-1"><div class="summary-label" data-i18n="h.notes">Notes</div><div class="summary-value" id="summaryNotes">&mdash;</div></div>
         </div>
 
         <div class="cancel-note" style="margin-top:18px;margin-bottom:0;">
@@ -961,9 +961,9 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
       <p data-i18n="h.howLead">No calls, no waiting for someone to email you back a price.</p>
     </div>
     <div class="rail">
-      <div class="stop"><span class="tag">Step one</span><h3 data-i18n="h.h1t">Enter your route</h3><p data-i18n="h.h1b">Pick-up point, destination, date and time. We use the real driving route, so the distance is the one the car will actually cover.</p></div>
-      <div class="stop"><span class="tag">Step two</span><h3 data-i18n="h.h2t">See the fare</h3><p data-i18n="h.h2b">The price appears immediately, in your currency, with everything included. It is recalculated on our servers before checkout so the quote and the charge always match.</p></div>
-      <div class="stop"><span class="tag">Step three</span><h3 data-i18n="h.h3t">Add your details</h3><p data-i18n="h.h3b">Name, phone and, if you are landing, your flight number. That is what reaches the driver.</p></div>
+      <div class="stop"><span class="tag" data-i18n="h.step1">Step one</span><h3 data-i18n="h.h1t">Enter your route</h3><p data-i18n="h.h1b">Pick-up point, destination, date and time. We use the real driving route, so the distance is the one the car will actually cover.</p></div>
+      <div class="stop"><span class="tag" data-i18n="h.step2">Step two</span><h3 data-i18n="h.h2t">See the fare</h3><p data-i18n="h.h2b">The price appears immediately, in your currency, with everything included. It is recalculated on our servers before checkout so the quote and the charge always match.</p></div>
+      <div class="stop"><span class="tag" data-i18n="h.step3">Step three</span><h3 data-i18n="h.h3t">Add your details</h3><p data-i18n="h.h3b">Name, phone and, if you are landing, your flight number. That is what reaches the driver.</p></div>
       <div class="stop"><span class="tag" data-i18n="h.step4">Step four</span><h3 data-i18n="h.h4t">Pay and forget about it</h3><p data-i18n="h.h4b">Stripe handles the card. Your booking, receipt and cancel button live in your account until the day you travel.</p></div>
     </div>
   </div>
