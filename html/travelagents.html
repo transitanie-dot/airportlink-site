@@ -501,7 +501,7 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
         </div>
 
         <div class="tabs">
-          <button class="tab active" id="tabSignIn" type="button">Sign in</button>
+          <button class="tab active" id="tabSignIn" type="button" data-i18n="co.signIn">Sign in</button>
           <button class="tab" id="tabSignUp" type="button" data-i18n="nav.createAcc">Create account</button>
         </div>
 
@@ -520,7 +520,7 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
           </div>
         </div>
 
-        <button id="authBtn" class="btn block" type="button">Sign in</button>
+        <button id="authBtn" class="btn block" type="button" data-i18n="co.signIn">Sign in</button>
         <button id="forgotBtn" class="linkish" type="button" data-i18n="h.forgotPass">Forgot your password?</button>
         <div id="authError" class="msg err"></div>
         <div id="authOk" class="msg ok"></div>
@@ -974,7 +974,13 @@ function setAuthMode(mode) {
   $('tabSignIn').classList.toggle('active', mode === 'signin');
   $('tabSignUp').classList.toggle('active', mode === 'signup');
   $('nameField').classList.toggle('hidden', mode !== 'signup');
-  $('authBtn').textContent = mode === 'signup' ? 'Create account' : 'Sign in';
+  // A chave muda com o modo, para o i18n a apanhar se o dicionário
+  // ainda não tiver chegado quando isto corre.
+  var chaveBtn = mode === 'signup' ? 'nav.createAcc' : 'co.signIn';
+  $('authBtn').setAttribute('data-i18n', chaveBtn);
+  $('authBtn').textContent = window.i18n
+    ? window.i18n.t(chaveBtn, mode === 'signup' ? 'Create account' : 'Sign in')
+    : (mode === 'signup' ? 'Create account' : 'Sign in');
   $('authPassword').setAttribute('autocomplete', mode === 'signup' ? 'new-password' : 'current-password');
   $('pwHint').textContent = mode === 'signup' ? 'At least 8 characters' : '';
   $('forgotBtn').classList.toggle('hidden', mode === 'signup');
