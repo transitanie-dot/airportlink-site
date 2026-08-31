@@ -26,6 +26,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/i18n.js"></script>
 <script src="/assets/layout.js" defer></script>
 <style>
 /* Só o que é específico das páginas de conta. O resto vive em
@@ -76,33 +77,33 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
 <main id="main">
 <div class="auth-page">
   <div class="auth-card">
-    <h1>Create your account</h1>
-    <p class="sub">It keeps your trips and receipts in one place, gives you the cancel button, and lets you message us about a specific transfer.</p>
+    <h1 data-i18n="ca.title">Create your account</h1>
+    <p class="sub" data-i18n="ca.lead">It keeps your trips and receipts in one place, gives you the cancel button, and lets you message us about a specific transfer.</p>
 
     <div class="field">
-      <label for="newName">Full name</label>
+      <label for="newName" data-i18n="co.fullName">Full name</label>
       <input id="newName" type="text" placeholder="Your name" autocomplete="name">
     </div>
 
     <div class="field">
-      <label for="newEmail">Email</label>
+      <label for="newEmail" data-i18n="co.email">Email</label>
       <input id="newEmail" type="email" placeholder="you@email.com" autocomplete="email">
     </div>
 
     <div class="field">
-      <label for="newPassword">Password</label>
+      <label for="newPassword" data-i18n="co.password">Password</label>
       <input id="newPassword" type="password" placeholder="At least 8 characters" minlength="8" autocomplete="new-password">
       <div class="pw-meter"><div class="pw-fill" id="pwFill"></div></div>
-      <div class="help" id="pwHint">At least 8 characters, with a letter and a number.</div>
+      <div class="help" id="pwHint" data-i18n="ca.min8">At least 8 characters, with a letter and a number.</div>
     </div>
 
     <div class="field">
-      <label for="confirmPassword">Confirm password</label>
+      <label for="confirmPassword" data-i18n="ca.confirm">Confirm password</label>
       <input id="confirmPassword" type="password" placeholder="Repeat your password" autocomplete="new-password">
     </div>
 
-    <button id="registerBtn" type="button" class="btn teal">Create account</button>
-    <button id="backBtn" type="button" class="btn line">Back to sign in</button>
+    <button id="registerBtn" type="button" class="btn teal" data-i18n="nav.createAcc">Create account</button>
+    <button id="backBtn" type="button" class="btn line" data-i18n="lg.backSignin">Back to sign in</button>
 
     <div id="signupError" class="msg err"></div>
     <div id="signupSuccess" class="msg ok"></div>
