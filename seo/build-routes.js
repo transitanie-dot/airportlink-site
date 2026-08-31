@@ -55,11 +55,149 @@ const SITE = 'https://www.airportlink.app';
  * e /fr/, e só são geradas para as rotas que tiverem tradução.
  */
 const LANGS = [
-  { code: 'en', prefix: '',     nome: 'English'  },
-  { code: 'es', prefix: '/es',  nome: 'Espanol'  },
-  { code: 'de', prefix: '/de',  nome: 'Deutsch'  },
-  { code: 'fr', prefix: '/fr',  nome: 'Francais' }
+  { code: 'en', prefix: '',     nome: 'English'    },
+  { code: 'es', prefix: '/es',  nome: 'Espanol'    },
+  { code: 'pt', prefix: '/pt',  nome: 'Portugues'  },
+  { code: 'de', prefix: '/de',  nome: 'Deutsch'    },
+  { code: 'fr', prefix: '/fr',  nome: 'Francais'   }
 ];
+
+/**
+ * As frases do modelo, nas línguas indexáveis.
+ *
+ * Separadas do conteúdo das rotas de propósito: estas repetem-se
+ * em todas as páginas e traduzem-se uma vez; o texto de cada rota
+ * é único e vive no JSON do país.
+ *
+ * O inglês não está aqui — é o que está escrito no código, e serve
+ * de rede quando falta uma chave.
+ */
+const T9N = {
+  pt: {
+    "h1Route": "{cidade} para {destino}",
+    "descRoute": "Transfer privado de {aeroporto} para {destino}: {min} minutos, {km} km, desde {preco} para até 4 pessoas. Preço fixo, voo seguido, cancelamento gratuito.",
+    "qHowLong": "Quanto tempo demora de {cidade} para {destino}?",
+    "qHowMuch": "Quanto custa um transfer de {cidade} para {destino}?",
+    "qWhereMeet": "Onde encontro o motorista no aeroporto de {cidade}?",
+    "Price your transfer": "Calcule o seu transfer",
+    "How long it really takes": "Quanto demora na realidade",
+    "When to book": "Quando reservar",
+    "Before you land": "Antes de aterrar",
+    "FAQ": "Perguntas frequentes",
+    "otherFrom": "Outros transfers do aeroporto de {cidade}",
+    "arriving": "Chegar a {aeroporto}",
+    "h1Airport": "Transfers do {aeroporto}",
+    "descAirport": "Transfers privados de {aeroporto} para {n} destinos, desde {preco}. Preços fixos, voo seguido e um motorista à sua espera nas chegadas.",
+    'The airport': 'O aeroporto',
+    'The journey': 'A viagem',
+    'What is included': 'O que está incluído',
+    'Where people go': 'Para onde as pessoas vão',
+    'Get a price': 'Ver preço',
+    'Going somewhere not on this list?': 'Vai para um sítio que não está na lista?',
+    'Can I cancel?': 'Posso cancelar?',
+    'What happens if my flight is late?': 'E se o meu voo atrasar?',
+    'titleRoute': '{cidade} para {destino} | Transfer desde {preco} | Airportlink',
+    'titleAirport': 'Transfers do Aeroporto de {cidade} ({iata}) | Desde {preco} | Airportlink'
+  },
+  es: {
+    "h1Route": "{cidade} a {destino}",
+    "descRoute": "Traslado privado de {aeroporto} a {destino}: {min} minutos, {km} km, desde {preco} para hasta 4 personas. Precio fijo, vuelo monitorizado, cancelación gratuita.",
+    "qHowLong": "¿Cuánto se tarda de {cidade} a {destino}?",
+    "qHowMuch": "¿Cuánto cuesta un traslado de {cidade} a {destino}?",
+    "qWhereMeet": "¿Dónde encuentro al conductor en el aeropuerto de {cidade}?",
+    "Price your transfer": "Calcula tu traslado",
+    "How long it really takes": "Cuánto se tarda realmente",
+    "When to book": "Cuándo reservar",
+    "Before you land": "Antes de aterrizar",
+    "FAQ": "Preguntas frecuentes",
+    "otherFrom": "Otros traslados del aeropuerto de {cidade}",
+    "arriving": "Llegar a {aeroporto}",
+    "h1Airport": "Traslados desde {aeroporto}",
+    "descAirport": "Traslados privados de {aeroporto} a {n} destinos, desde {preco}. Precios fijos, seguimiento del vuelo y un conductor esperándote en llegadas.",
+    'The airport': 'El aeropuerto',
+    'The journey': 'El trayecto',
+    'What is included': 'Qué incluye',
+    'Where people go': 'A dónde va la gente',
+    'Get a price': 'Ver precio',
+    'Going somewhere not on this list?': '¿Vas a un sitio que no está en la lista?',
+    'Can I cancel?': '¿Puedo cancelar?',
+    'What happens if my flight is late?': '¿Y si mi vuelo se retrasa?',
+    'titleRoute': '{cidade} a {destino} | Traslado desde {preco} | Airportlink',
+    'titleAirport': 'Traslados del Aeropuerto de {cidade} ({iata}) | Desde {preco} | Airportlink'
+  },
+  de: {
+    "h1Route": "{cidade} nach {destino}",
+    "descRoute": "Privater Transfer von {aeroporto} nach {destino}: {min} Minuten, {km} km, ab {preco} für bis zu 4 Personen. Festpreis, Flugverfolgung, kostenlose Stornierung.",
+    "qHowLong": "Wie lange dauert es von {cidade} nach {destino}?",
+    "qHowMuch": "Was kostet ein Transfer von {cidade} nach {destino}?",
+    "qWhereMeet": "Wo treffe ich den Fahrer am Flughafen {cidade}?",
+    "Price your transfer": "Preis berechnen",
+    "How long it really takes": "Wie lange es wirklich dauert",
+    "When to book": "Wann buchen",
+    "Before you land": "Vor der Landung",
+    "FAQ": "Häufige Fragen",
+    "otherFrom": "Weitere Transfers ab Flughafen {cidade}",
+    "arriving": "Ankunft an {aeroporto}",
+    "h1Airport": "Transfers ab {aeroporto}",
+    "descAirport": "Private Transfers von {aeroporto} zu {n} Zielen, ab {preco}. Festpreise, Flugverfolgung und ein Fahrer, der in der Ankunftshalle wartet.",
+    'The airport': 'Der Flughafen',
+    'The journey': 'Die Fahrt',
+    'What is included': 'Was enthalten ist',
+    'Where people go': 'Wohin die Leute fahren',
+    'Get a price': 'Preis ansehen',
+    'Going somewhere not on this list?': 'Ihr Ziel steht nicht auf der Liste?',
+    'Can I cancel?': 'Kann ich stornieren?',
+    'What happens if my flight is late?': 'Was, wenn mein Flug Verspätung hat?',
+    'titleRoute': '{cidade} nach {destino} | Transfer ab {preco} | Airportlink',
+    'titleAirport': 'Flughafentransfers {cidade} ({iata}) | Ab {preco} | Airportlink'
+  },
+  fr: {
+    "h1Route": "{cidade} vers {destino}",
+    "descRoute": "Transfert privé de {aeroporto} vers {destino} : {min} minutes, {km} km, dès {preco} pour 4 personnes maximum. Prix fixe, vol suivi, annulation gratuite.",
+    "qHowLong": "Combien de temps faut-il de {cidade} vers {destino} ?",
+    "qHowMuch": "Combien coûte un transfert de {cidade} vers {destino} ?",
+    "qWhereMeet": "Où retrouver le chauffeur à l'aéroport de {cidade} ?",
+    "Price your transfer": "Calculez votre transfert",
+    "How long it really takes": "La durée réelle du trajet",
+    "When to book": "Quand réserver",
+    "Before you land": "Avant d'atterrir",
+    "FAQ": "Questions fréquentes",
+    "otherFrom": "Autres transferts depuis l'aéroport de {cidade}",
+    "arriving": "Arriver à {aeroporto}",
+    "h1Airport": "Transferts depuis {aeroporto}",
+    "descAirport": "Transferts privés de {aeroporto} vers {n} destinations, dès {preco}. Prix fixes, suivi du vol et un chauffeur qui attend à l'arrivée.",
+    'The airport': "L'aéroport",
+    'The journey': 'Le trajet',
+    'What is included': 'Ce qui est compris',
+    'Where people go': 'Où vont les voyageurs',
+    'Get a price': 'Voir le prix',
+    'Going somewhere not on this list?': "Votre destination n'est pas dans la liste ?",
+    'Can I cancel?': 'Puis-je annuler ?',
+    'What happens if my flight is late?': 'Et si mon vol est retardé ?',
+    'titleRoute': '{cidade} vers {destino} | Transfert dès {preco} | Airportlink',
+    'titleAirport': "Transferts aéroport de {cidade} ({iata}) | Dès {preco} | Airportlink"
+  }
+};
+
+/** Uma frase do modelo, com o inglês como rede. */
+function t9n(lang, en) {
+  return (T9N[lang] && T9N[lang][en]) || en;
+}
+
+/**
+ * Uma frase com marcadores preenchidos.
+ *
+ * Devolve null se a língua não tiver a chave, para quem chama usar
+ * o inglês que está escrito no código. Os marcadores existem porque
+ * a ordem das palavras muda de língua para língua: em alemão o
+ * destino vem antes do verbo, e colar pedaços de texto não resolve.
+ */
+function frase(lang, chave, vars) {
+  const t = T9N[lang] && T9N[lang][chave];
+  if (!t) return null;
+  return Object.keys(vars).reduce(
+    (acc, k) => acc.split('{' + k + '}').join(vars[k]), t);
+}
 
 /**
  * O texto de uma rota na língua pedida.
@@ -603,12 +741,12 @@ function hero(airport, tag, title) {
  * pesquisa, a maioria das visitas nunca usa a calculadora, e
  * carregá-lo a todas custaria dinheiro por visita.
  */
-function calculator(airport, current, cc, mapsKey) {
+function calculator(airport, current, cc, mapsKey, lang) {
   const to = current ? current.name : '';
 
   return `<section class="ca" id="price">
     <div class="ca-top">
-      <h2>Price your transfer</h2>
+      <h2>${t9n(lang, 'Price your transfer')}</h2>
     </div>
 
     <div class="ca-grid">
@@ -1028,10 +1166,10 @@ function calculator(airport, current, cc, mapsKey) {
  * alguém pensa ao planear. Uma pergunta com resposta útil e sem
  * concorrência é exatamente o que faz uma página ser encontrada.
  */
-function whenToBook(dest) {
+function whenToBook(dest, lang) {
   const far = dest.km > 60;
 
-  return `<h2 id="when">When to book</h2>
+  return `<h2 id="when">${t9n(lang, 'When to book')}</h2>
   <p>Booking early costs the same as booking late &mdash; the price does not move. What
   moves is whether there is a car left.</p>
 
@@ -1062,10 +1200,10 @@ function whenToBook(dest) {
  * chega é o tempo desde a aterragem — e a diferença é o controlo de
  * passaportes e a bagagem, que costuma ser mais do que a viagem.
  */
-function realTime(airport, dest) {
+function realTime(airport, dest, lang) {
   const d = dest.minutes;
 
-  return `<h2 id="timing">How long it really takes</h2>
+  return `<h2 id="timing">${t9n(lang, 'How long it really takes')}</h2>
   <p>Maps says ${d} minutes. That is the driving. Door to door from the moment you land is
   a different number, and it is the one worth planning around.</p>
 
@@ -1089,10 +1227,10 @@ function realTime(airport, dest) {
 
 
 /** O que só se sabe tendo lá estado. */
-function localInfo(airport) {
+function localInfo(airport, lang) {
   if (!airport.local || !airport.local.length) return '';
 
-  return `<h2 id="local">Before you land</h2>
+  return `<h2 id="local">${t9n(lang, 'Before you land')}</h2>
   <div class="local">
     ${airport.local.map(([t, body]) => `<div class="local-i">
       <strong>${esc(t)}</strong><span>${esc(body)}</span>
@@ -1120,28 +1258,36 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
   const cslug = countrySlug(country);
   const pref = (LANGS.find((l) => l.code === lang) || LANGS[0]).prefix;
   const url = `${SITE}${pref}/transfers/${cslug}/${slug}-to-${dest.slug}/`;
-  const title = `${airport.city} Airport to ${dest.name} Transfer | From ${money(p1)} | Airportlink`;
-  const description =
+  const title = t9n(lang, 'titleRoute') !== 'titleRoute'
+    ? t9n(lang, 'titleRoute')
+        .replace('{cidade}', airport.city)
+        .replace('{destino}', dest.name)
+        .replace('{preco}', money(p1))
+    : `${airport.city} Airport to ${dest.name} Transfer | From ${money(p1)} | Airportlink`;
+  const description = frase(lang, 'descRoute', {
+      aeroporto: airport.name, destino: dest.name,
+      min: dest.minutes, km: dest.km, preco: money(p1)
+    }) ||
     `Private transfer from ${airport.name} to ${dest.name}: ${dest.minutes} minutes, ` +
     `${dest.km} km, from ${money(p1)} for up to 4 people. Fixed price, flight tracked, ` +
     `free cancellation up to 24 hours before.`;
 
   const faq = [
-    [`How long does it take to get from ${airport.city} Airport to ${dest.name}?`,
+    [(frase(lang, 'qHowLong', { cidade: airport.city, destino: dest.name }) || `How long does it take to get from ${airport.city} Airport to ${dest.name}?`),
      `About ${dest.minutes} minutes for the ${dest.km} km, outside peak traffic. ` +
      `Your driver knows the route and follows the flight, so a delayed landing moves the ` +
      `pick-up rather than costing you the transfer.`],
-    [`How much is a transfer from ${airport.city} Airport to ${dest.name}?`,
+    [(frase(lang, 'qHowMuch', { cidade: airport.city, destino: dest.name }) || `How much is a transfer from ${airport.city} Airport to ${dest.name}?`),
      `From ${money(p1)} for up to four passengers, and ${money(p5)} for a group of five ` +
      `to eight in a van. The price is fixed when you book — tolls and taxes included, ` +
      `nothing added at the end.`],
-    [`What happens if my flight is late?`,
+    [t9n(lang, 'What happens if my flight is late?'),
      `We track the flight number you give us. The driver waits and adjusts to the actual ` +
      `landing time, with 60 minutes of free waiting after the plane touches down.`],
-    [`Where do I meet the driver at ${airport.city} Airport?`,
+    [(frase(lang, 'qWhereMeet', { cidade: airport.city, destino: dest.name }) || `Where do I meet the driver at ${airport.city} Airport?`),
      `In the arrivals hall after you clear customs. The day before your trip we send you ` +
      `the driver's name, phone number and vehicle, and they contact you with the exact spot.`],
-    [`Can I cancel?`,
+    [t9n(lang, 'Can I cancel?'),
      `Free up to 24 hours before pick-up, refunded in full and automatically. On many ` +
      `routes you can also book without paying and we only charge the card 48 hours before ` +
      `you travel.`]
@@ -1203,12 +1349,12 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
   </div>
 
   ${hero(airport, `${airport.iata} · ${country.country}`,
-         `${airport.city} Airport to ${dest.name}`)}
+         (frase(lang, 'h1Route', { cidade: airport.city, destino: dest.name }) || `${airport.city} Airport to ${dest.name}`))}
 
 
-  ${calculator(airport, dest, cc, MAPS_KEY)}
+  ${calculator(airport, dest, cc, MAPS_KEY, lang)}
 
-  <h2 id="included">What is included</h2>
+  <h2 id="included">${t9n(lang, 'What is included')}</h2>
   <ul class="ticks">
     ${[
       ['M5 17h14M7 17V9l3-4h4l3 4v8M9 5v4M15 5v4',
@@ -1231,25 +1377,25 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
     </li>`).join('')}
   </ul>
 
-  <h2 id="journey">The journey</h2>
+  <h2 id="journey">${t9n(lang, 'The journey')}</h2>
   <p>${esc(dest.about)}</p>
 
-  <h2>Arriving at ${esc(airport.name)}</h2>
+  <h2>${frase(lang, 'arriving', { aeroporto: esc(airport.name) }) || `Arriving at ${esc(airport.name)}`}</h2>
   <p>${esc(airport.about)}</p>
   ${airport.tips && airport.tips.length
     ? '<ul>' + airport.tips.map((t) => `<li>${esc(t)}</li>`).join('') + '</ul>'
     : ''}
 
-  ${realTime(airport, dest)}
+  ${realTime(airport, dest, lang)}
 
-  ${whenToBook(dest)}
+  ${whenToBook(dest, lang)}
 
-  ${localInfo(airport)}
+  ${localInfo(airport, lang)}
 
-  <h2 id="faq">FAQ</h2>
+  <h2 id="faq">${t9n(lang, 'FAQ')}</h2>
   ${faq.map(([q, a]) => `<h3>${esc(q)}</h3>\n  <p>${esc(a)}</p>`).join('\n  ')}
 
-  <h2 id="more">Other transfers from ${esc(airport.city)} Airport</h2>
+  <h2 id="more">${frase(lang, 'otherFrom', { cidade: esc(airport.city) }) || `Other transfers from ${esc(airport.city)} Airport`}</h2>
   <div class="others">
       ${others}
   </div>
@@ -1275,7 +1421,12 @@ function airportPage(country, airport, lang, alternates) {
 
   const cheapest = Math.min(...airport.destinations.map((d) => priceEUR(d.km, 1, cc, slug, d.slug)));
 
-  const title = `${airport.city} Airport Transfers (${airport.iata}) | From ${money(cheapest)} | Airportlink`;
+  const title = t9n(lang, 'titleAirport') !== 'titleAirport'
+    ? t9n(lang, 'titleAirport')
+        .replace('{cidade}', airport.city)
+        .replace('{iata}', airport.iata)
+        .replace('{preco}', money(cheapest))
+    : `${airport.city} Airport Transfers (${airport.iata}) | From ${money(cheapest)} | Airportlink`;
   const description =
     `Private transfers from ${airport.name} to ${airport.destinations.length} destinations, ` +
     `from ${money(cheapest)}. Fixed prices, flight tracking and a driver waiting in arrivals.`;
@@ -1294,7 +1445,7 @@ function airportPage(country, airport, lang, alternates) {
       {
         '@type': 'ItemList',
         '@id': url + '#routes',
-        name: `Transfers from ${airport.name}`,
+        name: (frase(lang, 'h1Airport', { aeroporto: airport.name }) || `Transfers from ${airport.name}`),
         itemListElement: airport.destinations.map((d, i) => ({
           '@type': 'ListItem',
           position: i + 1,
@@ -1344,7 +1495,7 @@ function airportPage(country, airport, lang, alternates) {
   at a price agreed before you fly. ${esc(airport.destinations.length)} routes below, and
   the calculator on the home page prices any address.</p>
 
-  <h2 id="routes">Where people go</h2>
+  <h2 id="routes">${t9n(lang, 'Where people go')}</h2>
   <p>Prices are for one to four passengers, for the whole car. Larger groups travel in a van
   or minibus, which costs more but is still one fixed price for the group.</p>
   <div class="others">
@@ -1353,16 +1504,16 @@ function airportPage(country, airport, lang, alternates) {
 
   <div class="cta">
     <div>
-      <strong>Going somewhere not on this list?</strong>
+      <strong>${t9n(lang, 'Going somewhere not on this list?')}</strong>
       <span>Enter the address and you have a price in seconds. We drive anywhere our
       partners cover.</span>
     </div>
-    <a class="btn" href="/#book">Get a price</a>
+    <a class="btn" href="/#book">${t9n(lang, 'Get a price')}</a>
   </div>
 
-  ${localInfo(airport)}
+  ${localInfo(airport, lang)}
 
-  <h2 id="airport">The airport</h2>
+  <h2 id="airport">${t9n(lang, 'The airport')}</h2>
   <p>${esc(airport.about)}</p>
   ${airport.tips && airport.tips.length
     ? '<ul>' + airport.tips.map((t) => `<li>${esc(t)}</li>`).join('') + '</ul>'
