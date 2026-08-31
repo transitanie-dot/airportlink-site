@@ -1041,6 +1041,16 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
 </main>
 
 <script>
+/**
+ * A tradução, com o inglês como rede.
+ *
+ * No topo deste bloco de propósito: é usada logo nas primeiras
+ * funções, e uma var atribuída a função não sobe — declarada mais
+ * abaixo, a primeira chamada rebenta e leva o resto do script com
+ * ela, o mapa incluído.
+ */
+var T = function (k, en) { return (window.i18n ? window.i18n.t(k, en) : en); };
+
 (function () {
 'use strict';
 
@@ -1710,9 +1720,6 @@ function selectPrediction(placeId, description, type) {
  * A formula por zona — a mesma do server.js (estudo de 28/08/2026).
  * Este numero e indicativo; o servidor recalcula antes de cobrar.
  */
-/** A tradução, com o inglês como rede. */
-var T = function (k, en) { return (window.i18n ? window.i18n.t(k, en) : en); };
-
 var PT_ZONES = {
   lisbon: { base: 23.23, perKm: 0.909,
     words: ['lisbon','lisboa','cascais','sintra','estoril','setubal','set\u00fabal',
