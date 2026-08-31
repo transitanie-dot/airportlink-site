@@ -300,6 +300,16 @@ const estilo = `
 .sect{font-family:var(--display);font-size:15px;color:var(--muted);margin:0 0 26px;
   padding-bottom:12px;border-bottom:1px solid var(--rule)}
 
+/* A faixa: a imagem já traz o seu próprio texto gravado, por isso
+   o título do artigo vai por baixo em vez de por cima. Sobrepor os
+   dois daria dois títulos no mesmo sítio. */
+.band{margin:0;background:#EAF0F4;line-height:0}
+.band img{width:100%;height:auto;max-height:62vh;object-fit:cover;object-position:center}
+.hero-under{padding:40px 0 0}
+.hero-under h1{font-family:var(--display);font-size:clamp(32px,5vw,52px);line-height:1.06;
+  letter-spacing:-.03em;margin:12px 0 0;color:var(--ink);max-width:20ch}
+.hero-under .stamp{margin:16px 0 0}
+
 .hero{position:relative;background:#011B50}
 .hero-art{position:absolute;inset:0;overflow:hidden}
 .hero-art svg{width:100%;height:100%;display:block}
@@ -588,7 +598,16 @@ function postPage(post, lang, alternates, paises, precos) {
     title: `${c.title} | Airportlink`, description: c.desc,
     canonical: url, lang, alternates, schema
   }) + `
-<header class="hero">
+${post.heroStyle === 'band' ? `<figure class="band">
+  <img src="${post.image}" alt="" width="1400" height="788" fetchpriority="high">
+</figure>
+<header class="hero-under">
+  <div class="wrap">
+    <span class="kicker">${esc(t(lang, post.tag || 'company'))}</span>
+    <h1>${esc(c.title)}</h1>
+    <p class="stamp">${esc(dataPorExtenso(post.date, lang))} &middot; ${minutos(c)} ${esc(t(lang, 'minRead'))}</p>
+  </div>
+</header>` : `<header class="hero">
   <div class="hero-art">${post.image
     ? `<img src="${post.image}" alt="" width="1600" height="900" fetchpriority="high">`
     : arte(post.slug, post.art || 'noite', true)}</div>
@@ -598,11 +617,11 @@ function postPage(post, lang, alternates, paises, precos) {
     <h1>${esc(c.title)}</h1>
     <p class="stamp">${esc(dataPorExtenso(post.date, lang))} &middot; ${minutos(c)} ${esc(t(lang, 'minRead'))}</p>
   </div>
-</header>
+</header>`}
 
 <article class="art">
   <div class="deck">
-    <p class="deck-t">${esc(t(lang, 'deck'))}</p>
+    <p class="deck-t">${esc(c.deck || t(lang, 'deck'))}</p>
     <p class="lead">${esc(c.lead)}</p>
   </div>
 ${corpo(c.body, pref, lang, paises, precos)}
