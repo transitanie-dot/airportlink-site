@@ -30,6 +30,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/i18n.js"></script>
 <script src="/assets/layout.js" defer></script>
 
 <script type="application/ld+json">
@@ -221,35 +222,35 @@ html[data-theme="dark"] .or-fee{color:var(--amber)}
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <div class="rise"><div class="kicker"><span class="bar"></span><span class="tag">Chauffeur partners</span></div></div>
-      <h1 class="rise d1">Fill the gaps in your schedule, <em>on your terms.</em></h1>
+      <div class="rise"><div class="kicker"><span class="bar"></span><span class="tag" data-i18n="dr.tag">Chauffeur partners</span></div></div>
+      <h1 class="rise d1">Fill the gaps in your schedule, <em data-i18n="dr.title2">on your terms.</em></h1>
       <p class="lead rise d2">We send airport transfers to licensed chauffeur companies. You see the route and the fee before you accept, you keep every cent of it, and you decide which days you work.</p>
       <div class="hero-cta rise d3">
-        <button class="btn amber" id="heroApplyBtn" type="button">Apply to become a partner</button>
-        <button class="btn line" id="heroSignInBtn" type="button">Partner sign in</button>
+        <button class="btn amber" id="heroApplyBtn" type="button" data-i18n="dr.apply">Apply to become a partner</button>
+        <button class="btn line" id="heroSignInBtn" type="button" data-i18n="dr.signin">Partner sign in</button>
       </div>
-      <p class="hero-note rise d3">No commission &middot; no monthly fee &middot; no minimum volume</p>
+      <p class="hero-note rise d3" data-i18n="dr.noFees">No commission &middot; no monthly fee &middot; no minimum volume</p>
     </div>
 
     <div class="rise d2">
       <div class="offer-card">
-        <div class="offer-head"><span class="t">Ride offer</span><span class="c">expires in 1h 42m</span></div>
+        <div class="offer-head"><span class="t" data-i18n="dr.offer">Ride offer</span><span class="c" data-i18n="dr.expires">expires in 1h 42m</span></div>
         <div class="offer-body">
           <div class="offer-payout">
-            <span class="k">You receive</span>
+            <span class="k" data-i18n="dr.youGet">You receive</span>
             <span class="v">€ 52.00</span>
           </div>
           <div class="offer-line"><span class="offer-dot p"></span><span class="offer-place">Lisbon Airport, Terminal 1</span></div>
           <div class="offer-line"><span class="offer-dot d"></span><span class="offer-place">Hotel Tivoli, Avenida da Liberdade</span></div>
           <div class="offer-meta">
-            <div><div class="k">Date</div><div class="v">14 Sep</div></div>
-            <div><div class="k">Pick-up</div><div class="v">14:35</div></div>
-            <div><div class="k">Pax</div><div class="v">3</div></div>
+            <div><div class="k" data-i18n="dr.date">Date</div><div class="v">14 Sep</div></div>
+            <div><div class="k" data-i18n="dr.pickup">Pick-up</div><div class="v">14:35</div></div>
+            <div><div class="k" data-i18n="dr.pax">Pax</div><div class="v">3</div></div>
           </div>
         </div>
         <div class="offer-actions">
-          <span class="mini yes">Accept</span>
-          <span class="mini no">Pass</span>
+          <span class="mini yes" data-i18n="dr.accept">Accept</span>
+          <span class="mini no" data-i18n="dr.pass">Pass</span>
         </div>
       </div>
     </div>
@@ -258,10 +259,10 @@ html[data-theme="dark"] .or-fee{color:var(--amber)}
 
 <section class="strip">
   <div class="wrap strip-grid">
-    <div class="deal"><div class="fig">0%</div><h3>Commission</h3><p>The fee on the offer is exactly what reaches your account. We take nothing on top of it.</p></div>
-    <div class="deal"><div class="fig">100%</div><h3>Your choice</h3><p>Accept what fits your day, pass on the rest. No penalty and no rating pressure.</p></div>
-    <div class="deal"><div class="fig">1&times;</div><h3>Paid monthly</h3><p>One statement at the start of each month covering every ride you completed.</p></div>
-    <div class="deal"><div class="fig">24h</div><h3>To answer</h3><p>Offers arrive days ahead, not seconds. Decide when it suits you.</p></div>
+    <div class="deal"><div class="fig">0%</div><h3 data-i18n="dr.commission">Commission</h3><p data-i18n="dr.commissionB">The fee on the offer is exactly what reaches your account. We take nothing on top of it.</p></div>
+    <div class="deal"><div class="fig">100%</div><h3 data-i18n="dr.choice">Your choice</h3><p data-i18n="dr.choiceB">Accept what fits your day, pass on the rest. No penalty and no rating pressure.</p></div>
+    <div class="deal"><div class="fig">1&times;</div><h3 data-i18n="dr.paidMonthly">Paid monthly</h3><p data-i18n="dr.paidMonthlyB">One statement at the start of each month covering every ride you completed.</p></div>
+    <div class="deal"><div class="fig">24h</div><h3 data-i18n="dr.toAnswer">To answer</h3><p data-i18n="dr.toAnswerB">Offers arrive days ahead, not seconds. Decide when it suits you.</p></div>
   </div>
 </section>
 
@@ -275,23 +276,23 @@ html[data-theme="dark"] .or-fee{color:var(--amber)}
   <div class="wrap earn-wrap">
     <div>
       <div class="band-head" style="margin-bottom:22px">
-        <span class="tag">The work</span>
+        <span class="tag" data-i18n="dr.work">The work</span>
         <h2>Our busiest partners bill over <span id="earnFigure">&euro;1,500</span> a month with us.</h2>
         <p>That is on top of their own bookings, not instead of them. Offers land with the route and the fee already on them, so you know exactly what a ride is worth before you say yes.</p>
       </div>
       <ul class="earn-points">
-        <li><b>Airport work, all year.</b> Arrivals and departures do not have a low season the way city work does.</li>
-        <li><b>Return trips are common.</b> Many passengers book both legs, so one acceptance can be two rides.</li>
-        <li><b>No dead miles quoted.</b> The fee is for the route we send you, agreed up front.</li>
-        <li><b>You are paid even if they no-show</b>, as long as you were there and waited.</li>
+        <li><b data-i18n="dr.workTitle">Airport work, all year.</b> Arrivals and departures do not have a low season the way city work does.</li>
+        <li><b data-i18n="dr.work1">Return trips are common.</b> Many passengers book both legs, so one acceptance can be two rides.</li>
+        <li><b data-i18n="dr.work2">No dead miles quoted.</b> The fee is for the route we send you, agreed up front.</li>
+        <li><b data-i18n="dr.work3">You are paid even if they no-show</b>, as long as you were there and waited.</li>
       </ul>
-      <button class="btn amber" id="earnCta" type="button" style="margin-top:24px">Start your application</button>
+      <button class="btn amber" id="earnCta" type="button" style="margin-top:24px" data-i18n="dr.startApp">Start your application</button>
       <p class="earn-small">Figures reflect our most active partners in high-demand zones. What you earn depends on how much you accept, where you operate and the size of your fleet.</p>
     </div>
 
     <div class="feed">
       <div class="feed-head">
-        <span class="t">Recent offers</span>
+        <span class="t" data-i18n="dr.recent">Recent offers</span>
         <span class="live"><i></i>Live</span>
       </div>
       <div id="feedList"></div>
@@ -303,40 +304,40 @@ html[data-theme="dark"] .or-fee{color:var(--amber)}
 <section class="band">
   <div class="wrap">
     <div class="band-head">
-      <span class="tag">Requirements</span>
-      <h2>We work with licensed, insured companies.</h2>
+      <span class="tag" data-i18n="dr.req">Requirements</span>
+      <h2 data-i18n="dr.reqTitle">We work with licensed, insured companies.</h2>
       <p>Airportlink partners are established chauffeur or private-hire operators, not individual drivers. You bring your own company, your drivers and your vehicles, and stay responsible for them. Create an account and we will ask for exactly what your country requires &mdash; nothing more.</p>
     </div>
 
     <div class="req-grid">
       <div class="req">
-        <span class="tag">To get verified</span>
+        <span class="tag" data-i18n="dr.verify">To get verified</span>
         <ul>
-          <li>Proof that your company is registered</li>
-          <li>Insurance covering paying passengers</li>
-          <li>Your licence to carry passengers for hire</li>
+          <li data-i18n="dr.v1">Proof that your company is registered</li>
+          <li data-i18n="dr.v2">Insurance covering paying passengers</li>
+          <li data-i18n="dr.v3">Your licence to carry passengers for hire</li>
         </ul>
-        <p class="req-note">Three documents. That is all we ask before your account is verified.</p>
+        <p class="req-note" data-i18n="dr.vNote">Three documents. That is all we ask before your account is verified.</p>
       </div>
       <div class="req">
-        <span class="tag">Before your first ride</span>
+        <span class="tag" data-i18n="dr.before">Before your first ride</span>
         <ul>
-          <li>One driver, with their licence and ID</li>
-          <li>One vehicle, with its papers and insurance</li>
-          <li>The areas you can pick up in</li>
-          <li>Where we should send your money</li>
+          <li data-i18n="dr.b1">One driver, with their licence and ID</li>
+          <li data-i18n="dr.b2">One vehicle, with its papers and insurance</li>
+          <li data-i18n="dr.b3">The areas you can pick up in</li>
+          <li data-i18n="dr.b4">Where we should send your money</li>
         </ul>
-        <p class="req-note">Added inside your dashboard, at your own pace.</p>
+        <p class="req-note" data-i18n="dr.bNote">Added inside your dashboard, at your own pace.</p>
       </div>
       <div class="req">
-        <span class="tag">Then you are live</span>
+        <span class="tag" data-i18n="dr.live">Then you are live</span>
         <ul>
-          <li>Offers arrive by email and in the dashboard</li>
-          <li>Add more drivers and vehicles any time</li>
-          <li>Block the days you cannot work</li>
-          <li>Keep your documents current and you stay in</li>
+          <li data-i18n="dr.l1">Offers arrive by email and in the dashboard</li>
+          <li data-i18n="dr.l2">Add more drivers and vehicles any time</li>
+          <li data-i18n="dr.l3">Block the days you cannot work</li>
+          <li data-i18n="dr.l4">Keep your documents current and you stay in</li>
         </ul>
-        <p class="req-note">Everything runs from one place.</p>
+        <p class="req-note" data-i18n="dr.lNote">Everything runs from one place.</p>
       </div>
     </div>
   </div>
@@ -344,28 +345,28 @@ html[data-theme="dark"] .or-fee{color:var(--amber)}
 
 <section class="band alt">
   <div class="wrap">
-    <div class="band-head"><span class="tag">How it works</span><h2>Four steps to your first ride.</h2></div>
+    <div class="band-head"><span class="tag" data-i18n="dr.how">How it works</span><h2 data-i18n="dr.howTitle">Four steps to your first ride.</h2></div>
     <div class="rail">
-      <div class="stop"><span class="tag">Step one</span><h3>Create your account</h3><p>Your email, a password, and the basic details of your company. Two minutes.</p></div>
-      <div class="stop"><span class="tag">Step two</span><h3>Upload three documents</h3><p>Company registration, insurance, and your passenger transport licence. We check them by hand and come back to you.</p></div>
-      <div class="stop"><span class="tag">Step three</span><h3>Add a driver and a vehicle</h3><p>Inside the dashboard, with their documents. Tell us which areas you cover and where to pay you.</p></div>
-      <div class="stop"><span class="tag">Step four</span><h3>Start receiving offers</h3><p>Each one shows the route, the time and the fee. Accept what suits you and pass on the rest.</p></div>
+      <div class="stop"><span class="tag" data-i18n="h.step1">Step one</span><h3 data-i18n="dr.s1t">Create your account</h3><p data-i18n="dr.s1b">Your email, a password, and the basic details of your company. Two minutes.</p></div>
+      <div class="stop"><span class="tag" data-i18n="h.step2">Step two</span><h3 data-i18n="dr.s2t">Upload three documents</h3><p data-i18n="dr.s2b">Company registration, insurance, and your passenger transport licence. We check them by hand and come back to you.</p></div>
+      <div class="stop"><span class="tag" data-i18n="h.step3">Step three</span><h3 data-i18n="dr.s3t">Add a driver and a vehicle</h3><p data-i18n="dr.s3b">Inside the dashboard, with their documents. Tell us which areas you cover and where to pay you.</p></div>
+      <div class="stop"><span class="tag" data-i18n="h.step4">Step four</span><h3 data-i18n="dr.s4t">Start receiving offers</h3><p data-i18n="dr.s4b">Each one shows the route, the time and the fee. Accept what suits you and pass on the rest.</p></div>
     </div>
-    <button class="btn amber" id="railCta" type="button" style="margin-top:30px">Create your partner account</button>
+    <button class="btn amber" id="railCta" type="button" style="margin-top:30px" data-i18n="dr.createAcc">Create your partner account</button>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
-    <div class="band-head"><span class="tag">Partner questions</span><h2>What companies ask us first.</h2></div>
+    <div class="band-head"><span class="tag" data-i18n="dr.faq">Partner questions</span><h2 data-i18n="dr.faqTitle">What companies ask us first.</h2></div>
     <div class="qa">
-      <div class="qa-item"><span class="n">01</span><div><h3>Do you take a commission?</h3><p>No. The fee shown on the offer is transferred to you in full. Our margin sits in what the passenger pays, which is a separate number you never have to think about.</p></div></div>
-      <div class="qa-item"><span class="n">02</span><div><h3>Am I obliged to accept rides?</h3><p>Never. Pass on anything that does not fit and nothing happens. Your schedule stays yours.</p></div></div>
-      <div class="qa-item"><span class="n">03</span><div><h3>When do I get paid?</h3><p>Once a month. At the start of each month you receive a statement covering every ride completed in the previous one, and payment goes to the account on file.</p></div></div>
-      <div class="qa-item"><span class="n">04</span><div><h3>Can individual drivers apply?</h3><p>No. We partner with licensed, insured companies. If you drive your own company&rsquo;s vehicle, register the company and add yourself as one of its drivers.</p></div></div>
-      <div class="qa-item"><span class="n">05</span><div><h3>Which countries do you operate in?</h3><p>We are opening market by market. Create an account wherever you are &mdash; if we are not live in your country yet, you go on the list and get first pick of the work when we arrive.</p></div></div>
-      <div class="qa-item"><span class="n">06</span><div><h3>What happens when a document expires?</h3><p>Offers pause automatically on the expiry date, and we remind you 30 days before. Upload the new one and you are back in immediately.</p></div></div>
-      <div class="qa-item"><span class="n">07</span><div><h3>How long does verification take?</h3><p>We review complete submissions by hand, usually within a few working days. If something is wrong we tell you which document and why.</p></div></div>
+      <div class="qa-item"><span class="n">01</span><div><h3 data-i18n="dr.q1">Do you take a commission?</h3><p>No. The fee shown on the offer is transferred to you in full. Our margin sits in what the passenger pays, which is a separate number you never have to think about.</p></div></div>
+      <div class="qa-item"><span class="n">02</span><div><h3 data-i18n="dr.q2">Am I obliged to accept rides?</h3><p data-i18n="dr.a2">Never. Pass on anything that does not fit and nothing happens. Your schedule stays yours.</p></div></div>
+      <div class="qa-item"><span class="n">03</span><div><h3 data-i18n="dr.q3">When do I get paid?</h3><p>Once a month. At the start of each month you receive a statement covering every ride completed in the previous one, and payment goes to the account on file.</p></div></div>
+      <div class="qa-item"><span class="n">04</span><div><h3 data-i18n="dr.q4">Can individual drivers apply?</h3><p>No. We partner with licensed, insured companies. If you drive your own company&rsquo;s vehicle, register the company and add yourself as one of its drivers.</p></div></div>
+      <div class="qa-item"><span class="n">05</span><div><h3 data-i18n="dr.q5">Which countries do you operate in?</h3><p>We are opening market by market. Create an account wherever you are &mdash; if we are not live in your country yet, you go on the list and get first pick of the work when we arrive.</p></div></div>
+      <div class="qa-item"><span class="n">06</span><div><h3 data-i18n="dr.q6">What happens when a document expires?</h3><p>Offers pause automatically on the expiry date, and we remind you 30 days before. Upload the new one and you are back in immediately.</p></div></div>
+      <div class="qa-item"><span class="n">07</span><div><h3 data-i18n="dr.q7">How long does verification take?</h3><p>We review complete submissions by hand, usually within a few working days. If something is wrong we tell you which document and why.</p></div></div>
     </div>
   </div>
 </section>
@@ -374,10 +375,10 @@ html[data-theme="dark"] .or-fee{color:var(--amber)}
   <div class="wrap">
     <div class="final-cta">
       <div>
-        <h2>Ready when you are.</h2>
-        <p>Create your account, upload three documents, and we take it from there.</p>
+        <h2 data-i18n="dr.ready">Ready when you are.</h2>
+        <p data-i18n="dr.readyB">Create your account, upload three documents, and we take it from there.</p>
       </div>
-      <button class="btn amber" id="footCta" type="button">Become a partner</button>
+      <button class="btn amber" id="footCta" type="button" data-i18n="dr.become">Become a partner</button>
     </div>
   </div>
 </section>
