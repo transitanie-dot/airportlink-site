@@ -14,6 +14,35 @@ import fs from 'fs';
 import path from 'path';
 import { arte } from './blog-art.js';
 
+/**
+ * As rotas, lidas dos mesmos JSON que geram as páginas.
+ *
+ * Só nomes e contagens — nada de preços. Duplicar a tabela de
+ * preços aqui criaria uma segunda fonte de verdade que divergiria
+ * da primeira à primeira recalibração.
+ */
+function lerRotas() {
+  const paises = [];
+  for (const f of ['seo/routes-PT.json', 'seo/routes-ES.json']) {
+    const caminho = path.join(ROOT, f);
+    if (!fs.existsSync(caminho)) continue;
+    const d = JSON.parse(fs.readFileSync(caminho, 'utf8'));
+    paises.push({
+      slug: (d.country || '').toLowerCase().replace(/\s+/g, '-'),
+      nomes: d.countryI18n || { en: d.country },
+      aeroportos: d.airports.map((a) => ({
+        slug: a.slug,
+        cidade: a.city,
+        nomes: Object.fromEntries(
+          Object.entries(a.i18n || {}).map(([k, v]) => [k, v.name])
+        ),
+        n: a.destinations.length
+      }))
+    });
+  }
+  return paises;
+}
+
 const ROOT = process.cwd();
 const SITE = 'https://www.airportlink.app';
 
@@ -26,6 +55,11 @@ const LANGS = [
 
 const T = {
   en: {
+    "coverage": "Where we drive today",
+    "airports": "airports",
+    "route1": "route",
+    "routeN": "routes",
+    "deck": "What we built",
     blog: 'Blog',
     title: 'Notes from the road',
     intro: 'What a transfer actually costs, how long it really takes, and the things nobody tells you before you land.',
@@ -39,6 +73,11 @@ const T = {
     minRead: 'min read'
   },
   pt: {
+    "coverage": "Onde conduzimos hoje",
+    "airports": "aeroportos",
+    "route1": "rota",
+    "routeN": "rotas",
+    "deck": "O que construímos",
     blog: 'Blogue',
     title: 'Notas de viagem',
     intro: 'Quanto custa mesmo um transfer, quanto tempo demora na realidade, e o que ninguém lhe diz antes de aterrar.',
@@ -52,6 +91,11 @@ const T = {
     minRead: 'min de leitura'
   },
   es: {
+    "coverage": "Dónde conducimos hoy",
+    "airports": "aeropuertos",
+    "route1": "ruta",
+    "routeN": "rutas",
+    "deck": "Lo que hemos construido",
     blog: 'Blog',
     title: 'Notas de viaje',
     intro: 'Cuánto cuesta de verdad un traslado, cuánto se tarda en realidad, y lo que nadie te cuenta antes de aterrizar.',
@@ -65,6 +109,11 @@ const T = {
     minRead: 'min de lectura'
   },
   fr: {
+    "coverage": "Où nous roulons aujourd'hui",
+    "airports": "aéroports",
+    "route1": "trajet",
+    "routeN": "trajets",
+    "deck": "Ce que nous avons construit",
     blog: 'Blog',
     title: 'Carnet de route',
     intro: "Ce que coûte vraiment un transfert, le temps que cela prend réellement, et ce que personne ne vous dit avant d'atterrir.",
@@ -187,7 +236,41 @@ const estilo = `
 .tail a{font-size:15.5px;color:var(--muted);text-decoration:none}
 .tail a:hover{color:var(--teal)}
 
+
+.hero-art img{width:100%;height:100%;object-fit:cover;display:block}
+.feature-art img,.card-art img{width:100%;height:100%;object-fit:cover;display:block}
+
+.deck{padding:52px 0 38px;border-bottom:1px solid var(--rule);margin-bottom:12px}
+.deck-t{font-family:var(--display);font-size:14px;font-weight:700;color:var(--teal);
+  margin:0 0 16px;letter-spacing:.01em}
+.lead{font-size:21.5px;line-height:1.56;color:var(--slate);margin:0}
+
+.exp{margin:46px -28px;padding:30px 28px 24px;background:var(--ink);border-radius:18px;color:#fff}
+.exp-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+  flex-wrap:wrap;margin-bottom:22px}
+.exp-t{font-family:var(--display);font-size:19px;margin:0;color:#fff}
+.exp-n{font-size:13.5px;color:rgba(255,255,255,.6);margin:0}
+.exp-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.exp-tab{background:transparent;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.8);
+  padding:9px 16px;border-radius:999px;font-size:14.5px;font-weight:600;cursor:pointer;
+  font-family:inherit;display:inline-flex;align-items:center;gap:8px}
+.exp-tab span{font-size:12px;color:rgba(255,255,255,.5);font-weight:500}
+.exp-tab:hover{border-color:rgba(255,255,255,.45)}
+.exp-tab.on{background:var(--amber);border-color:var(--amber);color:#3A2405}
+.exp-tab.on span{color:rgba(58,36,5,.6)}
+.exp-tab:focus-visible{outline:2px solid #F5C24B;outline-offset:2px}
+.exp-pane{display:none;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:2px}
+.exp-pane.on{display:grid}
+.exp-air{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  padding:11px 14px;border-radius:9px;text-decoration:none;
+  background:rgba(255,255,255,.05)}
+.exp-air:hover{background:rgba(255,255,255,.11)}
+.exp-air b{font-size:15px;color:#fff;font-weight:600}
+.exp-air em{font-style:normal;font-size:12.5px;color:rgba(255,255,255,.55);flex:0 0 auto}
+
 @media (max-width:640px){
+  .exp{margin:34px 0;padding:24px 20px 20px}
+  .deck{padding:38px 0 30px}
   .hero-in{padding:146px 20px 34px}
   .pull{margin:34px 0;padding:26px 22px}
   .b-head{padding:48px 0 32px}
@@ -261,7 +344,7 @@ const foot = `
  * ficarem soltas no meio do texto: assim lêem-se como uma lista de
  * preços e não como notas de rodapé.
  */
-function corpo(body, pref, lang) {
+function corpo(body, pref, lang, paises) {
   const saida = [];
   let rotas = [];
 
@@ -280,6 +363,7 @@ ${rotas.map((r) => `    <a class="route" href="${pref}${r[1]}">
     const [tipo, ...resto] = b;
     if (tipo === 'link') { rotas.push(b); continue; }
     despeja();
+    if (tipo === 'explorer') { saida.push(explorador(paises || [], lang, pref)); continue; }
     if (tipo === 'h2') saida.push(`  <h2>${esc(resto[0])}</h2>`);
     else if (tipo === 'p') saida.push(`  <p>${esc(resto[0])}</p>`);
     else if (tipo === 'quote') saida.push(`  <aside class="pull"><p>${esc(resto[0])}</p></aside>`);
@@ -291,7 +375,50 @@ ${rotas.map((r) => `    <a class="route" href="${pref}${r[1]}">
   return saida.join('\n');
 }
 
-function postPage(post, lang, alternates) {
+/**
+ * O explorador de cobertura.
+ *
+ * Um bloco onde a pessoa escolhe o país e vê os aeroportos com o
+ * número de rotas de cada um. É o único elemento interativo do
+ * artigo, de propósito: um só momento vale mais do que efeitos
+ * espalhados, e este leva a pessoa às páginas que interessam.
+ *
+ * Sem JavaScript continua legível — os painéis existem todos no
+ * HTML e o primeiro está aberto.
+ */
+function explorador(paises, lang, pref) {
+  if (!paises.length) return '';
+  const id = 'exp';
+
+  const abas = paises.map((p, i) => `      <button class="exp-tab${i === 0 ? ' on' : ''}"
+        type="button" data-alvo="${id}-${i}" aria-selected="${i === 0}">
+        ${esc(p.nomes[lang] || p.nomes.en)}
+        <span>${p.aeroportos.length}</span>
+      </button>`).join('\n');
+
+  const paineis = paises.map((p, i) => `    <div class="exp-pane${i === 0 ? ' on' : ''}" id="${id}-${i}">
+${p.aeroportos.map((a) => `      <a class="exp-air" href="${pref}/airports/${p.slug}/${a.slug}/">
+        <b>${esc(a.nomes[lang] || a.cidade)}</b>
+        <em>${a.n} ${esc(t(lang, a.n === 1 ? 'route1' : 'routeN'))}</em>
+      </a>`).join('\n')}
+    </div>`).join('\n');
+
+  const total = paises.reduce((s2, p) => s2 + p.aeroportos.reduce((x, a) => x + a.n, 0), 0);
+  const naer = paises.reduce((s2, p) => s2 + p.aeroportos.length, 0);
+
+  return `  <section class="exp">
+    <div class="exp-head">
+      <p class="exp-t">${esc(t(lang, 'coverage'))}</p>
+      <p class="exp-n">${naer} ${esc(t(lang, 'airports'))} &middot; ${total} ${esc(t(lang, 'routeN'))}</p>
+    </div>
+    <div class="exp-tabs" role="tablist">
+${abas}
+    </div>
+${paineis}
+  </section>`;
+}
+
+function postPage(post, lang, alternates, paises) {
   const c = post[lang];
   const pref = LANGS.find((x) => x.code === lang).prefix;
   const url = `${SITE}${pref}/blog/${post.slug}/`;
@@ -330,7 +457,9 @@ function postPage(post, lang, alternates) {
     canonical: url, lang, alternates, schema
   }) + `
 <header class="hero">
-  <div class="hero-art">${arte(post.slug, post.art || 'noite', true)}</div>
+  <div class="hero-art">${post.image
+    ? `<img src="${post.image}" alt="" width="1600" height="900" fetchpriority="high">`
+    : arte(post.slug, post.art || 'noite', true)}</div>
   <div class="hero-veil"></div>
   <div class="hero-in">
     <span class="kicker">${esc(t(lang, post.tag || 'company'))}</span>
@@ -340,8 +469,11 @@ function postPage(post, lang, alternates) {
 </header>
 
 <article class="art">
-  <p class="lead">${esc(c.lead)}</p>
-${corpo(c.body, pref, lang)}
+  <div class="deck">
+    <p class="deck-t">${esc(t(lang, 'deck'))}</p>
+    <p class="lead">${esc(c.lead)}</p>
+  </div>
+${corpo(c.body, pref, lang, paises)}
 
   <div class="cta">
     <p>${esc(t(lang, 'ctaLead'))}</p>
@@ -349,7 +481,31 @@ ${corpo(c.body, pref, lang)}
   </div>
 </article>
 
-<div class="tail"><a href="${pref}/blog/">&larr; ${esc(t(lang, 'back'))}</a></div>` + foot;
+<div class="tail"><a href="${pref}/blog/">&larr; ${esc(t(lang, 'back'))}</a></div>
+<script>
+  // As abas do explorador. Sem isto os painéis continuam a existir
+  // no HTML e o primeiro está aberto, por isso a página é legível
+  // mesmo se o script não correr.
+  (function () {
+    var tabs = document.querySelectorAll('.exp-tab');
+    if (!tabs.length) return;
+    Array.prototype.forEach.call(tabs, function (b) {
+      b.addEventListener('click', function () {
+        Array.prototype.forEach.call(tabs, function (o) {
+          o.classList.remove('on');
+          o.setAttribute('aria-selected', 'false');
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.exp-pane'), function (p) {
+          p.classList.remove('on');
+        });
+        b.classList.add('on');
+        b.setAttribute('aria-selected', 'true');
+        var alvo = document.getElementById(b.dataset.alvo);
+        if (alvo) alvo.classList.add('on');
+      });
+    });
+  })();
+</script>` + foot;
 }
 
 function indexPage(posts, lang, alternates) {
@@ -374,7 +530,9 @@ function indexPage(posts, lang, alternates) {
   };
 
   const cartao = (p) => `  <a class="card" href="${pref}/blog/${p.slug}/">
-    <div class="card-art">${arte(p.slug, p.art || 'costa')}</div>
+    <div class="card-art">${p.image
+      ? `<img src="${p.image}" alt="" width="1600" height="900" loading="lazy">`
+      : arte(p.slug, p.art || 'costa')}</div>
     <span class="kicker">${esc(t(lang, p.tag || 'company'))}</span>
     <h3>${esc(p[lang].title)}</h3>
     <p>${esc(p[lang].desc)}</p>
@@ -391,7 +549,9 @@ function indexPage(posts, lang, alternates) {
   </div>
 
 ${primeiro ? `  <a class="feature" href="${pref}/blog/${primeiro.slug}/">
-    <div class="feature-art">${arte(primeiro.slug, primeiro.art || 'noite', true)}</div>
+    <div class="feature-art">${primeiro.image
+      ? `<img src="${primeiro.image}" alt="" width="1600" height="900" loading="lazy">`
+      : arte(primeiro.slug, primeiro.art || 'noite', true)}</div>
     <div class="feature-meta">
       <span class="kicker">${esc(t(lang, primeiro.tag || 'company'))}</span>
       <span class="stamp">${esc(dataPorExtenso(primeiro.date, lang))}</span>
@@ -411,6 +571,7 @@ ${resto.map(cartao).join('\n')}
 
 const dados = JSON.parse(fs.readFileSync(path.join(ROOT, 'seo/posts.json'), 'utf8'));
 const posts = dados.posts.slice().sort((a, b) => b.date.localeCompare(a.date));
+const paises = lerRotas();
 
 const urls = [];
 let n = 0;
@@ -422,7 +583,7 @@ for (const post of posts) {
   for (const l of langs) {
     const dir = path.join(ROOT, l.prefix.slice(1), 'blog', post.slug);
     ensure(dir);
-    fs.writeFileSync(path.join(dir, 'index.html'), postPage(post, l.code, alt));
+    fs.writeFileSync(path.join(dir, 'index.html'), postPage(post, l.code, alt, paises));
     urls.push(`${SITE}${l.prefix}/blog/${post.slug}/`);
     n += 1;
   }
