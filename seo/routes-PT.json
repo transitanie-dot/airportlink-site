@@ -45,6 +45,10 @@
             "pt": {
               "name": "Centro de Lisboa",
               "about": "Sete quilómetros e cerca de 20 minutos fora das horas de ponta. A Baixa, o Chiado e a Alfama são o destino da maioria — a Alfama tem ruas estreitas e em calçada, por isso o motorista deixa-o no ponto mais próximo a que o carro chega."
+            },
+            "es": {
+              "name": "Centro de Lisboa",
+              "about": "Siete kilómetros y unos 20 minutos fuera de hora punta. La Baixa, el Chiado y Alfama son el destino de la mayoría — Alfama tiene calles estrechas y empedradas, así que el conductor te deja en el punto más cercano al que llega el coche."
             }
           }
         },
@@ -58,6 +62,10 @@
             "pt": {
               "name": "Cascais",
               "about": "Cerca de 35 minutos pela A5, que é o caminho rápido e evita a marginal. Em agosto os últimos dois quilómetros até à vila podem acrescentar quinze minutos. A maioria dos hotéis fica ao longo da linha Estoril–Cascais, e o motorista leva-o à porta."
+            },
+            "es": {
+              "name": "Cascais",
+              "about": "Unos 35 minutos por la A5, que es la vía rápida y evita la carretera de la costa. En agosto los últimos dos kilómetros hasta el pueblo pueden añadir quince minutos. La mayoría de los hoteles están a lo largo de la línea Estoril–Cascais, y el conductor te lleva a la puerta."
             }
           }
         },
@@ -71,6 +79,10 @@
             "pt": {
               "name": "Sintra",
               "about": "Trinta e cinco minutos pela A37, subindo a serra. As ruas do centro histórico são estreitas e muitas vezes cortadas ao trânsito no verão, por isso a paragem é no ponto acessível mais próximo do seu alojamento."
+            },
+            "es": {
+              "name": "Sintra",
+              "about": "Treinta y cinco minutos por la A37, subiendo a la sierra. Las calles del centro histórico son estrechas y en verano a menudo se cierran al tráfico, así que la parada es en el punto accesible más cercano a tu alojamiento."
             }
           }
         },
@@ -84,6 +96,10 @@
             "pt": {
               "name": "Estoril",
               "about": "Trinta minutos pela A5. Fica antes de Cascais na mesma linha, com o casino e a praia do Tamariz a poucos minutos um do outro. Os hotéis estão quase todos entre a marginal e a linha do comboio."
+            },
+            "es": {
+              "name": "Estoril",
+              "about": "Treinta minutos por la A5. Queda antes de Cascais en la misma línea, con el casino y la playa del Tamariz a pocos minutos uno del otro. Casi todos los hoteles están entre el paseo marítimo y la vía del tren."
             }
           }
         },
@@ -97,6 +113,10 @@
             "pt": {
               "name": "Setúbal",
               "about": "Cerca de 50 minutos, atravessando a Ponte 25 de Abril ou a Ponte Vasco da Gama, conforme o trânsito. A portagem está incluída no preço. É também o ponto de partida para a Arrábida e para o ferry de Tróia."
+            },
+            "es": {
+              "name": "Setúbal",
+              "about": "Unos 50 minutos, cruzando el Puente 25 de Abril o el Puente Vasco da Gama según el tráfico. El peaje va incluido en el precio. Es también el punto de partida hacia la Arrábida y el ferry de Tróia."
             }
           }
         },
@@ -110,6 +130,10 @@
             "pt": {
               "name": "Ericeira",
               "about": "Cerca de 45 minutos para norte pela A21. Vila de surf com o centro em cima da falésia — as ruas do casco antigo são estreitas e o motorista para no ponto mais próximo que um carro alcança."
+            },
+            "es": {
+              "name": "Ericeira",
+              "about": "Unos 45 minutos al norte por la A21. Pueblo surfero con el centro sobre el acantilado — las calles del casco antiguo son estrechas y el conductor para en el punto más cercano al que llega un coche."
             }
           }
         },
@@ -123,6 +147,10 @@
             "pt": {
               "name": "Óbidos",
               "about": "Uma hora para norte pela A8. A vila é toda murada e o interior é fechado ao trânsito, por isso a paragem é junto à Porta da Vila. Se ficar numa casa dentro das muralhas, conte com uma curta caminhada em calçada."
+            },
+            "es": {
+              "name": "Óbidos",
+              "about": "Una hora al norte por la A8. El pueblo entero está amurallado y el interior cerrado al tráfico, así que la parada es junto a la Porta da Vila. Si te alojas dentro de las murallas, cuenta con un paseo corto sobre empedrado."
             }
           }
         }
@@ -233,6 +261,63 @@
               "Preços dinâmicos nas chegadas com muita procura. A recolha é no parque de estacionamento, não nas chegadas."
             ]
           ]
+        },
+        "es": {
+          "name": "Aeropuerto de Lisboa",
+          "official": "Aeropuerto Humberto Delgado",
+          "about": "El aeropuerto de Lisboa está dentro de la ciudad, a siete kilómetros del centro — algo poco habitual en una capital europea. Las llegadas son en la planta baja de la Terminal 1; la Terminal 2 solo gestiona salidas de bajo coste, así que casi con seguridad aterrizarás en la T1. El punto de encuentro es la sala de llegadas después de la aduana, donde el conductor te espera con tu nombre.",
+          "tips": [
+            "El control de pasaportes puede llevar 40 minutos en verano, en las horas de más llegadas. El conductor sigue el vuelo y espera.",
+            "La Terminal 2 no tiene llegadas. Si has reservado una recogida allí, está mal — dínoslo y lo cambiamos."
+          ],
+          "local": [
+            [
+              "Dos terminales, llegadas solo en la T1",
+              "La Terminal 2 gestiona salidas de bajo coste y no tiene sala de llegadas. Si tu reserva pone T2 para una recogida, está mal — avísanos y lo corregimos sin coste. Tu conductor espera en la sala de llegadas de la T1, pasada la aduana."
+            ],
+            [
+              "Los peajes de la A5 y de los puentes están incluidos",
+              "La A5 hacia Cascais y el Puente 25 de Abril tienen peaje. Van dentro de tu precio fijo. A los coches de alquiler portugueses les suelen facturar esto semanas después — con un traslado eso no pasa."
+            ],
+            [
+              "Licencias TVDE y taxi en Portugal",
+              "Todos los conductores tienen licencia TVDE o de taxi emitida por el IMT, el regulador portugués del transporte. Comprobamos la licencia y el seguro antes de que una empresa haga su primer servicio."
+            ],
+            [
+              "El control de pasaportes es el verdadero cuello de botella",
+              "En julio y agosto, las llegadas de fuera de la UE hacen habitualmente 40 minutos de cola en Lisboa. El conductor sigue el vuelo y espera — los 60 minutos gratuitos cuentan desde el aterrizaje, no desde la hora que reservaste."
+            ]
+          ],
+          "compare": [
+            [
+              "Metro (línea roja)",
+              "35–45 min",
+              "1,80 €",
+              "Con diferencia lo más barato. De 06:30 a 01:00.",
+              "Un transbordo en Alameda o Saldanha. Escaleras y aglomeraciones con equipaje. No hay servicio después de la 01:00."
+            ],
+            [
+              "Aerobus",
+              "30–40 min",
+              "4,00 €",
+              "Directo al centro, con espacio para maletas.",
+              "Solo paradas fijas, así que aún tienes que caminar o coger un taxi hasta el hotel."
+            ],
+            [
+              "Parada de taxis oficial",
+              "20–30 min",
+              "15–25 € con taxímetro",
+              "Disponible 24 horas, sin reserva.",
+              "Colas en verano. Al ir con taxímetro, el tráfico te sale caro. Suplemento por bulto."
+            ],
+            [
+              "Uber o Bolt",
+              "20–30 min",
+              "12–30 €",
+              "Por aplicación, normalmente disponible.",
+              "Precios dinámicos en las llegadas con mucha demanda. La recogida es en el aparcamiento, no en llegadas."
+            ]
+          ]
         }
       }
     },
@@ -258,6 +343,10 @@
             "pt": {
               "name": "Centro do Porto",
               "about": "Vinte e cinco minutos pela VCI. Se fica na Ribeira, as ruas junto ao rio são íngremes e quase todas pedonais — o motorista chega o mais perto que o carro permite, normalmente a dois minutos a pé."
+            },
+            "es": {
+              "name": "Centro de Oporto",
+              "about": "Veinticinco minutos por la VCI. Si te alojas en la Ribeira, las calles junto al río son empinadas y casi todas peatonales — el conductor llega lo más cerca que permite el coche, normalmente a dos minutos a pie."
             }
           }
         },
@@ -271,6 +360,10 @@
             "pt": {
               "name": "Vila Nova de Gaia",
               "about": "Gaia fica do outro lado do Douro e é onde estão as caves do vinho do Porto. É uma cidade própria, por isso dê ao motorista o nome da cave ou do hotel — dizer apenas «Porto» levá-lo-ia para a margem errada."
+            },
+            "es": {
+              "name": "Vila Nova de Gaia",
+              "about": "Gaia está al otro lado del Duero y es donde están las bodegas de vino de Oporto. Es una ciudad aparte, así que dale al conductor el nombre de la bodega o del hotel — decir solo «Oporto» te llevaría a la orilla equivocada."
             }
           }
         },
@@ -284,6 +377,10 @@
             "pt": {
               "name": "Douro",
               "about": "As quintas do Douro ficam a hora e meia para leste pela A4. O último troço é estrada estreita de vale e algumas quintas têm acesso em terra batida — envie-nos a localização exata ao reservar, porque há várias com o mesmo nome."
+            },
+            "es": {
+              "name": "Valle del Duero",
+              "about": "Las quintas del Duero quedan a hora y media al este por la A4. El último tramo es carretera estrecha de valle y a algunas quintas se llega por pista sin asfaltar — mándanos la ubicación exacta al reservar, porque varias comparten nombre."
             }
           }
         },
@@ -297,6 +394,10 @@
             "pt": {
               "name": "Braga",
               "about": "Braga fica a 45 minutos para norte pela A3. Se vai ao Bom Jesus do Monte, isso são mais 6 km fora da cidade, a subir — vale a pena dizer, porque o centro histórico e o santuário são pontos de paragem diferentes."
+            },
+            "es": {
+              "name": "Braga",
+              "about": "Braga está a 45 minutos al norte por la A3. Si vas al Bom Jesus do Monte, eso son 6 km más fuera de la ciudad, subiendo — conviene decirlo, porque el centro histórico y el santuario son paradas distintas."
             }
           }
         },
@@ -310,6 +411,10 @@
             "pt": {
               "name": "Guimarães",
               "about": "Guimarães fica a menos de uma hora pela A7. O centro medieval é pedonal, por isso a paragem é na berma — normalmente no Largo do Toural, ou no seu hotel se tiver acesso."
+            },
+            "es": {
+              "name": "Guimarães",
+              "about": "Guimarães queda a menos de una hora por la A7. El centro medieval es peatonal, así que la parada es en el borde — normalmente en el Largo do Toural, o en tu hotel si tiene acceso."
             }
           }
         },
@@ -323,6 +428,10 @@
             "pt": {
               "name": "Aveiro",
               "about": "Aveiro fica a 55 minutos para sul pela A1. Se vai à Costa Nova ver as casas às riscas, são mais 15 minutos depois da cidade — diga-nos, porque muda o preço e o tempo."
+            },
+            "es": {
+              "name": "Aveiro",
+              "about": "Aveiro está a 55 minutos al sur por la A1. Si vas a Costa Nova a ver las casas de rayas, son 15 minutos más pasada la ciudad — dínoslo, porque cambia el precio y el tiempo."
             }
           }
         }
@@ -419,6 +528,56 @@
               "Preços dinâmicos nas chegadas com muita procura. A recolha é longe da porta do terminal."
             ]
           ]
+        },
+        "es": {
+          "name": "Aeropuerto de Oporto",
+          "official": "Aeropuerto Francisco Sá Carneiro",
+          "about": "El aeropuerto de Oporto está 11 km al norte de la ciudad, en Maia. Es pequeño y sencillo — de llegadas al coche suelen ser menos de diez minutos. El punto de encuentro es la sala de llegadas, justo enfrente de la salida de recogida de equipajes.",
+          "tips": [
+            "Es de los aeropuertos más rápidos de Europa despachando llegadas. Veinte minutos entre aterrizar y estar en el coche es lo normal.",
+            "Si te alojas en la Ribeira, da el nombre del hotel: las últimas calles son estrechas y a menudo peatonales."
+          ],
+          "local": [
+            [
+              "Una sola terminal, y rápida",
+              "Oporto es pequeño y eficiente. Veinte minutos entre aterrizar y subir al coche es lo normal, frente a cuarenta en Lisboa. El conductor espera en la sala de llegadas, enfrente de la recogida de equipajes."
+            ],
+            [
+              "Sin peajes hasta Oporto",
+              "La VCI hacia la ciudad no tiene peaje. Ir a Braga o al Duero implica peajes de autopista, y esos van dentro de tu precio fijo."
+            ],
+            [
+              "Licencias TVDE y taxi en Portugal",
+              "Todos los conductores tienen licencia TVDE o de taxi emitida por el IMT. La licencia y el seguro se comprueban antes de que una empresa haga su primer servicio."
+            ],
+            [
+              "La Ribeira es más empinada de lo que parece",
+              "Si tu hotel está junto al río, las últimas calles son estrechas y a menudo peatonales. El conductor llega lo más cerca que permite el coche, normalmente a dos minutos a pie."
+            ]
+          ],
+          "compare": [
+            [
+              "Metro (línea E)",
+              "35 min",
+              "2,60 €",
+              "Directo a Trindade, en el centro.",
+              "Cada 20 o 30 minutos. Escaleras en varias estaciones. Incómodo con dos maletas."
+            ],
+            [
+              "Parada de taxis oficial",
+              "20–25 min",
+              "25–30 € con taxímetro",
+              "Sin reserva, 24 horas.",
+              "Recargos de noche y fin de semana. Suplemento de equipaje. Al ir con taxímetro, el tráfico te sale caro."
+            ],
+            [
+              "Uber o Bolt",
+              "20–25 min",
+              "15–25 €",
+              "Normalmente más barato que la parada de taxis.",
+              "Precios dinámicos en las llegadas con mucha demanda. La recogida queda lejos de la puerta de la terminal."
+            ]
+          ]
         }
       }
     },
@@ -444,6 +603,10 @@
             "pt": {
               "name": "Albufeira",
               "about": "Quarenta minutos para poente pela A22. A maioria dos hotéis está numa de três zonas — a cidade velha, a Praia da Oura ou os Olhos de Água — e ficam a vários quilómetros umas das outras. Dê o nome do hotel, não apenas «Albufeira»."
+            },
+            "es": {
+              "name": "Albufeira",
+              "about": "Cuarenta minutos al oeste por la A22. La mayoría de los hoteles están en una de tres zonas — el casco antiguo, Praia da Oura u Olhos de Água — y quedan a varios kilómetros unas de otras. Da el nombre del hotel, no solo «Albufeira»."
             }
           }
         },
@@ -457,6 +620,10 @@
             "pt": {
               "name": "Vilamoura",
               "about": "Meia hora do aeroporto. Vilamoura é construída à volta da marina e dos campos de golfe, e os empreendimentos estendem-se por alguns quilómetros — a marina é a referência que a maioria dos motoristas usa."
+            },
+            "es": {
+              "name": "Vilamoura",
+              "about": "Media hora desde el aeropuerto. Vilamoura está construida alrededor de la marina y los campos de golf, y los complejos se extienden algunos kilómetros — la marina es la referencia que usan casi todos los conductores."
             }
           }
         },
@@ -470,6 +637,10 @@
             "pt": {
               "name": "Lagos",
               "about": "Cerca de uma hora e cinco minutos pela A22, já no extremo poente do Algarve. Se fica na Praia da Luz ou em Burgau, acrescente mais dez a quinze minutos depois de Lagos."
+            },
+            "es": {
+              "name": "Lagos",
+              "about": "Cerca de una hora y cinco minutos por la A22, ya en el extremo occidental del Algarve. Si te alojas en Praia da Luz o Burgau, añade otros diez o quince minutos pasado Lagos."
             }
           }
         },
@@ -483,6 +654,10 @@
             "pt": {
               "name": "Tavira",
               "about": "Meia hora para nascente, ao contrário da maior parte do trânsito algarvio — o que faz dela uma das transfers mais rápidas, mesmo em agosto. O centro histórico é compacto e a paragem costuma ser à porta."
+            },
+            "es": {
+              "name": "Tavira",
+              "about": "Media hora al este, en dirección contraria a la mayor parte del tráfico algarvío — lo que la convierte en uno de los traslados más rápidos incluso en agosto. El casco antiguo es compacto y la bajada suele ser en la puerta."
             }
           }
         },
@@ -496,6 +671,10 @@
             "pt": {
               "name": "Carvoeiro",
               "about": "Cinquenta minutos para poente. O Carvoeiro é pequeno e construído numa encosta sobre uma enseada, por isso as ruas são íngremes e estreitas — o motorista deixa-o o mais perto que o carro chega."
+            },
+            "es": {
+              "name": "Carvoeiro",
+              "about": "Cincuenta minutos al oeste. Carvoeiro es pequeño y está construido en una ladera sobre una cala, así que las calles son empinadas y estrechas — el conductor te deja lo más cerca que llega el coche."
             }
           }
         },
@@ -509,6 +688,10 @@
             "pt": {
               "name": "Portimão",
               "about": "Pouco menos de uma hora pela A22. Se vai para a Praia da Rocha, é o lado da praia de Portimão, cinco minutos mais à frente, e é onde está a maioria dos hotéis."
+            },
+            "es": {
+              "name": "Portimão",
+              "about": "Algo menos de una hora por la A22. Si vas a Praia da Rocha, es el lado de playa de Portimão, cinco minutos más allá, y es donde está la mayoría de los hoteles."
             }
           }
         },
@@ -522,6 +705,10 @@
             "pt": {
               "name": "Sagres",
               "about": "O extremo sudoeste, cerca de hora e meia. Os últimos vinte quilómetros são estrada de faixa única depois de Vila do Bispo. Vale a pena marcar a recolha um pouco mais cedo do que pensa se tiver voo de regresso de manhã."
+            },
+            "es": {
+              "name": "Sagres",
+              "about": "El extremo suroeste, hora y media aproximadamente. Los últimos veinte kilómetros son carretera de una sola calzada pasado Vila do Bispo. Conviene reservar la recogida algo antes de lo que pienses si tienes vuelo de vuelta temprano."
             }
           }
         }
@@ -630,6 +817,945 @@
               "30–90 € por dia",
               "Liberdade para circular.",
               "Filas de uma hora nos balcões em agosto. Combustível, estacionamento e caução à parte."
+            ]
+          ]
+        },
+        "es": {
+          "name": "Aeropuerto de Faro",
+          "official": "Aeropuerto de Faro",
+          "about": "El aeropuerto de Faro sirve a todo el Algarve, y la mayoría de los pasajeros no van a Faro. Todo lo que queda al oeste — Albufeira, Vilamoura, Lagos — se alcanza por la A22. Las llegadas son en una sala única y el punto de encuentro está justo al salir de la aduana.",
+          "tips": [
+            "Los sábados de verano en Faro son las llegadas con más movimiento del país. La sala se llena, pero el conductor espera con tu nombre.",
+            "Los complejos se extienden varios kilómetros. Da el nombre del hotel, no solo el del pueblo."
+          ],
+          "local": [
+            [
+              "Una sola terminal, y los sábados más llenos de Portugal",
+              "Los sábados punta del verano en Faro son las llegadas con más movimiento del país. La terminal es única y sencilla, pero la sala se llena. El conductor espera con tu nombre a la salida de llegadas."
+            ],
+            [
+              "La A22 es gratuita desde enero de 2025",
+              "La Via do Infante dejó de tener peajes, lo que hace todo el Algarve más rápido y más barato de alcanzar que antes. Cualquier tasa de carretera que quede va dentro de tu precio fijo."
+            ],
+            [
+              "Licencias TVDE y taxi en Portugal",
+              "Todos los conductores tienen licencia TVDE o de taxi emitida por el IMT. Comprobamos la licencia y el seguro antes de que una empresa haga su primer servicio."
+            ],
+            [
+              "La mayoría de los pasajeros no van a Faro",
+              "Casi todo queda al oeste por la A22 — Albufeira, Vilamoura, Lagos. Los complejos se extienden varios kilómetros, así que da el nombre del hotel y no solo el del pueblo. Es con diferencia la causa más frecuente de una llegada tardía."
+            ]
+          ],
+          "compare": [
+            [
+              "Autobús línea 16",
+              "20 min a Faro",
+              "2,70 €",
+              "La forma más barata de llegar a Faro.",
+              "Solo efectivo. Deja de circular antes de las 20:00. Va solo a Faro — no sirve para los complejos."
+            ],
+            [
+              "Parada de taxis oficial",
+              "15 min a Faro",
+              "10–15 € con taxímetro",
+              "Sin reserva.",
+              "Colas largas los sábados de verano. Un 20% más después de las 21:00 y en fin de semana. A Albufeira cuenta 60–70 € con taxímetro."
+            ],
+            [
+              "Tren vía estación de Faro",
+              "15 min en taxi, luego tren",
+              "2–6 €",
+              "Barato para seguir viaje hacia el este.",
+              "No hay conexión con el aeropuerto. Dos transbordos con equipaje. Lento y poco frecuente."
+            ],
+            [
+              "Coche de alquiler",
+              "Cola más papeleo",
+              "30–90 € al día",
+              "Libertad para moverse.",
+              "Colas de una hora en los mostradores en agosto. Combustible, aparcamiento y fianza aparte."
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}{
+  "_leia_me": [
+    "Um ficheiro destes por país. Copia, muda o país, preenche.",
+    "",
+    "Só duas coisas exigem trabalho teu: a distância em km (tira do",
+    "Google Maps, de carro, não em linha reta) e o parágrafo 'about'.",
+    "",
+    "O 'about' é o que faz a página existir aos olhos do Google. Tem",
+    "O 'slug' é o que aparece no endereço: /transfers/faro-to-albufeira.",
+    "Usa o nome da cidade em inglês, minúsculas, sem acentos. As pessoas",
+    "pesquisam 'faro airport transfer', não 'FAO'.",
+    "",
+    "de dizer algo que só sirva para ESTA rota. Uma frase que também",
+    "funcionaria para outra rota não conta como conteúdo.",
+    "",
+    "Mau:  'Reserve o seu transfer para Albufeira com a Airportlink.'",
+    "Bom:  'Albufeira fica a 40 minutos de Faro pela A22. A maioria",
+    "       dos hotéis está na Praia da Oura ou em Olhos de Água, e",
+    "       os motoristas conhecem as duas zonas — vale a pena dar o",
+    "       nome do hotel e não só o da cidade.'"
+  ],
+  "country": "Portugal",
+  "countryCode": "PT",
+  "currency": "EUR",
+  "airports": [
+    {
+      "iata": "LIS",
+      "slug": "lisbon",
+      "name": "Lisbon Airport",
+      "official": "Humberto Delgado Airport",
+      "city": "Lisbon",
+      "about": "Lisbon Airport sits inside the city, seven kilometres from the centre, which is unusual for a European capital. Arrivals is on the ground floor of Terminal 1; Terminal 2 handles low-cost departures only, so you will almost certainly land at T1. The meeting point is the arrivals hall after customs — your driver waits there with your name.",
+      "tips": [
+        "Passport control can take 40 minutes in summer at peak arrival times. Your driver tracks the flight and waits.",
+        "Terminal 2 has no arrivals. If you booked a pick-up there, it is wrong — tell us and we move it."
+      ],
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Lisbon city centre",
+          "km": 8,
+          "minutes": 20,
+          "about": "The centre is fifteen to twenty-five minutes away depending on traffic on the Segunda Circular. If you are staying in Alfama or Bairro Alto, give the driver the exact street: many are too narrow for a car and they will know the closest point to drop you.",
+          "i18n": {
+            "pt": {
+              "name": "Centro de Lisboa",
+              "about": "Sete quilómetros e cerca de 20 minutos fora das horas de ponta. A Baixa, o Chiado e a Alfama são o destino da maioria — a Alfama tem ruas estreitas e em calçada, por isso o motorista deixa-o no ponto mais próximo a que o carro chega."
+            },
+            "es": {
+              "name": "Centro de Lisboa",
+              "about": "Siete kilómetros y unos 20 minutos fuera de hora punta. La Baixa, el Chiado y Alfama son el destino de la mayoría — Alfama tiene calles estrechas y empedradas, así que el conductor te deja en el punto más cercano al que llega el coche."
+            }
+          }
+        },
+        {
+          "slug": "cascais",
+          "name": "Cascais",
+          "km": 32,
+          "minutes": 35,
+          "about": "Cascais is about 35 minutes on the A5, which is the fast route and avoids the coast road. In August the last two kilometres into town can add fifteen minutes. Most hotels are along the Estoril–Cascais seafront.",
+          "i18n": {
+            "pt": {
+              "name": "Cascais",
+              "about": "Cerca de 35 minutos pela A5, que é o caminho rápido e evita a marginal. Em agosto os últimos dois quilómetros até à vila podem acrescentar quinze minutos. A maioria dos hotéis fica ao longo da linha Estoril–Cascais, e o motorista leva-o à porta."
+            },
+            "es": {
+              "name": "Cascais",
+              "about": "Unos 35 minutos por la A5, que es la vía rápida y evita la carretera de la costa. En agosto los últimos dos kilómetros hasta el pueblo pueden añadir quince minutos. La mayoría de los hoteles están a lo largo de la línea Estoril–Cascais, y el conductor te lleva a la puerta."
+            }
+          }
+        },
+        {
+          "slug": "sintra",
+          "name": "Sintra",
+          "km": 30,
+          "minutes": 40,
+          "about": "Sintra is close in kilometres but slow in practice: the road up to the historic centre is narrow and winds. Cars cannot reach Pena Palace itself. Ask to be dropped at your hotel and use the local shuttle for the palaces.",
+          "i18n": {
+            "pt": {
+              "name": "Sintra",
+              "about": "Trinta e cinco minutos pela A37, subindo a serra. As ruas do centro histórico são estreitas e muitas vezes cortadas ao trânsito no verão, por isso a paragem é no ponto acessível mais próximo do seu alojamento."
+            },
+            "es": {
+              "name": "Sintra",
+              "about": "Treinta y cinco minutos por la A37, subiendo a la sierra. Las calles del centro histórico son estrechas y en verano a menudo se cierran al tráfico, así que la parada es en el punto accesible más cercano a tu alojamiento."
+            }
+          }
+        },
+        {
+          "slug": "estoril",
+          "name": "Estoril",
+          "km": 28,
+          "minutes": 32,
+          "about": "Estoril is a few minutes before Cascais on the same coast road, and the two are often booked together by mistake. Check which one your hotel is actually in — they are 3 km apart.",
+          "i18n": {
+            "pt": {
+              "name": "Estoril",
+              "about": "Trinta minutos pela A5. Fica antes de Cascais na mesma linha, com o casino e a praia do Tamariz a poucos minutos um do outro. Os hotéis estão quase todos entre a marginal e a linha do comboio."
+            },
+            "es": {
+              "name": "Estoril",
+              "about": "Treinta minutos por la A5. Queda antes de Cascais en la misma línea, con el casino y la playa del Tamariz a pocos minutos uno del otro. Casi todos los hoteles están entre el paseo marítimo y la vía del tren."
+            }
+          }
+        },
+        {
+          "slug": "setubal",
+          "name": "Setúbal",
+          "km": 50,
+          "minutes": 45,
+          "about": "Setúbal is across the Tagus over the Ponte 25 de Abril. The bridge is the whole journey: outside rush hour it is 45 minutes, at 6pm on a Friday it can be an hour and a half. Book earlier rather than later.",
+          "i18n": {
+            "pt": {
+              "name": "Setúbal",
+              "about": "Cerca de 50 minutos, atravessando a Ponte 25 de Abril ou a Ponte Vasco da Gama, conforme o trânsito. A portagem está incluída no preço. É também o ponto de partida para a Arrábida e para o ferry de Tróia."
+            },
+            "es": {
+              "name": "Setúbal",
+              "about": "Unos 50 minutos, cruzando el Puente 25 de Abril o el Puente Vasco da Gama según el tráfico. El peaje va incluido en el precio. Es también el punto de partida hacia la Arrábida y el ferry de Tróia."
+            }
+          }
+        },
+        {
+          "slug": "ericeira",
+          "name": "Ericeira",
+          "km": 55,
+          "minutes": 50,
+          "about": "Ericeira is the surf town north of Lisbon, about fifty minutes on the A21. Boards travel free but tell us the length when you book — anything over 7 foot needs a van rather than a sedan.",
+          "i18n": {
+            "pt": {
+              "name": "Ericeira",
+              "about": "Cerca de 45 minutos para norte pela A21. Vila de surf com o centro em cima da falésia — as ruas do casco antigo são estreitas e o motorista para no ponto mais próximo que um carro alcança."
+            },
+            "es": {
+              "name": "Ericeira",
+              "about": "Unos 45 minutos al norte por la A21. Pueblo surfero con el centro sobre el acantilado — las calles del casco antiguo son estrechas y el conductor para en el punto más cercano al que llega un coche."
+            }
+          }
+        },
+        {
+          "slug": "obidos",
+          "name": "Óbidos",
+          "km": 85,
+          "minutes": 60,
+          "about": "Óbidos is an hour north on the A8. The walled town has no car access, so the drop-off is at the Porta da Vila gate and it is a short walk in. Worth telling your hotel you are arriving by car — some have parking outside the walls.",
+          "i18n": {
+            "pt": {
+              "name": "Óbidos",
+              "about": "Uma hora para norte pela A8. A vila é toda murada e o interior é fechado ao trânsito, por isso a paragem é junto à Porta da Vila. Se ficar numa casa dentro das muralhas, conte com uma curta caminhada em calçada."
+            },
+            "es": {
+              "name": "Óbidos",
+              "about": "Una hora al norte por la A8. El pueblo entero está amurallado y el interior cerrado al tráfico, así que la parada es junto a la Porta da Vila. Si te alojas dentro de las murallas, cuenta con un paseo corto sobre empedrado."
+            }
+          }
+        }
+      ],
+      "image": "lisbon",
+      "local": [
+        [
+          "Two terminals, arrivals only at T1",
+          "Terminal 2 handles low-cost departures and has no arrivals hall. If your booking says T2 for a pick-up, it is wrong — tell us and we move it at no cost. Your driver waits in the T1 arrivals hall after customs."
+        ],
+        [
+          "Tolls on the A5 and the bridges are included",
+          "The A5 to Cascais and the Ponte 25 de Abril both carry tolls. They are inside your fixed price. Portuguese hire cars often get billed weeks later for these — with a transfer that does not happen."
+        ],
+        [
+          "Portuguese TVDE and taxi licensing",
+          "Every driver holds a TVDE or taxi licence issued by IMT, the Portuguese transport regulator. We check the licence and the insurance before a company takes its first ride."
+        ],
+        [
+          "Passport control is the real bottleneck",
+          "Non-EU arrivals in July and August regularly queue 40 minutes at Lisbon. Your driver tracks the flight and waits — the 60 free minutes start when the plane lands, not when you booked."
+        ]
+      ],
+      "compare": [
+        [
+          "Metro (red line)",
+          "35–45 min",
+          "€1.80",
+          "Cheapest by far. Runs 06:30 to 01:00.",
+          "One change at Alameda or Saldanha. Steps and crowds with luggage. No service after 01:00."
+        ],
+        [
+          "Aerobus",
+          "30–40 min",
+          "€4.00",
+          "Direct to the centre, luggage space.",
+          "Fixed stops only, so you still walk or take a taxi to the hotel."
+        ],
+        [
+          "Official taxi rank",
+          "20–30 min",
+          "€15–25 metered",
+          "Available 24/7, no booking needed.",
+          "Queues in summer. Meter, so traffic costs you. Luggage supplement per bag."
+        ],
+        [
+          "Uber or Bolt",
+          "20–30 min",
+          "€12–30",
+          "App-based, usually available.",
+          "Surge pricing on busy arrivals. Pick-up is in the car park, not at arrivals."
+        ]
+      ],
+      "i18n": {
+        "pt": {
+          "name": "Aeroporto de Lisboa",
+          "official": "Aeroporto Humberto Delgado",
+          "about": "O aeroporto de Lisboa fica dentro da cidade, a sete quilómetros do centro — pouco habitual numa capital europeia. As chegadas são no piso térreo do Terminal 1; o Terminal 2 só trata de partidas de baixo custo, por isso vai quase de certeza aterrar no T1. O ponto de encontro é a sala de chegadas depois da alfândega, onde o motorista o espera com o seu nome.",
+          "tips": [
+            "O controlo de passaportes pode demorar 40 minutos no verão, nas horas de mais chegadas. O motorista segue o voo e espera.",
+            "O Terminal 2 não tem chegadas. Se marcou uma recolha lá, está errado — diga-nos e mudamos."
+          ],
+          "local": [
+            [
+              "Dois terminais, chegadas só no T1",
+              "O Terminal 2 trata de partidas de baixo custo e não tem sala de chegadas. Se a sua reserva disser T2 para recolha, está errada — avise-nos e corrigimos sem custo. O motorista espera na sala de chegadas do T1, depois da alfândega."
+            ],
+            [
+              "As portagens da A5 e das pontes estão incluídas",
+              "A A5 para Cascais e a Ponte 25 de Abril têm portagens. Estão dentro do seu preço fixo. Os carros de aluguer portugueses costumam ser faturados semanas depois por causa disto — com um transfer, não acontece."
+            ],
+            [
+              "Licenciamento TVDE e táxi em Portugal",
+              "Todos os motoristas têm licença TVDE ou de táxi emitida pelo IMT, o regulador português dos transportes. Verificamos a licença e o seguro antes de uma empresa fazer a primeira viagem."
+            ],
+            [
+              "O controlo de passaportes é o verdadeiro estrangulamento",
+              "Em julho e agosto, as chegadas de fora da UE fazem regularmente 40 minutos de fila em Lisboa. O motorista segue o voo e espera — os 60 minutos gratuitos contam a partir da aterragem, não da hora que reservou."
+            ]
+          ],
+          "compare": [
+            [
+              "Metro (linha vermelha)",
+              "35–45 min",
+              "1,80 €",
+              "De longe o mais barato. Das 06:30 à 01:00.",
+              "Uma mudança no Alameda ou no Saldanha. Escadas e enchentes com bagagem. Não há serviço depois da 01:00."
+            ],
+            [
+              "Aerobus",
+              "30–40 min",
+              "4,00 €",
+              "Direto ao centro, com espaço para bagagem.",
+              "Só para nas paragens fixas, por isso ainda tem de andar a pé ou apanhar um táxi até ao hotel."
+            ],
+            [
+              "Praça de táxis oficial",
+              "20–30 min",
+              "15–25 € ao taxímetro",
+              "Disponível 24 horas, sem marcação.",
+              "Filas no verão. Como é ao taxímetro, o trânsito sai-lhe caro. Suplemento por volume de bagagem."
+            ],
+            [
+              "Uber ou Bolt",
+              "20–30 min",
+              "12–30 €",
+              "Por aplicação, normalmente disponível.",
+              "Preços dinâmicos nas chegadas com muita procura. A recolha é no parque de estacionamento, não nas chegadas."
+            ]
+          ]
+        },
+        "es": {
+          "name": "Aeropuerto de Lisboa",
+          "official": "Aeropuerto Humberto Delgado",
+          "about": "El aeropuerto de Lisboa está dentro de la ciudad, a siete kilómetros del centro — algo poco habitual en una capital europea. Las llegadas son en la planta baja de la Terminal 1; la Terminal 2 solo gestiona salidas de bajo coste, así que casi con seguridad aterrizarás en la T1. El punto de encuentro es la sala de llegadas después de la aduana, donde el conductor te espera con tu nombre.",
+          "tips": [
+            "El control de pasaportes puede llevar 40 minutos en verano, en las horas de más llegadas. El conductor sigue el vuelo y espera.",
+            "La Terminal 2 no tiene llegadas. Si has reservado una recogida allí, está mal — dínoslo y lo cambiamos."
+          ],
+          "local": [
+            [
+              "Dos terminales, llegadas solo en la T1",
+              "La Terminal 2 gestiona salidas de bajo coste y no tiene sala de llegadas. Si tu reserva pone T2 para una recogida, está mal — avísanos y lo corregimos sin coste. Tu conductor espera en la sala de llegadas de la T1, pasada la aduana."
+            ],
+            [
+              "Los peajes de la A5 y de los puentes están incluidos",
+              "La A5 hacia Cascais y el Puente 25 de Abril tienen peaje. Van dentro de tu precio fijo. A los coches de alquiler portugueses les suelen facturar esto semanas después — con un traslado eso no pasa."
+            ],
+            [
+              "Licencias TVDE y taxi en Portugal",
+              "Todos los conductores tienen licencia TVDE o de taxi emitida por el IMT, el regulador portugués del transporte. Comprobamos la licencia y el seguro antes de que una empresa haga su primer servicio."
+            ],
+            [
+              "El control de pasaportes es el verdadero cuello de botella",
+              "En julio y agosto, las llegadas de fuera de la UE hacen habitualmente 40 minutos de cola en Lisboa. El conductor sigue el vuelo y espera — los 60 minutos gratuitos cuentan desde el aterrizaje, no desde la hora que reservaste."
+            ]
+          ],
+          "compare": [
+            [
+              "Metro (línea roja)",
+              "35–45 min",
+              "1,80 €",
+              "Con diferencia lo más barato. De 06:30 a 01:00.",
+              "Un transbordo en Alameda o Saldanha. Escaleras y aglomeraciones con equipaje. No hay servicio después de la 01:00."
+            ],
+            [
+              "Aerobus",
+              "30–40 min",
+              "4,00 €",
+              "Directo al centro, con espacio para maletas.",
+              "Solo paradas fijas, así que aún tienes que caminar o coger un taxi hasta el hotel."
+            ],
+            [
+              "Parada de taxis oficial",
+              "20–30 min",
+              "15–25 € con taxímetro",
+              "Disponible 24 horas, sin reserva.",
+              "Colas en verano. Al ir con taxímetro, el tráfico te sale caro. Suplemento por bulto."
+            ],
+            [
+              "Uber o Bolt",
+              "20–30 min",
+              "12–30 €",
+              "Por aplicación, normalmente disponible.",
+              "Precios dinámicos en las llegadas con mucha demanda. La recogida es en el aparcamiento, no en llegadas."
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "iata": "OPO",
+      "slug": "porto",
+      "name": "Porto Airport",
+      "official": "Francisco Sá Carneiro Airport",
+      "city": "Porto",
+      "about": "Porto Airport is 11 km north of the city in Maia. It is a small, easy airport — arrivals to car is usually under ten minutes. The meeting point is the arrivals hall, straight ahead as you leave baggage reclaim.",
+      "tips": [
+        "Porto has almost no queue at passport control compared to Lisbon. Twenty minutes from landing to car is normal.",
+        "The metro goes to the centre but takes 35 minutes with luggage and a change. With two or more people a transfer usually costs less than the fares."
+      ],
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Porto city centre",
+          "km": 17,
+          "minutes": 25,
+          "about": "Twenty-five minutes on the VCI. If you are staying in the Ribeira, the streets down by the river are steep and mostly pedestrian — the driver will get as close as the car allows, usually a two-minute walk.",
+          "i18n": {
+            "pt": {
+              "name": "Centro do Porto",
+              "about": "Vinte e cinco minutos pela VCI. Se fica na Ribeira, as ruas junto ao rio são íngremes e quase todas pedonais — o motorista chega o mais perto que o carro permite, normalmente a dois minutos a pé."
+            },
+            "es": {
+              "name": "Centro de Oporto",
+              "about": "Veinticinco minutos por la VCI. Si te alojas en la Ribeira, las calles junto al río son empinadas y casi todas peatonales — el conductor llega lo más cerca que permite el coche, normalmente a dos minutos a pie."
+            }
+          }
+        },
+        {
+          "slug": "vila-nova-de-gaia",
+          "name": "Vila Nova de Gaia",
+          "km": 20,
+          "minutes": 30,
+          "about": "Gaia is across the Douro from Porto and is where the port wine cellars are. It is a separate city, so give the driver the cellar or hotel name — 'Porto' would take you to the wrong side of the river.",
+          "i18n": {
+            "pt": {
+              "name": "Vila Nova de Gaia",
+              "about": "Gaia fica do outro lado do Douro e é onde estão as caves do vinho do Porto. É uma cidade própria, por isso dê ao motorista o nome da cave ou do hotel — dizer apenas «Porto» levá-lo-ia para a margem errada."
+            },
+            "es": {
+              "name": "Vila Nova de Gaia",
+              "about": "Gaia está al otro lado del Duero y es donde están las bodegas de vino de Oporto. Es una ciudad aparte, así que dale al conductor el nombre de la bodega o del hotel — decir solo «Oporto» te llevaría a la orilla equivocada."
+            }
+          }
+        },
+        {
+          "slug": "douro-valley",
+          "name": "Douro Valley",
+          "km": 120,
+          "minutes": 90,
+          "about": "The Douro quintas are ninety minutes east on the A4. The last stretch is narrow valley road and some quintas are down unpaved tracks — send us the exact location when you book, because several have the same name.",
+          "i18n": {
+            "pt": {
+              "name": "Douro",
+              "about": "As quintas do Douro ficam a hora e meia para leste pela A4. O último troço é estrada estreita de vale e algumas quintas têm acesso em terra batida — envie-nos a localização exata ao reservar, porque há várias com o mesmo nome."
+            },
+            "es": {
+              "name": "Valle del Duero",
+              "about": "Las quintas del Duero quedan a hora y media al este por la A4. El último tramo es carretera estrecha de valle y a algunas quintas se llega por pista sin asfaltar — mándanos la ubicación exacta al reservar, porque varias comparten nombre."
+            }
+          }
+        },
+        {
+          "slug": "braga",
+          "name": "Braga",
+          "km": 55,
+          "minutes": 45,
+          "about": "Braga is 45 minutes north on the A3. If you are going to Bom Jesus do Monte, that is 6 km outside the city up a hill — worth saying, because the historic centre and the sanctuary are different drop-offs.",
+          "i18n": {
+            "pt": {
+              "name": "Braga",
+              "about": "Braga fica a 45 minutos para norte pela A3. Se vai ao Bom Jesus do Monte, isso são mais 6 km fora da cidade, a subir — vale a pena dizer, porque o centro histórico e o santuário são pontos de paragem diferentes."
+            },
+            "es": {
+              "name": "Braga",
+              "about": "Braga está a 45 minutos al norte por la A3. Si vas al Bom Jesus do Monte, eso son 6 km más fuera de la ciudad, subiendo — conviene decirlo, porque el centro histórico y el santuario son paradas distintas."
+            }
+          }
+        },
+        {
+          "slug": "guimaraes",
+          "name": "Guimarães",
+          "km": 70,
+          "minutes": 55,
+          "about": "Guimarães is under an hour on the A7. The medieval centre is pedestrian, so the drop-off is at the edge — usually Largo do Toural or your hotel if it has access.",
+          "i18n": {
+            "pt": {
+              "name": "Guimarães",
+              "about": "Guimarães fica a menos de uma hora pela A7. O centro medieval é pedonal, por isso a paragem é na berma — normalmente no Largo do Toural, ou no seu hotel se tiver acesso."
+            },
+            "es": {
+              "name": "Guimarães",
+              "about": "Guimarães queda a menos de una hora por la A7. El centro medieval es peatonal, así que la parada es en el borde — normalmente en el Largo do Toural, o en tu hotel si tiene acceso."
+            }
+          }
+        },
+        {
+          "slug": "aveiro",
+          "name": "Aveiro",
+          "km": 75,
+          "minutes": 55,
+          "about": "Aveiro is 55 minutes south on the A1. If you are heading to Costa Nova for the striped houses, that is another 15 minutes past the city — tell us, because it changes the price and the time.",
+          "i18n": {
+            "pt": {
+              "name": "Aveiro",
+              "about": "Aveiro fica a 55 minutos para sul pela A1. Se vai à Costa Nova ver as casas às riscas, são mais 15 minutos depois da cidade — diga-nos, porque muda o preço e o tempo."
+            },
+            "es": {
+              "name": "Aveiro",
+              "about": "Aveiro está a 55 minutos al sur por la A1. Si vas a Costa Nova a ver las casas de rayas, son 15 minutos más pasada la ciudad — dínoslo, porque cambia el precio y el tiempo."
+            }
+          }
+        }
+      ],
+      "image": "porto",
+      "local": [
+        [
+          "One terminal, and a fast one",
+          "Porto is small and efficient. Twenty minutes from landing to car is normal, against forty in Lisbon. Your driver meets you in the arrivals hall, straight ahead from baggage reclaim."
+        ],
+        [
+          "No tolls on the way into Porto",
+          "The VCI into the city is toll-free. Going to Braga or the Douro means motorway tolls, and those are inside your fixed price."
+        ],
+        [
+          "Portuguese TVDE and taxi licensing",
+          "Every driver holds a TVDE or taxi licence issued by IMT. Licence and insurance are checked before a company takes its first ride."
+        ],
+        [
+          "The Ribeira is steeper than it looks",
+          "If your hotel is down by the river, the last streets are narrow and often pedestrian. The driver gets as close as the car allows, usually a two-minute walk."
+        ]
+      ],
+      "compare": [
+        [
+          "Metro (line E)",
+          "35 min",
+          "€2.60",
+          "Direct to Trindade in the centre.",
+          "Every 20–30 minutes. Steps at several stations. Awkward with two suitcases."
+        ],
+        [
+          "Official taxi rank",
+          "20–25 min",
+          "€25–30 metered",
+          "No booking needed, 24/7.",
+          "Night and weekend surcharges. Luggage supplement. Meter, so traffic costs you."
+        ],
+        [
+          "Uber or Bolt",
+          "20–25 min",
+          "€15–25",
+          "Usually cheaper than the taxi rank.",
+          "Surge on busy arrivals. Pick-up point is away from the terminal door."
+        ]
+      ],
+      "i18n": {
+        "pt": {
+          "name": "Aeroporto do Porto",
+          "official": "Aeroporto Francisco Sá Carneiro",
+          "about": "O aeroporto do Porto fica 11 km a norte da cidade, na Maia. É pequeno e fácil — das chegadas ao carro costumam ser menos de dez minutos. O ponto de encontro é a sala de chegadas, em frente à saída da recolha de bagagem.",
+          "tips": [
+            "É dos aeroportos mais rápidos da Europa a despachar chegadas. Vinte minutos entre aterrar e estar no carro é normal.",
+            "Se fica na Ribeira, diga o nome do hotel: as últimas ruas são estreitas e muitas vezes pedonais."
+          ],
+          "local": [
+            [
+              "Um só terminal, e rápido",
+              "O Porto é pequeno e eficiente. Vinte minutos entre aterrar e entrar no carro é o normal, contra quarenta em Lisboa. O motorista espera na sala de chegadas, em frente à recolha de bagagem."
+            ],
+            [
+              "Sem portagens até ao Porto",
+              "A VCI para a cidade não tem portagens. Ir a Braga ou ao Douro implica portagens de autoestrada, e essas estão dentro do seu preço fixo."
+            ],
+            [
+              "Licenciamento TVDE e táxi em Portugal",
+              "Todos os motoristas têm licença TVDE ou de táxi emitida pelo IMT. A licença e o seguro são verificados antes de uma empresa fazer a primeira viagem."
+            ],
+            [
+              "A Ribeira é mais íngreme do que parece",
+              "Se o seu hotel é junto ao rio, as últimas ruas são estreitas e muitas vezes pedonais. O motorista chega o mais perto que o carro permite, normalmente a dois minutos a pé."
+            ]
+          ],
+          "compare": [
+            [
+              "Metro (linha E)",
+              "35 min",
+              "2,60 €",
+              "Direto à Trindade, no centro.",
+              "De 20 em 20 ou 30 em 30 minutos. Escadas em várias estações. Incómodo com duas malas."
+            ],
+            [
+              "Praça de táxis oficial",
+              "20–25 min",
+              "25–30 € ao taxímetro",
+              "Sem marcação, 24 horas.",
+              "Sobretaxas à noite e ao fim de semana. Suplemento de bagagem. Como é ao taxímetro, o trânsito sai-lhe caro."
+            ],
+            [
+              "Uber ou Bolt",
+              "20–25 min",
+              "15–25 €",
+              "Normalmente mais barato do que a praça de táxis.",
+              "Preços dinâmicos nas chegadas com muita procura. A recolha é longe da porta do terminal."
+            ]
+          ]
+        },
+        "es": {
+          "name": "Aeropuerto de Oporto",
+          "official": "Aeropuerto Francisco Sá Carneiro",
+          "about": "El aeropuerto de Oporto está 11 km al norte de la ciudad, en Maia. Es pequeño y sencillo — de llegadas al coche suelen ser menos de diez minutos. El punto de encuentro es la sala de llegadas, justo enfrente de la salida de recogida de equipajes.",
+          "tips": [
+            "Es de los aeropuertos más rápidos de Europa despachando llegadas. Veinte minutos entre aterrizar y estar en el coche es lo normal.",
+            "Si te alojas en la Ribeira, da el nombre del hotel: las últimas calles son estrechas y a menudo peatonales."
+          ],
+          "local": [
+            [
+              "Una sola terminal, y rápida",
+              "Oporto es pequeño y eficiente. Veinte minutos entre aterrizar y subir al coche es lo normal, frente a cuarenta en Lisboa. El conductor espera en la sala de llegadas, enfrente de la recogida de equipajes."
+            ],
+            [
+              "Sin peajes hasta Oporto",
+              "La VCI hacia la ciudad no tiene peaje. Ir a Braga o al Duero implica peajes de autopista, y esos van dentro de tu precio fijo."
+            ],
+            [
+              "Licencias TVDE y taxi en Portugal",
+              "Todos los conductores tienen licencia TVDE o de taxi emitida por el IMT. La licencia y el seguro se comprueban antes de que una empresa haga su primer servicio."
+            ],
+            [
+              "La Ribeira es más empinada de lo que parece",
+              "Si tu hotel está junto al río, las últimas calles son estrechas y a menudo peatonales. El conductor llega lo más cerca que permite el coche, normalmente a dos minutos a pie."
+            ]
+          ],
+          "compare": [
+            [
+              "Metro (línea E)",
+              "35 min",
+              "2,60 €",
+              "Directo a Trindade, en el centro.",
+              "Cada 20 o 30 minutos. Escaleras en varias estaciones. Incómodo con dos maletas."
+            ],
+            [
+              "Parada de taxis oficial",
+              "20–25 min",
+              "25–30 € con taxímetro",
+              "Sin reserva, 24 horas.",
+              "Recargos de noche y fin de semana. Suplemento de equipaje. Al ir con taxímetro, el tráfico te sale caro."
+            ],
+            [
+              "Uber o Bolt",
+              "20–25 min",
+              "15–25 €",
+              "Normalmente más barato que la parada de taxis.",
+              "Precios dinámicos en las llegadas con mucha demanda. La recogida queda lejos de la puerta de la terminal."
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "iata": "FAO",
+      "slug": "faro",
+      "name": "Faro Airport",
+      "official": "Faro Airport",
+      "city": "Faro",
+      "about": "Faro Airport serves the whole Algarve, and most passengers are not going to Faro itself. Everything west — Albufeira, Vilamoura, Lagos — is on the A22 motorway. Arrivals is a single hall and the meeting point is straight through customs.",
+      "tips": [
+        "Peak summer Saturdays are the busiest arrivals in Portugal. Allow extra time and expect the terminal to be full.",
+        "The A22 has electronic tolls only. Our price includes them, which is not always the case with local taxis — worth checking if you compare."
+      ],
+      "destinations": [
+        {
+          "slug": "albufeira",
+          "name": "Albufeira",
+          "km": 45,
+          "minutes": 40,
+          "about": "Forty minutes west on the A22. Most hotels are in one of three areas — the old town, Praia da Oura, or Olhos de Água — and they are several kilometres apart. Give the hotel name, not just 'Albufeira'.",
+          "i18n": {
+            "pt": {
+              "name": "Albufeira",
+              "about": "Quarenta minutos para poente pela A22. A maioria dos hotéis está numa de três zonas — a cidade velha, a Praia da Oura ou os Olhos de Água — e ficam a vários quilómetros umas das outras. Dê o nome do hotel, não apenas «Albufeira»."
+            },
+            "es": {
+              "name": "Albufeira",
+              "about": "Cuarenta minutos al oeste por la A22. La mayoría de los hoteles están en una de tres zonas — el casco antiguo, Praia da Oura u Olhos de Água — y quedan a varios kilómetros unas de otras. Da el nombre del hotel, no solo «Albufeira»."
+            }
+          }
+        },
+        {
+          "slug": "vilamoura",
+          "name": "Vilamoura",
+          "km": 32,
+          "minutes": 30,
+          "about": "Half an hour from the airport. Vilamoura is built around the marina and the golf courses, and the resorts spread out for a few kilometres — the marina itself is the reference point most drivers use.",
+          "i18n": {
+            "pt": {
+              "name": "Vilamoura",
+              "about": "Meia hora do aeroporto. Vilamoura é construída à volta da marina e dos campos de golfe, e os empreendimentos estendem-se por alguns quilómetros — a marina é a referência que a maioria dos motoristas usa."
+            },
+            "es": {
+              "name": "Vilamoura",
+              "about": "Media hora desde el aeropuerto. Vilamoura está construida alrededor de la marina y los campos de golf, y los complejos se extienden algunos kilómetros — la marina es la referencia que usan casi todos los conductores."
+            }
+          }
+        },
+        {
+          "slug": "lagos",
+          "name": "Lagos",
+          "km": 90,
+          "minutes": 65,
+          "about": "About an hour and five minutes on the A22, right to the western end of the Algarve. If you are staying in Praia da Luz or Burgau, add another ten to fifteen minutes past Lagos.",
+          "i18n": {
+            "pt": {
+              "name": "Lagos",
+              "about": "Cerca de uma hora e cinco minutos pela A22, já no extremo poente do Algarve. Se fica na Praia da Luz ou em Burgau, acrescente mais dez a quinze minutos depois de Lagos."
+            },
+            "es": {
+              "name": "Lagos",
+              "about": "Cerca de una hora y cinco minutos por la A22, ya en el extremo occidental del Algarve. Si te alojas en Praia da Luz o Burgau, añade otros diez o quince minutos pasado Lagos."
+            }
+          }
+        },
+        {
+          "slug": "tavira",
+          "name": "Tavira",
+          "km": 38,
+          "minutes": 30,
+          "about": "Half an hour east, the opposite direction to most Algarve traffic — which makes it one of the quicker transfers even in August. The old town is compact and the drop-off is usually right at the door.",
+          "i18n": {
+            "pt": {
+              "name": "Tavira",
+              "about": "Meia hora para nascente, ao contrário da maior parte do trânsito algarvio — o que faz dela uma das transfers mais rápidas, mesmo em agosto. O centro histórico é compacto e a paragem costuma ser à porta."
+            },
+            "es": {
+              "name": "Tavira",
+              "about": "Media hora al este, en dirección contraria a la mayor parte del tráfico algarvío — lo que la convierte en uno de los traslados más rápidos incluso en agosto. El casco antiguo es compacto y la bajada suele ser en la puerta."
+            }
+          }
+        },
+        {
+          "slug": "carvoeiro",
+          "name": "Carvoeiro",
+          "km": 62,
+          "minutes": 50,
+          "about": "Fifty minutes west. Carvoeiro is small and built on a hill above a cove, so the streets are steep and narrow — the driver will get you as close as the car goes.",
+          "i18n": {
+            "pt": {
+              "name": "Carvoeiro",
+              "about": "Cinquenta minutos para poente. O Carvoeiro é pequeno e construído numa encosta sobre uma enseada, por isso as ruas são íngremes e estreitas — o motorista deixa-o o mais perto que o carro chega."
+            },
+            "es": {
+              "name": "Carvoeiro",
+              "about": "Cincuenta minutos al oeste. Carvoeiro es pequeño y está construido en una ladera sobre una cala, así que las calles son empinadas y estrechas — el conductor te deja lo más cerca que llega el coche."
+            }
+          }
+        },
+        {
+          "slug": "portimao",
+          "name": "Portimão",
+          "km": 70,
+          "minutes": 55,
+          "about": "Just under an hour on the A22. If you are going to Praia da Rocha, that is the beach side of Portimão, five minutes further and where most of the hotels are.",
+          "i18n": {
+            "pt": {
+              "name": "Portimão",
+              "about": "Pouco menos de uma hora pela A22. Se vai para a Praia da Rocha, é o lado da praia de Portimão, cinco minutos mais à frente, e é onde está a maioria dos hotéis."
+            },
+            "es": {
+              "name": "Portimão",
+              "about": "Algo menos de una hora por la A22. Si vas a Praia da Rocha, es el lado de playa de Portimão, cinco minutos más allá, y es donde está la mayoría de los hoteles."
+            }
+          }
+        },
+        {
+          "slug": "sagres",
+          "name": "Sagres",
+          "km": 115,
+          "minutes": 85,
+          "about": "The far southwest corner, about an hour and a half. The last twenty kilometres are single carriageway past Vila do Bispo. Worth booking a slightly later pick-up than you think if you are catching an early flight back.",
+          "i18n": {
+            "pt": {
+              "name": "Sagres",
+              "about": "O extremo sudoeste, cerca de hora e meia. Os últimos vinte quilómetros são estrada de faixa única depois de Vila do Bispo. Vale a pena marcar a recolha um pouco mais cedo do que pensa se tiver voo de regresso de manhã."
+            },
+            "es": {
+              "name": "Sagres",
+              "about": "El extremo suroeste, hora y media aproximadamente. Los últimos veinte kilómetros son carretera de una sola calzada pasado Vila do Bispo. Conviene reservar la recogida algo antes de lo que pienses si tienes vuelo de vuelta temprano."
+            }
+          }
+        }
+      ],
+      "image": "faro",
+      "local": [
+        [
+          "One terminal, and the busiest Saturdays in Portugal",
+          "Peak summer Saturdays at Faro are the busiest arrivals in the country. The terminal is single and simple, but the hall gets full. Your driver waits with your name at the arrivals exit."
+        ],
+        [
+          "The A22 is toll-free since January 2025",
+          "The Via do Infante carries no tolls, which makes the whole Algarve quicker and cheaper to reach than it was. Any remaining road charge is inside your fixed price."
+        ],
+        [
+          "Portuguese TVDE and taxi licensing",
+          "Every driver holds a TVDE or taxi licence issued by IMT. We check the licence and the insurance before a company takes its first ride."
+        ],
+        [
+          "Most passengers are not going to Faro",
+          "Almost everything is west on the A22 — Albufeira, Vilamoura, Lagos. Resorts spread over several kilometres, so give the hotel name and not just the town. It is the single most common cause of a late arrival."
+        ]
+      ],
+      "compare": [
+        [
+          "Bus line 16",
+          "20 min to Faro",
+          "€2.70",
+          "Cheapest way into Faro itself.",
+          "Cash only. Stops before 20:00. Goes to Faro only — no use for the resorts."
+        ],
+        [
+          "Official taxi rank",
+          "15 min to Faro",
+          "€10–15 metered",
+          "No booking needed.",
+          "Long queues on summer Saturdays. 20% more after 21:00 and at weekends. To Albufeira expect €60–70 on the meter."
+        ],
+        [
+          "Train via Faro station",
+          "15 min taxi, then rail",
+          "€2–6",
+          "Cheap for onward journeys east.",
+          "No airport link. Two transfers with luggage. Slow and infrequent."
+        ],
+        [
+          "Hire car",
+          "Queue plus paperwork",
+          "€30–90 a day",
+          "Freedom to move around.",
+          "Desk queues of an hour in August. Fuel, parking and the deposit on top."
+        ]
+      ],
+      "i18n": {
+        "pt": {
+          "name": "Aeroporto de Faro",
+          "official": "Aeroporto de Faro",
+          "about": "O aeroporto de Faro serve todo o Algarve, e a maioria dos passageiros não vai para Faro. Tudo o que fica a poente — Albufeira, Vilamoura, Lagos — é pela A22. As chegadas são numa sala única e o ponto de encontro é logo à saída da alfândega.",
+          "tips": [
+            "Os sábados de verão em Faro são as chegadas mais movimentadas do país. A sala enche, mas o motorista espera com o seu nome.",
+            "Os resorts espalham-se por vários quilómetros. Dê o nome do hotel, não apenas o da vila."
+          ],
+          "local": [
+            [
+              "Um só terminal, e os sábados mais cheios de Portugal",
+              "Os sábados de pico do verão em Faro são as chegadas mais movimentadas do país. O terminal é único e simples, mas a sala enche. O motorista espera com o seu nome à saída das chegadas."
+            ],
+            [
+              "A A22 é gratuita desde janeiro de 2025",
+              "A Via do Infante deixou de ter portagens, o que torna todo o Algarve mais rápido e mais barato de alcançar do que era. Qualquer taxa de estrada que reste está dentro do seu preço fixo."
+            ],
+            [
+              "Licenciamento TVDE e táxi em Portugal",
+              "Todos os motoristas têm licença TVDE ou de táxi emitida pelo IMT. Verificamos a licença e o seguro antes de uma empresa fazer a primeira viagem."
+            ],
+            [
+              "A maioria dos passageiros não vai para Faro",
+              "Quase tudo fica a poente pela A22 — Albufeira, Vilamoura, Lagos. Os resorts estendem-se por vários quilómetros, por isso dê o nome do hotel e não apenas o da vila. É de longe a causa mais comum de uma chegada atrasada."
+            ]
+          ],
+          "compare": [
+            [
+              "Autocarro linha 16",
+              "20 min até Faro",
+              "2,70 €",
+              "A forma mais barata de chegar a Faro.",
+              "Só dinheiro. Para antes das 20:00. Vai só a Faro — não serve para os resorts."
+            ],
+            [
+              "Praça de táxis oficial",
+              "15 min até Faro",
+              "10–15 € ao taxímetro",
+              "Sem marcação.",
+              "Filas longas aos sábados de verão. Mais 20% depois das 21:00 e ao fim de semana. Para Albufeira conte 60–70 € ao taxímetro."
+            ],
+            [
+              "Comboio via estação de Faro",
+              "15 min de táxi, depois comboio",
+              "2–6 €",
+              "Barato para continuar viagem para leste.",
+              "Não há ligação ao aeroporto. Duas mudanças com bagagem. Lento e pouco frequente."
+            ],
+            [
+              "Carro de aluguer",
+              "Fila mais papelada",
+              "30–90 € por dia",
+              "Liberdade para circular.",
+              "Filas de uma hora nos balcões em agosto. Combustível, estacionamento e caução à parte."
+            ]
+          ]
+        },
+        "es": {
+          "name": "Aeropuerto de Faro",
+          "official": "Aeropuerto de Faro",
+          "about": "El aeropuerto de Faro sirve a todo el Algarve, y la mayoría de los pasajeros no van a Faro. Todo lo que queda al oeste — Albufeira, Vilamoura, Lagos — se alcanza por la A22. Las llegadas son en una sala única y el punto de encuentro está justo al salir de la aduana.",
+          "tips": [
+            "Los sábados de verano en Faro son las llegadas con más movimiento del país. La sala se llena, pero el conductor espera con tu nombre.",
+            "Los complejos se extienden varios kilómetros. Da el nombre del hotel, no solo el del pueblo."
+          ],
+          "local": [
+            [
+              "Una sola terminal, y los sábados más llenos de Portugal",
+              "Los sábados punta del verano en Faro son las llegadas con más movimiento del país. La terminal es única y sencilla, pero la sala se llena. El conductor espera con tu nombre a la salida de llegadas."
+            ],
+            [
+              "La A22 es gratuita desde enero de 2025",
+              "La Via do Infante dejó de tener peajes, lo que hace todo el Algarve más rápido y más barato de alcanzar que antes. Cualquier tasa de carretera que quede va dentro de tu precio fijo."
+            ],
+            [
+              "Licencias TVDE y taxi en Portugal",
+              "Todos los conductores tienen licencia TVDE o de taxi emitida por el IMT. Comprobamos la licencia y el seguro antes de que una empresa haga su primer servicio."
+            ],
+            [
+              "La mayoría de los pasajeros no van a Faro",
+              "Casi todo queda al oeste por la A22 — Albufeira, Vilamoura, Lagos. Los complejos se extienden varios kilómetros, así que da el nombre del hotel y no solo el del pueblo. Es con diferencia la causa más frecuente de una llegada tardía."
+            ]
+          ],
+          "compare": [
+            [
+              "Autobús línea 16",
+              "20 min a Faro",
+              "2,70 €",
+              "La forma más barata de llegar a Faro.",
+              "Solo efectivo. Deja de circular antes de las 20:00. Va solo a Faro — no sirve para los complejos."
+            ],
+            [
+              "Parada de taxis oficial",
+              "15 min a Faro",
+              "10–15 € con taxímetro",
+              "Sin reserva.",
+              "Colas largas los sábados de verano. Un 20% más después de las 21:00 y en fin de semana. A Albufeira cuenta 60–70 € con taxímetro."
+            ],
+            [
+              "Tren vía estación de Faro",
+              "15 min en taxi, luego tren",
+              "2–6 €",
+              "Barato para seguir viaje hacia el este.",
+              "No hay conexión con el aeropuerto. Dos transbordos con equipaje. Lento y poco frecuente."
+            ],
+            [
+              "Coche de alquiler",
+              "Cola más papeleo",
+              "30–90 € al día",
+              "Libertad para moverse.",
+              "Colas de una hora en los mostradores en agosto. Combustible, aparcamiento y fianza aparte."
             ]
           ]
         }
