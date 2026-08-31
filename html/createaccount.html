@@ -82,7 +82,7 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
 
     <div class="field">
       <label for="newName" data-i18n="co.fullName">Full name</label>
-      <input id="newName" type="text" placeholder="Your name" autocomplete="name">
+      <input id="newName" type="text" data-i18n-ph="ca.namePh" placeholder="Your name" autocomplete="name">
     </div>
 
     <div class="field">
@@ -92,14 +92,14 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
 
     <div class="field">
       <label for="newPassword" data-i18n="co.password">Password</label>
-      <input id="newPassword" type="password" placeholder="At least 8 characters" minlength="8" autocomplete="new-password">
+      <input id="newPassword" type="password" data-i18n-ph="ca.passPh" placeholder="At least 8 characters" minlength="8" autocomplete="new-password">
       <div class="pw-meter"><div class="pw-fill" id="pwFill"></div></div>
       <div class="help" id="pwHint" data-i18n="ca.min8">At least 8 characters, with a letter and a number.</div>
     </div>
 
     <div class="field">
       <label for="confirmPassword" data-i18n="ca.confirm">Confirm password</label>
-      <input id="confirmPassword" type="password" placeholder="Repeat your password" autocomplete="new-password">
+      <input id="confirmPassword" type="password" data-i18n-ph="ca.repeatPh" placeholder="Repeat your password" autocomplete="new-password">
     </div>
 
     <button id="registerBtn" type="button" class="btn teal" data-i18n="nav.createAcc">Create account</button>
