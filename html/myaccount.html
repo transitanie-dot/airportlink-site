@@ -509,6 +509,8 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
 </div></div>
 
 <script>
+/** A tradução, com o inglês como rede. */
+var T = function (k, en) { return (window.i18n ? window.i18n.t(k, en) : en); };
 (function () {
 'use strict';
 
@@ -643,19 +645,18 @@ function paymentLine(trip) {
   if (normalizeStatus(trip.status) === 'cancelled') return '';
 
   if (!trip.payment_mode || trip.payment_mode === 'now') {
-    return '<div class="pay-line"><span class="pay-tag paid">Paid</span>' +
-      '<span>Charged when you booked.</span></div>';
+    return '<div class="pay-line"><span class="pay-tag paid">' + T('ma.paid', 'Paid') + '</span>' +
+      '<span>' + T('ma.chargedAtBooking', 'Charged when you booked.') + '</span></div>';
   }
 
   if (trip.charged_at) {
-    return '<div class="pay-line"><span class="pay-tag paid">Paid</span>' +
-      '<span>Charged on ' + esc(formatTripDate(trip.charged_at)) + '.</span></div>';
+    return '<div class="pay-line"><span class="pay-tag paid">' + T('ma.paid', 'Paid') + '</span>' +
+      '<span>' + T('ma.chargedOn', 'Charged on') + ' ' + esc(formatTripDate(trip.charged_at)) + '.</span></div>';
   }
 
   if (trip.payment_status === 'charge_failed') {
-    return '<div class="pay-line"><span class="pay-tag failed">Payment failed</span>' +
-      '<span>We could not charge your card. We will try again \u2014 check that it is still ' +
-      'valid, or contact support.</span></div>';
+    return '<div class="pay-line"><span class="pay-tag failed">' + T('ma.payFailed', 'Payment failed') + '</span>' +
+      '<span>' + T('ma.payFailedB', 'We could not charge your card. We will try again \u2014 check that it is still valid, or contact support.') + '</span></div>';
   }
 
   return '<div class="pay-line"><span class="pay-tag saved">Card saved</span>' +
@@ -823,7 +824,9 @@ $('cancelConfirmBtn').addEventListener('click', async function () {
 function renderTripCard(trip, key, type) {
   var status = normalizeStatus(trip.status);
   var statusText = trip.status || (type === 'future' ? 'pending' : 'completed');
-  var badge = type === 'future' ? 'Upcoming trip' : 'Past trip';
+  var badge = type === 'future'
+    ? T('ma.upcomingTrip', 'Upcoming trip')
+    : T('ma.pastTrip', 'Past trip');
 
   var actions = '';
   if (type === 'future') {
@@ -906,6 +909,10 @@ function renderList(container, trips, type, emptyText) {
     tripsByKey[key] = trip;
     return renderTripCard(trip, key, type);
   }).join('');
+
+  // Os cartões nascem agora, muito depois de o i18n ter percorrido a
+  // página. As marcas que trazem só são traduzidas se lhe pedirmos.
+  if (window.i18n) window.i18n.apply(container);
 }
 
 function ownedOnly(rows, email) {
@@ -953,7 +960,7 @@ async function loadTrips() {
     return isNaN(d.getTime()) || d < now;
   });
 
-  renderList($('futureTripList'), future, 'future', 'No upcoming trips yet.');
+  renderList($('futureTripList'), future, 'future', T('ma.noUpcoming', 'No upcoming trips yet.'));
   renderList($('pastTripList'), past, 'past', 'No past trips yet.');
 }
 
