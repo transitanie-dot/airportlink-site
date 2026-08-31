@@ -636,5 +636,17 @@
  "ma.payFailedB": "Não conseguimos cobrar o seu cartão. Vamos tentar de novo — verifique se continua válido, ou contacte o apoio.",
  "ma.upcomingTrip": "Viagem marcada",
  "ma.pastTrip": "Viagem anterior",
- "sup.openStatus": "Aberta"
+ "sup.openStatus": "Aberta",
+ "st.pending": "Pendente",
+ "st.confirmed": "Confirmada",
+ "st.paid": "Paga",
+ "st.completed": "Concluída",
+ "st.cancelled": "Cancelada",
+ "st.refunded": "Reembolsada",
+ "st.failed": "Falhou",
+ "st.charge_failed": "Cobrança falhou",
+ "st.scheduled": "Agendada",
+ "ph.looksRight": "Parece certo.",
+ "ph.wrongLength": "Introduziu {n} dígitos. Os números de {pais} costumam ter {esperado}.",
+ "ph.or": "ou"
 }
