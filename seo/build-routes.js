@@ -74,6 +74,22 @@ const LANGS = [
  */
 const T9N = {
   pt: {
+    "Hotel, address or town": "Hotel, morada ou localidade",
+    "Airport, hotel or address": "Aeroporto, hotel ou morada",
+    "Where to?": "Para onde?",
+    "A private vehicle": "Uma viatura privada",
+    "for your group. No sharing, no other stops.": "para o seu grupo. Sem partilha e sem outras paragens.",
+    "A fixed price": "Um preço fixo",
+    "with tolls and taxes in. Nothing is added at the end.": "com portagens e impostos incluídos. Nada é acrescentado no fim.",
+    "Flight tracking.": "Seguimento do voo.",
+    "Land late and the pick-up moves, not the price.": "Se aterrar tarde, muda a hora da recolha, não o preço.",
+    "60 minutes of free waiting": "60 minutos de espera gratuita",
+    "after the flight lands.": "depois de o voo aterrar.",
+    "until 24 hours before pick-up.": "até 24 horas antes da recolha.",
+    "One suitcase and one bag per passenger.": "Uma mala e um saco por passageiro.",
+    "More than that, tell us when you book.": "Se levar mais, diga-nos ao reservar.",
+    "from": "desde",
+    "Date": "Data",
     "passenger": "passageiro",
     "Pick-up": "Recolha",
     "Drop-off": "Destino",
@@ -431,6 +447,11 @@ ${hreflang}${xdefault ? `\n<link rel="alternate" hreflang="x-default" href="${xd
     try {
       var t = localStorage.getItem('airportlink-theme');
       if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+
+      // Esta página já está escrita numa língua. Diz-se ao i18n qual
+      // é, para o cabeçalho e o rodapé saírem na mesma — senão
+      // seguiriam a preferência guardada e a página ficava mista.
+      window.__PAGE_LANG = document.documentElement.lang || 'en';
     } catch (e) {}
   })();
 </script>
@@ -439,6 +460,7 @@ ${hreflang}${xdefault ? `\n<link rel="alternate" hreflang="x-default" href="${xd
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/i18n.js"></script>
 <script src="/assets/layout.js" defer></script>
 <script type="application/ld+json">
 ${JSON.stringify(schema, null, 1)}
@@ -731,7 +753,7 @@ html[data-theme="dark"] .step .n{background:rgba(232,163,61,.13);color:var(--amb
 }
 </style>
 </head>
-<body data-cta-href="/#book" data-cta-label="Get a price">
+<body data-cta-href="/#book" data-cta-label="${t9n(lang, 'Get a price')}">
 
 <main id="main">
 <article class="rt">`;
@@ -808,18 +830,18 @@ function calculator(airport, current, cc, mapsKey, lang) {
         <label for="cf">${t9n(lang, 'Pick-up')}</label>
         <div class="ca-in"><span class="ca-pin a"></span>
           <input id="cf" type="text" value="${esc(airport.name)}" autocomplete="off"
-                 placeholder="Airport, hotel or address"></div>
+                 placeholder="${t9n(lang, 'Airport, hotel or address')}"></div>
       </div>
 
       <div class="ca-f wide">
         <label for="ct">${t9n(lang, 'Drop-off')}</label>
         <div class="ca-in"><span class="ca-pin b"></span>
           <input id="ct" type="text" value="${esc(to)}" autocomplete="off"
-                 placeholder="Hotel, address or town"></div>
+                 placeholder="${t9n(lang, 'Hotel, address or town')}"></div>
       </div>
 
       <div class="ca-f">
-        <label for="cdate">Date</label>
+        <label for="cdate">${t9n(lang, 'Date')}</label>
         <div class="ca-in"><input id="cdate" type="date"></div>
       </div>
 
@@ -1412,7 +1434,7 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
     .map((d) => {
       const price = priceEUR(d.km, 1, cc, slug, d.slug);
       return `<a class="other" href="/transfers/${cslug}/${slug}-to-${d.slug}/">` +
-        `<b>${esc(d.name)}</b><span>from ${money(price)}</span></a>`;
+        `<b>${esc(d.name)}</b><span>${t9n(lang, 'from')} ${money(price)}</span></a>`;
     }).join('\n      ');
 
   return head({ title, description, canonical: url, schema, lang, alternates }) + `
@@ -1432,17 +1454,17 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
   <ul class="ticks">
     ${[
       ['M5 17h14M7 17V9l3-4h4l3 4v8M9 5v4M15 5v4',
-       'A private vehicle', 'for your group. No sharing, no other stops.'],
+       t9n(lang, 'A private vehicle'), t9n(lang, 'for your group. No sharing, no other stops.')],
       ['M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6',
-       'A fixed price', 'with tolls and taxes in. Nothing is added at the end.'],
+       t9n(lang, 'A fixed price'), t9n(lang, 'with tolls and taxes in. Nothing is added at the end.')],
       ['M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.4-2.1 2.1-2.4-.6a.5.5 0 0 0-.5.8L5 16l1.3 2.2a.5.5 0 0 0 .8-.1l.6-2.4 2.1-2.1 4.4 3.9a.5.5 0 0 0 .8-.5Z',
-       'Flight tracking.', 'Land late and the pick-up moves, not the price.'],
+       t9n(lang, 'Flight tracking.'), t9n(lang, 'Land late and the pick-up moves, not the price.')],
       ['M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
-       '60 minutes of free waiting', 'after the flight lands.'],
+       t9n(lang, '60 minutes of free waiting'), t9n(lang, 'after the flight lands.')],
       ['M9 14l2 2 4-5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
-       t9n(lang, 'Free cancellation'), 'until 24 hours before pick-up.'],
+       t9n(lang, 'Free cancellation'), t9n(lang, 'until 24 hours before pick-up.')],
       ['M6 8h12l1 12H5L6 8ZM9 8V6a3 3 0 0 1 6 0v2',
-       'One suitcase and one bag per passenger.', 'More than that, tell us when you book.']
+       t9n(lang, 'One suitcase and one bag per passenger.'), t9n(lang, 'More than that, tell us when you book.')]
     ].map(([d, t, rest]) => `<li>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
