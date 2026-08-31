@@ -224,8 +224,9 @@
       // logótipo clicável ali leva de volta ao topo de onde já se
       // veio. No cabeçalho faz sentido; aqui não.
       '<div class="footer-brand"><span class="logo">' + LOGO + '</span>' +
-      '<p>Private airport transfers with a fixed price agreed before you pay. ' +
-      'Door to door, flight tracked, driven by licensed local companies.</p></div>' +
+      '<p data-i18n="foot.blurb">Private airport transfers with a fixed price agreed ' +
+      'before you pay. Door to door, flight tracked, driven by licensed local ' +
+      'companies.</p></div>' +
       FOOTER.map(function (col) {
         return '<div><h3' + (col.i18nKey ? ' data-i18n="' + esc(col.i18nKey) + '"' : '') +
           '>' + esc(col.title) + '</h3>' +
