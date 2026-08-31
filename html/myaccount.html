@@ -26,6 +26,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/i18n.js"></script>
 <script src="/assets/layout.js" defer></script>
 <script src="/assets/phone.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -259,42 +260,42 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
 
 <main id="main">
 
-<div id="bootView" class="boot">Loading your account...</div>
+<div id="bootView" class="boot" data-i18n="ma.loading">Loading your account...</div>
 
 <div id="accountApp" class="hidden"><div class="wrapper">
   <nav class="side" aria-label="Account">
     <div class="agency-crest">
-      <div class="k">Trade account</div>
+      <div class="k" data-i18n="ma.tradeAcct">Trade account</div>
       <div class="n" id="crestName">&mdash;</div>
       <div class="r" id="crestRate">&mdash;</div>
     </div>
-    <h1 class="side-title">My account</h1>
-    <button class="side-item active" id="profileTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
-    <button class="side-item" id="tripsTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18"/><path d="M4 13V9.5L6 5h12l2 4.5V13"/><path d="M4 13v4h3v-4M17 13v4h3v-4"/></svg>My trips</button>
-    <button class="side-item hidden" id="agencyTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01"/></svg>Agency</button>
-    <button class="side-item" id="helpTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 3.3 2.4c-.6.2-.9.8-.9 1.4v.4"/><path d="M12 17h.01"/></svg>Help</button>
+    <h1 class="side-title" data-i18n="nav.myAccount">My account</h1>
+    <button class="side-item active" id="profileTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span data-i18n="ma.profile">Profile</span></button>
+    <button class="side-item" id="tripsTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18"/><path d="M4 13V9.5L6 5h12l2 4.5V13"/><path d="M4 13v4h3v-4M17 13v4h3v-4"/></svg><span data-i18n="ma.myTrips">My trips</span></button>
+    <button class="side-item hidden" id="agencyTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01"/></svg><span data-i18n="ma.agency">Agency</span></button>
+    <button class="side-item" id="helpTabBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 3.3 2.4c-.6.2-.9.8-.9 1.4v.4"/><path d="M12 17h.01"/></svg><span data-i18n="nav.help">Help</span></button>
     <div class="side-actions">
-      <button id="newBookingBtn" class="side-btn teal" type="button">New booking</button>
-      <button id="supportSideBtn" class="side-btn line" type="button">Contact support</button>
-      <button id="logoutBtn" class="side-btn line" type="button">Log out</button>
+      <button id="newBookingBtn" class="side-btn teal" type="button" data-i18n="ta.newBooking">New booking</button>
+      <button id="supportSideBtn" class="side-btn line" type="button" data-i18n="nav.contact">Contact support</button>
+      <button id="logoutBtn" class="side-btn line" type="button" data-i18n="ta.signout">Log out</button>
     </div>
   </nav>
 
   <div class="main">
     <div class="agent-redirect hidden" id="agentRedirect">
       <span>&#9733;</span>
-      <div><strong id="agentRedirectTitle">Partner account</strong>
+      <div><strong id="agentRedirectTitle" data-i18n="ma.partnerAcct">Partner account</strong>
       <span id="agentRedirectText"></span></div>
-      <button class="go" id="agentRedirectBtn" type="button">Open partner dashboard</button>
+      <button class="go" id="agentRedirectBtn" type="button" data-i18n="ma.openDash">Open partner dashboard</button>
     </div>
 
     <div class="tab-content active" id="profileTab">
       <div class="grid">
         <div class="card">
-          <h2>Profile</h2>
-          <p class="sub">Edit your personal information.</p>
-          <div class="field"><label for="fullName">Full name</label><input id="fullName" type="text" placeholder="Your name"><div id="fullNameError" class="field-error">Full name must be at least 2 characters.</div></div>
-          <div class="field"><label for="phoneNumber">Phone number</label>
+          <h2 data-i18n="ma.profile">Profile</h2>
+          <p class="sub" data-i18n="ma.editInfo">Edit your personal information.</p>
+          <div class="field"><label for="fullName" data-i18n="co.fullName">Full name</label><input id="fullName" type="text" placeholder="Your name"><div id="fullNameError" class="field-error" data-i18n="ma.nameShort">Full name must be at least 2 characters.</div></div>
+          <div class="field"><label for="phoneNumber" data-i18n="ma.phoneNum">Phone number</label>
             <div data-phone-mount>
               <select id="phoneCode" aria-label="Country dialling code">
               <option value="351">Portugal +351</option>
@@ -355,39 +356,39 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
               </select>
               <input id="phoneNumber" type="tel" inputmode="tel" placeholder="912 345 678" autocomplete="tel-national">
             </div>
-            <div id="phoneNumberError" class="field-error">Please enter a valid phone number.</div>
-            <p class="field-note">This is the number the driver calls if they cannot find you.</p>
+            <div id="phoneNumberError" class="field-error" data-i18n="ma.phoneBad">Please enter a valid phone number.</div>
+            <p class="field-note" data-i18n="ma.phoneNote">This is the number the driver calls if they cannot find you.</p>
           </div>
-          <div class="field"><label for="email">Email</label><input id="email" type="email" disabled></div>
-          <button id="saveProfileBtn" class="btn btn-secondary" type="button" style="width:100%;">Save profile</button>
+          <div class="field"><label for="email" data-i18n="co.email">Email</label><input id="email" type="email" disabled></div>
+          <button id="saveProfileBtn" class="btn btn-secondary" type="button" style="width:100%;" data-i18n="ma.saveProfile">Save profile</button>
           <div id="profileError" class="msg err"></div>
           <div id="profileSuccess" class="msg ok"></div>
         </div>
         <div class="card">
-          <h2>Cancellation policy</h2>
+          <h2 data-i18n="ma.cancelPolicy">Cancellation policy</h2>
           <div class="policy-note">
             <span>&#10004;</span>
-            <span>Free cancellation until 24 hours before pick-up. Cancel from "My trips" and we refund you in full, automatically.</span>
+            <span data-i18n="ma.cancelBody1">Free cancellation until 24 hours before pick-up. Cancel from "My trips" and we refund you in full, automatically.</span>
           </div>
-          <p class="sub">Within 24 hours of the pick-up time the button is no longer available, because the driver is already assigned. Contact support and we will see what we can do.</p>
-          <div class="field"><label for="lastBookingRef">Latest booking</label><input id="lastBookingRef" type="text" disabled></div>
-          <div class="field"><label for="lastBookingWhen">Date and time</label><input id="lastBookingWhen" type="text" disabled></div>
+          <p class="sub" data-i18n="ma.cancelBody2">Within 24 hours of the pick-up time the button is no longer available, because the driver is already assigned. Contact support and we will see what we can do.</p>
+          <div class="field"><label for="lastBookingRef" data-i18n="ma.latest">Latest booking</label><input id="lastBookingRef" type="text" disabled></div>
+          <div class="field"><label for="lastBookingWhen" data-i18n="ma.dateTime">Date and time</label><input id="lastBookingWhen" type="text" disabled></div>
         </div>
       </div>
     </div>
 
     <div class="tab-content" id="tripsTab">
       <div class="card full">
-        <h2>Future trips</h2>
+        <h2 data-i18n="ma.future">Future trips</h2>
         <div class="policy-note">
           <span>&#10004;</span>
-          <span>Free cancellation until 24 hours before pick-up, refunded in full.</span>
+          <span data-i18n="ma.futureNote">Free cancellation until 24 hours before pick-up, refunded in full.</span>
         </div>
         <div id="futureTripList" class="trip-list"></div>
       </div>
       <div class="card full" style="margin-top:18px;">
-        <h2>Past trips</h2>
-        <p class="sub">Your completed bookings.</p>
+        <h2 data-i18n="ma.pastTrips">Past trips</h2>
+        <p class="sub" data-i18n="ma.pastNote">Your completed bookings.</p>
         <div id="pastTripList" class="trip-list"></div>
       </div>
     </div>
@@ -396,76 +397,76 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
     <div class="tab-content" id="agencyTab">
       <div class="grid">
         <div class="agency-hero full">
-          <div class="k">Trade account</div>
-          <h2 id="agencyName">Your agency</h2>
+          <div class="k" data-i18n="ma.tradeAcct">Trade account</div>
+          <h2 id="agencyName" data-i18n="ma.yourAgency">Your agency</h2>
           <p id="agencyTerms">&mdash;</p>
           <div class="figs">
-            <div class="fig"><div class="kk">Your rate</div><div class="vv" id="agRate">&mdash;</div></div>
-            <div class="fig"><div class="kk">Cancellation</div><div class="vv" id="agWindow">&mdash;</div></div>
-            <div class="fig"><div class="kk">Bookings</div><div class="vv" id="agCount">&mdash;</div></div>
+            <div class="fig"><div class="kk" data-i18n="ma.yourRate">Your rate</div><div class="vv" id="agRate">&mdash;</div></div>
+            <div class="fig"><div class="kk" data-i18n="ma.cancellation">Cancellation</div><div class="vv" id="agWindow">&mdash;</div></div>
+            <div class="fig"><div class="kk" data-i18n="ta.bookings">Bookings</div><div class="vv" id="agCount">&mdash;</div></div>
           </div>
         </div>
 
         <div class="card">
-          <h2>This month</h2>
-          <p class="sub">What you have booked and what it cost you, in the month selected.</p>
+          <h2 data-i18n="ma.thisMonth">This month</h2>
+          <p class="sub" data-i18n="ma.monthNote">What you have booked and what it cost you, in the month selected.</p>
           <div class="field">
-            <label for="agMonth">Month</label>
+            <label for="agMonth" data-i18n="ma.month">Month</label>
             <input id="agMonth" type="month">
           </div>
           <div class="agency-figs">
-            <div class="agency-fig"><div class="k">Transfers</div><div class="v" id="agStTrips">&mdash;</div></div>
-            <div class="agency-fig"><div class="k">You paid</div><div class="v" id="agStPaid">&mdash;</div></div>
-            <div class="agency-fig"><div class="k">You saved</div><div class="v" id="agStSaved">&mdash;</div></div>
+            <div class="agency-fig"><div class="k" data-i18n="ma.transfers">Transfers</div><div class="v" id="agStTrips">&mdash;</div></div>
+            <div class="agency-fig"><div class="k" data-i18n="ta.youPaid">You paid</div><div class="v" id="agStPaid">&mdash;</div></div>
+            <div class="agency-fig"><div class="k" data-i18n="ta.youSaved">You saved</div><div class="v" id="agStSaved">&mdash;</div></div>
           </div>
-          <button class="btn btn-secondary" id="agCsvBtn" type="button" style="width:100%;margin-top:14px">Download statement CSV</button>
+          <button class="btn btn-secondary" id="agCsvBtn" type="button" style="width:100%;margin-top:14px" data-i18n="ma.csv">Download statement CSV</button>
           <div id="agStMsg" class="msg err"></div>
         </div>
       </div>
 
       <div class="card full" style="margin-top:18px">
-        <h2>Agency bookings</h2>
-        <p class="sub">Transfers you booked for your travellers. Trips you booked for yourself
+        <h2 data-i18n="ma.agencyBookings">Agency bookings</h2>
+        <p class="sub" data-i18n="ma.agencyBookNote">Transfers you booked for your travellers. Trips you booked for yourself
         are under &ldquo;My trips&rdquo;.</p>
         <div class="field" style="max-width:340px">
-          <label for="agSearch">Search</label>
+          <label for="agSearch" data-i18n="ta.search">Search</label>
           <input id="agSearch" type="text" placeholder="Passenger, reference or city">
         </div>
         <div id="agList" class="trip-list"></div>
       </div>
 
       <div class="card full" style="margin-top:18px">
-        <h2>Agency details</h2>
-        <p class="sub">What appears on your monthly statement and on the paperwork we issue.</p>
+        <h2 data-i18n="ma.agencyDetails">Agency details</h2>
+        <p class="sub" data-i18n="ma.agencyDetNote">What appears on your monthly statement and on the paperwork we issue.</p>
         <div class="grid">
-          <div class="field"><label for="agLegal">Registered name</label><input id="agLegal" type="text"></div>
-          <div class="field"><label for="agTrading">Agency name</label><input id="agTrading" type="text"></div>
-          <div class="field"><label for="agVat">VAT number</label><input id="agVat" type="text"></div>
-          <div class="field"><label for="agPhone">Phone</label><input id="agPhone" type="tel"></div>
-          <div class="field"><label for="agRep">Contact name</label><input id="agRep" type="text"></div>
-          <div class="field"><label for="agRole">Role</label><input id="agRole" type="text"></div>
+          <div class="field"><label for="agLegal" data-i18n="ma.regName">Registered name</label><input id="agLegal" type="text"></div>
+          <div class="field"><label for="agTrading" data-i18n="ma.agencyName">Agency name</label><input id="agTrading" type="text"></div>
+          <div class="field"><label for="agVat" data-i18n="ma.vat">VAT number</label><input id="agVat" type="text"></div>
+          <div class="field"><label for="agPhone" data-i18n="co.phone">Phone</label><input id="agPhone" type="tel"></div>
+          <div class="field"><label for="agRep" data-i18n="ma.contactName">Contact name</label><input id="agRep" type="text"></div>
+          <div class="field"><label for="agRole" data-i18n="ma.role">Role</label><input id="agRole" type="text"></div>
         </div>
-        <button class="btn btn-secondary" id="agSaveBtn" type="button" style="width:100%">Save agency details</button>
+        <button class="btn btn-secondary" id="agSaveBtn" type="button" style="width:100%" data-i18n="ma.saveAgency">Save agency details</button>
         <div id="agSaveErr" class="msg err"></div>
         <div id="agSaveOk" class="msg ok"></div>
       </div>
     </div>
 
     <div class="tab-content" id="helpTab">
-      <div class="card full" style="margin-bottom:16px;"><h2>Help center</h2><p class="sub" style="margin:0;">Find answers or talk to our support team.</p></div>
+      <div class="card full" style="margin-bottom:16px;"><h2 data-i18n="ma.helpCenter">Help center</h2><p class="sub" style="margin:0;" data-i18n="ma.helpNote">Find answers or talk to our support team.</p></div>
       <div class="help-card">
-        <h3>Contact support</h3>
-        <p>Need help with a booking? Open a conversation and our team replies as soon as possible.</p>
-        <button class="support-cta" id="supportLink" type="button">Open a support chat</button>
+        <h3 data-i18n="nav.contact">Contact support</h3>
+        <p data-i18n="ma.helpBody">Need help with a booking? Open a conversation and our team replies as soon as possible.</p>
+        <button class="support-cta" id="supportLink" type="button" data-i18n="ma.openChat">Open a support chat</button>
       </div>
       <div class="help-card">
-        <h3>Frequently asked questions</h3>
-        <div class="faq-item"><h4 class="faq-question">What does &ldquo;card saved&rdquo; mean?</h4><p class="faq-answer">You booked without paying. We hold your card securely with Stripe and charge it 48 hours before pick-up. Cancel before then and nothing is ever charged.</p></div>
-        <div class="faq-item"><h4 class="faq-question">What if the payment fails?</h4><p class="faq-answer">We try again a few times and let you know. If it keeps failing the booking is cancelled, so a driver is not sent to a trip nobody paid for.</p></div>
-        <div class="faq-item"><h4 class="faq-question">How do I cancel a booking?</h4><p class="faq-answer">Go to "My trips" and press Cancel on the booking. It is free until 24 hours before pick-up and the refund is automatic. After that, contact support.</p></div>
-        <div class="faq-item"><h4 class="faq-question">When do I get my money back?</h4><p class="faq-answer">The refund is issued immediately on our side. Your bank usually takes 5 to 10 working days to show it.</p></div>
-        <div class="faq-item"><h4 class="faq-question">What if my flight is delayed?</h4><p class="faq-answer">If you gave us your flight number we track the arrival and adjust the pick-up. Otherwise, message support as soon as you know.</p></div>
-        <div class="faq-item"><h4 class="faq-question">Can I change the pick-up address?</h4><p class="faq-answer">Contact support with your booking reference and we will update it if the driver has not started.</p></div>
+        <h3 data-i18n="ma.faq">Frequently asked questions</h3>
+        <div class="faq-item"><h4 class="faq-question" data-i18n="ma.q1">What does &ldquo;card saved&rdquo; mean?</h4><p class="faq-answer" data-i18n="ma.a1">You booked without paying. We hold your card securely with Stripe and charge it 48 hours before pick-up. Cancel before then and nothing is ever charged.</p></div>
+        <div class="faq-item"><h4 class="faq-question" data-i18n="ma.q2">What if the payment fails?</h4><p class="faq-answer" data-i18n="ma.a2">We try again a few times and let you know. If it keeps failing the booking is cancelled, so a driver is not sent to a trip nobody paid for.</p></div>
+        <div class="faq-item"><h4 class="faq-question" data-i18n="ma.q3">How do I cancel a booking?</h4><p class="faq-answer" data-i18n="ma.a3">Go to "My trips" and press Cancel on the booking. It is free until 24 hours before pick-up and the refund is automatic. After that, contact support.</p></div>
+        <div class="faq-item"><h4 class="faq-question" data-i18n="ma.q4">When do I get my money back?</h4><p class="faq-answer" data-i18n="ma.a4">The refund is issued immediately on our side. Your bank usually takes 5 to 10 working days to show it.</p></div>
+        <div class="faq-item"><h4 class="faq-question" data-i18n="ma.q5">What if my flight is delayed?</h4><p class="faq-answer" data-i18n="ma.a5">If you gave us your flight number we track the arrival and adjust the pick-up. Otherwise, message support as soon as you know.</p></div>
+        <div class="faq-item"><h4 class="faq-question" data-i18n="ma.q6">Can I change the pick-up address?</h4><p class="faq-answer" data-i18n="ma.a6">Contact support with your booking reference and we will update it if the driver has not started.</p></div>
       </div>
     </div>
   </div>
@@ -474,36 +475,36 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
 </main>
 
 <div id="receiptOverlay" class="overlay"><div class="modal">
-  <div class="modal-head"><div><h3>Receipt</h3><p id="receiptSubtitle">Booking confirmation details</p></div>
+  <div class="modal-head"><div><h3 data-i18n="ma.receipt">Receipt</h3><p id="receiptSubtitle" data-i18n="ma.confDetails">Booking confirmation details</p></div>
   <button id="receiptCloseBtn" class="modal-close" type="button" aria-label="Close">&times;</button></div>
   <div class="modal-body">
     <div class="receipt-grid">
-      <div class="receipt-item"><div class="receipt-label">Reference</div><div class="receipt-value" id="receiptBookingId">&mdash;</div></div>
-      <div class="receipt-item"><div class="receipt-label">Status</div><div class="receipt-value" id="receiptStatus">&mdash;</div></div>
-      <div class="receipt-item"><div class="receipt-label">Date</div><div class="receipt-value" id="receiptDate">&mdash;</div></div>
-      <div class="receipt-item"><div class="receipt-label">Pick-up time</div><div class="receipt-value" id="receiptTime">&mdash;</div></div>
-      <div class="receipt-item"><div class="receipt-label">Passenger</div><div class="receipt-value" id="receiptName">&mdash;</div></div>
-      <div class="receipt-item"><div class="receipt-label">Flight</div><div class="receipt-value" id="receiptFlight">&mdash;</div></div>
-      <div class="receipt-item"><div class="receipt-label">Passengers</div><div class="receipt-value" id="receiptPassengers">&mdash;</div></div>
-      <div class="receipt-item"><div class="receipt-label">Price</div><div class="receipt-value" id="receiptPrice">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label" data-i18n="ta.reference">Reference</div><div class="receipt-value" id="receiptBookingId">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label" data-i18n="ta.status">Status</div><div class="receipt-value" id="receiptStatus">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label" data-i18n="common.date">Date</div><div class="receipt-value" id="receiptDate">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label" data-i18n="h.pickupTime">Pick-up time</div><div class="receipt-value" id="receiptTime">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label" data-i18n="ta.passenger">Passenger</div><div class="receipt-value" id="receiptName">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label" data-i18n="h.flight">Flight</div><div class="receipt-value" id="receiptFlight">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label" data-i18n="common.passengers">Passengers</div><div class="receipt-value" id="receiptPassengers">&mdash;</div></div>
+      <div class="receipt-item"><div class="receipt-label" data-i18n="h.price">Price</div><div class="receipt-value" id="receiptPrice">&mdash;</div></div>
     </div>
-    <div class="receipt-item" style="margin-bottom:10px"><div class="receipt-label">Pick-up</div><div class="receipt-value" id="receiptPickup">&mdash;</div></div>
-    <div class="receipt-item"><div class="receipt-label">Drop-off</div><div class="receipt-value" id="receiptDropoff">&mdash;</div></div>
+    <div class="receipt-item" style="margin-bottom:10px"><div class="receipt-label" data-i18n="common.pickup">Pick-up</div><div class="receipt-value" id="receiptPickup">&mdash;</div></div>
+    <div class="receipt-item"><div class="receipt-label" data-i18n="common.dropoff">Drop-off</div><div class="receipt-value" id="receiptDropoff">&mdash;</div></div>
   </div>
-  <div class="modal-actions"><button id="receiptDownloadBtn" class="btn btn-secondary">Download PDF</button></div>
+  <div class="modal-actions"><button id="receiptDownloadBtn" class="btn btn-secondary" data-i18n="ma.downloadPdf">Download PDF</button></div>
 </div></div>
 
 <div id="cancelOverlay" class="overlay"><div class="modal">
-  <div class="modal-head"><div><h3 id="cancelTitle">Cancel this booking?</h3><p id="cancelSubtitle">Free cancellation, refunded in full.</p></div>
+  <div class="modal-head"><div><h3 id="cancelTitle" data-i18n="ma.cancelQ">Cancel this booking?</h3><p id="cancelSubtitle" data-i18n="ma.cancelSub">Free cancellation, refunded in full.</p></div>
   <button id="cancelCloseBtn" class="modal-close" type="button" aria-label="Close">&times;</button></div>
   <div class="modal-body">
     <p class="sub" id="cancelSummary" style="margin-bottom:14px;"></p>
-    <p class="sub" id="cancelNote" style="margin:0;">We will refund the full amount to the card you paid with. Your bank usually takes 5 to 10 working days to show it. This cannot be undone &mdash; you would have to book again.</p>
+    <p class="sub" id="cancelNote" style="margin:0;" data-i18n="ma.cancelBody3">We will refund the full amount to the card you paid with. Your bank usually takes 5 to 10 working days to show it. This cannot be undone &mdash; you would have to book again.</p>
     <div id="cancelError" class="msg err"></div>
   </div>
   <div class="modal-actions">
-    <button id="cancelDismissBtn" class="btn btn-secondary">Keep booking</button>
-    <button id="cancelConfirmBtn" class="btn btn-danger">Yes, cancel and refund</button>
+    <button id="cancelDismissBtn" class="btn btn-secondary" data-i18n="ma.keepBooking">Keep booking</button>
+    <button id="cancelConfirmBtn" class="btn btn-danger" data-i18n="ma.yesCancel">Yes, cancel and refund</button>
   </div>
 </div></div>
 
@@ -865,13 +866,13 @@ function renderTripCard(trip, key, type) {
     receiptButton + '</div></div>' +
     '<div class="trip-route">' +
     '<div class="route-stop"><span class="route-marker pickup">P</span><div>' +
-    '<div class="route-caption">Pick-up</div><div class="route-value">' + esc(trip.pickup || '\u2014') + '</div></div></div>' +
+    '<div class="route-caption" data-i18n="common.pickup">Pick-up</div><div class="route-value">' + esc(trip.pickup || '\u2014') + '</div></div></div>' +
     '<div class="route-stop"><span class="route-marker dropoff">D</span><div>' +
-    '<div class="route-caption">Drop-off</div><div class="route-value">' + esc(trip.dropoff || '\u2014') + '</div></div></div></div>' +
+    '<div class="route-caption" data-i18n="common.dropoff">Drop-off</div><div class="route-value">' + esc(trip.dropoff || '\u2014') + '</div></div></div></div>' +
     '<div class="trip-meta-grid">' +
-    '<div class="trip-meta-item"><div class="trip-meta-label">Date</div><div class="trip-meta-value">' + esc(formatTripDate(trip.booking_date)) + '</div></div>' +
-    '<div class="trip-meta-item"><div class="trip-meta-label">Pick-up time</div><div class="trip-meta-value">' + esc(formatTripTime(trip)) + '</div></div>' +
-    '<div class="trip-meta-item"><div class="trip-meta-label">Price</div><div class="trip-meta-value">' + esc(formatPrice(trip.price, trip.currency)) + '</div></div>' +
+    '<div class="trip-meta-item"><div class="trip-meta-label" data-i18n="common.date">Date</div><div class="trip-meta-value">' + esc(formatTripDate(trip.booking_date)) + '</div></div>' +
+    '<div class="trip-meta-item"><div class="trip-meta-label" data-i18n="h.pickupTime">Pick-up time</div><div class="trip-meta-value">' + esc(formatTripTime(trip)) + '</div></div>' +
+    '<div class="trip-meta-item"><div class="trip-meta-label" data-i18n="h.price">Price</div><div class="trip-meta-value">' + esc(formatPrice(trip.price, trip.currency)) + '</div></div>' +
     '</div>' +
     paymentLine(trip) +
     (actions ? '<div class="trip-actions">' + actions + '</div>' : '') +
@@ -1145,21 +1146,21 @@ function renderAgencyBookings() {
 
       '<div class="trip-route">' +
       '<div class="route-stop"><span class="route-marker pickup">P</span><div>' +
-      '<div class="route-caption">Pick-up</div><div class="route-value">' +
+      '<div class="route-caption" data-i18n="common.pickup">Pick-up</div><div class="route-value">' +
       esc(b.pickup || '\u2014') + '</div></div></div>' +
       '<div class="route-stop"><span class="route-marker dropoff">D</span><div>' +
-      '<div class="route-caption">Drop-off</div><div class="route-value">' +
+      '<div class="route-caption" data-i18n="common.dropoff">Drop-off</div><div class="route-value">' +
       esc(b.dropoff || '\u2014') + '</div></div></div></div>' +
 
       '<div class="trip-meta-grid">' +
-      '<div class="trip-meta-item"><div class="trip-meta-label">Passenger</div>' +
+      '<div class="trip-meta-item"><div class="trip-meta-label" data-i18n="ta.passenger">Passenger</div>' +
       '<div class="trip-meta-value">' + esc(b.passenger_name || '\u2014') +
       (b.passenger_phone ? '<br><small style="color:var(--muted)">' +
         esc(b.passenger_phone) + '</small>' : '') + '</div></div>' +
       '<div class="trip-meta-item"><div class="trip-meta-label">When</div>' +
       '<div class="trip-meta-value">' + esc(formatTripDate(b.booking_date)) +
       '<br><small style="color:var(--muted)">' + esc(formatTripTime(b)) + '</small></div></div>' +
-      '<div class="trip-meta-item"><div class="trip-meta-label">You paid</div>' +
+      '<div class="trip-meta-item"><div class="trip-meta-label" data-i18n="ta.youPaid">You paid</div>' +
       '<div class="trip-meta-value">' + esc(formatPrice(b.price, b.currency)) +
       (saved > 0.005 ? '<br><small style="color:var(--muted)">saved ' +
         esc(formatPrice(saved, b.currency)) + '</small>' : '') + '</div></div>' +
