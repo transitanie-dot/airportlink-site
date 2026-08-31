@@ -74,6 +74,11 @@ const LANGS = [
  */
 const T9N = {
   pt: {
+    "Van": "Carrinha",
+    "Minibus": "Miniautocarro",
+    "Coach": "Autocarro",
+    "Up to 8 passengers with a suitcase each.": "Até 8 passageiros com uma mala cada.",
+    "Continue &rarr;": "Continuar →",
     "Hotel, address or town": "Hotel, morada ou localidade",
     "Airport, hotel or address": "Aeroporto, hotel ou morada",
     "Where to?": "Para onde?",
@@ -928,6 +933,17 @@ function calculator(airport, current, cc, mapsKey, lang) {
   var L_FROM = ${JSON.stringify(t9n(lang, 'From'))};
   var L_PAX  = ${JSON.stringify(t9n(lang, 'passengers'))};
   var L_PAX1 = ${JSON.stringify(t9n(lang, 'passenger'))};
+
+  // As etiquetas que o código da calculadora reescreve. Impressas
+  // aqui porque esta página é estática e não pede nada ao servidor.
+  var L_WHOLE = ${JSON.stringify(t9n(lang, 'Whole car &middot; tolls and taxes in').replace('&middot;', '\u00b7'))};
+  var L_CONT  = ${JSON.stringify(t9n(lang, 'Continue &rarr;').replace('&rarr;', '\u2192'))};
+  var L_CARS  = ${JSON.stringify({
+    Sedan:   [t9n(lang, 'Sedan'),   t9n(lang, 'Up to 4 passengers with hand luggage.')],
+    Van:     [t9n(lang, 'Van'),     t9n(lang, 'Up to 8 passengers with a suitcase each.')],
+    Minibus: [t9n(lang, 'Minibus'), ''],
+    Coach:   [t9n(lang, 'Coach'),   '']
+  })};
   </script>
   <script>
   (function () {
@@ -1024,10 +1040,13 @@ function calculator(airport, current, cc, mapsKey, lang) {
     }
 
     function drawCar(pax) {
-      var name = car(pax);
-      cw.textContent = name;
-      cwn.textContent = VEHICLES[name][0];
-      cart.innerHTML = VEHICLES[name][1];
+      // A chave é sempre em inglês — é o identificador do desenho.
+      // O que se mostra vem de L_CARS, na língua da página.
+      var chave = car(pax);
+      var rotulo = L_CARS[chave] || [chave, ''];
+      cw.textContent = rotulo[0];
+      cwn.textContent = rotulo[1] || VEHICLES[chave][0];
+      cart.innerHTML = VEHICLES[chave][1];
     }
 
     // ---------- travão contra abuso ----------
@@ -1141,7 +1160,7 @@ function calculator(airport, current, cc, mapsKey, lang) {
         '&time=' + encodeURIComponent(ctime.value) +
         '&pax=' + pax;
 
-      cs.textContent = 'Whole car \u00b7 tolls and taxes in';
+      cs.textContent = L_WHOLE;
 
       if (!price) {
         cv.textContent = '\u2014';
@@ -1150,7 +1169,7 @@ function calculator(airport, current, cc, mapsKey, lang) {
       }
 
       cv.textContent = '\u20ac' + Math.round(price);
-      cb.textContent = 'Continue \u2192';
+      cb.textContent = L_CONT;
     }
 
     function run() {
