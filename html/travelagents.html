@@ -30,6 +30,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/i18n.js"></script>
 <script src="/assets/layout.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -325,14 +326,14 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <div class="kicker"><span class="bar"></span><span class="tag">Partner programme</span></div>
-      <h1>The transfer part of your itineraries, <em>handled.</em></h1>
-      <p class="lead">You already arrange the flights, the hotel and the tour. The airport transfer should not be the thing that costs you an afternoon of phone calls.</p>
+      <div class="kicker"><span class="bar"></span><span class="tag" data-i18n="ta.tag">Partner programme</span></div>
+      <h1 data-i18n="ta.title1">The transfer part of your itineraries, <em data-i18n="ta.title2">handled.</em></h1>
+      <p class="lead" data-i18n="ta.lead">You already arrange the flights, the hotel and the tour. The airport transfer should not be the thing that costs you an afternoon of phone calls.</p>
       <div class="hero-cta">
-        <button class="btn amber" type="button" id="heroApplyBtn">Apply for a partner account</button>
-        <button class="btn line" type="button" id="heroSignInBtn">I already have one</button>
+        <button class="btn amber" type="button" id="heroApplyBtn" data-i18n="ta.apply">Apply for a partner account</button>
+        <button class="btn line" type="button" id="heroSignInBtn" data-i18n="ta.haveOne">I already have one</button>
       </div>
-      <p class="hero-note">No joining fee &middot; no minimum volume &middot; approved by hand</p>
+      <p class="hero-note" data-i18n="ta.noFees">No joining fee &middot; no minimum volume &middot; approved by hand</p>
     </div>
 
     <div>
@@ -345,11 +346,11 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
         <g clip-path="url(#cardClip)">
           <rect x="8" y="8" width="384" height="52" fill="#141A28"/>
           <text x="26" y="40" fill="#FBFBF8" font-family="'Bricolage Grotesque',sans-serif" font-size="16" font-weight="800" letter-spacing="-0.4">AIRPORTLINK</text>
-          <text x="374" y="39" fill="#E8A33D" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" letter-spacing="1.8">TRANSFER DOCKET</text>
+          <text x="374" y="39" fill="#E8A33D" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" letter-spacing="1.8" data-i18n="ta.docket">TRANSFER DOCKET</text>
 
-          <text x="26" y="88" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">PASSENGER</text>
+          <text x="26" y="88" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6" data-i18n="ta.passenger">PASSENGER</text>
           <text x="26" y="110" fill="#141A28" font-family="'Bricolage Grotesque',sans-serif" font-size="19" font-weight="700">Marta Oliveira</text>
-          <text x="374" y="88" fill="#606A7B" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">REF</text>
+          <text x="374" y="88" fill="#606A7B" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6" data-i18n="ta.ref">REF</text>
           <text x="374" y="110" fill="#141A28" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="15" font-weight="600">AL-48210</text>
 
           <line x1="26" y1="130" x2="374" y2="130" stroke="#141A28" stroke-opacity="0.12"/>
@@ -357,35 +358,35 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
           <circle cx="33" cy="160" r="6" fill="#0F766E"/>
           <path class="route-draw" d="M33 166 L33 214" stroke="#0F766E" stroke-width="2" stroke-linecap="round"/>
           <rect x="27" y="208" width="12" height="12" rx="2" fill="#141A28"/>
-          <text x="56" y="152" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">PICK-UP</text>
+          <text x="56" y="152" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6" data-i18n="ta.pickupU">PICK-UP</text>
           <text x="56" y="169" fill="#141A28" font-family="'Inter',sans-serif" font-size="14" font-weight="600">Lisbon Airport, Terminal 1</text>
-          <text x="56" y="205" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">DROP-OFF</text>
+          <text x="56" y="205" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6" data-i18n="ta.dropoffU">DROP-OFF</text>
           <text x="56" y="222" fill="#141A28" font-family="'Inter',sans-serif" font-size="14" font-weight="600">Hotel Tivoli, Avenida</text>
 
           <line x1="26" y1="248" x2="374" y2="248" stroke="#141A28" stroke-opacity="0.12"/>
 
-          <text x="26" y="272" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">FLIGHT</text>
+          <text x="26" y="272" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6" data-i18n="ta.flightU">FLIGHT</text>
           <text x="26" y="292" fill="#141A28" font-family="'IBM Plex Mono',monospace" font-size="15" font-weight="600">TP1949</text>
-          <text x="160" y="272" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">ARRIVES</text>
+          <text x="160" y="272" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6" data-i18n="ta.arrives">ARRIVES</text>
           <text x="160" y="292" fill="#141A28" font-family="'IBM Plex Mono',monospace" font-size="15" font-weight="600">14:35</text>
-          <text x="374" y="272" fill="#606A7B" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">PAX</text>
+          <text x="374" y="272" fill="#606A7B" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6" data-i18n="ta.paxU">PAX</text>
           <text x="374" y="292" fill="#141A28" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="15" font-weight="600">3</text>
 
           <rect x="26" y="312" width="348" height="30" rx="15" fill="#0F766E" fill-opacity="0.09"/>
           <circle cx="43" cy="327" r="7" fill="#0F766E"/>
           <path d="M39.5 327 L42 329.5 L46.5 324.5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <text x="58" y="331" fill="#0F5F58" font-family="'Inter',sans-serif" font-size="12" font-weight="600">Flight tracked &middot; free cancellation until 12h before</text>
+          <text x="58" y="331" fill="#0F5F58" font-family="'Inter',sans-serif" font-size="12" font-weight="600" data-i18n="ta.tracked">Flight tracked &middot; free cancellation until 12h before</text>
 
           <circle class="notch" cx="8" cy="368" r="9"/>
           <circle class="notch" cx="392" cy="368" r="9"/>
           <line x1="26" y1="368" x2="374" y2="368" stroke="#141A28" stroke-opacity="0.28" stroke-dasharray="3 5"/>
 
-          <text x="26" y="398" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">PARTNER RATE</text>
+          <text x="26" y="398" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6" data-i18n="ta.partnerRate">PARTNER RATE</text>
           <rect x="26" y="408" width="52" height="22" rx="11" fill="#E8A33D"/>
           <text x="52" y="424" fill="#141A28" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="13" font-weight="600">-12%</text>
           <text x="88" y="424" fill="#606A7B" font-family="'IBM Plex Mono',monospace" font-size="13" text-decoration="line-through">EUR 68.00</text>
 
-          <text x="374" y="398" fill="#606A7B" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6">YOU PAY</text>
+          <text x="374" y="398" fill="#606A7B" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9" letter-spacing="1.6" data-i18n="ta.youPay">YOU PAY</text>
           <text x="374" y="426" fill="#141A28" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="26" font-weight="600" letter-spacing="-0.8">EUR 59.84</text>
         </g>
         <rect x="8" y="8" width="384" height="450" rx="20" fill="none" stroke="#141A28" stroke-opacity="0.16"/>
@@ -399,18 +400,18 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
   <div class="wrap strip-grid">
     <div class="deal">
       <div class="figure">12<sup>%</sup></div>
-      <h3>Trade rate on every transfer</h3>
-      <p>Applied at checkout from your first booking. No code to enter, no minimum spend to unlock it.</p>
+      <h3 data-i18n="ta.b1t">Trade rate on every transfer</h3>
+      <p data-i18n="ta.b1b">Applied at checkout from your first booking. No code to enter, no minimum spend to unlock it.</p>
     </div>
     <div class="deal">
       <div class="figure">12<sup>h</sup></div>
-      <h3>Free cancellation window</h3>
-      <p>Itineraries change. Cancel up to 12 hours before pick-up and the refund is automatic and complete.</p>
+      <h3 data-i18n="ta.b2t">Free cancellation window</h3>
+      <p data-i18n="ta.b2b">Itineraries change. Cancel up to 12 hours before pick-up and the refund is automatic and complete.</p>
     </div>
     <div class="deal">
       <div class="figure">1</div>
-      <h3>Statement a month</h3>
-      <p>You pay per trip, but every booking lands on one consolidated statement for your accounts.</p>
+      <h3 data-i18n="ta.b3t">Statement a month</h3>
+      <p data-i18n="ta.b3b">You pay per trip, but every booking lands on one consolidated statement for your accounts.</p>
     </div>
   </div>
 </section>
@@ -419,30 +420,30 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
 <section class="band">
   <div class="wrap">
     <div class="band-head">
-      <span class="tag">How it works</span>
-      <h2>Four steps, and your traveller stays your client.</h2>
-      <p>We are the operator behind the transfer. Your name is on the itinerary; ours is on the vehicle.</p>
+      <span class="tag" data-i18n="ta.how">How it works</span>
+      <h2 data-i18n="ta.howTitle">Four steps, and your traveller stays your client.</h2>
+      <p data-i18n="ta.howLead">We are the operator behind the transfer. Your name is on the itinerary; ours is on the vehicle.</p>
     </div>
     <div class="rail">
       <div class="stop">
-        <span class="tag">Step one</span>
-        <h3>Apply</h3>
-        <p>Create an account and tell us about your agency. We read every application ourselves, normally within one working day.</p>
+        <span class="tag" data-i18n="h.step1">Step one</span>
+        <h3 data-i18n="ta.s1t">Apply</h3>
+        <p data-i18n="ta.s1b">Create an account and tell us about your agency. We read every application ourselves, normally within one working day.</p>
       </div>
       <div class="stop">
-        <span class="tag">Step two</span>
-        <h3>Get approved</h3>
-        <p>Your rate is then applied automatically whenever you are signed in. Nothing to remember and nothing to type.</p>
+        <span class="tag" data-i18n="h.step2">Step two</span>
+        <h3 data-i18n="ta.s2t">Get approved</h3>
+        <p data-i18n="ta.s2b">Your rate is then applied automatically whenever you are signed in. Nothing to remember and nothing to type.</p>
       </div>
       <div class="stop">
-        <span class="tag">Step three</span>
-        <h3>Book for your traveller</h3>
-        <p>Enter their name and phone so the driver deals with them directly on the day. The paperwork stays in your agency's name.</p>
+        <span class="tag" data-i18n="h.step3">Step three</span>
+        <h3 data-i18n="ta.s3t">Book for your traveller</h3>
+        <p data-i18n="ta.s3b">Enter their name and phone so the driver deals with them directly on the day. The paperwork stays in your agency's name.</p>
       </div>
       <div class="stop">
-        <span class="tag">Step four</span>
-        <h3>Hand the statement to your accountant</h3>
-        <p>Every booking in one dashboard, and one document a month instead of thirty separate card charges to reconcile.</p>
+        <span class="tag" data-i18n="h.step4">Step four</span>
+        <h3 data-i18n="ta.s4t">Hand the statement to your accountant</h3>
+        <p data-i18n="ta.s4b">Every booking in one dashboard, and one document a month instead of thirty separate card charges to reconcile.</p>
       </div>
     </div>
   </div>
@@ -452,34 +453,34 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
 <section class="band alt">
   <div class="wrap">
     <div class="band-head">
-      <span class="tag">What you get</span>
-      <h2>Everything below applies from the first booking.</h2>
-      <p>If any of it changes, we tell you before it does.</p>
+      <span class="tag" data-i18n="ta.get">What you get</span>
+      <h2 data-i18n="ta.getTitle">Everything below applies from the first booking.</h2>
+      <p data-i18n="ta.getLead">If any of it changes, we tell you before it does.</p>
     </div>
     <div class="included">
       <div class="inc">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18M7 3v4M17 3v4"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 14h8"/></svg>
-        <div><strong>Invoiced to your agency</strong><span>Your agency name and VAT number go on the paperwork, so it slots straight into your accounts.</span></div>
+        <div><strong data-i18n="ta.g1t">Invoiced to your agency</strong><span data-i18n="ta.g1b">Your agency name and VAT number go on the paperwork, so it slots straight into your accounts.</span></div>
       </div>
       <div class="inc">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 11-8 11s-8-5-8-11a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.6"/></svg>
-        <div><strong>Your traveller's details on the trip</strong><span>The driver contacts them directly, so you are not the middleman at five in the morning.</span></div>
+        <div><strong data-i18n="ta.g2t">Your traveller's details on the trip</strong><span data-i18n="ta.g2b">The driver contacts them directly, so you are not the middleman at five in the morning.</span></div>
       </div>
       <div class="inc">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.2-2.4 2.4-2.2-.5a.5.5 0 0 0-.5.8L5 16l1.6 2.1a.5.5 0 0 0 .8-.1l-.5-2.2 2.4-2.4 4.2 3.9a.5.5 0 0 0 .8-.5Z"/></svg>
-        <div><strong>Flight tracking included</strong><span>Add the flight number and we adjust the pick-up for delays, so a late arrival is not your problem.</span></div>
+        <div><strong data-i18n="ta.g3t">Flight tracking included</strong><span data-i18n="ta.g3b">Add the flight number and we adjust the pick-up for delays, so a late arrival is not your problem.</span></div>
       </div>
       <div class="inc">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.9-.9L3 20.5l1.5-4.6a8.4 8.4 0 0 1-1-4A8.4 8.4 0 0 1 12 3.5a8.4 8.4 0 0 1 9 8Z"/></svg>
-        <div><strong>Priority support</strong><span>Partner conversations are flagged in our queue and answered first, including on the day of travel.</span></div>
+        <div><strong data-i18n="ta.g4t">Priority support</strong><span data-i18n="ta.g4b">Partner conversations are flagged in our queue and answered first, including on the day of travel.</span></div>
       </div>
       <div class="inc">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 1.9"/></svg>
-        <div><strong>No minimum volume</strong><span>Book one transfer a year or fifty a month. The rate is the same and the account never expires.</span></div>
+        <div><strong data-i18n="ta.g5t">No minimum volume</strong><span data-i18n="ta.g5b">Book one transfer a year or fifty a month. The rate is the same and the account never expires.</span></div>
       </div>
       <div class="inc">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
-        <div><strong>One dashboard for everything</strong><span>Every booking your agency has made, searchable, with the statement one click away.</span></div>
+        <div><strong data-i18n="ta.g6t">One dashboard for everything</strong><span data-i18n="ta.g6b">Every booking your agency has made, searchable, with the statement one click away.</span></div>
       </div>
     </div>
   </div>
@@ -495,18 +496,18 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
       <!-- Sem sessão -->
       <div id="authView">
         <div class="account-top">
-          <h2 id="authTitle">Partner account</h2>
-          <span class="tag" id="authSub">Sign in or create one to apply</span>
+          <h2 id="authTitle" data-i18n="ta.acct">Partner account</h2>
+          <span class="tag" id="authSub" data-i18n="ta.acctSub">Sign in or create one to apply</span>
         </div>
 
         <div class="tabs">
           <button class="tab active" id="tabSignIn" type="button">Sign in</button>
-          <button class="tab" id="tabSignUp" type="button">Create account</button>
+          <button class="tab" id="tabSignUp" type="button" data-i18n="nav.createAcc">Create account</button>
         </div>
 
         <div class="form-grid">
           <div class="field full hidden" id="nameField">
-            <label for="authName">Your full name</label>
+            <label for="authName" data-i18n="co.fullName">Your full name</label>
             <input id="authName" type="text" autocomplete="name" placeholder="Who manages the account">
           </div>
           <div class="field">
@@ -520,7 +521,7 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
         </div>
 
         <button id="authBtn" class="btn block" type="button">Sign in</button>
-        <button id="forgotBtn" class="linkish" type="button">Forgot your password?</button>
+        <button id="forgotBtn" class="linkish" type="button" data-i18n="h.forgotPass">Forgot your password?</button>
         <div id="authError" class="msg err"></div>
         <div id="authOk" class="msg ok"></div>
       </div>
@@ -528,33 +529,33 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
       <!-- Com sessão, sem candidatura -->
       <div id="applyView" class="hidden">
         <div class="account-top">
-          <h2>Apply for a partner account</h2>
-          <span class="tag">Signed in as <strong id="applyEmail">&mdash;</strong></span>
+          <h2 data-i18n="ta.apply">Apply for a partner account</h2>
+          <span class="tag" data-i18n="h.signedInAs">Signed in as <strong id="applyEmail">&mdash;</strong></span>
         </div>
 
         <div class="form-grid">
           <div class="field full">
-            <label for="legalName">Registered company name</label>
+            <label for="legalName" data-i18n="ta.regName">Registered company name</label>
             <input id="legalName" type="text" placeholder="Exactly as it appears on your company registration">
           </div>
           <div class="field">
-            <label for="agencyName">Trading name <span class="opt">optional, if different</span></label>
+            <label for="agencyName" data-i18n="ta.tradeName">Trading name <span class="opt" data-i18n="ta.optDiff">optional, if different</span></label>
             <input id="agencyName" type="text" placeholder="The name your clients know you by">
           </div>
           <div class="field">
-            <label for="agencyVat">VAT / tax number <span class="opt">optional</span></label>
+            <label for="agencyVat" data-i18n="ta.vat">VAT / tax number <span class="opt" data-i18n="h.optional">optional</span></label>
             <input id="agencyVat" type="text" placeholder="Goes on your invoices">
           </div>
           <div class="field">
-            <label for="repName">Representative name</label>
+            <label for="repName" data-i18n="ta.repName">Representative name</label>
             <input id="repName" type="text" placeholder="Who is responsible for this account">
           </div>
           <div class="field">
-            <label for="repRole">Their role <span class="opt">optional</span></label>
+            <label for="repRole" data-i18n="ta.role">Their role <span class="opt">optional</span></label>
             <input id="repRole" type="text" placeholder="Owner, manager, travel consultant...">
           </div>
           <div class="field">
-            <label for="agencyCountry">Country</label>
+            <label for="agencyCountry" data-i18n="ta.country">Country</label>
             <input id="agencyCountry" type="text" placeholder="Where the agency is registered">
           </div>
           <div class="field">
@@ -562,17 +563,17 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
             <input id="agencyPhone" type="text" placeholder="+351 ...">
           </div>
           <div class="field full">
-            <label for="agencyWebsite">Website or social page <span class="opt">optional, speeds up approval</span></label>
+            <label for="agencyWebsite" data-i18n="ta.website">Website or social page <span class="opt" data-i18n="ta.optSpeed">optional, speeds up approval</span></label>
             <input id="agencyWebsite" type="text" placeholder="https://">
           </div>
           <div class="field full">
-            <label for="agencyNote">Anything else <span class="opt">optional</span></label>
+            <label for="agencyNote" data-i18n="ta.anything">Anything else <span class="opt">optional</span></label>
             <textarea id="agencyNote" placeholder="Which airports and destinations you work with, roughly how many transfers a month, anything we should know."></textarea>
           </div>
         </div>
 
-        <button id="applyBtn" class="btn amber block" type="button">Submit application</button>
-        <button id="applySignOut" class="linkish" type="button">Sign out</button>
+        <button id="applyBtn" class="btn amber block" type="button" data-i18n="ta.submit">Submit application</button>
+        <button id="applySignOut" class="linkish" type="button" data-i18n="ta.signout">Sign out</button>
         <div id="applyError" class="msg err"></div>
         <div id="applyOk" class="msg ok"></div>
       </div>
@@ -583,34 +584,34 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
           <span class="mark" id="statusIcon">&#9679;</span>
           <span><strong id="statusTitle"></strong><span id="statusText"></span></span>
         </div>
-        <button id="statusSignOut" class="btn line" type="button">Sign out</button>
+        <button id="statusSignOut" class="btn line" type="button" data-i18n="ta.signout">Sign out</button>
       </div>
 
       <!-- Painel do agente aprovado -->
       <div id="dashView" class="hidden">
         <div class="state approved">
           <span class="mark">&#10003;</span>
-          <span><strong id="dashAgency">Partner account active</strong><span id="dashTerms"></span></span>
+          <span><strong id="dashAgency" data-i18n="ta.active">Partner account active</strong><span id="dashTerms"></span></span>
         </div>
 
         <div class="subtabs">
-          <button class="subtab active" data-pane="paneBookings" type="button">Bookings</button>
-          <button class="subtab" data-pane="paneStatement" type="button">Statement</button>
-          <button class="subtab" data-pane="paneTravellers" type="button">Travellers</button>
-          <button class="subtab" data-pane="paneProfile" type="button">Agency details</button>
-          <button class="btn teal subtab-cta" id="newBookingBtn" type="button">New booking</button>
+          <button class="subtab active" data-pane="paneBookings" type="button" data-i18n="ta.bookings">Bookings</button>
+          <button class="subtab" data-pane="paneStatement" type="button" data-i18n="ta.statement">Statement</button>
+          <button class="subtab" data-pane="paneTravellers" type="button" data-i18n="ta.travellers">Travellers</button>
+          <button class="subtab" data-pane="paneProfile" type="button" data-i18n="ta.agencyDet">Agency details</button>
+          <button class="btn teal subtab-cta" id="newBookingBtn" type="button" data-i18n="ta.newBooking">New booking</button>
         </div>
 
         <!-- ---------- viajantes guardados ---------- -->
         <div class="pane" id="paneTravellers">
           <div class="toolbar">
             <div class="field" style="flex:1;min-width:220px">
-              <label for="travSearch">Search</label>
+              <label for="travSearch" data-i18n="ta.search">Search</label>
               <input id="travSearch" type="text" placeholder="Name, phone or email">
             </div>
           </div>
 
-          <p style="margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.65;max-width:64ch">
+          <p style="margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.65;max-width:64ch" data-i18n="ta.travLead">
             People you book for regularly. Pick one when making a booking and the details fill in.
             These are yours alone &mdash; nobody else at Airportlink can see this list.
           </p>
@@ -618,15 +619,15 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
           <div id="travList"></div>
 
           <div class="card" style="margin-top:20px">
-            <h3 style="font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.02em;margin:0 0 6px">Add a traveller</h3>
-            <p style="margin:0 0 18px;color:var(--muted);font-size:13.5px;line-height:1.6">Only the name is required. Everything else saves you typing later.</p>
+            <h3 style="font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.02em;margin:0 0 6px" data-i18n="ta.addTrav">Add a traveller</h3>
+            <p style="margin:0 0 18px;color:var(--muted);font-size:13.5px;line-height:1.6" data-i18n="ta.addTravNote">Only the name is required. Everything else saves you typing later.</p>
             <div class="grid2">
-              <div class="field"><label for="travName">Full name</label><input id="travName" type="text" placeholder="Who is travelling"></div>
+              <div class="field"><label for="travName" data-i18n="co.fullName">Full name</label><input id="travName" type="text" placeholder="Who is travelling"></div>
               <div class="field"><label for="travPhone">Phone</label><input id="travPhone" type="tel" placeholder="+351 912 345 678"></div>
               <div class="field"><label for="travEmail">Email</label><input id="travEmail" type="email" placeholder="Optional"></div>
               <div class="field"><label for="travNotes">Notes</label><input id="travNotes" type="text" placeholder="Child seat, wheelchair, speaks Spanish only"></div>
             </div>
-            <button class="btn teal" id="travAdd" type="button">Save traveller</button>
+            <button class="btn teal" id="travAdd" type="button" data-i18n="ta.saveTrav">Save traveller</button>
             <div id="travMsg" class="msg err"></div>
             <div id="travOk" class="msg ok"></div>
           </div>
@@ -640,61 +641,61 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
               <input id="bookingSearch" type="text" placeholder="Passenger, reference, city or date">
             </div>
             <div class="scope">
-              <button class="scope-btn active" data-scope="future" type="button">Upcoming</button>
-              <button class="scope-btn" data-scope="past" type="button">Past</button>
-              <button class="scope-btn" data-scope="all" type="button">All</button>
+              <button class="scope-btn active" data-scope="future" type="button" data-i18n="ta.upcoming">Upcoming</button>
+              <button class="scope-btn" data-scope="past" type="button" data-i18n="ta.past">Past</button>
+              <button class="scope-btn" data-scope="all" type="button" data-i18n="ta.all">All</button>
             </div>
-            <button id="reloadBookingsBtn" class="btn line" type="button">Refresh</button>
+            <button id="reloadBookingsBtn" class="btn line" type="button" data-i18n="ta.refresh">Refresh</button>
           </div>
-          <div id="agentBookingList"><div class="empty">Loading...</div></div>
+          <div id="agentBookingList"><div class="empty" data-i18n="ta.loading">Loading...</div></div>
         </div>
 
         <!-- ---------- extrato ---------- -->
         <div class="pane" id="paneStatement">
           <div class="ledger">
-            <div class="cell"><div class="k">Bookings</div><div class="v num" id="statCount">0</div></div>
-            <div class="cell"><div class="k">Public price</div><div class="v num" id="statGross">&mdash;</div></div>
-            <div class="cell"><div class="k">You paid</div><div class="v num" id="statNet">&mdash;</div></div>
-            <div class="cell accent"><div class="k">You saved</div><div class="v num" id="statSaved">&mdash;</div></div>
+            <div class="cell"><div class="k" data-i18n="ta.bookings">Bookings</div><div class="v num" id="statCount">0</div></div>
+            <div class="cell"><div class="k" data-i18n="ta.publicPrice">Public price</div><div class="v num" id="statGross">&mdash;</div></div>
+            <div class="cell"><div class="k" data-i18n="ta.youPaid">You paid</div><div class="v num" id="statNet">&mdash;</div></div>
+            <div class="cell accent"><div class="k" data-i18n="ta.youSaved">You saved</div><div class="v num" id="statSaved">&mdash;</div></div>
           </div>
 
           <div class="toolbar">
-            <div class="field"><label for="monthPicker">Statement month</label><input id="monthPicker" type="month"></div>
-            <button id="loadStatementBtn" class="btn line" type="button">Load</button>
-            <button id="printStatementBtn" class="btn line" type="button">Print or save as PDF</button>
-            <button id="csvStatementBtn" class="btn line" type="button">Download CSV</button>
+            <div class="field"><label for="monthPicker" data-i18n="ta.stMonth">Statement month</label><input id="monthPicker" type="month"></div>
+            <button id="loadStatementBtn" class="btn line" type="button" data-i18n="ta.load">Load</button>
+            <button id="printStatementBtn" class="btn line" type="button" data-i18n="ta.printPdf">Print or save as PDF</button>
+            <button id="csvStatementBtn" class="btn line" type="button" data-i18n="ta.csv">Download CSV</button>
           </div>
 
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Reference</th><th>Passenger</th><th>Route</th><th>Date &amp; time</th><th>Public price</th><th>You paid</th><th>Status</th></tr></thead>
-              <tbody id="statementBody"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
+              <thead><tr><th data-i18n="ta.reference">Reference</th><th data-i18n="ta.passenger">Passenger</th><th data-i18n="ta.route">Route</th><th data-i18n="ta.dateTime">Date &amp; time</th><th data-i18n="ta.publicPrice">Public price</th><th data-i18n="ta.youPaid">You paid</th><th data-i18n="ta.status">Status</th></tr></thead>
+              <tbody id="statementBody"><tr><td colspan="7" class="empty" data-i18n="ta.loading">Loading...</td></tr></tbody>
             </table>
           </div>
         </div>
 
         <!-- ---------- dados da agência ---------- -->
         <div class="pane" id="paneProfile">
-          <p class="pane-note">Your trade rate and account status are set by us and cannot be edited here. Everything else is yours to change.</p>
+          <p class="pane-note" data-i18n="ta.rateNote">Your trade rate and account status are set by us and cannot be edited here. Everything else is yours to change.</p>
           <div class="form-grid">
-            <div class="field full"><label for="pLegalName">Registered company name</label><input id="pLegalName" type="text"></div>
-            <div class="field"><label for="pAgencyName">Trading name <span class="opt">optional</span></label><input id="pAgencyName" type="text"></div>
-            <div class="field"><label for="pAgencyVat">VAT / tax number <span class="opt">optional</span></label><input id="pAgencyVat" type="text"></div>
+            <div class="field full"><label for="pLegalName" data-i18n="ta.regName">Registered company name</label><input id="pLegalName" type="text"></div>
+            <div class="field"><label for="pAgencyName" data-i18n="ta.tradeName">Trading name <span class="opt">optional</span></label><input id="pAgencyName" type="text"></div>
+            <div class="field"><label for="pAgencyVat" data-i18n="ta.vat">VAT / tax number <span class="opt">optional</span></label><input id="pAgencyVat" type="text"></div>
             <div class="field"><label for="pAgencyCountry">Country</label><input id="pAgencyCountry" type="text"></div>
             <div class="field"><label for="pAgencyPhone">Phone</label><input id="pAgencyPhone" type="text"></div>
-            <div class="field"><label for="pContactName">Representative name</label><input id="pContactName" type="text"></div>
-            <div class="field"><label for="pRepRole">Their role <span class="opt">optional</span></label><input id="pRepRole" type="text"></div>
+            <div class="field"><label for="pContactName" data-i18n="ta.repName">Representative name</label><input id="pContactName" type="text"></div>
+            <div class="field"><label for="pRepRole" data-i18n="ta.role">Their role <span class="opt">optional</span></label><input id="pRepRole" type="text"></div>
             <div class="field"><label for="pAgencyWebsite">Website <span class="opt">optional</span></label><input id="pAgencyWebsite" type="text"></div>
-            <div class="field"><label for="pEmail">Account email</label><input id="pEmail" type="email" disabled></div>
-            <div class="field"><label for="pRate">Trade rate</label><input id="pRate" type="text" disabled></div>
+            <div class="field"><label for="pEmail" data-i18n="ta.acctEmail">Account email</label><input id="pEmail" type="email" disabled></div>
+            <div class="field"><label for="pRate" data-i18n="ta.tradeRate">Trade rate</label><input id="pRate" type="text" disabled></div>
           </div>
-          <button id="saveProfileBtn" class="btn amber" type="button" style="width:auto;padding:0 26px">Save agency details</button>
+          <button id="saveProfileBtn" class="btn amber" type="button" style="width:auto;padding:0 26px" data-i18n="ta.saveAgency">Save agency details</button>
           <div id="profileError" class="msg err"></div>
           <div id="profileOk" class="msg ok"></div>
         </div>
 
         <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
-          <button id="dashSupportBtn" class="btn line" type="button">Contact support</button>
+          <button id="dashSupportBtn" class="btn line" type="button" data-i18n="nav.contact">Contact support</button>
           <button id="dashSignOut" class="btn line" type="button">Sign out</button>
         </div>
         <div id="dashError" class="msg err"></div>
@@ -708,40 +709,40 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
 <section class="band alt">
   <div class="wrap">
     <div class="band-head">
-      <span class="tag">Partner questions</span>
-      <h2>The things agencies ask us first.</h2>
+      <span class="tag" data-i18n="ta.faq">Partner questions</span>
+      <h2 data-i18n="ta.faqTitle">The things agencies ask us first.</h2>
     </div>
     <div class="qa">
       <div class="qa-item"><span class="q-mark">01</span><div>
-        <h3>Is there a fee or a minimum number of bookings?</h3>
-        <p>No. There is no subscription, no joining fee and no minimum volume. If you book once and never again, nothing happens.</p>
+        <h3 data-i18n="ta.q1">Is there a fee or a minimum number of bookings?</h3>
+        <p data-i18n="ta.a1">No. There is no subscription, no joining fee and no minimum volume. If you book once and never again, nothing happens.</p>
       </div></div>
       <div class="qa-item"><span class="q-mark">02</span><div>
-        <h3>Who does the driver contact, me or my traveller?</h3>
-        <p>Your traveller. You enter their name and phone when booking, and that is what reaches the driver. You stay on the booking as the agency and receive the paperwork, so you are not relaying messages at dawn.</p>
+        <h3 data-i18n="ta.q2">Who does the driver contact, me or my traveller?</h3>
+        <p data-i18n="ta.a2">Your traveller. You enter their name and phone when booking, and that is what reaches the driver. You stay on the booking as the agency and receive the paperwork, so you are not relaying messages at dawn.</p>
       </div></div>
       <div class="qa-item"><span class="q-mark">03</span><div>
-        <h3>Do you contact my clients about anything else?</h3>
-        <p>Never. We use the passenger's details for that transfer only, because the driver needs to reach them on the day. No marketing, no newsletters, no upsells.</p>
+        <h3 data-i18n="ta.q3">Do you contact my clients about anything else?</h3>
+        <p data-i18n="ta.a3">Never. We use the passenger's details for that transfer only, because the driver needs to reach them on the day. No marketing, no newsletters, no upsells.</p>
       </div></div>
       <div class="qa-item"><span class="q-mark">04</span><div>
-        <h3>Can I include the transfer in a package or itinerary?</h3>
-        <p>Of course. How you present it to your traveller is your commercial relationship, not ours. We handle the transfer and stay out of the way.</p>
+        <h3 data-i18n="ta.q4">Can I include the transfer in a package or itinerary?</h3>
+        <p data-i18n="ta.a4">Of course. How you present it to your traveller is your commercial relationship, not ours. We handle the transfer and stay out of the way.</p>
       </div></div>
       <div class="qa-item"><span class="q-mark">05</span><div>
-        <h3>How do I pay?</h3>
-        <p>By card, per booking, at the moment you book. The monthly statement is a summary for your accounts, not an invoice to settle.</p>
+        <h3 data-i18n="ta.q5">How do I pay?</h3>
+        <p data-i18n="ta.a5">By card, per booking, at the moment you book. The monthly statement is a summary for your accounts, not an invoice to settle.</p>
       </div></div>
       <div class="qa-item"><span class="q-mark">06</span><div>
-        <h3>What if my traveller cancels?</h3>
-        <p>Cancel from your dashboard up to 12 hours before pick-up and the full amount goes back to your card automatically. Inside 12 hours the transfer is already assigned to a driver, so the booking stands.</p>
+        <h3 data-i18n="ta.q6">What if my traveller cancels?</h3>
+        <p data-i18n="ta.a6">Cancel from your dashboard up to 12 hours before pick-up and the full amount goes back to your card automatically. Inside 12 hours the transfer is already assigned to a driver, so the booking stands.</p>
       </div></div>
       <div class="qa-item"><span class="q-mark">07</span><div>
-        <h3>How long does approval take?</h3>
-        <p>Normally one working day. A website or social page makes it quicker, because it saves us asking.</p>
+        <h3 data-i18n="ta.q7">How long does approval take?</h3>
+        <p data-i18n="ta.a7">Normally one working day. A website or social page makes it quicker, because it saves us asking.</p>
       </div></div>
     </div>
-    <p class="footnote">Airportlink partner programme &middot; terms apply from your first booking</p>
+    <p class="footnote" data-i18n="ta.footNote">Airportlink partner programme &middot; terms apply from your first booking</p>
   </div>
 </section>
 
