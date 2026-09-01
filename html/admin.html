@@ -10,6 +10,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
+.chat-clock{display:flex;flex-direction:column;align-items:flex-end;gap:2px;
+  padding:0 14px;margin-left:auto}
+.clock-t{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:19px;
+  font-weight:600;line-height:1;font-variant-numeric:tabular-nums;color:var(--text)}
+.clock-l{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted)}
+/* Passados dez minutos com a conversa aberta, o número muda de cor.
+   Não é um alarme — é para se notar de relance numa fila. */
+.chat-clock.warn .clock-t{color:var(--warn,#B7791F)}
+.chat-clock.bad .clock-t{color:var(--bad,#B42318)}
+.chat-clock.done .clock-t{color:var(--muted)}
+
+.date-lab{display:block;font-size:11px;font-weight:600;color:var(--muted);
+  margin:0 0 5px;letter-spacing:.02em}
     /* Claro por omissão, escuro por escolha. Quem faz turnos de dia
        num escritório iluminado prefere claro; quem faz noite prefere
        escuro. O botão está no topo e a escolha fica guardada. */
@@ -811,9 +825,22 @@
           <input type="text" id="searchName" class="search-input" placeholder="Name">
         </div>
         <div class="search-grid">
-          <div style="display:flex;gap:8px">
-            <input type="date" id="searchDateFrom" class="search-input">
-            <input type="date" id="searchDateTo" class="search-input">
+          <!-- Duas datas diferentes, porque respondem a perguntas
+               diferentes: "quem viaja esta semana" e "quanto se
+               vendeu esta semana" nunca dão a mesma lista. -->
+          <div>
+            <label class="date-lab" for="searchDateFrom">Travel date</label>
+            <div style="display:flex;gap:8px">
+              <input type="date" id="searchDateFrom" class="search-input" title="Travelling from">
+              <input type="date" id="searchDateTo" class="search-input" title="Travelling until">
+            </div>
+          </div>
+          <div>
+            <label class="date-lab" for="searchSoldFrom">Booking date</label>
+            <div style="display:flex;gap:8px">
+              <input type="date" id="searchSoldFrom" class="search-input" title="Booked from">
+              <input type="date" id="searchSoldTo" class="search-input" title="Booked until">
+            </div>
           </div>
           <input type="text" id="searchPickup" class="search-input" placeholder="Pickup">
           <input type="text" id="searchDropoff" class="search-input" placeholder="Dropoff">
@@ -1145,6 +1172,12 @@
                 <strong id="chatWho">&mdash;</strong>
                 <span id="chatMeta">&mdash;</span>
               </div>
+              <!-- O tempo desde que a conversa abriu. Conta enquanto
+                   está aberta e congela no valor final ao fechar. -->
+              <div class="chat-clock" id="chatClock" hidden>
+                <span class="clock-t" id="clockValue">0:00</span>
+                <span class="clock-l" id="clockLabel">open</span>
+              </div>
               <div class="desk-actions">
                 <button class="doc-no hidden" id="chatUrgentBtn" type="button">Flag urgent</button>
                 <button class="doc-ok hidden" id="chatCloseBtn" type="button">Close chat</button>
@@ -1435,7 +1468,8 @@ function adminName() {
   var email = currentAdmin && currentAdmin.user && currentAdmin.user.email;
   return email ? email.split('@')[0] : 'Airportlink';
 }
-var bookingFilters = { bookingId:'', email:'', name:'', pickup:'', dropoff:'', dateFrom:'', dateTo:'', status:'' };
+var bookingFilters = { bookingId:'', email:'', name:'', pickup:'', dropoff:'',
+  dateFrom:'', dateTo:'', soldFrom:'', soldTo:'', status:'' };
 
 // Qual das vistas rápidas está escolhida. 'today-travel' por
 // omissão: quem abre o painel de manhã quer saber o que sai hoje.
@@ -1628,8 +1662,12 @@ async function loadBookings(filters) {
   if (filters.name) q = q.ilike('full_name', '%' + filters.name + '%');
   if (filters.pickup) q = q.ilike('pickup', '%' + filters.pickup + '%');
   if (filters.dropoff) q = q.ilike('dropoff', '%' + filters.dropoff + '%');
+  // booking_date é o dia da viagem; created_at é o dia da compra.
   if (filters.dateFrom) q = q.gte('booking_date', filters.dateFrom);
   if (filters.dateTo) q = q.lte('booking_date', filters.dateTo);
+  // created_at tem hora, por isso o "até" tem de ir ao fim do dia.
+  if (filters.soldFrom) q = q.gte('created_at', filters.soldFrom + 'T00:00:00');
+  if (filters.soldTo) q = q.lte('created_at', filters.soldTo + 'T23:59:59');
   if (filters.status) q = q.eq('status', filters.status);
 
   var res = await q;
@@ -1961,6 +1999,82 @@ var desk = {
   capacity: {}, state: 'offline', heartbeat: null, channel: null
 };
 
+/**
+ * O cronómetro de uma conversa.
+ *
+ * Conta desde que a conversa abriu — não desde que o agente a
+ * pegou. É o tempo que o parceiro do outro lado está a viver, e é
+ * esse que interessa medir.
+ *
+ * Quando a conversa fecha, o número congela no valor final em vez
+ * de desaparecer: fica o registo de quanto demorou.
+ */
+var chatClock = { timer: null, inicio: null, fim: null };
+
+function relogioTexto(ms) {
+  var s = Math.max(0, Math.floor(ms / 1000));
+  var h = Math.floor(s / 3600);
+  var m = Math.floor((s % 3600) / 60);
+  var seg = s % 60;
+
+  // Passada a hora, os segundos deixam de importar e só ocupam
+  // espaço. Antes disso são exatamente o que se quer ver.
+  if (h > 0) return h + 'h ' + String(m).padStart(2, '0') + 'm';
+  return m + ':' + String(seg).padStart(2, '0');
+}
+
+function pintarRelogio() {
+  var caixa = el('chatClock');
+  if (!caixa || !chatClock.inicio) return;
+
+  var fim = chatClock.fim || Date.now();
+  var decorrido = fim - chatClock.inicio;
+
+  el('clockValue').textContent = relogioTexto(decorrido);
+  el('clockLabel').textContent = chatClock.fim ? 'closed after' : 'open';
+
+  var min = decorrido / 60000;
+  caixa.className = 'chat-clock' +
+    (chatClock.fim ? ' done' : (min >= 20 ? ' bad' : (min >= 10 ? ' warn' : '')));
+}
+
+/**
+ * Arranca o cronómetro para uma conversa.
+ *
+ * `fechadaEm` só vem preenchido em conversas já resolvidas — nesse
+ * caso não há intervalo a correr, só um número a mostrar.
+ */
+function arrancarRelogio(abertaEm, fechadaEm) {
+  pararRelogio();
+
+  var inicio = abertaEm ? Date.parse(abertaEm) : NaN;
+  var caixa = el('chatClock');
+
+  if (!caixa) return;
+
+  if (!inicio || isNaN(inicio)) {
+    caixa.hidden = true;
+    return;
+  }
+
+  chatClock.inicio = inicio;
+  chatClock.fim = fechadaEm ? Date.parse(fechadaEm) : null;
+  caixa.hidden = false;
+
+  pintarRelogio();
+
+  // Só corre enquanto está aberta. Uma conversa fechada mostra um
+  // número fixo e não gasta um intervalo por cada separador aberto.
+  if (!chatClock.fim) {
+    chatClock.timer = setInterval(pintarRelogio, 1000);
+  }
+}
+
+function pararRelogio() {
+  if (chatClock.timer) clearInterval(chatClock.timer);
+  chatClock.timer = null;
+}
+
 function agoLabel(minutes) {
   var m = Math.round(Number(minutes) || 0);
   if (m < 1) return 'now';
@@ -2266,6 +2380,17 @@ async function openDeskChat(chatId) {
   el('chatMeta').textContent = [
     chat.email, chat.contact_phone, chat.country, chat.partner_status
   ].filter(Boolean).join('  ·  ');
+
+  // A API dá os minutos decorridos, não a data de abertura. Basta
+  // para reconstruir o instante em que começou, e daí o cronómetro
+  // conta sozinho a cada segundo.
+  var abriuEm = chat.created_at ||
+    (chat.minutes_since != null
+      ? new Date(Date.now() - Number(chat.minutes_since) * 60000).toISOString()
+      : null);
+
+  arrancarRelogio(abriuEm, chat.closed_at ||
+    (chat.status === 'resolved' || chat.status === 'closed' ? chat.updated_at : null));
 
   paintChatOwnership(chat);
   renderThread();
@@ -2585,12 +2710,22 @@ el('chatReply').addEventListener('keydown', function (e) {
 });
 
 el('chatCloseBtn').addEventListener('click', async function () {
+  // Congela o cronómetro no valor final antes de qualquer pedido:
+  // se a rede demorar, o número mostrado é o do momento em que
+  // carregaste e não o da resposta do servidor.
+  if (chatClock.inicio && !chatClock.fim) {
+    chatClock.fim = Date.now();
+    pararRelogio();
+    pintarRelogio();
+  }
   if (!desk.current) return;
   if (!window.confirm('Close this conversation?\n\nIt frees your slot. The partner can ' +
       'write again any time and it reopens.')) return;
 
   await deskFetch('/api/admin/chat/release', { chat_id: desk.current, close: true });
   desk.current = null;
+  pararRelogio();
+  el('chatClock').hidden = true;
   el('chatOpen').classList.add('hidden');
   el('chatBlank').classList.remove('hidden');
   await loadDesk();
@@ -2601,6 +2736,8 @@ el('chatReleaseBtn').addEventListener('click', async function () {
 
   await deskFetch('/api/admin/chat/release', { chat_id: desk.current, close: false });
   desk.current = null;
+  pararRelogio();
+  el('chatClock').hidden = true;
   el('chatOpen').classList.add('hidden');
   el('chatBlank').classList.remove('hidden');
   await loadDesk();
@@ -5238,16 +5375,20 @@ el('searchBtn').addEventListener('click', function () {
     dropoff: el('searchDropoff').value.trim(),
     dateFrom: el('searchDateFrom').value,
     dateTo: el('searchDateTo').value,
+    soldFrom: el('searchSoldFrom').value,
+    soldTo: el('searchSoldTo').value,
     status: el('searchStatus').value
   };
   loadBookings(bookingFilters);
 });
 
 el('clearSearchBtn').addEventListener('click', function () {
-  ['searchBookingId','searchEmail','searchName','searchPickup','searchDropoff','searchDateFrom','searchDateTo']
+  ['searchBookingId','searchEmail','searchName','searchPickup','searchDropoff',
+   'searchDateFrom','searchDateTo','searchSoldFrom','searchSoldTo']
     .forEach(function (id) { el(id).value = ''; });
   el('searchStatus').value = '';
-  bookingFilters = { bookingId:'', email:'', name:'', pickup:'', dropoff:'', dateFrom:'', dateTo:'', status:'' };
+  bookingFilters = { bookingId:'', email:'', name:'', pickup:'', dropoff:'',
+    dateFrom:'', dateTo:'', soldFrom:'', soldTo:'', status:'' };
   loadBookings(bookingFilters);
 });
 
