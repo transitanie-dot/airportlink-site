@@ -2667,14 +2667,42 @@ el('chatSendBtn').addEventListener('click', async function () {
 // as conversas e em qualquer computador onde este agente entre.
 var deskDisplayName = null;
 
+/**
+ * O nome que o parceiro vê quando este agente responde.
+ *
+ * Guardado no servidor, mas com uma cópia local. A razão: o
+ * /api/admin/team lê da vista support_team, que só mostra agentes
+ * ao serviço. Quem grava o nome antes de se pôr em Live não
+ * aparece nessa lista — e ao recarregar a página o nome parecia
+ * ter-se perdido, quando na verdade estava gravado.
+ *
+ * A cópia local resolve o arranque; o servidor continua a ser a
+ * verdade quando ele responde.
+ */
+var NAME_KEY = 'airportlink-agent-name';
+
 async function loadDisplayName() {
+  // Primeiro o que sabemos: o campo aparece preenchido de imediato
+  // em vez de piscar "Set your name" enquanto a rede responde.
+  try {
+    deskDisplayName = localStorage.getItem(NAME_KEY) || null;
+  } catch (e) {}
+
+  paintDisplayName();
+
   try {
     var team = await deskFetch('/api/admin/team');
     var me = (team.team || []).find(function (t) {
       return t.user_id === (adminId());
     });
 
-    deskDisplayName = (me && me.display_name) || null;
+    // Só substitui se o servidor tiver mesmo um nome. Não estar na
+    // lista significa "ainda não me pus ao serviço", e não "não
+    // tenho nome".
+    if (me && me.display_name) {
+      deskDisplayName = me.display_name;
+      try { localStorage.setItem(NAME_KEY, me.display_name); } catch (e) {}
+    }
   } catch (e) {}
 
   paintDisplayName();
@@ -2699,6 +2727,7 @@ el('deskName').addEventListener('click', async function () {
   try {
     await deskFetch('/api/admin/display-name', { display_name: name });
     deskDisplayName = name;
+    try { localStorage.setItem(NAME_KEY, name); } catch (e) {}
     paintDisplayName();
   } catch (e) {
     alert(e.message);
@@ -2779,9 +2808,12 @@ async function setDeskState(state) {
   el('dutyNote').textContent = STATE_NOTES[state];
 
   try {
+    // O nome escolhido, não o email. O servidor faz upsert nesta
+    // coluna, por isso mandar adminName() aqui apagava o nome
+    // definido — a cada mudança de estado e a cada batida do ponto.
     await deskFetch('/api/admin/presence', {
       state: state,
-      display_name: adminName()
+      display_name: deskDisplayName || adminName()
     });
   } catch (e) {
     alert(e.message);
@@ -2799,7 +2831,11 @@ async function setDeskState(state) {
   // em pausa continua em pausa, não volta sozinho a live.
   if (state !== 'offline') {
     desk.heartbeat = setInterval(function () {
-      deskFetch('/api/admin/presence', {}).catch(function () {});
+      // O nome vai também na batida: o servidor põe display_name em
+      // todos os upserts, e um corpo vazio fá-lo cair no email.
+      deskFetch('/api/admin/presence', {
+        display_name: deskDisplayName || adminName()
+      }).catch(function () {});
     }, 120000);
   }
 
