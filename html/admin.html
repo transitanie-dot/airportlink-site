@@ -459,6 +459,47 @@
 /* O aviso de demora. Três estados, cada um mais insistente: aos
        três minutos avisa, aos cinco insiste, aos dez já foi escalado
        e diz-se isso — o agente tem de saber que o supervisor sabe. */
+/* ---------- histórico ---------- */
+    /* O painel é absoluto, por isso o contentor que o segura tem de
+       ser o ponto de referência. Sem isto encostava ao canto da
+       janela em vez de cobrir a conversa. */
+    .desk-right{position:relative}
+    .hist-panel{position:absolute;inset:0;background:var(--card);z-index:5;
+      display:flex;flex-direction:column;border-radius:inherit}
+    .hist-head{display:flex;align-items:center;justify-content:space-between;gap:14px;
+      padding:16px 20px;border-bottom:1px solid var(--border)}
+    .hist-head strong{display:block;font-size:15px}
+    .hist-head span{font-size:12px;color:var(--muted)}
+    .hist-list{flex:1;overflow:auto;padding:8px}
+    .hist-item{display:block;width:100%;text-align:left;padding:13px 14px;border:0;
+      border-radius:10px;background:transparent;cursor:pointer;font-family:inherit;
+      border-bottom:1px solid var(--border)}
+    .hist-item:hover{background:var(--bg)}
+    .hist-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+    .hist-subj{font-size:14px;font-weight:600;color:var(--text)}
+    .hist-when{font-size:11.5px;color:var(--muted);flex:0 0 auto}
+    .hist-snip{margin:5px 0 0;font-size:12.5px;color:var(--muted);line-height:1.45;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .hist-tags{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+    .hist-read{position:absolute;inset:0;background:var(--card);display:flex;
+      flex-direction:column;border-radius:inherit}
+    .hist-read>button{margin:14px 20px 0;align-self:flex-start}
+    .hist-thread{flex:1;overflow:auto;padding:14px 20px 20px}
+
+    /* ---------- respostas rápidas ---------- */
+    .snips{max-height:230px;overflow:auto;border-top:1px solid var(--border);
+      background:var(--bg)}
+    .snip{display:block;width:100%;text-align:left;padding:11px 18px;border:0;
+      background:transparent;cursor:pointer;font-family:inherit;
+      border-bottom:1px solid var(--border)}
+    .snip:hover,.snip.on{background:var(--card)}
+    .snip-top{display:flex;align-items:baseline;gap:10px}
+    .snip-key{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--accent)}
+    .snip-lab{font-size:13px;font-weight:600;color:var(--text)}
+    .snip-body{margin:3px 0 0;font-size:12px;color:var(--muted);line-height:1.45;
+      display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+    .snip-none{padding:14px 18px;font-size:12.5px;color:var(--muted)}
+
     .reply-warn{display:flex;align-items:center;gap:8px;padding:7px 14px;
       border-radius:999px;font-size:13px;font-weight:600;margin-left:auto}
     .reply-warn::before{content:"";width:7px;height:7px;border-radius:999px;
@@ -1215,6 +1256,23 @@
             the limit is there so each one gets a real answer.</span>
           </div>
 
+          <!-- O histórico do parceiro. Desliza sobre a conversa em
+               vez de a substituir: fecha-se e volta-se ao sítio. -->
+          <div class="hist-panel" id="histPanel" hidden>
+            <div class="hist-head">
+              <div>
+                <strong id="histWho">Past conversations</strong>
+                <span id="histCount"></span>
+              </div>
+              <button class="clear-btn" id="histClose" type="button">Close</button>
+            </div>
+            <div class="hist-list" id="histList"></div>
+            <div class="hist-read" id="histRead" hidden>
+              <button class="clear-btn" id="histBack" type="button">&larr; Back to the list</button>
+              <div class="hist-thread" id="histThread"></div>
+            </div>
+          </div>
+
           <div class="hidden" id="chatOpen" style="display:flex;flex-direction:column;height:100%">
             <div class="desk-head">
               <div>
@@ -1234,6 +1292,7 @@
                 <span class="clock-l" id="clockLabel">open</span>
               </div>
               <div class="desk-actions">
+                <button class="clear-btn" id="chatHistBtn" type="button">Past chats</button>
                 <button class="doc-no hidden" id="chatUrgentBtn" type="button">Flag urgent</button>
                 <button class="doc-ok hidden" id="chatCloseBtn" type="button">Close chat</button>
                 <button class="clear-btn hidden" id="chatReleaseBtn" type="button">Hand back</button>
@@ -1260,8 +1319,13 @@
               </button>
             </div>
 
+            <!-- As respostas rápidas. Aparecem ao escrever / na
+                 caixa e filtram enquanto se escreve. -->
+            <div class="snips" id="snipBox" hidden></div>
+
             <div class="desk-foot">
-              <textarea id="chatReply" rows="2" placeholder="Write your reply" maxlength="4000"></textarea>
+              <textarea id="chatReply" rows="2"
+                placeholder="Write your reply — type / for quick replies" maxlength="4000"></textarea>
               <button class="search-btn" id="chatSendBtn" type="button">Send</button>
             </div>
             <div class="gate-msg" id="chatErr" style="margin:0 16px 16px"></div>
@@ -2178,6 +2242,193 @@ function marcarEspera(desde) {
   pintarAvisoResposta();
 }
 
+// ============================================================
+// HISTÓRICO DO PARCEIRO
+//
+// Responder a alguém sem saber o que já foi dito é a diferença
+// entre "quem é este?" e "vejo que escreveu na semana passada
+// sobre a fatura". Estava a faltar.
+// ============================================================
+var hist = { partner: null, lista: [] };
+
+async function abrirHistorico(partnerId, nome) {
+  hist.partner = partnerId;
+  el('histWho').textContent = nome || 'Past conversations';
+  el('histList').innerHTML = '<div class="snip-none">Loading...</div>';
+  el('histRead').hidden = true;
+  el('histPanel').hidden = false;
+
+  try {
+    var res = await deskFetch('/api/admin/partner/' +
+      encodeURIComponent(partnerId) + '/history');
+    hist.lista = res.history || [];
+  } catch (e) {
+    el('histList').innerHTML = '<div class="snip-none">' + escapeHtml(e.message) + '</div>';
+    return;
+  }
+
+  el('histCount').textContent = hist.lista.length +
+    (hist.lista.length === 1 ? ' conversation' : ' conversations');
+
+  if (!hist.lista.length) {
+    el('histList').innerHTML = '<div class="snip-none">Nothing before this one.</div>';
+    return;
+  }
+
+  el('histList').innerHTML = hist.lista.map(function (h) {
+    var tags = [];
+    if (h.status === 'open') tags.push('<span class="tag new">open</span>');
+    if (h.closed_reason === 'no_agent_available') {
+      tags.push('<span class="tag late">closed with no agent</span>');
+    }
+    if (h.reopened_count > 0) {
+      tags.push('<span class="tag">reopened ' + h.reopened_count + '&times;</span>');
+    }
+    if (h.first_response_minutes != null) {
+      tags.push('<span class="tag">answered in ' + agoLabel(h.first_response_minutes) + '</span>');
+    }
+
+    return '<button class="hist-item" data-hist="' + escapeHtml(h.chat_id) + '" type="button">' +
+      '<div class="hist-top">' +
+      '<span class="hist-subj">' +
+      escapeHtml(h.subject || h.ticket_number || 'No subject') + '</span>' +
+      '<span class="hist-when">' + escapeHtml(dataCurta(h.created_at)) + '</span></div>' +
+      '<p class="hist-snip">' + escapeHtml(h.last_message_text || 'No messages') + '</p>' +
+      (tags.length ? '<div class="hist-tags">' + tags.join('') + '</div>' : '') +
+      '</button>';
+  }).join('');
+
+  qsa('[data-hist]').forEach(function (b) {
+    b.addEventListener('click', function () { lerConversa(b.getAttribute('data-hist')); });
+  });
+}
+
+async function lerConversa(chatId) {
+  el('histThread').innerHTML = '<div class="snip-none">Loading...</div>';
+  el('histRead').hidden = false;
+
+  try {
+    var res = await deskFetch('/api/admin/chat/' + encodeURIComponent(chatId) + '/full');
+    var msgs = res.messages || [];
+
+    if (!msgs.length) {
+      el('histThread').innerHTML = '<div class="snip-none">No messages.</div>';
+      return;
+    }
+
+    // As notas internas aparecem aqui porque quem lê é um agente.
+    // O parceiro nunca as vê — é por isso que este endpoint existe
+    // separado do dele.
+    // A mesma marcação da conversa ao vivo, para não haver dois
+    // aspetos diferentes para a mesma coisa.
+    el('histThread').innerHTML = msgs.map(function (m) {
+      if (m.internal) {
+        return '<div class="d-note' + (m.system ? ' sys' : '') + '">' +
+          '<span class="who">' +
+          escapeHtml(m.system ? 'System' : (m.sender_name || 'note')) +
+          ' &middot; ' + escapeHtml(deskClock(m.created_at)) + '</span>' +
+          escapeHtml(m.body || '') + '</div>';
+      }
+
+      return '<div class="d-row ' + (m.sender === 'admin' ? 'mine' : 'theirs') +
+        ' turn last"><div><div class="d-bub">' +
+        escapeHtml(m.body || '') + '</div>' +
+        '<div class="d-meta">' + escapeHtml(deskClock(m.created_at)) +
+        (m.sender === 'admin' && m.sender_name
+          ? ' &middot; ' + escapeHtml(m.sender_name) : '') +
+        '</div></div></div>';
+    }).join('');
+  } catch (e) {
+    el('histThread').innerHTML = '<div class="snip-none">' + escapeHtml(e.message) + '</div>';
+  }
+}
+
+// ============================================================
+// RESPOSTAS RÁPIDAS
+//
+// Um agente escreve as mesmas cinco frases todos os dias. Escreve
+// "/" na caixa e a lista aparece; continua a escrever e filtra.
+//
+// Partilhadas por toda a equipa de propósito: se cada um tiver as
+// suas, a voz da empresa desfaz-se em cinco vozes.
+// ============================================================
+var snips = { todos: [], vistos: [], escolhido: 0 };
+
+async function carregarSnips() {
+  try {
+    var res = await deskFetch('/api/admin/snippets');
+    snips.todos = res.snippets || [];
+  } catch (e) {
+    snips.todos = [];
+  }
+}
+
+function fecharSnips() {
+  el('snipBox').hidden = true;
+  snips.vistos = [];
+  snips.escolhido = 0;
+}
+
+function pintarSnips(termo) {
+  var caixa = el('snipBox');
+  var t = String(termo || '').toLowerCase();
+
+  snips.vistos = snips.todos.filter(function (s2) {
+    if (!t) return true;
+    return s2.shortcut.toLowerCase().indexOf(t) === 0 ||
+      s2.label.toLowerCase().indexOf(t) >= 0;
+  }).slice(0, 8);
+
+  if (!snips.vistos.length) {
+    caixa.innerHTML = '<div class="snip-none">No quick reply matches that.</div>';
+    caixa.hidden = false;
+    return;
+  }
+
+  snips.escolhido = Math.min(snips.escolhido, snips.vistos.length - 1);
+
+  caixa.innerHTML = snips.vistos.map(function (s2, i) {
+    return '<button class="snip' + (i === snips.escolhido ? ' on' : '') +
+      '" data-snip="' + i + '" type="button">' +
+      '<div class="snip-top"><span class="snip-key">' + escapeHtml(s2.shortcut) + '</span>' +
+      '<span class="snip-lab">' + escapeHtml(s2.label) + '</span></div>' +
+      '<p class="snip-body">' + escapeHtml(s2.body) + '</p></button>';
+  }).join('');
+
+  caixa.hidden = false;
+
+  qsa('[data-snip]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      usarSnip(snips.vistos[Number(b.getAttribute('data-snip'))]);
+    });
+  });
+}
+
+/**
+ * Cola a resposta e devolve o cursor à caixa.
+ *
+ * Substitui só o atalho que se escreveu, não a caixa inteira: quem
+ * já tinha escrito meia frase antes não a perde.
+ */
+function usarSnip(s2) {
+  if (!s2) return;
+
+  var campo = el('chatReply');
+  var texto = campo.value;
+  var corte = texto.lastIndexOf('/');
+
+  campo.value = (corte >= 0 ? texto.slice(0, corte) : texto) + s2.body;
+  fecharSnips();
+  campo.focus();
+  campo.setSelectionRange(campo.value.length, campo.value.length);
+}
+
+function dataCurta(iso) {
+  var d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
 function pararRelogio() {
   if (chatClock.timer) clearInterval(chatClock.timer);
   chatClock.timer = null;
@@ -2493,6 +2744,10 @@ async function openDeskChat(chatId) {
 
   el('chatBlank').classList.add('hidden');
   el('chatOpen').classList.remove('hidden');
+  // O histórico é do parceiro anterior; trocar de conversa fecha-o.
+  el('histPanel').hidden = true;
+  el('histRead').hidden = true;
+  fecharSnips();
 
   el('chatWho').textContent = chat.trading_name || chat.legal_name || chat.email;
   el('chatMeta').textContent = [
@@ -2808,6 +3063,13 @@ var deskDisplayName = null;
  */
 var NAME_KEY = 'airportlink-agent-name';
 
+async function iniciarApoio() {
+  // As respostas rápidas mudam raramente: carregam-se uma vez ao
+  // abrir o painel e ficam em memória.
+  await carregarSnips();
+  await loadDisplayName();
+}
+
 async function loadDisplayName() {
   // Primeiro o que sabemos: o campo aparece preenchido de imediato
   // em vez de piscar "Set your name" enquanto a rede responde.
@@ -2862,7 +3124,69 @@ el('deskName').addEventListener('click', async function () {
 });
 
 el('chatReply').addEventListener('keydown', function (e) {
+  var aberto = !el('snipBox').hidden;
+
+  // Com a lista aberta, as setas e o Enter pertencem-lhe. Sem isto,
+  // o Enter enviava a mensagem a meio de escolher uma resposta.
+  if (aberto) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      snips.escolhido += (e.key === 'ArrowDown' ? 1 : -1);
+      if (snips.escolhido < 0) snips.escolhido = snips.vistos.length - 1;
+      if (snips.escolhido >= snips.vistos.length) snips.escolhido = 0;
+      pintarSnips(termoAtual());
+      return;
+    }
+    if (e.key === 'Enter' || e.key === 'Tab') {
+      e.preventDefault();
+      usarSnip(snips.vistos[snips.escolhido]);
+      return;
+    }
+    if (e.key === 'Escape') { e.preventDefault(); fecharSnips(); return; }
+  }
+
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); el('chatSendBtn').click(); }
+});
+
+/** O que se escreveu depois da última barra. */
+function termoAtual() {
+  var t = el('chatReply').value;
+  var i = t.lastIndexOf('/');
+  if (i < 0) return null;
+  // Uma barra a meio de uma palavra não é um atalho: "24/7" não
+  // devia abrir a lista.
+  if (i > 0 && !/\s/.test(t[i - 1])) return null;
+  var depois = t.slice(i);
+  return /\s/.test(depois) ? null : depois;
+}
+
+el('chatReply').addEventListener('input', function () {
+  var t = termoAtual();
+  if (t === null) return fecharSnips();
+  snips.escolhido = 0;
+  pintarSnips(t);
+});
+
+el('chatReply').addEventListener('blur', function () {
+  // Um atraso curto, senão o clique numa resposta perde-se porque
+  // a lista fecha antes de o clique chegar.
+  setTimeout(fecharSnips, 150);
+});
+
+// ---------- histórico ----------
+el('chatHistBtn').addEventListener('click', function () {
+  var chat = desk.chats.find(function (c) { return c.chat_id === desk.current; });
+  if (!chat) return;
+  abrirHistorico(chat.partner_id,
+    chat.trading_name || chat.legal_name || chat.email);
+});
+
+el('histClose').addEventListener('click', function () {
+  el('histPanel').hidden = true;
+});
+
+el('histBack').addEventListener('click', function () {
+  el('histRead').hidden = true;
 });
 
 el('chatCloseBtn').addEventListener('click', async function () {
@@ -5734,7 +6058,7 @@ async function init() {
   await loadCharges();
   await loadFinance();
   await loadDesk();
-  await loadDisplayName();
+  await iniciarApoio();
   subscribeToAllConversations();
   watchLive();
 }
