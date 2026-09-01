@@ -2812,6 +2812,50 @@ function deskClock(when) {
  * Cada uma permite coisas diferentes, e a barra diz qual é sem
  * obrigar a adivinhar pelos botões que aparecem.
  */
+/**
+ * Pegar uma conversa.
+ *
+ * Uma conversa que JÁ É MINHA não é um erro. O servidor responde
+ * 'already_taken' porque olha só para o assigned_to estar
+ * preenchido — não repara que quem está a pedir é o dono.
+ *
+ * Isto acontecia sempre depois de recarregar a página: a oferta
+ * ainda estava no ecrã, carregava-se em atender, e o painel dizia
+ * que outro agente tinha ficado com ela. Não tinha: era a própria
+ * pessoa.
+ */
+async function pegarConversa(chatId) {
+  var chat = desk.chats.find(function (c) { return c.chat_id === chatId; });
+
+  // Já é minha: abre e pronto.
+  if (chat && chat.assigned_to === adminId()) {
+    await openDeskChat(chatId);
+    return true;
+  }
+
+  try {
+    await deskFetch('/api/admin/chat/claim', { chat_id: chatId });
+  } catch (e) {
+    await loadDesk();
+
+    // Recarrega e volta a ver: entre o pedido e a resposta pode
+    // ter mudado, e o caso mais comum é ter ficado minha.
+    var agora = desk.chats.find(function (c) { return c.chat_id === chatId; });
+
+    if (agora && agora.assigned_to === adminId()) {
+      await openDeskChat(chatId);
+      return true;
+    }
+
+    alert(e.message);
+    return false;
+  }
+
+  await loadDesk();
+  await openDeskChat(chatId);
+  return true;
+}
+
 function paintChatOwnership(chat) {
   var mine = chat.assigned_to === adminId();
   var free = !chat.assigned_to;
@@ -2862,18 +2906,17 @@ el('chatTakeBtn').addEventListener('click', async function () {
 
   el('chatTakeBtn').disabled = true;
 
-  try {
-    await deskFetch('/api/admin/chat/claim', { chat_id: desk.current });
-    await loadDesk();
+  // A mesma função do botão de atender: uma conversa que já é minha
+  // não pode dar erro, venha o clique de onde vier.
+  var ok = await pegarConversa(desk.current);
 
+  if (ok) {
     var updated = desk.chats.find(function (c) { return c.chat_id === desk.current; });
     if (updated) paintChatOwnership(updated);
-
     el('chatReply').focus();
-  } catch (e) {
-    alert(e.message);
-    el('chatTakeBtn').disabled = false;
   }
+
+  el('chatTakeBtn').disabled = false;
 });
 
 function renderThread() {
@@ -3599,18 +3642,7 @@ el('ringTake').addEventListener('click', async function () {
    * trinta segundos corriam até ao fim, e o servidor registava
    * "não atendeu" a quem tinha carregado no botão.
    */
-  try {
-    await deskFetch('/api/admin/chat/claim', { chat_id: chatId });
-  } catch (e) {
-    // Outro agente chegou primeiro, ou já tenho duas abertas. A
-    // mensagem do servidor explica qual dos dois.
-    alert(e.message);
-    await loadDesk();
-    return;
-  }
-
-  await loadDesk();
-  await openDeskChat(chatId);
+  await pegarConversa(chatId);
 });
 
 el('ringPass').addEventListener('click', function () { passRing(true); });
