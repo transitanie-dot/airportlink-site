@@ -534,6 +534,13 @@
     .chat-row.late{box-shadow:inset 3px 0 0 var(--bad,#B42318)}
     .tag.late{background:var(--bad,#B42318);color:#fff;border-color:transparent}
 
+    /* Enquanto não se sabe, a barra fica neutra e a pulsar devagar.
+       Um cinzento parado leria-se como "offline", que é uma
+       afirmação que ainda não podemos fazer. */
+    body[data-duty="unknown"] .duty-bar{background:var(--border);
+      animation:dutyWarn 2s ease-in-out infinite}
+    body[data-duty="unknown"] .st{opacity:.35;pointer-events:none}
+
     .duty-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:60;
       background:var(--muted);transition:background .25s}
     body[data-duty="live"] .duty-bar{background:var(--ok)}
@@ -2156,8 +2163,30 @@ function openDetails(id) {
 // ============================================================
 var desk = {
   chats: [], current: null, messages: [],
-  capacity: {}, state: 'offline', heartbeat: null, channel: null
+  // 'unknown' e não 'offline': ainda não perguntámos ao servidor.
+  // Arrancar em offline fazia o painel piscar — dizia offline
+  // durante dois segundos e só depois mostrava o estado real.
+  capacity: {}, state: 'unknown', heartbeat: null, channel: null
 };
+
+/**
+ * O que sabemos antes de falar com a rede.
+ *
+ * Corre imediatamente, sem esperar por nada. O nome vem do
+ * localStorage e o estado fica em suspenso até o servidor
+ * responder — mostrar "offline" enquanto não se sabe é pior do que
+ * não mostrar nada, porque parece uma resposta e não é.
+ */
+(function pintarDeImediato() {
+  try {
+    deskDisplayName = localStorage.getItem('airportlink-agent-name') || null;
+  } catch (e) {}
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (deskDisplayName && el('deskNameText')) paintDisplayName();
+    document.body.setAttribute('data-duty', 'unknown');
+  });
+})();
 
 /**
  * O cronómetro de uma conversa.
@@ -3238,11 +3267,17 @@ var deskDisplayName = null;
 var NAME_KEY = 'airportlink-agent-name';
 
 async function iniciarApoio() {
-  // As respostas rápidas mudam raramente: carregam-se uma vez ao
-  // abrir o painel e ficam em memória.
-  await carregarSnips();
-  await loadDisplayName();
-  await recuperarEstado();
+  // As três em paralelo. Nenhuma depende das outras, e em fila o
+  // estado só aparecia depois de as respostas rápidas chegarem —
+  // que é a menos urgente das três.
+  //
+  // O recuperarEstado é o que interessa despachar: é ele que tira
+  // a barra do topo do cinzento de "ainda não sei".
+  await Promise.all([
+    recuperarEstado(),
+    loadDisplayName(),
+    carregarSnips()
+  ]);
 }
 
 /**
@@ -3263,10 +3298,16 @@ async function recuperarEstado() {
     var team = await deskFetch('/api/admin/team');
     meu = (team.team || []).find(function (t) { return t.user_id === adminId(); });
   } catch (e) {
+    // Sem resposta assume-se offline: é o estado seguro. Melhor
+    // não receber chamadas do que pensar que se está a receber.
+    await setDeskState('offline', true);
     return;
   }
 
-  if (!meu || !meu.state || meu.state === 'offline') return;
+  if (!meu || !meu.state || meu.state === 'offline') {
+    await setDeskState('offline', true);
+    return;
+  }
 
   // A presença pode ter expirado enquanto a página esteve fechada.
   // Nesse caso não se retoma nada: estar ao serviço tem de ser uma
@@ -3453,7 +3494,8 @@ var STATE_NOTES = {
   live: 'You are taking chats. New ones can be assigned to you.',
   break: 'On a break. The chats you already have still work, but no new ones ' +
     'come to you — and you still count as being on shift.',
-  offline: 'Offline. You will not be given new chats.'
+  offline: 'Offline. You will not be given new chats.',
+  unknown: 'Checking your shift...'
 };
 
 async function setDeskState(state, aRetomar) {
@@ -6290,8 +6332,16 @@ async function init() {
   await loadPartners();
   await loadCharges();
   await loadFinance();
+  // A presença primeiro, e em paralelo com o resto.
+  //
+  // Antes corria no fim, depois de carregar reservas, parceiros e
+  // finanças — e o painel mostrava "offline" durante esse tempo
+  // todo. Nada disto depende do estado do agente, por isso não há
+  // razão para esperar.
+  var presenca = iniciarApoio();
+
   await loadDesk();
-  await iniciarApoio();
+  await presenca;
   subscribeToAllConversations();
   watchLive();
 }
