@@ -11,35 +11,186 @@
  * ---------------------------------------------------------------
  */
 /**
- * Google Analytics.
+ * Google Analytics, com consentimento.
+ * ---------------------------------------------------------------
+ * O GA4 põe cookies, e na União Europeia isso exige consentimento
+ * ANTES de os pôr — não basta avisar que se usam.
+ *
+ * Por isso o script só é carregado depois de a pessoa aceitar. Um
+ * banner que diz "ao continuar aceita" enquanto já mediu tudo não
+ * é consentimento nenhum, e é o que a maioria dos sites faz.
  *
  * Aqui e não nas páginas: todas carregam este ficheiro, incluindo
  * as 764 geradas e o blogue. Colar a etiqueta em cada uma seria
  * 776 sítios para mudar de cada vez que a conta mudasse.
- *
- * Corre uma só vez por página — a verificação do window.dataLayer
- * evita uma segunda inicialização se este ficheiro for carregado
- * duas vezes por engano.
+ * ---------------------------------------------------------------
  */
-(function analytics() {
-  var ID = 'G-GTP634FCKN';
+(function cookies() {
+  var GA_ID = 'G-GTP634FCKN';
+  var KEY = 'airportlink-consent';
+  var VERSAO = 1;
 
-  if (window.dataLayer && window.gtag) return;
+  function lido() {
+    try {
+      var v = JSON.parse(localStorage.getItem(KEY) || 'null');
+      // Se a versão mudar — porque passámos a usar outra coisa —
+      // pergunta-se outra vez. Consentimento dado para uma coisa
+      // não vale para outra.
+      return v && v.v === VERSAO ? v : null;
+    } catch (e) { return null; }
+  }
 
-  var s = document.createElement('script');
-  s.async = true;
-  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ID;
-  document.head.appendChild(s);
+  function guardar(aceite) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({
+        v: VERSAO, analytics: aceite, at: new Date().toISOString()
+      }));
+    } catch (e) {}
+  }
 
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function () { window.dataLayer.push(arguments); };
+  function arrancarGA() {
+    if (window.gtag) return;
 
-  window.gtag('js', new Date());
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
 
-  // anonymize_ip está ligado por omissão no GA4, mas declará-lo
-  // deixa a intenção escrita — e é o que a política de privacidade
-  // diz que fazemos.
-  window.gtag('config', ID, { anonymize_ip: true });
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+
+    window.gtag('js', new Date());
+    window.gtag('config', GA_ID, { anonymize_ip: true });
+  }
+
+  // As frases, nas línguas do site. O banner aparece antes de o
+  // i18n carregar o dicionário, por isso trazem-se aqui.
+  var T = {
+    en: { t: 'We use cookies to measure how the site is used.',
+          b: 'Only if you accept. Nothing is measured until then, and the booking works either way.',
+          y: 'Accept', n: 'Decline', p: 'Privacy policy' },
+    pt: { t: 'Usamos cookies para medir como o site é usado.',
+          b: 'Só se aceitar. Até lá nada é medido, e a reserva funciona de qualquer forma.',
+          y: 'Aceitar', n: 'Recusar', p: 'Política de privacidade' },
+    es: { t: 'Usamos cookies para medir cómo se usa el sitio.',
+          b: 'Solo si aceptas. Hasta entonces no se mide nada, y la reserva funciona igual.',
+          y: 'Aceptar', n: 'Rechazar', p: 'Política de privacidad' },
+    fr: { t: 'Nous utilisons des cookies pour mesurer l\u2019usage du site.',
+          b: 'Uniquement si vous acceptez. Rien n\u2019est mesuré avant, et la réservation fonctionne de toute façon.',
+          y: 'Accepter', n: 'Refuser', p: 'Politique de confidentialité' },
+    de: { t: 'Wir verwenden Cookies, um die Nutzung der Website zu messen.',
+          b: 'Nur wenn Sie zustimmen. Bis dahin wird nichts gemessen, und die Buchung funktioniert ohnehin.',
+          y: 'Zustimmen', n: 'Ablehnen', p: 'Datenschutz' },
+    it: { t: 'Usiamo i cookie per misurare come viene usato il sito.',
+          b: 'Solo se accetti. Fino ad allora non viene misurato nulla, e la prenotazione funziona comunque.',
+          y: 'Accetta', n: 'Rifiuta', p: 'Informativa sulla privacy' },
+    nl: { t: 'We gebruiken cookies om te meten hoe de site wordt gebruikt.',
+          b: 'Alleen als u akkoord gaat. Tot dan wordt er niets gemeten, en boeken werkt sowieso.',
+          y: 'Akkoord', n: 'Weigeren', p: 'Privacybeleid' },
+    pl: { t: 'Używamy plików cookie, aby mierzyć korzystanie ze strony.',
+          b: 'Tylko za Twoją zgodą. Do tego czasu nic nie jest mierzone, a rezerwacja i tak działa.',
+          y: 'Akceptuję', n: 'Odrzuć', p: 'Polityka prywatności' }
+  };
+
+  function frases() {
+    var l = (document.documentElement.lang || '').slice(0, 2).toLowerCase();
+    if (T[l]) return T[l];
+
+    try {
+      var guardado = localStorage.getItem('airportlink-lang');
+      if (guardado && T[guardado]) return T[guardado];
+      var nav = (navigator.language || 'en').slice(0, 2).toLowerCase();
+      if (T[nav]) return T[nav];
+    } catch (e) {}
+
+    return T.en;
+  }
+
+  function banner() {
+    var t = frases();
+
+    var box = document.createElement('div');
+    box.className = 'ck-bar';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-label', t.t);
+
+    box.innerHTML =
+      '<div class="ck-in">' +
+        '<div class="ck-txt"><strong>' + t.t + '</strong>' +
+        '<span>' + t.b + ' <a href="/privacypolicy">' + t.p + '</a></span></div>' +
+        '<div class="ck-btns">' +
+          '<button class="ck-no" type="button">' + t.n + '</button>' +
+          '<button class="ck-yes" type="button">' + t.y + '</button>' +
+        '</div>' +
+      '</div>';
+
+    var css = document.createElement('style');
+    css.textContent =
+      '.ck-bar{position:fixed;left:0;right:0;bottom:0;z-index:9000;' +
+        'background:var(--surface,#FBFBF8);border-top:1px solid var(--rule,rgba(20,26,40,.12));' +
+        'box-shadow:0 -8px 30px rgba(20,26,40,.10);' +
+        'animation:ckUp .32s cubic-bezier(.22,.9,.3,1) both}' +
+      '@keyframes ckUp{from{transform:translateY(100%)}to{transform:none}}' +
+      '@media (prefers-reduced-motion:reduce){.ck-bar{animation:none}}' +
+      '.ck-in{max-width:1100px;margin:0 auto;padding:16px 22px;display:flex;' +
+        'align-items:center;gap:22px;flex-wrap:wrap;justify-content:space-between}' +
+      '.ck-txt{flex:1 1 320px;min-width:0}' +
+      '.ck-txt strong{display:block;font-size:14.5px;font-weight:600;margin-bottom:3px;' +
+        'color:var(--text,#141A28)}' +
+      '.ck-txt span{display:block;font-size:13px;line-height:1.55;' +
+        'color:var(--muted,#606A7B)}' +
+      '.ck-txt a{color:var(--teal,#0F766E)}' +
+      '.ck-btns{display:flex;gap:10px;flex:0 0 auto}' +
+      // Os dois botões com o mesmo peso visual. Um "recusar" em letra
+      // cinzenta ao lado de um "aceitar" grande e verde não é uma
+      // escolha livre, e é isso que a lei pede.
+      '.ck-bar button{padding:11px 22px;border-radius:999px;font:inherit;font-size:14px;' +
+        'font-weight:600;cursor:pointer;border:1px solid var(--rule-strong,rgba(20,26,40,.22));' +
+        'background:transparent;color:var(--text,#141A28)}' +
+      '.ck-bar button:hover{border-color:var(--teal,#0F766E)}' +
+      '.ck-yes{background:var(--teal,#0F766E)!important;color:#fff!important;' +
+        'border-color:var(--teal,#0F766E)!important}' +
+      '@media (max-width:560px){.ck-in{padding:14px 16px}.ck-btns{width:100%}' +
+        '.ck-bar button{flex:1}}';
+
+    document.head.appendChild(css);
+    document.body.appendChild(box);
+
+    var fechar = function (aceite) {
+      guardar(aceite);
+      box.remove();
+      if (aceite) arrancarGA();
+    };
+
+    box.querySelector('.ck-yes').addEventListener('click', function () { fechar(true); });
+    box.querySelector('.ck-no').addEventListener('click', function () { fechar(false); });
+  }
+
+  var escolha = lido();
+
+  if (escolha) {
+    if (escolha.analytics) arrancarGA();
+    return;
+  }
+
+  // O painel de operações e o portal de motoristas são ferramentas
+  // internas com noindex. Um banner de cookies num sítio onde já se
+  // fez login é ruído.
+  if (document.querySelector('meta[name="robots"][content*="noindex"]')) return;
+
+  if (document.body) banner();
+  else document.addEventListener('DOMContentLoaded', banner);
+
+  /**
+   * Mudar de ideias.
+   *
+   * Consentimento que não se pode retirar não é consentimento. O
+   * rodapé tem uma ligação para isto.
+   */
+  window.airportlinkCookies = function () {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    location.reload();
+  };
 })();
 
 (function () {
@@ -131,7 +282,11 @@
       // rodapé de todas as páginas.
       { href: '/login',         label: 'Forgot password', i18nKey: 'nav.forgotPass' },
       { href: '/terms',         label: 'Terms', i18nKey: 'nav.terms' },
-      { href: '/privacypolicy', label: 'Privacy policy', i18nKey: 'nav.privacy' }
+      { href: '/privacypolicy', label: 'Privacy policy', i18nKey: 'nav.privacy' },
+      // Consentimento que não se pode retirar não é consentimento.
+      // O href='#' com onclick seria mais simples, mas isto mantém
+      // a lista toda com a mesma forma.
+      { href: '#cookies',       label: 'Cookie settings', i18nKey: 'nav.cookies' }
     ]}
   ];
 
@@ -264,7 +419,14 @@
         return '<div><h3' + (col.i18nKey ? ' data-i18n="' + esc(col.i18nKey) + '"' : '') +
           '>' + esc(col.title) + '</h3>' +
           col.links.map(function (l) {
-            return '<a href="' + esc(l.href) + '"' + key(l) + '>' + esc(l.label) + '</a>';
+            // O #cookies não navega: reabre o banner para se poder
+            // mudar de ideias. Sem isto era uma âncora para lado
+            // nenhum no rodapé de 776 páginas.
+            var extra = l.href === '#cookies'
+              ? ' onclick="event.preventDefault();window.airportlinkCookies&&window.airportlinkCookies()"'
+              : '';
+            return '<a href="' + esc(l.href) + '"' + key(l) + extra + '>' +
+              esc(l.label) + '</a>';
           }).join('') + '</div>';
       }).join('') +
     '</div><div class="footer-bottom">' +
