@@ -1921,7 +1921,8 @@ const fixed = [
   { loc: SITE + '/drivers', priority: '0.9', freq: 'monthly' },
   { loc: SITE + '/support', priority: '0.5', freq: 'monthly' },
   { loc: SITE + '/terms', priority: '0.3', freq: 'yearly' },
-  { loc: SITE + '/privacypolicy', priority: '0.3', freq: 'yearly' }
+  { loc: SITE + '/privacypolicy', priority: '0.3', freq: 'yearly' },
+  { loc: SITE + '/cookiepolicy', priority: '0.3', freq: 'yearly' }
 ];
 
 // Um sitemap por país, mais um das páginas fixas, e um índice que
