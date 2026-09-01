@@ -2849,6 +2849,24 @@ async function setDeskState(state) {
   // qualquer outra coisa que precise de saber sem perguntar.
   document.body.setAttribute('data-duty', state);
 
+  /**
+   * Pôr-se em Live é um clique, e um clique é o gesto que o browser
+   * exige para libertar o áudio. Aproveitamo-lo: quem entra ao
+   * serviço fica com o som pronto no mesmo instante, sem ter de
+   * clicar noutro sítio qualquer primeiro.
+   */
+  if (state === 'live') {
+    unlockAudio();
+    // Uma nota curta a confirmar que o som funciona. É a diferença
+    // entre saber que está pronto e descobrir na primeira chamada
+    // perdida que não estava.
+    if (audioReady && soundOn) beep();
+  } else {
+    // Em pausa ou offline não há chamada a tocar. Se estava a
+    // insistir, para agora.
+    stopAlarm();
+  }
+
   try {
     // O nome escolhido, não o email. O servidor faz upsert nesta
     // coluna, por isso mandar adminName() aqui apagava o nome
