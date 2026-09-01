@@ -427,13 +427,45 @@
       font-size:12.5px;font-weight:600}
     .st .dot{width:8px;height:8px;border-radius:999px;background:currentColor;opacity:.45}
     .st:hover{color:var(--text)}
-    .st.active{background:var(--card);box-shadow:inset 0 0 0 1px var(--border)}
-    .st.live.active{color:var(--ok)}
-    .st.brk.active{color:var(--warn)}
-    .st.off.active{color:var(--muted)}
-    .st.active .dot{opacity:1}
-    .st.live.active .dot{animation:pulse 2s ease-in-out infinite}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+    /* O estado escolhido tem de se ver do outro lado da sala. Antes
+       era uma mudança de cor do texto sobre fundo igual — bastava
+       olhar de lado para não saber se se estava ao serviço. Agora o
+       botão ativo enche-se de cor e o inativo apaga-se. */
+    .st.active{color:#fff;font-weight:700;box-shadow:none;
+      transform:translateY(-1px)}
+    .st.live.active{background:var(--ok);
+      box-shadow:0 2px 10px -2px var(--ok),0 0 0 1px var(--ok)}
+    .st.brk.active{background:var(--warn);color:#3A2405;
+      box-shadow:0 2px 10px -2px var(--warn),0 0 0 1px var(--warn)}
+    .st.off.active{background:var(--muted);
+      box-shadow:0 0 0 1px var(--muted)}
+    .st:not(.active){opacity:.5}
+    .st:not(.active):hover{opacity:1}
+    .st.active .dot{opacity:1;background:currentColor;
+      box-shadow:0 0 0 3px rgba(255,255,255,.28)}
+    .st.live.active .dot{animation:pulse 1.8s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}
+      50%{opacity:.45;transform:scale(.82)}}
+
+    /* E uma barra fina no topo da página, da cor do estado. É o
+       sinal que se apanha sem olhar para nada em concreto. */
+    /* Enquanto o som estiver bloqueado, o aviso pulsa. Um agente que
+       não repare nisto perde chamadas e não percebe porquê. */
+    body.sound-locked .deskbar-locked{animation:sndPulse 1.6s ease-in-out infinite;
+      background:var(--warn-bg,#FDF6E7);color:var(--warn,#8A5A12);
+      box-shadow:0 0 0 1px var(--warn,#8A5A12)}
+    @keyframes sndPulse{0%,100%{opacity:1}50%{opacity:.55}}
+
+    .duty-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:60;
+      background:var(--muted);transition:background .25s}
+    body[data-duty="live"] .duty-bar{background:var(--ok)}
+    body[data-duty="break"] .duty-bar{background:var(--warn)}
+    body[data-duty="offline"] .duty-bar{background:var(--bad)}
+    /* Offline com conversas à espera é o caso que não pode passar
+       despercebido. */
+    body[data-duty="offline"].has-waiting .duty-bar{
+      animation:dutyWarn 1.4s ease-in-out infinite}
+    @keyframes dutyWarn{0%,100%{opacity:1}50%{opacity:.3}}
     .state-note{margin:0 0 14px;color:var(--muted);font-size:12px;line-height:1.5}
     .desk-figs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
     .desk-figs > div{background:var(--card-2);border-radius:10px;padding:9px 11px}
@@ -731,6 +763,8 @@
   <button class="back" id="backOnline" type="button">I am back — go live</button>
   <button id="stayOffline" type="button">Stay offline</button>
 </div>
+
+<div class="duty-bar" id="dutyBar" aria-hidden="true"></div>
 
 <div class="deskbar">
   <span class="deskbar-label">Status</span>
@@ -2298,6 +2332,10 @@ function renderDesk() {
   badge.textContent = waiting || '';
   badge.className = waiting ? 'badge bad' : '';
 
+  // Offline com gente à espera é o pior caso, e o que mais fácil
+  // passa despercebido. A barra do topo pisca até se resolver.
+  document.body.classList.toggle('has-waiting', waiting > 0);
+
   // A barra do topo, visível de qualquer separador.
   el('deskbarMine').textContent = mine + '/' + limit + ' chats';
   paintTabAlerts();
@@ -2806,6 +2844,10 @@ async function setDeskState(state) {
   });
 
   el('dutyNote').textContent = STATE_NOTES[state];
+
+  // O estado no <body>: é daqui que a barra do topo tira a cor, e
+  // qualquer outra coisa que precise de saber sem perguntar.
+  document.body.setAttribute('data-duty', state);
 
   try {
     // O nome escolhido, não o email. O servidor faz upsert nesta
@@ -4296,18 +4338,51 @@ function unlockAudio() {
   var ctx = audio();
   if (!ctx) return;
 
-  if (ctx.state === 'suspended') ctx.resume();
-  audioReady = ctx.state === 'running';
-
-  if (audioReady) {
-    document.removeEventListener('click', unlockAudio);
-    document.removeEventListener('keydown', unlockAudio);
-    el('soundLocked').classList.add('hidden');
+  // O resume() devolve uma promessa: o estado pode ainda não ter
+  // mudado na linha seguinte. Verificar só de forma síncrona fazia
+  // com que o primeiro clique parecesse não funcionar.
+  if (ctx.state === 'suspended') {
+    var p = ctx.resume();
+    if (p && p.then) p.then(marcarPronto, function () {});
   }
+
+  marcarPronto();
 }
 
+function marcarPronto() {
+  var ctx = audio();
+  audioReady = Boolean(ctx) && ctx.state === 'running';
+
+  if (!audioReady) return;
+
+  document.removeEventListener('click', unlockAudio);
+  document.removeEventListener('keydown', unlockAudio);
+  document.removeEventListener('pointerdown', unlockAudio);
+  document.removeEventListener('touchstart', unlockAudio);
+  el('soundLocked').classList.add('hidden');
+  document.body.classList.remove('sound-locked');
+}
+
+/**
+ * Quatro gestos, não dois.
+ *
+ * O browser bloqueia o áudio até haver interação — não há forma de
+ * contornar isso, e não deve haver: senão qualquer página tocava
+ * som ao abrir. O que se pode fazer é apanhar o primeiro gesto
+ * possível, seja ele qual for.
+ *
+ * O pointerdown dispara antes do click, e o touchstart cobre o
+ * telemóvel. Assim o desbloqueio acontece no primeiro toque em
+ * qualquer sítio, e não só num clique completo.
+ */
+document.addEventListener('pointerdown', unlockAudio);
+document.addEventListener('touchstart', unlockAudio, { passive: true });
 document.addEventListener('click', unlockAudio);
 document.addEventListener('keydown', unlockAudio);
+
+// Marca o corpo enquanto estiver bloqueado, para o aviso poder
+// pulsar em vez de ficar um botão discreto que ninguém lê.
+document.body.classList.add('sound-locked');
 
 function tone(freq, startAt, length, volume, shape) {
   var ctx = audio();
@@ -4331,8 +4406,35 @@ function tone(freq, startAt, length, volume, shape) {
 }
 
 /** Aviso discreto: uma reserva nova, uma mensagem numa conversa já atendida. */
+/**
+ * Pode tocar?
+ *
+ * O estado manda: em Live há som, em Break e Offline não. Foi essa
+ * a decisão — quem está em pausa não deve ser chamado por um som,
+ * e quem está offline não devia sequer ser interrompido.
+ *
+ * O interruptor manual continua a existir e ganha a tudo, para
+ * quem estiver ao serviço num sítio onde o som não sirva.
+ */
+function podeTocar() {
+  return soundOn && desk.state === 'live';
+}
+
+/**
+ * Pode interromper?
+ *
+ * Igual ao som, mas para o que aparece no ecrã: o aviso a passar,
+ * o título a piscar. Em pausa ou offline o contador continua a
+ * subir — o que muda é não haver interrupção.
+ *
+ * O separador certo mostra o número ao voltar, e nada se perde.
+ */
+function podeNotificar() {
+  return desk.state === 'live';
+}
+
 function beep() {
-  if (!soundOn) return;
+  if (!podeTocar()) return;
   var ctx = audio();
   if (!ctx) return;
   if (ctx.state === 'suspended') ctx.resume();
@@ -4352,7 +4454,7 @@ function beep() {
  * aviso comum. É a única coisa no painel que justifica insistir.
  */
 function ringTone() {
-  if (!soundOn) return;
+  if (!podeTocar()) return;
   var ctx = audio();
   if (!ctx) return;
   if (ctx.state === 'suspended') ctx.resume();
@@ -4429,8 +4531,14 @@ function watchLive() {
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bookings' },
       function (payload) {
         var b = payload.new || {};
+
+        // Fora de Live a reserva é registada na mesma — só não
+        // interrompe. Quem está em pausa vê o contador ao voltar.
         alerts.bookingsTab += 1;
         paintAlerts();
+        loadBookings();
+        if (!podeNotificar()) return;
+
         beep();
         toast('New booking',
           (b.full_name || b.email || 'Customer') + ' \u00b7 ' +
@@ -4446,6 +4554,8 @@ function watchLive() {
       var m = payload.new || {};
       alerts.supportTab += 1;
       paintAlerts();
+      if (!podeNotificar()) return;
+
       beep();
       toast('New message',
         (m.sender_name || 'Customer') + ': ' + String(m.message || '').slice(0, 90),
