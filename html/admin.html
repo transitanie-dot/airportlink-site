@@ -464,6 +464,12 @@
        ser o ponto de referência. Sem isto encostava ao canto da
        janela em vez de cobrir a conversa. */
     .desk-right{position:relative}
+    /* O [hidden] tem de ganhar ao display:flex. Sem esta regra o
+       painel fica sempre visível a tapar a conversa — o atributo
+       hidden vale display:none, e qualquer display declarado a
+       seguir sobrepõe-se-lhe. */
+    .hist-panel[hidden],.hist-read[hidden],.snips[hidden],
+    .reply-warn[hidden],.chat-clock[hidden]{display:none !important}
     .hist-panel{position:absolute;inset:0;background:var(--card);z-index:5;
       display:flex;flex-direction:column;border-radius:inherit}
     .hist-head{display:flex;align-items:center;justify-content:space-between;gap:14px;
@@ -482,7 +488,7 @@
       display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
     .hist-tags{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
     .hist-read{position:absolute;inset:0;background:var(--card);display:flex;
-      flex-direction:column;border-radius:inherit}
+      flex-direction:column;border-radius:inherit;z-index:6}
     .hist-read>button{margin:14px 20px 0;align-self:flex-start}
     .hist-thread{flex:1;overflow:auto;padding:14px 20px 20px}
 
