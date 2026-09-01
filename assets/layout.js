@@ -10,6 +10,38 @@
  * Para acrescentar uma página ao menu: uma linha em NAV ou FOOTER.
  * ---------------------------------------------------------------
  */
+/**
+ * Google Analytics.
+ *
+ * Aqui e não nas páginas: todas carregam este ficheiro, incluindo
+ * as 764 geradas e o blogue. Colar a etiqueta em cada uma seria
+ * 776 sítios para mudar de cada vez que a conta mudasse.
+ *
+ * Corre uma só vez por página — a verificação do window.dataLayer
+ * evita uma segunda inicialização se este ficheiro for carregado
+ * duas vezes por engano.
+ */
+(function analytics() {
+  var ID = 'G-GTP634FCKN';
+
+  if (window.dataLayer && window.gtag) return;
+
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ID;
+  document.head.appendChild(s);
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { window.dataLayer.push(arguments); };
+
+  window.gtag('js', new Date());
+
+  // anonymize_ip está ligado por omissão no GA4, mas declará-lo
+  // deixa a intenção escrita — e é o que a política de privacidade
+  // diz que fazemos.
+  window.gtag('config', ID, { anonymize_ip: true });
+})();
+
 (function () {
   'use strict';
 
