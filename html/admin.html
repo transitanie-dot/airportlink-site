@@ -456,6 +456,21 @@
       box-shadow:0 0 0 1px var(--warn,#8A5A12)}
     @keyframes sndPulse{0%,100%{opacity:1}50%{opacity:.55}}
 
+/* O aviso de demora. Três estados, cada um mais insistente: aos
+       três minutos avisa, aos cinco insiste, aos dez já foi escalado
+       e diz-se isso — o agente tem de saber que o supervisor sabe. */
+    .reply-warn{display:flex;align-items:center;gap:8px;padding:7px 14px;
+      border-radius:999px;font-size:13px;font-weight:600;margin-left:auto}
+    .reply-warn::before{content:"";width:7px;height:7px;border-radius:999px;
+      background:currentColor;animation:pulse 1.5s ease-in-out infinite}
+    .reply-warn.w1{background:var(--warn-bg,#FDF6E7);color:var(--warn,#8A5A12)}
+    .reply-warn.w2{background:var(--bad-bg,#FFF1F2);color:var(--bad,#B42318)}
+    .reply-warn.w3{background:var(--bad,#B42318);color:#fff}
+
+    /* Na lista, a conversa que espera demasiado sobe à vista. */
+    .chat-row.late{box-shadow:inset 3px 0 0 var(--bad,#B42318)}
+    .tag.late{background:var(--bad,#B42318);color:#fff;border-color:transparent}
+
     .duty-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:60;
       background:var(--muted);transition:background .25s}
     body[data-duty="live"] .duty-bar{background:var(--ok)}
@@ -1205,6 +1220,12 @@
               <div>
                 <strong id="chatWho">&mdash;</strong>
                 <span id="chatMeta">&mdash;</span>
+              </div>
+              <!-- Há quanto tempo o parceiro espera resposta. Não é
+                   o mesmo que o tempo da conversa: conta desde a
+                   última mensagem dele, e zera quando se responde. -->
+              <div class="reply-warn" id="replyWarn" hidden>
+                <span id="replyWarnText"></span>
               </div>
               <!-- O tempo desde que a conversa abriu. Conta enquanto
                    está aberta e congela no valor final ao fechar. -->
@@ -2065,6 +2086,7 @@ function pintarRelogio() {
   var decorrido = fim - chatClock.inicio;
 
   el('clockValue').textContent = relogioTexto(decorrido);
+  pintarAvisoResposta();
   el('clockLabel').textContent = chatClock.fim ? 'closed after' : 'open';
 
   var min = decorrido / 60000;
@@ -2102,6 +2124,58 @@ function arrancarRelogio(abertaEm, fechadaEm) {
   if (!chatClock.fim) {
     chatClock.timer = setInterval(pintarRelogio, 1000);
   }
+}
+
+/**
+ * O aviso de demora na conversa aberta.
+ *
+ * Corre com o cronómetro, de segundo a segundo. Os limiares são os
+ * mesmos que o servidor usa — 3, 5 e 10 minutos — mas aqui servem
+ * só para mostrar. Quem decide e escala é o support_tick, porque um
+ * agente com o separador fechado não pode escapar à regra.
+ */
+var replyWarn = { desde: null, nivel: 0 };
+
+function pintarAvisoResposta() {
+  var caixa = el('replyWarn');
+  if (!caixa) return;
+
+  if (!replyWarn.desde) {
+    caixa.hidden = true;
+    return;
+  }
+
+  var min = (Date.now() - replyWarn.desde) / 60000;
+  var nivel = min >= 10 ? 3 : (min >= 5 ? 2 : (min >= 3 ? 1 : 0));
+
+  if (!nivel) {
+    caixa.hidden = true;
+    replyWarn.nivel = 0;
+    return;
+  }
+
+  caixa.hidden = false;
+  caixa.className = 'reply-warn w' + nivel;
+
+  var m = Math.floor(min);
+  el('replyWarnText').textContent =
+    nivel === 3 ? 'Waiting ' + m + ' min — escalated to your supervisor'
+  : nivel === 2 ? 'Waiting ' + m + ' min — answer now'
+  : 'Waiting ' + m + ' min';
+
+  // Um som por nível, uma só vez. Repetir a cada segundo seria
+  // castigo, e a cada minuto já ninguém liga.
+  if (nivel > replyWarn.nivel) {
+    replyWarn.nivel = nivel;
+    if (nivel >= 2) beep();
+  }
+}
+
+/** A conversa passa a esperar resposta a partir de agora. */
+function marcarEspera(desde) {
+  replyWarn.desde = desde ? Date.parse(desde) : null;
+  replyWarn.nivel = 0;
+  pintarAvisoResposta();
 }
 
 function pararRelogio() {
@@ -2363,6 +2437,11 @@ function renderDesk() {
     if (c.urgent) tags.push('<span class="tag" style="background:var(--bad-bg);color:var(--bad);border-color:transparent">urgent</span>');
     if (c.unread_for_admin > 0) tags.push('<span class="tag new">' + c.unread_for_admin + ' new</span>');
     if (c.waiting_minutes >= 10) tags.push('<span class="tag wait">waiting ' + agoLabel(c.waiting_minutes) + '</span>');
+    // A demora a responder é diferente de estar na fila: aqui já
+    // alguém pegou e está a demorar.
+    if (c.awaiting_reply_minutes >= 3) {
+      tags.push('<span class="tag late">' + c.awaiting_reply_minutes + ' min unanswered</span>');
+    }
     if (isMine) tags.push('<span class="tag mine">mine</span>');
     if (taken) {
       tags.push('<span class="tag busy">live &middot; ' +
@@ -2372,6 +2451,7 @@ function renderDesk() {
     return '<button class="chat-row' +
       (desk.current === c.chat_id ? ' active' : '') +
       (isMine ? ' mine' : '') + (c.urgent ? ' urgent' : '') +
+      (c.awaiting_reply_minutes >= 5 ? ' late' : '') +
       '" data-chat="' + escapeHtml(c.chat_id) + '" type="button">' +
       '<div class="top"><span class="nm">' +
       escapeHtml(c.trading_name || c.legal_name || c.email) + '</span>' +
@@ -2429,6 +2509,12 @@ async function openDeskChat(chatId) {
 
   arrancarRelogio(abriuEm, chat.closed_at ||
     (chat.status === 'resolved' || chat.status === 'closed' ? chat.updated_at : null));
+
+  // A vista traz awaiting_reply_minutes: zero quando a bola está do
+  // lado do parceiro, e os minutos de espera quando está do nosso.
+  marcarEspera(chat.awaiting_reply_minutes > 0
+    ? new Date(Date.now() - chat.awaiting_reply_minutes * 60000).toISOString()
+    : null);
 
   paintChatOwnership(chat);
   renderThread();
@@ -2659,6 +2745,9 @@ el('deskFile').addEventListener('change', async function () {
     });
 
     desk.messages.push(res.message);
+    // Respondeu: a espera acaba aqui, sem ter de aguardar o próximo
+    // carregamento da fila para o aviso desaparecer.
+    if (deskMode !== 'note') marcarEspera(null);
     renderThread();
     el('chatReply').value = '';
     await loadDesk();
