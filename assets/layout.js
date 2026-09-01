@@ -66,30 +66,38 @@
   // As frases, nas línguas do site. O banner aparece antes de o
   // i18n carregar o dicionário, por isso trazem-se aqui.
   var T = {
-    en: { t: 'We use cookies to measure how the site is used.',
-          b: 'Only if you accept. Nothing is measured until then, and the booking works either way.',
-          y: 'Accept', n: 'Decline', p: 'Privacy policy' },
-    pt: { t: 'Usamos cookies para medir como o site é usado.',
-          b: 'Só se aceitar. Até lá nada é medido, e a reserva funciona de qualquer forma.',
-          y: 'Aceitar', n: 'Recusar', p: 'Política de privacidade' },
-    es: { t: 'Usamos cookies para medir cómo se usa el sitio.',
-          b: 'Solo si aceptas. Hasta entonces no se mide nada, y la reserva funciona igual.',
-          y: 'Aceptar', n: 'Rechazar', p: 'Política de privacidad' },
-    fr: { t: 'Nous utilisons des cookies pour mesurer l\u2019usage du site.',
-          b: 'Uniquement si vous acceptez. Rien n\u2019est mesuré avant, et la réservation fonctionne de toute façon.',
-          y: 'Accepter', n: 'Refuser', p: 'Politique de confidentialité' },
-    de: { t: 'Wir verwenden Cookies, um die Nutzung der Website zu messen.',
-          b: 'Nur wenn Sie zustimmen. Bis dahin wird nichts gemessen, und die Buchung funktioniert ohnehin.',
-          y: 'Zustimmen', n: 'Ablehnen', p: 'Datenschutz' },
-    it: { t: 'Usiamo i cookie per misurare come viene usato il sito.',
-          b: 'Solo se accetti. Fino ad allora non viene misurato nulla, e la prenotazione funziona comunque.',
-          y: 'Accetta', n: 'Rifiuta', p: 'Informativa sulla privacy' },
-    nl: { t: 'We gebruiken cookies om te meten hoe de site wordt gebruikt.',
-          b: 'Alleen als u akkoord gaat. Tot dan wordt er niets gemeten, en boeken werkt sowieso.',
-          y: 'Akkoord', n: 'Weigeren', p: 'Privacybeleid' },
-    pl: { t: 'Używamy plików cookie, aby mierzyć korzystanie ze strony.',
-          b: 'Tylko za Twoją zgodą. Do tego czasu nic nie jest mierzone, a rezerwacja i tak działa.',
-          y: 'Akceptuję', n: 'Odrzuć', p: 'Polityka prywatności' }
+    en: { t: 'Cookies',
+          b: 'Some are needed to sign in and pay. One more tells us which pages people ' +
+             'read — only if you allow it. The site works the same either way.',
+          y: 'Accept all', n: 'Only essentials', p: 'Cookie policy' },
+    pt: { t: 'Cookies',
+          b: 'Alguns são precisos para entrar e pagar. Outro diz-nos que páginas as pessoas ' +
+             'leem — só se permitir. O site funciona igual de qualquer forma.',
+          y: 'Aceitar tudo', n: 'Só os essenciais', p: 'Política de cookies' },
+    es: { t: 'Cookies',
+          b: 'Algunas hacen falta para entrar y pagar. Otra nos dice qué páginas se leen ' +
+             '— solo si lo permites. La web funciona igual en ambos casos.',
+          y: 'Aceptar todo', n: 'Solo esenciales', p: 'Política de cookies' },
+    fr: { t: 'Cookies',
+          b: 'Certains sont nécessaires pour se connecter et payer. Un autre nous indique ' +
+             'les pages lues — seulement si vous l\u2019autorisez. Le site fonctionne pareil.',
+          y: 'Tout accepter', n: 'Essentiels uniquement', p: 'Politique de cookies' },
+    de: { t: 'Cookies',
+          b: 'Einige sind zum Anmelden und Bezahlen nötig. Ein weiteres zeigt uns, welche ' +
+             'Seiten gelesen werden — nur mit Ihrer Erlaubnis. Die Seite funktioniert so oder so.',
+          y: 'Alle akzeptieren', n: 'Nur notwendige', p: 'Cookie-Richtlinie' },
+    it: { t: 'Cookie',
+          b: 'Alcuni servono per accedere e pagare. Un altro ci dice quali pagine vengono ' +
+             'lette — solo se lo permetti. Il sito funziona allo stesso modo.',
+          y: 'Accetta tutto', n: 'Solo essenziali', p: 'Informativa sui cookie' },
+    nl: { t: 'Cookies',
+          b: 'Sommige zijn nodig om in te loggen en te betalen. Eén ander laat ons zien ' +
+             'welke pagina\u2019s worden gelezen — alleen als u dat toestaat.',
+          y: 'Alles accepteren', n: 'Alleen noodzakelijke', p: 'Cookiebeleid' },
+    pl: { t: 'Pliki cookie',
+          b: 'Niektóre są potrzebne do logowania i płatności. Jeszcze jeden mówi nam, które ' +
+             'strony są czytane — tylko za Twoją zgodą.',
+          y: 'Akceptuj wszystkie', n: 'Tylko niezbędne', p: 'Polityka plików cookie' }
   };
 
   function frases() {
@@ -117,7 +125,7 @@
     box.innerHTML =
       '<div class="ck-in">' +
         '<div class="ck-txt"><strong>' + t.t + '</strong>' +
-        '<span>' + t.b + ' <a href="/privacypolicy">' + t.p + '</a></span></div>' +
+        '<span>' + t.b + ' <a href="/cookiepolicy">' + t.p + '</a></span></div>' +
         '<div class="ck-btns">' +
           '<button class="ck-no" type="button">' + t.n + '</button>' +
           '<button class="ck-yes" type="button">' + t.y + '</button>' +
@@ -283,6 +291,7 @@
       { href: '/login',         label: 'Forgot password', i18nKey: 'nav.forgotPass' },
       { href: '/terms',         label: 'Terms', i18nKey: 'nav.terms' },
       { href: '/privacypolicy', label: 'Privacy policy', i18nKey: 'nav.privacy' },
+      { href: '/cookiepolicy',  label: 'Cookie policy', i18nKey: 'nav.cookiePolicy' },
       // Consentimento que não se pode retirar não é consentimento.
       // O href='#' com onclick seria mais simples, mas isto mantém
       // a lista toda com a mesma forma.
