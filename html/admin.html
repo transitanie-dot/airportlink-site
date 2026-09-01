@@ -3591,6 +3591,25 @@ el('ringTake').addEventListener('click', async function () {
 
   stopRing();
   switchTab('chatTab');
+
+  /**
+   * Atender é PEGAR, não só abrir.
+   *
+   * Antes isto só abria a conversa. A oferta ficava pendurada, os
+   * trinta segundos corriam até ao fim, e o servidor registava
+   * "não atendeu" a quem tinha carregado no botão.
+   */
+  try {
+    await deskFetch('/api/admin/chat/claim', { chat_id: chatId });
+  } catch (e) {
+    // Outro agente chegou primeiro, ou já tenho duas abertas. A
+    // mensagem do servidor explica qual dos dois.
+    alert(e.message);
+    await loadDesk();
+    return;
+  }
+
+  await loadDesk();
   await openDeskChat(chatId);
 });
 
@@ -3668,10 +3687,21 @@ function subscribeDesk() {
 
       loadDesk();
 
-      // Alguém está à espera de uma resposta agora. Um ponto
-      // silencioso não chega para isso — este aviso repete-se até
-      // alguém abrir o separador, ao contrário do das reservas.
-      chatWaitingAlert();
+      /**
+       * Um aviso de cada vez.
+       *
+       * Se a janela de chamada está a tocar, ela já diz tudo o que
+       * este aviso diria — e com um contador que este não tem.
+       *
+       * O atraso existe porque a mensagem chega pelo tempo real
+       * ANTES de o loadDesk trazer a oferta: sem esperar, o ring.offer
+       * ainda está vazio e os dois avisos aparecem. Um segundo chega
+       * para a oferta chegar e o aviso decidir que não é preciso.
+       */
+      setTimeout(function () {
+        if (ring.offer) return;
+        chatWaitingAlert();
+      }, 1200);
     })
     .subscribe();
 }
