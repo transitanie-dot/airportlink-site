@@ -3267,17 +3267,37 @@ var deskDisplayName = null;
 var NAME_KEY = 'airportlink-agent-name';
 
 async function iniciarApoio() {
-  // As três em paralelo. Nenhuma depende das outras, e em fila o
-  // estado só aparecia depois de as respostas rápidas chegarem —
-  // que é a menos urgente das três.
-  //
-  // O recuperarEstado é o que interessa despachar: é ele que tira
-  // a barra do topo do cinzento de "ainda não sei".
-  await Promise.all([
-    recuperarEstado(),
-    loadDisplayName(),
-    carregarSnips()
-  ]);
+  /**
+   * Um só pedido ao /api/admin/team.
+   *
+   * O nome e o estado vêm da mesma linha da support_presence, e o
+   * painel pedia-a duas vezes — uma para cada. Com dois segundos
+   * de latência por chamada, isso são dois segundos deitados fora
+   * em cada carregamento.
+   *
+   * As respostas rápidas vão em paralelo: não dependem disto.
+   */
+  var equipa = deskFetch('/api/admin/team').catch(function () { return null; });
+  var atalhos = carregarSnips();
+
+  var team = await equipa;
+  var meu = team && (team.team || []).find(function (t) {
+    return t.user_id === adminId();
+  });
+
+  aplicarNome(meu);
+  await aplicarEstado(meu);
+
+  await atalhos;
+}
+
+/** O nome do servidor, se lá houver algum. */
+function aplicarNome(meu) {
+  if (meu && meu.display_name) {
+    deskDisplayName = meu.display_name;
+    try { localStorage.setItem(NAME_KEY, meu.display_name); } catch (e) {}
+  }
+  paintDisplayName();
 }
 
 /**
@@ -3291,19 +3311,10 @@ async function iniciarApoio() {
  * Agora pergunta. Se o servidor diz que este agente estava em Live,
  * retoma Live e volta a bater o ponto.
  */
-async function recuperarEstado() {
-  var meu = null;
-
-  try {
-    var team = await deskFetch('/api/admin/team');
-    meu = (team.team || []).find(function (t) { return t.user_id === adminId(); });
-  } catch (e) {
-    // Sem resposta assume-se offline: é o estado seguro. Melhor
-    // não receber chamadas do que pensar que se está a receber.
-    await setDeskState('offline', true);
-    return;
-  }
-
+async function aplicarEstado(meu) {
+  // Sem linha, ou offline: assume-se offline. É o estado seguro —
+  // melhor não receber chamadas do que julgar que se está a
+  // receber e não estar.
   if (!meu || !meu.state || meu.state === 'offline') {
     await setDeskState('offline', true);
     return;
@@ -3327,21 +3338,8 @@ async function loadDisplayName() {
 
   paintDisplayName();
 
-  try {
-    var team = await deskFetch('/api/admin/team');
-    var me = (team.team || []).find(function (t) {
-      return t.user_id === (adminId());
-    });
-
-    // Só substitui se o servidor tiver mesmo um nome. Não estar na
-    // lista significa "ainda não me pus ao serviço", e não "não
-    // tenho nome".
-    if (me && me.display_name) {
-      deskDisplayName = me.display_name;
-      try { localStorage.setItem(NAME_KEY, me.display_name); } catch (e) {}
-    }
-  } catch (e) {}
-
+  // O pedido ao servidor é feito pelo iniciarApoio, que aproveita
+  // a mesma resposta para o estado. Aqui só se pinta o que há.
   paintDisplayName();
 }
 
@@ -6332,16 +6330,18 @@ async function init() {
   await loadPartners();
   await loadCharges();
   await loadFinance();
-  // A presença primeiro, e em paralelo com o resto.
-  //
-  // Antes corria no fim, depois de carregar reservas, parceiros e
-  // finanças — e o painel mostrava "offline" durante esse tempo
-  // todo. Nada disto depende do estado do agente, por isso não há
-  // razão para esperar.
-  var presenca = iniciarApoio();
+  /**
+   * Tudo o que fala com o serviço de drivers, ao mesmo tempo.
+   *
+   * Cada chamada custa cerca de dois segundos de latência no plano
+   * gratuito do Render. Em fila somavam-se; em paralelo pagam-se
+   * uma vez só, porque partem juntas.
+   */
+  await Promise.all([
+    iniciarApoio(),
+    loadDesk()
+  ]);
 
-  await loadDesk();
-  await presenca;
   subscribeToAllConversations();
   watchLive();
 }
