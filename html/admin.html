@@ -3117,6 +3117,39 @@ async function iniciarApoio() {
   // abrir o painel e ficam em memória.
   await carregarSnips();
   await loadDisplayName();
+  await recuperarEstado();
+}
+
+/**
+ * O estado ao recarregar a página.
+ *
+ * A presença vive no servidor e expira sozinha ao fim de três
+ * minutos sem batida. O painel arrancava sempre em 'offline' e não
+ * perguntava — quem recarregasse a página aparecia offline para os
+ * outros e deixava de receber chamadas sem dar por isso.
+ *
+ * Agora pergunta. Se o servidor diz que este agente estava em Live,
+ * retoma Live e volta a bater o ponto.
+ */
+async function recuperarEstado() {
+  var meu = null;
+
+  try {
+    var team = await deskFetch('/api/admin/team');
+    meu = (team.team || []).find(function (t) { return t.user_id === adminId(); });
+  } catch (e) {
+    return;
+  }
+
+  if (!meu || !meu.state || meu.state === 'offline') return;
+
+  // A presença pode ter expirado enquanto a página esteve fechada.
+  // Nesse caso não se retoma nada: estar ao serviço tem de ser uma
+  // decisão de agora, não a herança de uma sessão de ontem.
+  var visto = meu.last_seen_at ? Date.parse(meu.last_seen_at) : 0;
+  if (!visto || Date.now() - visto > 5 * 60000) return;
+
+  await setDeskState(meu.state, true);
 }
 
 async function loadDisplayName() {
@@ -3295,7 +3328,7 @@ var STATE_NOTES = {
   offline: 'Offline. You will not be given new chats.'
 };
 
-async function setDeskState(state) {
+async function setDeskState(state, aRetomar) {
   var previous = desk.state;
   desk.state = state;
 
@@ -3322,7 +3355,11 @@ async function setDeskState(state) {
     // Uma nota curta a confirmar que o som funciona. É a diferença
     // entre saber que está pronto e descobrir na primeira chamada
     // perdida que não estava.
-    if (audioReady && soundOn) beep();
+    //
+    // Ao retomar depois de um refresh não toca: não houve gesto do
+    // utilizador, o browser recusaria, e um som sem se pedir nada
+    // é irritante.
+    if (audioReady && soundOn && !aRetomar) beep();
   } else {
     // Em pausa ou offline não há chamada a tocar. Se estava a
     // insistir, para agora.
