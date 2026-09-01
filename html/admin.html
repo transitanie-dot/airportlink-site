@@ -459,6 +459,22 @@
 /* O aviso de demora. Três estados, cada um mais insistente: aos
        três minutos avisa, aos cinco insiste, aos dez já foi escalado
        e diz-se isso — o agente tem de saber que o supervisor sabe. */
+/* ---------- caixas de diálogo ---------- */
+    .ask-back{position:fixed;inset:0;z-index:200;background:rgba(10,14,22,.55);
+      display:flex;align-items:center;justify-content:center;padding:20px}
+    .ask-back[hidden]{display:none !important}
+    .ask{background:var(--card);border-radius:16px;padding:24px;max-width:420px;width:100%;
+      box-shadow:0 24px 60px -12px rgba(0,0,0,.4)}
+    .ask h3{margin:0 0 10px;font-size:17px}
+    .ask p{margin:0 0 18px;font-size:14px;line-height:1.6;color:var(--muted);
+      white-space:pre-line}
+    .ask input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:10px;
+      background:var(--bg);color:var(--text);font-family:inherit;font-size:15px;
+      margin-bottom:18px}
+    .ask input[hidden]{display:none}
+    .ask input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+    .ask-btns{display:flex;gap:10px;justify-content:flex-end}
+
 /* ---------- histórico ---------- */
     /* O painel é absoluto, por isso o contentor que o segura tem de
        ser o ponto de referência. Sem isto encostava ao canto da
@@ -827,6 +843,24 @@
 </div>
 
 <div class="duty-bar" id="dutyBar" aria-hidden="true"></div>
+
+<!-- As caixas de diálogo.
+
+     O prompt() e o confirm() do browser são bloqueados dentro de
+     um iframe com sandbox — que é o caso no Wix. Não davam erro:
+     devolviam null em silêncio, como se a pessoa tivesse cancelado.
+     Daí "escrevi o nome e não gravou". -->
+<div class="ask-back" id="askBack" hidden>
+  <div class="ask" role="dialog" aria-modal="true" aria-labelledby="askTitle">
+    <h3 id="askTitle">Confirm</h3>
+    <p id="askText"></p>
+    <input type="text" id="askInput" maxlength="60" hidden>
+    <div class="ask-btns">
+      <button class="clear-btn" id="askNo" type="button">Cancel</button>
+      <button class="search-btn" id="askYes" type="button">OK</button>
+    </div>
+  </div>
+</div>
 
 <div class="deskbar">
   <span class="deskbar-label">Status</span>
@@ -1668,7 +1702,7 @@ el('gateBtn').addEventListener('click', async function () {
 });
 el('gatePassword').addEventListener('keydown', function (e) { if (e.key === 'Enter') el('gateBtn').click(); });
 el('adminLogoutBtn').addEventListener('click', async function () {
-  if (!window.confirm('Sign out of the admin panel?')) return;
+  if (!await perguntar('Sign out?', 'Sign out of the admin panel?')) return;
   await client.auth.signOut();
   window.location.reload();
 });
@@ -1694,13 +1728,13 @@ async function openAttachment(att) {
     var marker = '/' + STORAGE_BUCKET + '/';
     if (att.file_url.indexOf(marker) !== -1) path = att.file_url.split(marker)[1].split('?')[0];
   }
-  if (!path) return alert('This attachment has no stored path.');
+  if (!path) return avisar('Heads up', 'This attachment has no stored path.');
 
   path = decodeURIComponent(path);
   var res = await client.storage.from(STORAGE_BUCKET).createSignedUrl(path, SIGNED_URL_SECONDS);
   if (res.error || !res.data) {
     console.error('signed url error:', res.error, '| path:', path);
-    return alert('Could not open the attachment.\n\nPath: ' + path +
+    return avisar('Heads up', 'Could not open the attachment.\n\nPath: ' + path +
       '\nError: ' + ((res.error && res.error.message) || 'unknown'));
   }
   window.open(res.data.signedUrl, '_blank', 'noopener');
@@ -1758,7 +1792,7 @@ el('adminFileInput').addEventListener('change', function (e) {
   var f = e.target.files && e.target.files[0];
   if (!f) return;
   if (f.size > MAX_FILE_BYTES) {
-    alert('That file is too large. The limit is 10 MB.');
+    avisar('Heads up', 'That file is too large. The limit is 10 MB.');
     setAdminFile(null);
     return;
   }
@@ -2029,7 +2063,8 @@ el('refundBtn').addEventListener('click', async function () {
   var cur = activeBooking.currency || 'EUR';
   var label = amount ? (money(cur, Number(amount))) : 'the full outstanding amount';
 
-  if (!window.confirm('Refund ' + label + ' to ' + (activeBooking.email || 'this customer') +
+  if (!await perguntar('Issue refund',
+      'Refund ' + label + ' to ' + (activeBooking.email || 'this customer') +
       '?\n\nThe money leaves your Stripe balance immediately and this cannot be undone here.')) {
     return;
   }
@@ -2435,6 +2470,96 @@ function dataCurta(iso) {
   return d.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+// ============================================================
+// CAIXAS DE DIÁLOGO
+//
+// O prompt(), o confirm() e o alert() do browser não funcionam
+// dentro de um iframe com sandbox — e é assim que este painel
+// corre no Wix. O pior é que não falham com erro: devolvem null em
+// silêncio, exatamente como se a pessoa tivesse carregado em
+// cancelar.
+//
+// Era isso que fazia "escrevi o nome e não gravou".
+// ============================================================
+var ask = { resolver: null };
+
+/**
+ * Uma pergunta de sim ou não.
+ * Devolve uma promessa que resolve para true ou false.
+ */
+function perguntar(titulo, texto, botao) {
+  return abrirAsk({ titulo: titulo, texto: texto, botao: botao || 'OK' });
+}
+
+/**
+ * Uma pergunta com campo de texto.
+ * Devolve o que foi escrito, ou null se cancelar.
+ */
+function pedirTexto(titulo, texto, valor, botao) {
+  return abrirAsk({
+    titulo: titulo, texto: texto, botao: botao || 'Save',
+    campo: true, valor: valor || ''
+  });
+}
+
+/** Um aviso com um só botão. */
+function avisar(titulo, texto) {
+  return abrirAsk({ titulo: titulo, texto: texto, botao: 'OK', soOk: true });
+}
+
+function abrirAsk(o) {
+  var campo = el('askInput');
+
+  el('askTitle').textContent = o.titulo || 'Confirm';
+  el('askText').textContent = o.texto || '';
+  el('askYes').textContent = o.botao;
+  el('askNo').hidden = Boolean(o.soOk);
+
+  campo.hidden = !o.campo;
+  campo.value = o.valor || '';
+
+  el('askBack').hidden = false;
+
+  if (o.campo) {
+    setTimeout(function () { campo.focus(); campo.select(); }, 30);
+  } else {
+    setTimeout(function () { el('askYes').focus(); }, 30);
+  }
+
+  return new Promise(function (resolve) {
+    ask.resolver = function (valor) {
+      el('askBack').hidden = true;
+      ask.resolver = null;
+      resolve(valor);
+    };
+  });
+}
+
+el('askYes').addEventListener('click', function () {
+  if (!ask.resolver) return;
+  var campo = el('askInput');
+  ask.resolver(campo.hidden ? true : campo.value.trim());
+});
+
+el('askNo').addEventListener('click', function () {
+  if (ask.resolver) ask.resolver(el('askInput').hidden ? false : null);
+});
+
+el('askBack').addEventListener('click', function (e) {
+  // Clicar fora cancela, como qualquer caixa de diálogo.
+  if (e.target === el('askBack') && ask.resolver) {
+    ask.resolver(el('askInput').hidden ? false : null);
+  }
+});
+
+el('askInput').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') { e.preventDefault(); el('askYes').click(); }
+});
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && !el('askBack').hidden) el('askNo').click();
+});
+
 function pararRelogio() {
   if (chatClock.timer) clearInterval(chatClock.timer);
   chatClock.timer = null;
@@ -2744,7 +2869,7 @@ async function openDeskChat(chatId) {
     var data = await deskFetch('/api/admin/chat/' + encodeURIComponent(chatId));
     desk.messages = data.messages || [];
   } catch (e) {
-    alert(e.message);
+    avisar('Heads up', e.message);
     return;
   }
 
@@ -2847,7 +2972,7 @@ async function pegarConversa(chatId) {
       return true;
     }
 
-    alert(e.message);
+    avisar('Heads up', e.message);
     return false;
   }
 
@@ -2890,7 +3015,7 @@ el('chatTakeBtn').addEventListener('click', async function () {
   var chat = desk.chats.find(function (c) { return c.chat_id === desk.current; });
 
   if (chat && chat.assigned_to && chat.assigned_to !== adminId()) {
-    if (!window.confirm('Take this over from ' +
+    if (!await perguntar('Take this over', 'Take this over from ' +
         (chat.assigned_agent_name || 'the other agent') + '?\n\n' +
         'They lose it from their list. Only do this if they have stepped away.')) return;
 
@@ -2899,7 +3024,7 @@ el('chatTakeBtn').addEventListener('click', async function () {
     try {
       await deskFetch('/api/admin/chat/release', { chat_id: desk.current, close: false });
     } catch (e) {
-      alert(e.message);
+      avisar('Heads up', e.message);
       return;
     }
   }
@@ -2990,7 +3115,7 @@ function renderThread() {
         if (r.error) throw new Error(r.error.message);
         window.open(r.data.signedUrl, '_blank', 'noopener');
       } catch (err) {
-        alert('Could not open that file: ' + err.message);
+        avisar('Heads up', 'Could not open that file: ' + err.message);
       }
     });
   });
@@ -3185,15 +3310,18 @@ function paintDisplayName() {
 }
 
 el('deskName').addEventListener('click', async function () {
-  var name = window.prompt(
+  var name = await pedirTexto(
+    'Your display name',
     'What name should partners see when you reply?\n\n' +
     'A first name works well. They are talking to a person, not to a brand.',
     deskDisplayName || '');
 
   if (name === null) return;
-  name = name.trim();
 
-  if (name.length < 2) return alert('Use at least two characters.');
+  if (name.length < 2) {
+    await avisar('Too short', 'Use at least two characters.');
+    return;
+  }
 
   try {
     await deskFetch('/api/admin/display-name', { display_name: name });
@@ -3201,7 +3329,7 @@ el('deskName').addEventListener('click', async function () {
     try { localStorage.setItem(NAME_KEY, name); } catch (e) {}
     paintDisplayName();
   } catch (e) {
-    alert(e.message);
+    avisar('Heads up', e.message);
   }
 });
 
@@ -3281,7 +3409,7 @@ el('chatCloseBtn').addEventListener('click', async function () {
     pintarRelogio();
   }
   if (!desk.current) return;
-  if (!window.confirm('Close this conversation?\n\nIt frees your slot. The partner can ' +
+  if (!await perguntar('Close conversation', 'Close this conversation?\n\nIt frees your slot. The partner can ' +
       'write again any time and it reopens.')) return;
 
   await deskFetch('/api/admin/chat/release', { chat_id: desk.current, close: true });
@@ -3375,7 +3503,7 @@ async function setDeskState(state, aRetomar) {
       display_name: deskDisplayName || adminName()
     });
   } catch (e) {
-    alert(e.message);
+    avisar('Heads up', e.message);
     desk.state = previous;
     qsa('.st').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-state') === previous);
@@ -3567,7 +3695,7 @@ qsa('#shiftDays .fin-period').forEach(function (b) {
 el('shiftRefresh').addEventListener('click', loadShifts);
 
 el('shiftCsv').addEventListener('click', function () {
-  if (!shift.rows.length) return alert('Nothing to export.');
+  if (!shift.rows.length) return avisar('Heads up', 'Nothing to export.');
 
   downloadRows(shift.rows.map(function (r) {
     return {
@@ -3878,7 +4006,7 @@ el('mdSaveBtn').addEventListener('click', function () {
   var phone = el('mdPhone').value.trim();
 
   if (!name || !phone) {
-    return alert('A name and a phone number are the minimum.\n\n' +
+    return avisar('Heads up', 'A name and a phone number are the minimum.\n\n' +
       'The passenger calls that number if they cannot find the driver.');
   }
 
@@ -3892,24 +4020,25 @@ el('mdSaveBtn').addEventListener('click', function () {
   });
 });
 
-el('mdSendBtn').addEventListener('click', function () {
+el('mdSendBtn').addEventListener('click', async function () {
   if (activeBooking && activeBooking.driver_details_sent_at) {
-    if (!window.confirm('The passenger already had the details.\n\n' +
+    if (!await perguntar('Send again', 'The passenger already had the details.\n\n' +
         'Send again with what is on file now?')) return;
   }
   rideDriver('send');
 });
 
-el('mdHoldBtn').addEventListener('click', function () {
+el('mdHoldBtn').addEventListener('click', async function () {
   if (activeBooking && activeBooking.driver_email_hold) {
     return rideDriver('release');
   }
 
-  var why = window.prompt(
-    'Why hold this one?\n\nOnly you see this. It shows here so you remember why.');
+  var why = await pedirTexto('Hold this one',
+    'Why hold this one?\n\nOnly you see this. It shows here so you remember why.',
+    '', 'Hold');
   if (why === null) return;
 
-  rideDriver('hold', { reason: why.trim() || null });
+  rideDriver('hold', { reason: why || null });
 });
 
 // ============================================================
@@ -4672,7 +4801,7 @@ el('finRefreshBtn').addEventListener('click', loadFinance);
 // ---------- exportações ----------
 
 el('finMonthCsv').addEventListener('click', function () {
-  if (!fin.months.length) return alert('Nothing to export yet.');
+  if (!fin.months.length) return avisar('Heads up', 'Nothing to export yet.');
 
   downloadRows(fin.months.map(function (r) {
     return {
@@ -4703,18 +4832,17 @@ el('finMonthCsv').addEventListener('click', function () {
  * É o ficheiro que se leva ao banco: uma linha por parceiro, com o
  * IBAN e o valor do mês passado. Só entram os que têm algo a receber.
  */
-el('finPayoutCsv').addEventListener('click', function () {
+el('finPayoutCsv').addEventListener('click', async function () {
   var owed = fin.partners.filter(function (r) {
     return Number(r.owed_last_month_eur || 0) > 0;
   });
 
-  if (!owed.length) return alert('Nothing owed for last month.');
+  if (!owed.length) return avisar('Heads up', 'Nothing owed for last month.');
 
   var missingIban = owed.filter(function (r) { return !r.payout_iban; });
 
   if (missingIban.length) {
-    if (!window.confirm(
-      missingIban.length + ' partner(s) have no IBAN on file and cannot be paid:\n\n' +
+    if (!await perguntar('Missing bank details', missingIban.length + ' partner(s) have no IBAN on file and cannot be paid:\n\n' +
       missingIban.map(function (r) { return '· ' + (r.legal_name || r.email); }).join('\n') +
       '\n\nExport anyway?')) return;
   }
@@ -4749,7 +4877,7 @@ el('finTxCsv').addEventListener('click', async function () {
     ).order('booking_date', { ascending: false }).limit(5000);
 
     if (res.error) throw new Error(res.error.message);
-    if (!res.data || !res.data.length) return alert('No bookings to export.');
+    if (!res.data || !res.data.length) return avisar('Heads up', 'No bookings to export.');
 
     downloadRows(res.data.map(function (b) {
       return {
@@ -4784,7 +4912,7 @@ el('finTxCsv').addEventListener('click', async function () {
       };
     }), 'airportlink-transactions');
   } catch (e) {
-    alert(e.message);
+    avisar('Heads up', e.message);
   } finally {
     btn.disabled = false;
     btn.textContent = 'Transactions CSV';
@@ -5223,9 +5351,9 @@ el('chgRunBtn').addEventListener('click', async function () {
   var box = el('chgRunMsg');
   box.style.display = 'none';
 
-  var secret = window.prompt(
-    'Cron secret\n\nThis charges every booking that is due right now. ' +
-    'Same value as CRON_SECRET on the server.');
+  var secret = await pedirTexto('Cron secret',
+    'This charges every booking that is due right now.\n\n' +
+    'Same value as CRON_SECRET on the server.', '', 'Run');
   if (!secret) return;
 
   el('chgRunBtn').disabled = true;
@@ -5590,14 +5718,14 @@ function renderPartners() {
   });
 
   qsa('[data-docno]').forEach(function (b) {
-    b.addEventListener('click', function () {
+    b.addEventListener('click', async function () {
       // O motivo é escrito ali mesmo e vai literalmente para o
       // parceiro. Pedi-lo aqui é mais barato do que responder
       // depois ao email dele a perguntar o que estava errado.
-      var why = window.prompt(
+      var why = await pedirTexto('Reject document',
         'Why can we not accept this document?\n\n' +
         'The partner reads exactly what you write. Be specific:\n' +
-        '"The insurance expired in March" beats "wrong document".');
+        '"The insurance expired in March" beats "wrong document".', '', 'Reject');
 
       if (!why || !why.trim()) return;
       decideDocument(b.getAttribute('data-docno'), 'rejected', why.trim(), b);
@@ -5608,7 +5736,7 @@ function renderPartners() {
 }
 
 async function openPartnerDoc(path, button) {
-  if (!path) return alert('This document has no stored path.');
+  if (!path) return avisar('Heads up', 'This document has no stored path.');
   button.disabled = true;
   try {
     var res = await client.storage.from(PARTNER_BUCKET).createSignedUrl(path, 300);
@@ -5616,7 +5744,7 @@ async function openPartnerDoc(path, button) {
     window.open(res.data.signedUrl, '_blank', 'noopener');
   } catch (e) {
     console.error('signed url:', e, '| path:', path);
-    alert('Could not open the document.\n\nPath: ' + path + '\nError: ' + e.message);
+    avisar('Heads up', 'Could not open the document.\n\nPath: ' + path + '\nError: ' + e.message);
   } finally {
     button.disabled = false;
   }
@@ -5661,7 +5789,7 @@ async function decideDocument(documentId, decision, reason, button) {
 
     await loadPartners();
   } catch (e) {
-    alert(e.message);
+    avisar('Heads up', e.message);
     button.disabled = false;
     button.textContent = original;
   }
@@ -5684,7 +5812,7 @@ async function decidePartner(partnerId, decision, button) {
   if (decision === 'rejected' && !reason) {
     return showPtError('Please type a reason before rejecting — the partner sees it.');
   }
-  if (!window.confirm(confirmText)) return;
+  if (!await perguntar('Confirm', confirmText)) return;
 
   var label = button.textContent;
   button.disabled = true;
@@ -5869,11 +5997,11 @@ function renderAgents() {
   });
 
   qsa('[data-reject]').forEach(function (b) {
-    b.addEventListener('click', function () {
+    b.addEventListener('click', async function () {
       var id = b.getAttribute('data-reject');
       var agent = agents.find(function (a) { return a.id === id; });
       var name = (agent && agent.agency_name) || 'this agency';
-      if (!window.confirm('Reject ' + name + '? They lose the partner rate immediately.')) return;
+      if (!await perguntar('Reject agency', 'Reject ' + name + '? They lose the partner rate immediately.')) return;
       reviewAgent(id, 'rejected', null, b);
     });
   });
@@ -6104,7 +6232,7 @@ el('clearContactSearchBtn').addEventListener('click', function () {
 });
 
 el('exportBookingsBtn').addEventListener('click', function () {
-  if (!allBookings.length) return alert('No bookings to export.');
+  if (!allBookings.length) return avisar('Heads up', 'No bookings to export.');
   downloadCsv(['booking_id','booking_reference','full_name','email','phone_code','phone_number',
     'passenger_name','passenger_phone','pickup','dropoff','pickup_airport','pickup_city',
     'booking_date','booking_time','flight_number','passengers','preferred_languages',
@@ -6115,7 +6243,7 @@ el('exportBookingsBtn').addEventListener('click', function () {
     allBookings, 'airportlink-bookings');
 });
 el('exportContactsBtn').addEventListener('click', function () {
-  if (!contacts.length) return alert('No accounts to export.');
+  if (!contacts.length) return avisar('Heads up', 'No accounts to export.');
   downloadCsv(['id','display_id','full_name','email','phone_number','is_admin','created_at'], contacts, 'airportlink-contacts');
 });
 
@@ -6134,7 +6262,7 @@ el('convToggleStatusBtn').addEventListener('click', async function () {
   var newStatus = conv.status === 'resolved' ? 'open' : 'resolved';
   var res = await client.from('support_chats')
     .update({ status: newStatus, updated_at: new Date().toISOString() }).eq('id', activeConvId);
-  if (res.error) return alert(res.error.message);
+  if (res.error) return avisar('Heads up', res.error.message);
   conv.status = newStatus;
   updateStatusUI(newStatus);
   renderConversationList(); renderConvStats();
