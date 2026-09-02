@@ -222,7 +222,9 @@
   }
 
   var ACCOUNT_LINK = {
-    agent: { href: '/travelagents', label: 'Partner dashboard', i18nKey: 'nav.partnerDash' },
+    // O painel da agência, não a página de marketing. Quem já foi
+    // aprovado não precisa de reler o que ganha por se candidatar.
+    agent: { href: '/agency', label: 'Agency dashboard', i18nKey: 'nav.agencyDash' },
     admin: { href: '/admin', label: 'Operations', i18nKey: 'nav.operations' },
     customer: { href: '/myaccount', label: 'My account', i18nKey: 'nav.myAccount' }
   };
