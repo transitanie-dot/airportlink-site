@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travel Agent Login | Trade Portal | Airportlink</title>
+<meta name="description" content="Sign in to your Airportlink trade account to book transfers at your agent rate, manage every agency booking and download monthly statements.">
+<link rel="canonical" href="https://www.airportlink.app/agencylogin">
+
+<meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('airportlink-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/i18n.js"></script>
+<script src="/assets/layout.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta property="og:title" content="Travel Agent Login | Airportlink">
+<meta property="og:description" content="Book airport transfers at your trade rate. Sign in or apply in a few minutes.">
+<meta property="og:url" content="https://www.airportlink.app/agencylogin">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Airportlink">
+<meta property="og:image" content="https://www.airportlink.app/assets/og-square.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="1200">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Travel Agent Login | Airportlink">
+<meta name="twitter:description" content="Book airport transfers at your trade rate.">
+<meta name="twitter:image" content="https://www.airportlink.app/assets/og-square.jpg">
+<link rel="alternate" hreflang="en" href="https://www.airportlink.app/agencylogin">
+<link rel="alternate" hreflang="x-default" href="https://www.airportlink.app/agencylogin">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebPage",
+ "name": "Travel agent login",
+ "description": "Sign in to the Airportlink trade portal.",
+ "url": "https://www.airportlink.app/agencylogin",
+ "isPartOf": {
+  "@type": "WebSite",
+  "name": "Airportlink",
+  "url": "https://www.airportlink.app"
+ },
+ "publisher": {
+  "@type": "Organization",
+  "name": "Airportlink",
+  "url": "https://www.airportlink.app",
+  "logo": {
+   "@type": "ImageObject",
+   "url": "https://www.airportlink.app/assets/img/logo-dark.png"
+  }
+ }
+}
+</script>
+<style>
+
+/* Só o que é específico das páginas de conta. O resto vive em
+   /assets/site.css e é partilhado por todas. */
+.auth-page{display:flex;align-items:center;justify-content:center;
+  min-height:calc(100vh - var(--header-h) - 220px);padding:40px 20px}
+.auth-card{width:100%;max-width:440px;background:var(--surface);
+  border:1px solid var(--rule);border-radius:26px;padding:34px;
+  box-shadow:0 18px 44px rgba(20,26,40,.08)}
+html[data-theme="dark"] .auth-card{box-shadow:0 18px 44px rgba(0,0,0,.4)}
+.auth-card h1{font-family:var(--display);font-weight:700;font-size:28px;
+  letter-spacing:-.03em;margin:0 0 8px}
+.auth-card .sub{margin:0 0 26px;color:var(--muted);font-size:14.5px;line-height:1.6}
+.field{margin-bottom:16px}
+.field label{display:block;font-family:var(--mono);font-size:10.5px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.field input{width:100%;height:50px;padding:0 15px;border:1px solid var(--rule-strong);
+  border-radius:14px;background:var(--field);outline:none;font-size:15px;font-family:var(--body)}
+.field input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,118,110,.16)}
+.field .help{margin-top:7px;font-size:12.5px;color:var(--muted);line-height:1.5}
+.btn{display:inline-flex;align-items:center;justify-content:center;width:100%;height:50px;
+  padding:0 22px;border:0;border-radius:14px;background:var(--ink);color:#fff;
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;cursor:pointer;transition:transform .12s ease}
+.btn:hover:not(:disabled){transform:translateY(-1px)}
+.btn:disabled,.btn.loading{opacity:.55;cursor:not-allowed;pointer-events:none}
+.btn.teal{background:var(--teal);color:#fff}
+.btn.line{background:transparent;color:var(--text);border:1px solid var(--rule-strong);margin-top:10px}
+html[data-theme="dark"] .btn{background:#E9EDF3;color:#141A28}
+html[data-theme="dark"] .btn.teal{background:var(--teal);color:#fff}
+html[data-theme="dark"] .btn.line{background:transparent;color:var(--text)}
+.msg{display:none;margin-top:16px;padding:13px 16px;border-radius:14px;font-size:14px;line-height:1.55}
+.err{background:var(--err-bg);color:var(--err-text);border:1px solid var(--err-rule)}
+.ok{background:var(--ok-bg);color:var(--ok-text);border:1px solid var(--ok-rule)}
+.links{display:flex;justify-content:space-between;gap:12px;margin-top:18px;flex-wrap:wrap}
+.linkish{background:none;border:0;padding:0;color:var(--teal);font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-family:var(--body)}
+html[data-theme="dark"] .linkish{color:var(--amber)}
+.boot{display:flex;align-items:center;justify-content:center;min-height:180px;
+  color:var(--muted);font-size:14px;text-align:center}
+.pw-meter{height:4px;border-radius:999px;background:var(--rule);overflow:hidden;margin-top:9px}
+.pw-fill{height:100%;width:0;border-radius:999px;transition:width .3s ease,background .3s ease}
+.hidden{display:none!important}
+
+/* ============================================================
+   ENTRADA DE AGÊNCIAS
+
+   Uma página indexável tem de vender antes de pedir a password.
+   Quem chega do Google não tem conta ainda; quem chega dos
+   favoritos quer o formulário à mão.
+
+   Daí as duas colunas: o formulário à direita, onde a mão já vai,
+   e a razão para o preencher à esquerda.
+   ============================================================ */
+.ag-split{display:grid;grid-template-columns:1.1fr .9fr;gap:0;min-height:100vh}
+
+/* ---------- o lado que vende ---------- */
+.ag-sell{background:var(--ink);color:#EEF1F6;padding:56px 48px;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden}
+.ag-sell::after{content:"";position:absolute;inset:0;pointer-events:none;background:
+  radial-gradient(640px 340px at 84% 10%, rgba(232,163,61,.20), transparent 62%),
+  radial-gradient(540px 340px at 4% 94%, rgba(15,118,110,.24), transparent 60%)}
+.ag-sell > *{position:relative;z-index:1}
+
+.ag-brand{font-family:var(--display);font-weight:800;font-size:19px;
+  letter-spacing:-.02em;color:#fff;margin-bottom:auto}
+.ag-brand span{color:var(--amber)}
+
+.ag-sell h2{font-family:var(--display);font-weight:800;letter-spacing:-.04em;
+  line-height:1.05;font-size:clamp(28px,3.4vw,42px);margin:36px 0 16px;max-width:16ch}
+.ag-sell .lead{margin:0 0 34px;color:#B9C2D2;font-size:16px;line-height:1.7;
+  max-width:44ch}
+
+.ag-pts{display:flex;flex-direction:column;gap:20px;margin-bottom:auto}
+.ag-pt{display:flex;gap:15px;align-items:flex-start}
+.ag-pt .n{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--amber);
+  line-height:1;flex:0 0 auto;min-width:56px}
+.ag-pt b{display:block;font-family:var(--display);font-weight:700;font-size:15.5px;
+  color:#fff;margin-bottom:4px;letter-spacing:-.01em}
+.ag-pt span{display:block;color:#98A2B3;font-size:13.5px;line-height:1.6;max-width:38ch}
+
+.ag-foot{margin-top:38px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);
+  color:#8C97A8;font-size:13px;line-height:1.6}
+
+/* ---------- o lado que recebe ---------- */
+.ag-form{padding:56px 48px;display:flex;align-items:center;justify-content:center;
+  background:var(--bg)}
+.ag-inner{width:100%;max-width:400px}
+
+.trade-mark{display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:14px}
+html[data-theme="dark"] .trade-mark{color:var(--amber)}
+.trade-mark::before{content:"";width:6px;height:6px;border-radius:999px;
+  background:currentColor}
+
+.ag-inner h1{font-family:var(--display);font-weight:700;font-size:28px;
+  letter-spacing:-.03em;margin:0 0 8px}
+.ag-inner .sub{margin:0 0 26px;color:var(--muted);font-size:14.5px;line-height:1.6}
+
+/* Quem entrou com uma conta que não é de agência. Acontece: as
+   pessoas guardam nos favoritos a página errada, e recusar por
+   isso seria pedante. */
+.wrong-door{padding:14px 16px;border-radius:14px;background:var(--surface-2);
+  border:1px solid var(--rule);color:var(--muted);
+  font-size:13px;line-height:1.6;margin-top:20px;text-align:center}
+.wrong-door a{color:var(--teal);font-weight:600}
+html[data-theme="dark"] .wrong-door a{color:var(--amber)}
+
+.ag-apply{display:block;margin-top:22px;padding:16px;border-radius:16px;
+  background:var(--surface);border:1px solid var(--rule);text-align:center;
+  text-decoration:none;color:inherit;transition:border-color .15s ease}
+.ag-apply:hover{border-color:var(--teal)}
+.ag-apply b{display:block;font-family:var(--display);font-weight:700;font-size:15px;
+  margin-bottom:4px;color:var(--text)}
+.ag-apply span{display:block;font-size:13px;color:var(--muted);line-height:1.5}
+
+@media (max-width:920px){
+  .ag-split{grid-template-columns:1fr;min-height:0}
+  .ag-sell{padding:36px 24px;order:2}
+  .ag-sell h2{font-size:26px;margin-top:0}
+  .ag-form{padding:40px 24px;order:1;min-height:auto}
+  .ag-brand{display:none}
+}
+</style>
+</head>
+<body data-cta-href="/travelagents" data-cta-label="Apply for a trade account">
+
+<main id="main">
+<div class="ag-split">
+
+  <!-- O lado que vende. Uma página indexável recebe gente que
+       ainda não tem conta, e um formulário sozinho não lhes diz
+       nada sobre por que haviam de querer uma. -->
+  <div class="ag-sell">
+    <div class="ag-brand">AIRPORT<span>LINK</span> &middot; trade</div>
+
+    <h2>The transfer part of your itineraries, handled.</h2>
+    <p class="lead">You arrange the flights, the hotel and the tour. The airport
+    transfer should not be the thing that costs you an afternoon of phone calls.</p>
+
+    <div class="ag-pts">
+      <div class="ag-pt">
+        <span class="n">12%</span>
+        <span><b>Trade rate on every transfer</b>
+        <span>Applied at checkout from your first booking. No code to enter,
+        no minimum spend to unlock it.</span></span>
+      </div>
+
+      <div class="ag-pt">
+        <span class="n">12h</span>
+        <span><b>Free cancellation</b>
+        <span>Itineraries change. Cancel up to twelve hours before pick-up and
+        the refund is automatic.</span></span>
+      </div>
+
+      <div class="ag-pt">
+        <span class="n">0</span>
+        <span><b>Joining fee, and no minimum volume</b>
+        <span>Book once a year or twice a day. The rate is the same, and there
+        is nothing to renew.</span></span>
+      </div>
+    </div>
+
+    <p class="ag-foot">Licensed local companies, flight tracking on every
+    arrival, and one price agreed before you pay &mdash; no surcharges after
+    the trip.</p>
+  </div>
+
+  <!-- O lado que recebe. À direita porque é onde a mão já vai. -->
+  <div class="ag-form">
+    <div class="ag-inner">
+      <div id="bootView" class="boot">Checking your session&hellip;</div>
+
+      <div id="loginView" class="hidden">
+        <span class="trade-mark">Trade account</span>
+        <h1>Agency sign in</h1>
+        <p class="sub">Your agency bookings, saved travellers and monthly
+        statements are inside.</p>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="you@youragency.com" autocomplete="email">
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="Your password" autocomplete="current-password">
+        </div>
+
+        <button id="loginBtn" class="btn" type="button">Sign in</button>
+
+        <div id="loginError" class="msg err"></div>
+        <div id="loginSuccess" class="msg ok"></div>
+
+        <div class="links">
+          <button class="linkish" id="forgotLink" type="button">Forgot your password?</button>
+        </div>
+
+        <a class="ag-apply" href="/travelagents" id="signupLink">
+          <b>No trade account yet?</b>
+          <span>The application takes a few minutes and we approve by hand.</span>
+        </a>
+
+        <div class="wrong-door">
+          Booking for yourself rather than for a client?
+          <a href="/login">Sign in here instead</a>.
+        </div>
+      </div>
+
+      <div id="forgotView" class="hidden">
+        <h2>Reset your password</h2>
+        <p class="sub">Enter the email on your trade account and we send you a link.</p>
+
+        <div class="field">
+          <label for="resetEmail">Email</label>
+          <input id="resetEmail" type="email" placeholder="you@youragency.com" autocomplete="email">
+        </div>
+
+        <button id="sendVerificationBtn" class="btn" type="button">Send reset link</button>
+
+        <div id="resetError" class="msg err"></div>
+        <div id="resetSuccess" class="msg ok"></div>
+
+        <div class="links">
+          <button class="linkish" id="backToLoginLink" type="button">Back to sign in</button>
+        </div>
+      </div>
+
+      <div id="newPwView" class="hidden">
+        <h2>Set a new password</h2>
+        <p class="sub" id="newPwSub">Choose something you will remember. Longer is
+        better than complicated.</p>
+
+        <div class="field">
+          <label for="newPw1">New password</label>
+          <input id="newPw1" type="password" autocomplete="new-password">
+          <div class="pw-meter"><div class="pw-fill" id="newPwFill"></div></div>
+          <div class="hint" id="newPwHint">At least 8 characters.</div>
+        </div>
+
+        <div class="field">
+          <label for="newPw2">Repeat password</label>
+          <input id="newPw2" type="password" autocomplete="new-password">
+        </div>
+
+        <button id="newPwBtn" class="btn" type="button">Save password</button>
+
+        <div id="newPwErr" class="msg err"></div>
+        <div id="newPwOk" class="msg ok"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+<script>
+(function () {
+'use strict';
+
+var SUPABASE_URL = 'https://ujpagsccfiledbtfeyuq.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ';
+
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
+
+var $ = function (id) { return document.getElementById(id) || MISSING; };
+
+var MISSING = { style: {}, value: '', textContent: '', innerHTML: '',
+  classList: { add: function () {}, remove: function () {}, toggle: function () {} },
+  addEventListener: function () {}, disabled: false, focus: function () {},
+  __missing: true };
+
+function esc(v) {
+  return String(v === null || v === undefined ? '' : v)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function show(el, other, html) {
+  el.innerHTML = html;
+  el.style.display = 'block';
+  if (other) other.style.display = 'none';
+}
+
+function view(qual) {
+  ['bootView', 'loginView', 'forgotView', 'newPwView'].forEach(function (v) {
+    $(v).classList.toggle('hidden', v !== qual);
+  });
+}
+
+/**
+ * Para onde vai quem entra.
+ *
+ * Uma agência aprovada vai para o painel dela. Quem entrar aqui
+ * com outra conta não é recusado — é encaminhado. As pessoas
+ * guardam nos favoritos a página errada, e recusar por isso seria
+ * pedante.
+ */
+async function destino(user) {
+  try {
+    var r = await db.from('travel_agents')
+      .select('status')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    // Pendente também vai para o painel: é lá que se explica em que
+    // ponto está a candidatura, melhor do que uma frase aqui.
+    if (r.data) return '/agency';
+  } catch (e) {
+    console.log('agency lookup skipped:', e.message);
+  }
+
+  return '/myaccount';
+}
+
+(async function start() {
+  /**
+   * Um link de recuperação traz a sessão no endereço.
+   *
+   * O detectSessionInUrl trata dela sozinho, mas o tipo fica no
+   * fragmento — e é ele que diz se viemos definir uma password
+   * nova ou entrar normalmente.
+   */
+  var frag = window.location.hash || '';
+
+  if (frag.indexOf('type=recovery') !== -1) {
+    view('newPwView');
+    return;
+  }
+
+  if (frag.indexOf('error=') !== -1) {
+    view('loginView');
+    var m = /error_description=([^&]*)/.exec(frag);
+    show($('loginError'), $('loginSuccess'),
+      m ? esc(decodeURIComponent(m[1]).replace(/\+/g, ' '))
+        : 'That link is no longer valid. Try signing in.');
+    return;
+  }
+
+  try {
+    var s = await db.auth.getSession();
+
+    if (s.data && s.data.session) {
+      window.location.href = await destino(s.data.session.user);
+      return;
+    }
+  } catch (e) {}
+
+  view('loginView');
+})();
+
+$('loginBtn').addEventListener('click', async function () {
+  var email = $('email').value.trim();
+  var pw = $('password').value;
+
+  if (!email || !pw) {
+    return show($('loginError'), $('loginSuccess'), 'Please fill in both fields.');
+  }
+
+  $('loginBtn').disabled = true;
+  $('loginBtn').textContent = 'Signing in...';
+
+  try {
+    var r = await db.auth.signInWithPassword({ email: email, password: pw });
+
+    if (r.error) {
+      // "Email not confirmed" é literal e não diz o que fazer.
+      var msg = /not confirmed/i.test(r.error.message)
+        ? 'Your email is not confirmed yet. Open the link we sent you — check ' +
+          'spam if it is not in your inbox.'
+        : r.error.message;
+
+      show($('loginError'), $('loginSuccess'), esc(msg));
+      return;
+    }
+
+    window.location.href = await destino(r.data.user);
+  } catch (e) {
+    show($('loginError'), $('loginSuccess'), esc(e.message));
+  } finally {
+    $('loginBtn').disabled = false;
+    $('loginBtn').textContent = 'Sign in';
+  }
+});
+
+$('password').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') $('loginBtn').click();
+});
+
+$('forgotLink').addEventListener('click', function () {
+  $('resetEmail').value = $('email').value.trim();
+  view('forgotView');
+  $('resetEmail').focus();
+});
+
+$('backToLoginLink').addEventListener('click', function () {
+  view('loginView');
+});
+
+$('sendVerificationBtn').addEventListener('click', async function () {
+  var email = $('resetEmail').value.trim();
+
+  if (!email) {
+    return show($('resetError'), $('resetSuccess'), 'Enter your email first.');
+  }
+
+  $('sendVerificationBtn').disabled = true;
+
+  try {
+    // Volta para aqui, não para o /login: quem pediu a partir da
+    // porta das agências deve voltar a ela.
+    await db.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://www.airportlink.app/agencylogin'
+    });
+  } catch (e) {
+    console.error(e);
+  }
+
+  $('sendVerificationBtn').disabled = false;
+
+  // Resposta genérica: não revelamos que emails existem na base.
+  show($('resetSuccess'), $('resetError'),
+    'If an account exists for that email, a reset link is on its way.');
+});
+
+$('newPw1').addEventListener('input', function () {
+  var v = $('newPw1').value;
+
+  $('newPwFill').style.width = Math.min(100, (v.length / 16) * 100) + '%';
+  $('newPwFill').style.background = v.length < 8
+    ? '#F87171' : (v.length < 12 ? 'var(--amber)' : 'var(--teal)');
+
+  $('newPwHint').textContent = v.length < 8
+    ? 'A little longer — at least 8 characters.'
+    : (v.length < 12 ? 'Good. A few more would be better.' : 'Strong.');
+});
+
+$('newPwBtn').addEventListener('click', async function () {
+  var a = $('newPw1').value;
+  var b = $('newPw2').value;
+
+  if (a.length < 8) {
+    return show($('newPwErr'), $('newPwOk'), 'Use at least 8 characters.');
+  }
+
+  if (a !== b) {
+    return show($('newPwErr'), $('newPwOk'), 'The two passwords do not match.');
+  }
+
+  $('newPwBtn').disabled = true;
+
+  try {
+    var r = await db.auth.updateUser({ password: a });
+    if (r.error) throw new Error(r.error.message);
+
+    show($('newPwOk'), $('newPwErr'), 'Password saved. Taking you in...');
+
+    var s = await db.auth.getSession();
+    var para = s.data && s.data.session
+      ? await destino(s.data.session.user)
+      : '/agencylogin';
+
+    setTimeout(function () { window.location.href = para; }, 900);
+  } catch (e) {
+    show($('newPwErr'), $('newPwOk'), esc(e.message));
+    $('newPwBtn').disabled = false;
+  }
+});
+
+})();
+</script>
+
+</body>
+</html>
