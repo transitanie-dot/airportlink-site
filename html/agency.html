@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agency dashboard | Airportlink</title>
+<meta name="description" content="Book transfers for your travellers, see every agency booking, and download your monthly statement.">
+<link rel="canonical" href="https://www.airportlink.app/agency">
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('airportlink-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/i18n.js"></script>
+<script src="/assets/layout.js" defer></script>
+<script src="/assets/phone.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<style>
+
+/* As variáveis antigas desta página passam a apontar para os tokens
+   partilhados em /assets/site.css. Alinha as cores e a tipografia com
+   o resto do site sem reescrever uma única regra abaixo. */
+:root{
+  --card:var(--surface);
+  --primary:var(--ink);
+  --primary-soft:var(--surface-2);
+  --border:var(--rule);
+  --shadow:0 14px 34px rgba(20,26,40,.07);
+  --success:var(--ok-text);--success-bg:var(--ok-bg);
+  --warning:var(--warn-text);--warning-bg:var(--warn-bg);
+  --neutral-bg:var(--surface-2);
+  --link:var(--teal);--danger:var(--err-text);
+}
+html[data-theme="dark"]{
+  --primary:#E9EDF3;
+  --shadow:0 14px 34px rgba(0,0,0,.34);
+  --link:var(--amber);
+}
+html,body{font-family:var(--body)}
+h2{font-family:var(--display);font-weight:700;letter-spacing:-.02em}
+input{font-family:var(--body)}
+.trip-label{font-family:var(--mono);font-weight:600;letter-spacing:.08em}
+.trip-status{font-family:var(--mono);font-weight:600;letter-spacing:.06em}
+.route-caption,.trip-meta-label,.receipt-label{font-family:var(--mono)}
+.trip-meta-value,.receipt-value{font-family:var(--body)}
+.route-value{font-family:var(--body)}
+.modal-head{background:var(--ink)}
+html[data-theme="dark"] .modal-head{background:#0B1118}
+
+.wrapper{display:flex;padding:24px 20px;gap:22px;align-items:flex-start;max-width:1180px;margin:0 auto}
+.main{flex:1;min-width:0}
+
+/* Botões dos modais e do formulário de perfil, alinhados com o
+   sistema: monoespaçado, maiúsculas pequenas, cantos de 14px. */
+.btn{border:0;border-radius:14px;padding:0 20px;height:48px;font-family:var(--mono);
+  font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  transition:transform .12s ease}
+.btn:hover:not(:disabled){transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-primary{background:var(--teal);color:#fff}
+.btn-secondary{background:var(--ink);color:#fff}
+html[data-theme="dark"] .btn-primary{background:var(--teal);color:#fff}
+html[data-theme="dark"] .btn-secondary{background:#E9EDF3;color:#141A28}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:22px;color:var(--text)}
+.card.full{grid-column:1 / -1}
+h2{margin:0 0 6px;font-size:22px;color:var(--text)}
+.sub{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.5}
+.field{margin-bottom:14px}
+label{display:block;margin:0 0 7px;font-size:13px;font-weight:700;color:var(--text)}
+/* O select do prefixo não é um input: sem o incluir aqui, ficava
+   quadrado ao lado de um campo arredondado. */
+input,select{width:100%;padding:13px 15px;border:1px solid var(--border);border-radius:13px;background:var(--card);color:var(--text);font-size:15px;outline:none}
+html[data-theme="dark"] input{background:#0f141c}
+input:disabled{opacity:.65}
+.field-error{display:none;margin-top:6px;color:var(--danger);font-size:13px}
+.msg{display:none;margin-top:14px;padding:12px 14px;border-radius:12px;font-size:14px;line-height:1.45}
+.err{background:#fff1f2;color:#b42318;border:1px solid #fda29b}
+.ok{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}
+html[data-theme="dark"] .err{background:#2b1114;color:#fda4af;border-color:#7f1d1d}
+html[data-theme="dark"] .ok{background:#052e22;color:#34d399;border-color:#14532d}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.hidden{display:none!important}
+.boot{display:flex;align-items:center;justify-content:center;min-height:340px;color:var(--muted);font-size:15px;font-weight:700;padding:24px;text-align:center}
+.agent-redirect{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--link);
+  border-radius:18px;padding:18px 20px;margin-bottom:18px;line-height:1.6;font-size:14px}
+.agent-redirect strong{display:block;font-size:15.5px;margin-bottom:5px}
+.agent-redirect.active{border-width:2px;box-shadow:0 10px 26px rgba(20,26,40,.10)}
+html[data-theme="dark"] .agent-redirect.active{box-shadow:0 10px 26px rgba(0,0,0,.4)}
+.agent-redirect.pending{border-color:var(--warning);background:var(--warning-bg);color:var(--warning)}
+.agent-redirect.rejected{border-color:#fda29b;background:#fff1f2;color:var(--danger)}
+html[data-theme="dark"] .agent-redirect.rejected{background:#2b1114;border-color:#7f1d1d}
+.agent-redirect .go{border:0;border-radius:13px;padding:11px 18px;background:#333B50;color:#fff;
+  font-weight:800;font-size:13.5px;cursor:pointer;white-space:nowrap;flex:0 0 auto;align-self:center}
+html[data-theme="dark"] .agent-redirect .go{background:#e7ebf2;color:#11161D}
+@media (max-width:640px){.agent-redirect{flex-direction:column}.agent-redirect .go{width:100%}}
+.policy-note{display:flex;gap:10px;align-items:flex-start;background:var(--success-bg);border:1px solid #a7f3d0;color:#065f46;border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.55;font-weight:600;margin-bottom:16px}
+html[data-theme="dark"] .policy-note{border-color:#14532d;color:#6ee7b7}
+.trip-list{display:grid;gap:14px}
+.trip-card{border:1px solid var(--border);border-radius:20px;background:var(--card);padding:18px}
+.trip-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap}
+.trip-top-right{display:flex;align-items:center;gap:10px}
+.icon-btn{width:30px;height:30px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.icon-btn svg{width:15px;height:15px;pointer-events:none}
+.trip-label{display:inline-flex;padding:7px 11px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.trip-status{display:inline-flex;padding:7px 10px;border-radius:999px;font-size:12px;font-weight:800;text-transform:capitalize;border:1px solid var(--border);background:var(--neutral-bg);color:var(--muted)}
+.trip-status.upcoming,.trip-status.confirmed,.trip-status.pending{background:var(--warning-bg);color:var(--warning);border-color:#fed7aa}
+.trip-status.completed,.trip-status.paid{background:var(--success-bg);color:var(--success);border-color:#bbf7d0}
+.trip-status.cancelled,.trip-status.refunded{background:#fff1f2;color:#b42318;border-color:#fda29b}
+html[data-theme="dark"] .trip-status.cancelled,html[data-theme="dark"] .trip-status.refunded{background:#2b1114;color:#fda4af;border-color:#7f1d1d}
+.trip-route{display:grid;gap:10px;margin-bottom:14px}
+.route-stop{display:grid;grid-template-columns:18px 1fr;gap:12px;align-items:start}
+.route-marker{width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;margin-top:2px}
+.route-marker.pickup{background:#0f766e}
+.route-marker.dropoff{background:#111827}
+html[data-theme="dark"] .route-marker.dropoff{background:#e7ebf2;color:#11161D}
+.route-caption{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.route-value{font-size:15px;font-weight:700;line-height:1.45;color:var(--text)}
+.trip-meta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding-top:14px;border-top:1px solid var(--border)}
+.trip-meta-item{background:var(--neutral-bg);border:1px solid var(--border);border-radius:13px;padding:11px 12px}
+.trip-meta-label{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.trip-meta-value{font-size:14px;font-weight:700;color:var(--text);word-break:break-word}
+.field-note{margin:7px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5}
+/* ============================================================
+   CONTA DE AGÊNCIA
+   Uma conta que paga taxa comercial deve parecer diferente de uma
+   conta comum. Não é decoração: é o que faz o agente sentir que
+   está num sítio feito para ele, e é barato de conseguir.
+   ============================================================ */
+html[data-agency="on"] .sidebar,
+html[data-agency="on"] .side{
+  background:linear-gradient(170deg,#1A2233 0%,var(--ink) 62%);
+  border:1px solid rgba(232,163,61,.22)}
+/* O texto dos itens tem de clarear com o fundo.
+   Só o item ativo estava tratado, e por isso os restantes ficavam
+   escuros sobre escuro — invisíveis. */
+html[data-agency="on"] .side-item{color:#B9C2D2}
+html[data-agency="on"] .side-item:hover{background:rgba(255,255,255,.06);color:#fff}
+html[data-agency="on"] .side-item.active{
+  background:rgba(232,163,61,.14);color:var(--amber);box-shadow:inset 2px 0 0 var(--amber)}
+html[data-agency="on"] .side-title{color:#8C97A8}
+html[data-agency="on"] .side-btn.teal{background:var(--amber);color:#141A28}
+
+/* A faixa que identifica a conta, por cima da navegação. */
+.agency-crest{display:none;padding:14px 13px 16px;margin:-4px 0 10px;
+  border-bottom:1px solid rgba(255,255,255,.09)}
+html[data-agency="on"] .agency-crest{display:block}
+.agency-crest .k{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--amber);margin-bottom:6px}
+.agency-crest .n{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:-.02em;
+  color:#fff;line-height:1.3;word-break:break-word}
+.agency-crest .r{font-family:var(--mono);font-size:10.5px;color:#8C97A8;margin-top:5px}
+
+/* O cartão de topo do separador, com o ar de um cartão de sócio. */
+.agency-hero{background:linear-gradient(150deg,#1A2233 0%,#141A28 68%);
+  border:1px solid rgba(232,163,61,.28);border-radius:22px;padding:26px;color:#EEF1F6;
+  position:relative;overflow:hidden;margin-bottom:18px}
+.agency-hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(420px 220px at 88% 6%, rgba(232,163,61,.16), transparent 62%)}
+.agency-hero > *{position:relative;z-index:1}
+.agency-hero .k{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--amber);margin-bottom:10px}
+.agency-hero h2{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.03em;
+  margin:0 0 8px;color:#fff}
+.agency-hero p{margin:0;color:#B9C2D2;font-size:14.5px;line-height:1.65;max-width:52ch}
+.agency-hero .figs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+.agency-hero .fig{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);
+  border-radius:15px;padding:14px 16px}
+.agency-hero .fig .kk{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:#8C97A8;margin-bottom:7px}
+.agency-hero .fig .vv{font-family:var(--mono);font-size:22px;font-weight:600;letter-spacing:-.02em;
+  color:var(--amber)}
+@media (max-width:640px){.agency-hero .figs{grid-template-columns:1fr}}
+
+.agency-figs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.agency-fig{background:var(--neutral-bg);border:1px solid var(--border);border-radius:14px;padding:13px 15px}
+.agency-fig .k{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.agency-fig .v{font-family:var(--mono);font-size:19px;font-weight:600;letter-spacing:-.02em}
+@media (max-width:640px){.agency-figs{grid-template-columns:1fr}}
+.trip-ref{display:inline-flex;align-items:center;gap:7px;background:var(--neutral-bg);
+  border:1px solid var(--border);border-radius:999px;padding:6px 12px;margin-bottom:14px;
+  font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.06em;
+  color:var(--muted);cursor:pointer;transition:color .15s ease,border-color .15s ease}
+.trip-ref:hover{color:var(--text);border-color:var(--link)}
+.trip-ref svg{width:13px;height:13px;opacity:.7}
+.trip-ref.copied{color:var(--success);border-color:var(--success)}
+.pay-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;
+  padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted);line-height:1.5}
+.pay-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;padding:5px 10px;border-radius:999px;border:1px solid var(--rule)}
+.pay-tag.saved{background:var(--warn-bg);color:var(--warn-text);border-color:var(--warn-rule)}
+.pay-tag.paid{background:var(--ok-bg);color:var(--ok-text);border-color:var(--ok-rule)}
+.pay-tag.failed{background:var(--err-bg);color:var(--err-text);border-color:var(--err-rule)}
+.trip-actions{display:flex;gap:10px;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);flex-wrap:wrap}
+.cancel-btn{border:1px solid #fda29b;background:transparent;color:#b42318;border-radius:12px;padding:10px 16px;font-weight:800;font-size:13px;cursor:pointer}
+.cancel-btn:hover{background:#fff1f2}
+html[data-theme="dark"] .cancel-btn{border-color:#7f1d1d;color:#fda4af}
+html[data-theme="dark"] .cancel-btn:hover{background:#2b1114}
+.cancel-btn:disabled{opacity:.5;cursor:not-allowed}
+.cancel-info{font-size:12.5px;color:var(--muted);line-height:1.5}
+.trip-empty{display:flex;align-items:center;justify-content:center;min-height:130px;border:1px dashed var(--border);border-radius:18px;background:var(--neutral-bg);color:var(--muted);font-size:14px;padding:24px;text-align:center}
+.help-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:16px}
+.help-card h3{margin:0 0 8px;font-size:17px;color:var(--text)}
+.help-card p{margin:0 0 12px;color:var(--muted);font-size:14px;line-height:1.5}
+.support-cta{display:inline-flex;align-items:center;background:#333B50;color:#fff;border:0;border-radius:13px;padding:13px 20px;font-weight:800;font-size:15px;cursor:pointer}
+html[data-theme="dark"] .support-cta{background:#e7ebf2;color:#11161D}
+.faq-item{border-bottom:1px solid var(--border);padding:13px 0}
+.faq-item:last-child{border-bottom:0}
+.faq-question{font-weight:700;color:var(--text);font-size:15px;margin:0 0 6px}
+.faq-answer{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+/* Fora do iframe o viewport é o ecrã, por isso position:fixed volta
+   a centrar onde deve. Era o iframe alto que punha o modal a meio do
+   documento, muito abaixo do que o cliente via. */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;
+  align-items:center;justify-content:center;z-index:9999;padding:16px}
+.overlay.show{display:flex}
+.modal{width:min(100%,560px);max-height:86vh;background:var(--card);border-radius:22px;border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column}
+.modal-head{padding:20px 22px;background:linear-gradient(180deg,#333B50,#252c3d);color:#fff;display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+html[data-theme="dark"] .modal-head{background:linear-gradient(180deg,#11161D,#0b1118)}
+.modal-head h3{margin:0;font-size:19px}
+.modal-head p{margin:6px 0 0;opacity:.82;font-size:13px}
+.modal-close{border:0;background:rgba(255,255,255,.12);color:#fff;width:32px;height:32px;border-radius:11px;cursor:pointer;font-size:19px}
+.modal-body{padding:20px 22px;overflow-y:auto}
+.receipt-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.receipt-item{background:var(--neutral-bg);border:1px solid var(--border);border-radius:14px;padding:11px 13px}
+.receipt-label{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.receipt-value{font-size:14px;font-weight:700;color:var(--text);word-break:break-word}
+.modal-actions{display:flex;gap:10px;padding:16px 22px;border-top:1px solid var(--border);flex-wrap:wrap}
+.modal-actions .btn{flex:1;min-width:140px}
+.btn-danger{background:transparent;color:var(--err-text);border:1px solid var(--err-rule)}
+html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
+@media (max-width:860px){
+  .wrapper{flex-direction:column;padding:16px 14px;gap:16px}
+  .grid{grid-template-columns:1fr}
+  .trip-meta-grid{grid-template-columns:1fr}
+  .receipt-grid{grid-template-columns:1fr}
+}
+
+/* ============================================================
+   PORTAL DE AGÊNCIA
+
+   Herda o desenho do myaccount de propósito: é a mesma marca e a
+   mesma sessão, e uma agência que já usou a conta de cliente não
+   deve ter de reaprender nada.
+
+   O que muda é o que está lá dentro.
+   ============================================================ */
+.ag-top{display:flex;align-items:center;justify-content:space-between;gap:20px;
+  flex-wrap:wrap;margin-bottom:22px}
+.ag-top h1{margin:0 0 4px}
+.ag-top .sub{margin:0}
+
+/* O botão de reservar é a razão de a página existir: uma agência
+   vem aqui para marcar, não para consultar. */
+.ag-book{display:inline-flex;align-items:center;gap:9px;flex:0 0 auto;
+  background:var(--teal);color:#fff;border:0;border-radius:14px;
+  padding:14px 24px;font-family:var(--mono);font-size:12px;font-weight:600;
+  letter-spacing:.09em;text-transform:uppercase;cursor:pointer;text-decoration:none;
+  transition:transform .12s ease}
+.ag-book:hover{transform:translateY(-1px);color:#fff}
+html[data-theme="dark"] .ag-book{background:var(--amber);color:#141A28}
+html[data-theme="dark"] .ag-book:hover{color:#141A28}
+.ag-book svg{width:17px;height:17px}
+
+/* ---------- viajantes guardados ---------- */
+.tv-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:12px;margin-top:6px}
+.tv{border:1px solid var(--rule);border-radius:16px;padding:15px 17px;
+  background:var(--surface);position:relative}
+.tv b{display:block;font-family:var(--display);font-weight:700;font-size:15px;
+  letter-spacing:-.01em;margin-bottom:5px}
+.tv .det{font-size:13px;color:var(--muted);line-height:1.55;
+  overflow:hidden;text-overflow:ellipsis}
+.tv .note{margin-top:8px;padding-top:8px;border-top:1px solid var(--rule);
+  font-size:12.5px;color:var(--muted);line-height:1.5}
+.tv-n{position:absolute;top:13px;right:14px;font-family:var(--mono);font-size:10.5px;
+  color:var(--muted)}
+.tv-acts{display:flex;gap:8px;margin-top:12px;padding-top:12px;
+  border-top:1px solid var(--rule)}
+.tv-acts button{flex:1;padding:8px;border-radius:10px;border:1px solid var(--rule-strong);
+  background:transparent;color:var(--text);font:inherit;font-size:12.5px;
+  font-weight:600;cursor:pointer}
+.tv-acts button:hover{border-color:var(--teal)}
+.tv-acts button.gone{color:var(--err-text);border-color:transparent}
+.tv-acts button.gone:hover{border-color:var(--err-rule)}
+
+/* ---------- a fatura ---------- */
+.inv-toggle{display:flex;align-items:flex-start;gap:13px;padding:16px;
+  border:1px solid var(--rule);border-radius:16px;background:var(--surface-2);
+  margin-bottom:16px;cursor:pointer}
+.inv-toggle input{width:19px;height:19px;margin-top:2px;flex:0 0 auto}
+.inv-toggle b{display:block;font-size:14.5px;margin-bottom:4px}
+.inv-toggle span{display:block;font-size:13px;color:var(--muted);line-height:1.6}
+
+/* O aviso mais importante desta página. Uma agência que leia
+   "fatura mensal" e assuma que paga ao mês vai receber uma
+   surpresa no cartão — e a culpa seria de quem escreveu. */
+.inv-note{padding:14px 16px;border-radius:14px;background:var(--warn-bg);
+  border:1px solid var(--warn-rule);color:var(--warn-text);
+  font-size:13.5px;line-height:1.65;margin-top:14px}
+.inv-note strong{display:block;margin-bottom:4px}
+
+@media (max-width:640px){
+  .ag-top{flex-direction:column;align-items:stretch}
+  .ag-book{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<main id="main">
+  <div class="wrap">
+
+    <div class="ag-top">
+      <div>
+        <h1 id="agHeading">Your agency</h1>
+        <p class="sub" id="agSubtitle">Loading&hellip;</p>
+      </div>
+      <a class="ag-book" href="/#book" id="agBookBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Book a transfer
+      </a>
+    </div>
+
+    <!-- Quem não tem conta de agência não devia estar aqui. Dizer
+         porquê é melhor do que uma página vazia. -->
+    <div id="agGate" class="card hidden" style="text-align:center;padding:44px 28px">
+      <h2 id="agGateTitle">This page is for travel agents</h2>
+      <p class="sub" id="agGateText" style="max-width:46ch;margin:8px auto 22px">
+        Your account does not have a trade rate on it. If you work at an agency
+        and would like one, the application takes a few minutes.
+      </p>
+      <a class="btn btn-primary" href="/travelagents" style="display:inline-block;width:auto;padding:0 28px">
+        Apply for a trade account
+      </a>
+      <p class="sub" style="margin-top:18px">
+        Booking for yourself? <a href="/myaccount">Your trips are here</a>.
+      </p>
+    </div>
+
+    <div id="agApp" class="hidden">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-agtab="agBookings" type="button">Bookings</button>
+        <button class="tab" data-agtab="agTravellers" type="button">Travellers</button>
+        <button class="tab" data-agtab="agStatements" type="button">Statements</button>
+        <button class="tab" data-agtab="agSettings" type="button">Agency</button>
+      </div>
+
+      <!-- ---------- reservas ---------- -->
+      <div class="tab-content active" id="agBookings">
+        <div class="grid">
+          <div class="agency-hero full">
+            <div class="k">Trade account</div>
+            <h2 id="agencyName">Your agency</h2>
+            <p id="agencyTerms">&mdash;</p>
+            <div class="figs">
+              <div class="fig"><div class="kk">Your rate</div><div class="vv" id="agRate">&mdash;</div></div>
+              <div class="fig"><div class="kk">Cancellation</div><div class="vv" id="agWindow">&mdash;</div></div>
+              <div class="fig"><div class="kk">Bookings</div><div class="vv" id="agCount">&mdash;</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card full" style="margin-top:18px">
+          <h2>Agency bookings</h2>
+          <p class="sub">Every transfer booked on this account, whoever at the agency
+          made it. Trips you booked for yourself are under
+          <a href="/myaccount">My trips</a>.</p>
+          <div class="field" style="max-width:340px">
+            <label for="agSearch">Search</label>
+            <input id="agSearch" type="text" placeholder="Passenger, reference or city">
+          </div>
+          <div id="agList" class="trip-list"></div>
+        </div>
+      </div>
+
+      <!-- ---------- viajantes ---------- -->
+      <div class="tab-content" id="agTravellers">
+        <div class="card full">
+          <h2>Saved travellers</h2>
+          <p class="sub">People you book for often. Their details fill in
+          automatically at checkout, which is where the typing errors happen &mdash;
+          a name spelled two ways is a driver waiting for someone who is not there.</p>
+
+          <div class="grid">
+            <div class="field"><label for="tvName">Full name</label>
+              <input id="tvName" type="text" placeholder="As it appears on their passport"></div>
+            <div class="field"><label for="tvPhone">Phone</label>
+              <input id="tvPhone" type="tel" placeholder="+351 ..."></div>
+            <div class="field"><label for="tvEmail">Email <span style="opacity:.6">optional</span></label>
+              <input id="tvEmail" type="email"></div>
+            <div class="field"><label for="tvNotes">Notes <span style="opacity:.6">optional</span></label>
+              <input id="tvNotes" type="text" placeholder="Child seat, speaks German..."></div>
+          </div>
+          <button class="btn btn-secondary" id="tvAdd" type="button" style="width:100%">Save traveller</button>
+          <div id="tvMsg" class="msg err"></div>
+          <div id="tvOk" class="msg ok"></div>
+
+          <div class="tv-list" id="tvList"></div>
+        </div>
+      </div>
+
+      <!-- ---------- extratos ---------- -->
+      <div class="tab-content" id="agStatements">
+        <div class="grid">
+          <div class="card">
+            <h2>This month</h2>
+            <p class="sub">What you booked and what it cost you, in the month selected.</p>
+            <div class="field">
+              <label for="agMonth">Month</label>
+              <input id="agMonth" type="month">
+            </div>
+            <div class="agency-figs">
+              <div class="agency-fig"><div class="k">Transfers</div><div class="v" id="agStTrips">&mdash;</div></div>
+              <div class="agency-fig"><div class="k">You paid</div><div class="v" id="agStPaid">&mdash;</div></div>
+              <div class="agency-fig"><div class="k">You saved</div><div class="v" id="agStSaved">&mdash;</div></div>
+            </div>
+            <button class="btn btn-secondary" id="agCsvBtn" type="button" style="width:100%;margin-top:14px">Download statement CSV</button>
+            <div id="agStMsg" class="msg err"></div>
+          </div>
+
+          <div class="card">
+            <h2>Monthly invoice</h2>
+            <p class="sub">A single document at the start of each month, listing
+            everything from the month before.</p>
+
+            <label class="inv-toggle" for="agInvoice">
+              <input type="checkbox" id="agInvoice">
+              <span>
+                <b>Send me a monthly invoice</b>
+                <span>Goes to the billing address below at the start of each month.
+                Turn it off and you still have the statement on this page.</span>
+              </span>
+            </label>
+
+            <div class="field"><label for="agInvEmail">Invoice email</label>
+              <input id="agInvEmail" type="email" placeholder="accounts@youragency.com"></div>
+            <div class="field"><label for="agInvAddr">Billing address</label>
+              <input id="agInvAddr" type="text" placeholder="As it should appear on the invoice"></div>
+
+            <button class="btn btn-secondary" id="agInvSave" type="button" style="width:100%">Save invoice settings</button>
+            <div id="agInvMsg" class="msg err"></div>
+            <div id="agInvOk" class="msg ok"></div>
+
+            <!-- O aviso mais importante desta página. -->
+            <div class="inv-note">
+              <strong>Nothing to pay on the invoice.</strong>
+              Every transfer is charged to your card when you book it. The invoice is
+              a summary for your accounts, not a bill &mdash; paying it would mean
+              paying twice.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- dados da agência ---------- -->
+      <div class="tab-content" id="agSettings">
+        <div class="card full">
+          <h2>Agency details</h2>
+          <p class="sub">What appears on your statement and on the paperwork we issue.</p>
+          <div class="grid">
+            <div class="field"><label for="agLegal">Registered name</label><input id="agLegal" type="text"></div>
+            <div class="field"><label for="agTrading">Agency name</label><input id="agTrading" type="text"></div>
+            <div class="field"><label for="agVat">VAT number</label><input id="agVat" type="text"></div>
+            <div class="field"><label for="agPhone">Phone</label><input id="agPhone" type="tel"></div>
+            <div class="field"><label for="agRep">Contact name</label><input id="agRep" type="text"></div>
+            <div class="field"><label for="agRole">Role</label><input id="agRole" type="text"></div>
+          </div>
+          <button class="btn btn-secondary" id="agSaveBtn" type="button" style="width:100%">Save agency details</button>
+          <div id="agSaveErr" class="msg err"></div>
+          <div id="agSaveOk" class="msg ok"></div>
+        </div>
+
+        <div class="card full" style="margin-top:18px">
+          <h2>Your account</h2>
+          <p class="sub">The email you sign in with, and where booking confirmations go.</p>
+          <div class="field"><label for="agEmail">Email</label><input id="agEmail" type="email" disabled></div>
+          <button class="btn btn-secondary" id="agSignOut" type="button" style="width:100%">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+'use strict';
+
+var SUPABASE_URL = 'https://ujpagsccfiledbtfeyuq.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ';
+
+// A mesma sessão do site. Uma agência entra em /login como toda a
+// gente — o que muda é para onde é enviada depois.
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
+
+var $ = function (id) { return document.getElementById(id) || MISSING; };
+var qsa = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+/**
+ * Um elemento que nunca é nulo.
+ *
+ * Um único id em falta com addEventListener direto mata o script
+ * inteiro, e o sintoma é a página parecer viva sem nenhum botão a
+ * funcionar — sem pista de qual foi o elemento.
+ */
+var MISSING = { style: {}, classList: { add: function () {}, remove: function () {},
+    toggle: function () {}, contains: function () { return false; } },
+  addEventListener: function () {}, value: '', textContent: '', innerHTML: '',
+  checked: false, disabled: false, __missing: true };
+
+var user = null, agency = null, bookings = [], travellers = [];
+
+function esc(v) {
+  return String(v === null || v === undefined ? '' : v)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function show(el, other, html) {
+  el.innerHTML = html;
+  el.style.display = 'block';
+  if (other) other.style.display = 'none';
+}
+
+function money(v, cur) {
+  return (cur || 'EUR') + ' ' + Number(v || 0).toFixed(2);
+}
+
+function longDate(d) {
+  if (!d) return '';
+  var x = new Date(d + 'T12:00:00');
+  if (isNaN(x.getTime())) return String(d);
+  return x.toLocaleDateString(undefined,
+    { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// ---------- separadores ----------
+qsa('[data-agtab]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var alvo = b.getAttribute('data-agtab');
+    qsa('[data-agtab]').forEach(function (x) { x.classList.remove('active'); });
+    qsa('.tab-content').forEach(function (p) {
+      p.classList.toggle('active', p.id === alvo);
+    });
+    b.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+// ============================================================
+// ARRANQUE
+// ============================================================
+(async function start() {
+  var s = await db.auth.getSession();
+
+  if (!s.data || !s.data.session) {
+    // Sem sessão vai para o login, e volta aqui depois. O ?next
+    // é o que evita cair no myaccount de quem só queria isto.
+    window.location.href = '/login?next=/agency';
+    return;
+  }
+
+  user = s.data.session.user;
+  $('agEmail').value = user.email || '';
+
+  /**
+   * Só quem tem conta de agência APROVADA.
+   *
+   * Uma candidatura pendente não dá acesso: ver os separadores e
+   * não poder usar nenhum seria pior do que uma explicação.
+   */
+  var r = await db.from('travel_agents')
+    .select('*')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  if (r.error || !r.data || r.data.status !== 'approved') {
+    var pendente = r.data && r.data.status === 'pending';
+
+    if (pendente) {
+      $('agGateTitle').textContent = 'Your application is with us';
+      $('agGateText').textContent =
+        'We check every trade application by hand, usually within a few working ' +
+        'days, and email you either way. Nothing is needed from you in the meantime.';
+    }
+
+    $('agGate').classList.remove('hidden');
+    $('agSubtitle').textContent = 'Trade account';
+    return;
+  }
+
+  agency = r.data;
+  $('agApp').classList.remove('hidden');
+
+  pintarAgencia();
+  await Promise.all([carregarReservas(), carregarViajantes()]);
+
+  var hoje = new Date();
+  $('agMonth').value = hoje.getFullYear() + '-' +
+    String(hoje.getMonth() + 1).padStart(2, '0');
+  carregarMes();
+})();
+
+function pintarAgencia() {
+  var nome = agency.agency_name || 'Your agency';
+  var taxa = agency.commission || 12;
+
+  $('agHeading').textContent = nome;
+  $('agSubtitle').textContent = taxa + '% trade rate · applied automatically';
+
+  $('agencyName').textContent = nome;
+  $('agencyTerms').textContent =
+    'Your rate comes off automatically whenever you book while signed in. ' +
+    'Your travellers deal with the driver directly, and the booking stays with you.';
+
+  $('agRate').textContent = taxa + '%';
+  $('agWindow').textContent = '12 hours';
+
+  // O formulário
+  $('agLegal').value = agency.legal_name || '';
+  $('agTrading').value = agency.agency_name || '';
+  $('agVat').value = agency.vat_number || '';
+  $('agPhone').value = agency.agency_phone || '';
+  $('agRep').value = agency.contact_name || '';
+  $('agRole').value = agency.contact_role || '';
+
+  $('agInvoice').checked = Boolean(agency.monthly_invoice);
+  $('agInvEmail').value = agency.invoice_email || user.email || '';
+  $('agInvAddr').value = agency.billing_address || '';
+}
+
+// ============================================================
+// RESERVAS
+// ============================================================
+async function carregarReservas() {
+  $('agList').innerHTML = '<p class="sub">Loading&hellip;</p>';
+
+  var r = await db.from('agency_bookings')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(300);
+
+  if (r.error) {
+    $('agList').innerHTML = '<p class="sub">' + esc(r.error.message) + '</p>';
+    return;
+  }
+
+  bookings = r.data || [];
+  $('agCount').textContent = bookings.length;
+  pintarReservas();
+}
+
+function pintarReservas() {
+  var q = ($('agSearch').value || '').trim().toLowerCase();
+
+  var lista = bookings.filter(function (b) {
+    if (!q) return true;
+    return [b.passenger_name, b.booking_reference, b.booking_id,
+            b.pickup, b.dropoff, b.agent_reference]
+      .some(function (x) { return String(x || '').toLowerCase().indexOf(q) !== -1; });
+  });
+
+  if (!lista.length) {
+    $('agList').innerHTML = '<p class="sub">' +
+      (q ? 'Nothing matches that.' : 'No agency bookings yet. The button at the ' +
+        'top starts one — your rate comes off automatically.') + '</p>';
+    return;
+  }
+
+  $('agList').innerHTML = lista.map(function (b) {
+    var futura = b.booking_date >= new Date().toISOString().slice(0, 10);
+    var poupou = Number(b.public_price || 0) - Number(b.paid || 0);
+
+    return '<div class="trip' + (b.status === 'cancelled' ? ' cancelled' : '') + '">' +
+      '<div class="trip-top">' +
+        '<div>' +
+          '<div class="trip-when">' + esc(longDate(b.booking_date)) +
+            (b.booking_time ? ' &middot; ' + esc(String(b.booking_time).slice(0, 5)) : '') +
+          '</div>' +
+          '<div class="trip-ref">' + esc(b.booking_reference || b.booking_id || '') +
+            (b.agent_reference
+              ? ' &middot; ' + esc(b.agent_reference) : '') +
+            (b.booked_by_agent
+              ? ' &middot; booked by ' + esc(b.booked_by_agent) : '') +
+          '</div>' +
+        '</div>' +
+        '<span class="pill' + (b.status === 'cancelled' ? ' bad' : ' ok') + '">' +
+          esc(b.status) + '</span>' +
+      '</div>' +
+
+      '<div class="trip-route">' +
+        '<div>' + esc(b.pickup || '') + '</div>' +
+        '<div class="to">to ' + esc(b.dropoff || '') + '</div>' +
+      '</div>' +
+
+      '<div class="trip-facts">' +
+        '<span>' + esc(b.passenger_name || 'Passenger') + '</span>' +
+        (b.passenger_phone ? '<span>' + esc(b.passenger_phone) + '</span>' : '') +
+        '<span>' + esc(b.passengers || 1) + ' passenger' +
+          ((b.passengers || 1) === 1 ? '' : 's') + '</span>' +
+        (b.flight_number ? '<span>Flight ' + esc(b.flight_number) + '</span>' : '') +
+      '</div>' +
+
+      '<div class="trip-money">' +
+        '<span class="paid">You paid ' + esc(money(b.paid, b.currency)) + '</span>' +
+        (poupou > 0
+          ? '<span class="saved">saved ' + esc(money(poupou, b.currency)) + '</span>'
+          : '') +
+      '</div>' +
+
+      // Os dados do motorista só existem depois de atribuído, e na
+      // véspera. Antes disso, dizer o que falta é melhor do que um
+      // espaço vazio.
+      (b.manual_driver_name
+        ? '<div class="trip-driver">Driver: ' + esc(b.manual_driver_name) +
+          (b.manual_driver_phone ? ' &middot; ' + esc(b.manual_driver_phone) : '') +
+          (b.manual_vehicle ? ' &middot; ' + esc(b.manual_vehicle) : '') +
+          (b.manual_vehicle_plate ? ' (' + esc(b.manual_vehicle_plate) + ')' : '') +
+          '</div>'
+        : (futura && b.status !== 'cancelled'
+            ? '<div class="trip-driver muted">Driver details go to your traveller ' +
+              'the day before.</div>'
+            : '')) +
+      '</div>';
+  }).join('');
+}
+
+$('agSearch').addEventListener('input', pintarReservas);
+
+// ============================================================
+// VIAJANTES GUARDADOS
+//
+// Uma agência reserva vinte vezes por mês para as mesmas pessoas.
+// Reescrever nome e telefone de cada vez é onde se perdem os
+// minutos, e onde entram os erros de digitação que põem um
+// motorista à espera de alguém com o nome errado.
+// ============================================================
+async function carregarViajantes() {
+  var r = await db.from('agency_travellers')
+    .select('*')
+    .order('times_booked', { ascending: false })
+    .limit(200);
+
+  travellers = r.error ? [] : (r.data || []);
+  pintarViajantes();
+}
+
+function pintarViajantes() {
+  if (!travellers.length) {
+    $('tvList').innerHTML = '<p class="sub" style="margin-top:16px">' +
+      'Nobody saved yet. Add the people you book for most and their details fill ' +
+      'in at checkout.</p>';
+    return;
+  }
+
+  $('tvList').innerHTML = travellers.map(function (t) {
+    return '<div class="tv">' +
+      (t.times_booked > 1
+        ? '<span class="tv-n">' + t.times_booked + ' trips</span>' : '') +
+      '<b>' + esc(t.full_name) + '</b>' +
+      '<div class="det">' +
+        esc(t.phone || 'No phone') +
+        (t.email ? '<br>' + esc(t.email) : '') +
+      '</div>' +
+      (t.notes ? '<div class="note">' + esc(t.notes) + '</div>' : '') +
+      '<div class="tv-acts">' +
+        '<button data-tv-book="' + esc(t.id) + '" type="button">Book for them</button>' +
+        '<button class="gone" data-tv-del="' + esc(t.id) + '" type="button">Remove</button>' +
+      '</div></div>';
+  }).join('');
+
+  qsa('[data-tv-book]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = travellers.find(function (x) { return x.id === b.getAttribute('data-tv-book'); });
+      if (!t) return;
+
+      /**
+       * Leva os dados para o formulário de reserva.
+       *
+       * Passa pelo sessionStorage e não pelo endereço: um nome e um
+       * telefone na barra do browser ficam no histórico, e são
+       * dados de outra pessoa.
+       */
+      try {
+        sessionStorage.setItem('airportlink-traveller', JSON.stringify({
+          name: t.full_name, phone: t.phone, email: t.email, notes: t.notes
+        }));
+      } catch (e) {}
+
+      window.location.href = '/#book';
+    });
+  });
+
+  qsa('[data-tv-del]').forEach(function (b) {
+    b.addEventListener('click', async function () {
+      var id = b.getAttribute('data-tv-del');
+      b.disabled = true;
+
+      var r = await db.from('agency_travellers').delete().eq('id', id);
+
+      if (r.error) {
+        b.disabled = false;
+        return show($('tvMsg'), $('tvOk'), esc(r.error.message));
+      }
+
+      travellers = travellers.filter(function (t) { return t.id !== id; });
+      pintarViajantes();
+    });
+  });
+}
+
+$('tvAdd').addEventListener('click', async function () {
+  var nome = $('tvName').value.trim();
+
+  if (!nome) return show($('tvMsg'), $('tvOk'), 'A traveller needs a name.');
+
+  $('tvAdd').disabled = true;
+
+  var r = await db.rpc('save_agency_traveller', {
+    p_agency_id: user.id,
+    p_name: nome,
+    p_email: $('tvEmail').value.trim() || null,
+    p_phone: $('tvPhone').value.trim() || null,
+    p_notes: $('tvNotes').value.trim() || null
+  });
+
+  $('tvAdd').disabled = false;
+
+  if (r.error) return show($('tvMsg'), $('tvOk'), esc(r.error.message));
+
+  ['tvName', 'tvPhone', 'tvEmail', 'tvNotes'].forEach(function (id) { $(id).value = ''; });
+  show($('tvOk'), $('tvMsg'), esc(nome) + ' saved.');
+  await carregarViajantes();
+});
+
+// ============================================================
+// O MÊS
+// ============================================================
+async function carregarMes() {
+  var mes = $('agMonth').value;
+  if (!mes) return;
+
+  $('agStMsg').style.display = 'none';
+
+  var r = await db.rpc('agency_month', {
+    p_agency_id: user.id,
+    p_month: mes
+  });
+
+  if (r.error) {
+    return show($('agStMsg'), null, esc(r.error.message));
+  }
+
+  var t = (r.data && r.data.totals) || {};
+  var cur = (bookings[0] && bookings[0].currency) || 'EUR';
+
+  $('agStTrips').textContent = t.bookings || 0;
+  $('agStPaid').textContent = money(t.paid, cur);
+  $('agStSaved').textContent = money(t.saved, cur);
+}
+
+$('agMonth').addEventListener('change', carregarMes);
+
+$('agCsvBtn').addEventListener('click', async function () {
+  var mes = $('agMonth').value;
+  if (!mes) return;
+
+  $('agCsvBtn').disabled = true;
+
+  var r = await db.rpc('agency_month', { p_agency_id: user.id, p_month: mes });
+
+  $('agCsvBtn').disabled = false;
+
+  if (r.error) return show($('agStMsg'), null, esc(r.error.message));
+
+  var linhas = (r.data && r.data.bookings) || [];
+
+  if (!linhas.length) {
+    return show($('agStMsg'), null, 'Nothing booked in ' + esc(mes) + '.');
+  }
+
+  /**
+   * O CSV, montado aqui e não pedido ao servidor.
+   *
+   * São dados que o browser já tem, e uma volta ao servidor para
+   * os formatar acrescentaria latência sem acrescentar nada.
+   */
+  var cols = ['booking_reference', 'agent_reference', 'booked_by_agent',
+              'booking_date', 'booking_time', 'passenger_name',
+              'pickup', 'dropoff', 'passengers', 'status',
+              'paid', 'public_price', 'currency'];
+
+  var csv = cols.join(',') + '\n' + linhas.map(function (b) {
+    return cols.map(function (c) {
+      var v = b[c] === null || b[c] === undefined ? '' : String(b[c]);
+      // As aspas duplicam-se dentro de um campo entre aspas. Sem
+      // isto, um nome com vírgula parte a linha em duas colunas.
+      return '"' + v.replace(/"/g, '""') + '"';
+    }).join(',');
+  }).join('\n');
+
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'airportlink-' + mes + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+// ============================================================
+// DEFINIÇÕES
+// ============================================================
+$('agSaveBtn').addEventListener('click', async function () {
+  $('agSaveBtn').disabled = true;
+
+  var r = await db.from('travel_agents').update({
+    legal_name: $('agLegal').value.trim() || null,
+    agency_name: $('agTrading').value.trim() || agency.agency_name,
+    vat_number: $('agVat').value.trim() || null,
+    agency_phone: $('agPhone').value.trim() || null,
+    contact_name: $('agRep').value.trim() || null,
+    contact_role: $('agRole').value.trim() || null
+  }).eq('id', user.id);
+
+  $('agSaveBtn').disabled = false;
+
+  if (r.error) return show($('agSaveErr'), $('agSaveOk'), esc(r.error.message));
+
+  show($('agSaveOk'), $('agSaveErr'), 'Saved.');
+
+  agency.agency_name = $('agTrading').value.trim() || agency.agency_name;
+  pintarAgencia();
+});
+
+$('agInvSave').addEventListener('click', async function () {
+  var quer = $('agInvoice').checked;
+  var email = $('agInvEmail').value.trim();
+
+  // Sem endereço não há para onde enviar, e uma opção ligada que
+  // não faz nada é pior do que uma recusa clara.
+  if (quer && !email) {
+    return show($('agInvMsg'), $('agInvOk'),
+      'We need an email address to send the invoice to.');
+  }
+
+  $('agInvSave').disabled = true;
+
+  var r = await db.from('travel_agents').update({
+    monthly_invoice: quer,
+    invoice_email: email || null,
+    billing_address: $('agInvAddr').value.trim() || null
+  }).eq('id', user.id);
+
+  $('agInvSave').disabled = false;
+
+  if (r.error) return show($('agInvMsg'), $('agInvOk'), esc(r.error.message));
+
+  agency.monthly_invoice = quer;
+
+  show($('agInvOk'), $('agInvMsg'), quer
+    ? 'From next month, the invoice goes to ' + esc(email) + '.'
+    : 'Monthly invoice turned off. The statement stays on this page.');
+});
+
+$('agSignOut').addEventListener('click', async function () {
+  try { await db.auth.signOut(); } catch (e) {}
+  window.location.href = '/';
+});
+
+})();
+</script>
+
+</body>
+</html>
