@@ -1922,7 +1922,12 @@ const fixed = [
   { loc: SITE + '/support', priority: '0.5', freq: 'monthly' },
   { loc: SITE + '/terms', priority: '0.3', freq: 'yearly' },
   { loc: SITE + '/privacypolicy', priority: '0.3', freq: 'yearly' },
-  { loc: SITE + '/cookiepolicy', priority: '0.3', freq: 'yearly' }
+  { loc: SITE + '/cookiepolicy', priority: '0.3', freq: 'yearly' },
+  // Duas páginas de conta que passaram a ser indexáveis: a de
+  // agências vende antes de pedir a password, e a de registo é
+  // onde alguém que procura "criar conta transfer" aterra.
+  { loc: SITE + '/agencylogin', priority: '0.7', freq: 'monthly' },
+  { loc: SITE + '/createaccount', priority: '0.5', freq: 'monthly' }
 ];
 
 // Um sitemap por país, mais um das páginas fixas, e um índice que
