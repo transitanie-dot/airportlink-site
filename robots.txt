@@ -5,7 +5,6 @@ Allow: /
 Disallow: /myaccount
 Disallow: /agency
 Disallow: /login
-Disallow: /createaccount
 Disallow: /forgotpassword
 Disallow: /success
 Disallow: /thankyou
