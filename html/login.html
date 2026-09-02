@@ -156,7 +156,15 @@ html[data-theme="dark"] .linkish{color:var(--amber)}
   var SUPABASE_ANON_KEY = 'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ';
 
   var ACCOUNT_PATH = '/myaccount';
-  var AGENT_PATH = '/travelagents';
+  /**
+   * As agências vão para o painel delas, não para a página de
+   * marketing.
+   *
+   * Apontava para /travelagents, que é onde se candidatam — quem
+   * já foi aprovado não precisa de ler outra vez o que ganha por
+   * se candidatar.
+   */
+  var AGENT_PATH = '/agency';
   var ADMIN_PATH = '/admin';
   var CREATE_ACCOUNT_PATH = '/createaccount';
   
