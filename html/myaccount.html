@@ -1079,6 +1079,28 @@ $('saveProfileBtn').addEventListener('click', async function () {
 // onde estava o quê.
 // ============================================================
 function setupAgency(info) {
+  /**
+   * As agências têm painel próprio em /agency.
+   *
+   * Este separador continua a existir para quem chegar aqui por um
+   * link antigo ou por hábito, mas a página cheia é lá — com os
+   * viajantes guardados e os extratos, que não cabem num separador.
+   */
+  var aviso = document.getElementById('agencyTab');
+
+  if (aviso && !aviso.dataset.moved) {
+    aviso.dataset.moved = '1';
+    aviso.insertAdjacentHTML('afterbegin',
+      '<div class="card full" style="margin-bottom:18px;text-align:center">' +
+      '<h2>Your agency dashboard has moved</h2>' +
+      '<p class="sub" style="max-width:44ch;margin:8px auto 18px">' +
+      'Saved travellers, statements and every agency booking are now on a page ' +
+      'of their own. This tab still works, but the full version is there.</p>' +
+      '<a class="btn btn-primary" href="/agency" style="display:inline-block;' +
+      'width:auto;padding:0 28px">Open agency dashboard</a></div>');
+  }
+
+
   // Uma marca no <html>: o CSS muda a barra lateral e os acentos
   // sem que seja preciso tocar em cada elemento.
   document.documentElement.setAttribute('data-agency', 'on');
