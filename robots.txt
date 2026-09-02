@@ -3,6 +3,7 @@ Allow: /
 
 # Páginas de conta e de fluxo de pagamento: não são conteúdo.
 Disallow: /myaccount
+Disallow: /agency
 Disallow: /login
 Disallow: /createaccount
 Disallow: /forgotpassword
