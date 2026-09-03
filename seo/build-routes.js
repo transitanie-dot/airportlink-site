@@ -1568,6 +1568,32 @@ function routePage(country, airport, dest, siblings, lang, alternates) {
   const schema = {
     '@context': 'https://schema.org',
     '@graph': [
+      /**
+       * O nome do site, em todas as páginas.
+       *
+       * É daqui que o Google tira a linha por cima do título nos
+       * resultados. Sem ele mostra o domínio — "airportlink.app" em
+       * vez de "Airportlink", que parece um site sem dono.
+       */
+      {
+        '@type': 'WebSite',
+        '@id': SITE + '/#site',
+        url: SITE + '/',
+        name: 'Airportlink',
+        publisher: { '@id': SITE + '/#org' }
+      },
+      {
+        '@type': 'Organization',
+        '@id': SITE + '/#org',
+        name: 'Airportlink',
+        url: SITE + '/',
+        logo: {
+          '@type': 'ImageObject',
+          url: SITE + '/apple-touch-icon.png',
+          width: 180,
+          height: 180
+        }
+      },
       {
         '@type': 'Service',
         '@id': url + '#service',
@@ -1710,6 +1736,26 @@ function airportPage(country, airport, lang, alternates) {
   const schema = {
     '@context': 'https://schema.org',
     '@graph': [
+      // O nome do site, como nas páginas de rota.
+      {
+        '@type': 'WebSite',
+        '@id': SITE + '/#site',
+        url: SITE + '/',
+        name: 'Airportlink',
+        publisher: { '@id': SITE + '/#org' }
+      },
+      {
+        '@type': 'Organization',
+        '@id': SITE + '/#org',
+        name: 'Airportlink',
+        url: SITE + '/',
+        logo: {
+          '@type': 'ImageObject',
+          url: SITE + '/apple-touch-icon.png',
+          width: 180,
+          height: 180
+        }
+      },
       {
         '@type': 'Airport',
         '@id': url + '#airport',
