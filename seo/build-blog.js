@@ -617,6 +617,32 @@ function postPage(post, lang, alternates, paises, precos) {
   const schema = {
     '@context': 'https://schema.org',
     '@graph': [
+      /**
+       * O nome do site, em todas as páginas.
+       *
+       * É daqui que o Google tira a linha por cima do título nos
+       * resultados. Sem ele mostra o domínio — "airportlink.app" em
+       * vez de "Airportlink", que parece um site sem dono.
+       */
+      {
+        '@type': 'WebSite',
+        '@id': SITE + '/#site',
+        url: SITE + '/',
+        name: 'Airportlink',
+        publisher: { '@id': SITE + '/#org' }
+      },
+      {
+        '@type': 'Organization',
+        '@id': SITE + '/#org',
+        name: 'Airportlink',
+        url: SITE + '/',
+        logo: {
+          '@type': 'ImageObject',
+          url: SITE + '/apple-touch-icon.png',
+          width: 180,
+          height: 180
+        }
+      },
       {
         '@type': 'BlogPosting',
         headline: c.title,
@@ -716,17 +742,42 @@ function indexPage(posts, lang, alternates) {
 
   const schema = {
     '@context': 'https://schema.org',
+    '@graph': [
+      // O nome do site, como nas outras páginas. É daqui que o
+      // Google tira a linha por cima do título nos resultados.
+      {
+        '@type': 'WebSite',
+        '@id': SITE + '/#site',
+        url: SITE + '/',
+        name: 'Airportlink',
+        publisher: { '@id': SITE + '/#org' }
+      },
+      {
+        '@type': 'Organization',
+        '@id': SITE + '/#org',
+        name: 'Airportlink',
+        url: SITE + '/',
+        logo: {
+          '@type': 'ImageObject',
+          url: SITE + '/apple-touch-icon.png',
+          width: 180,
+          height: 180
+        }
+      },
+      {
     '@type': 'Blog',
     name: t(lang, 'title'),
     url,
     inLanguage: lang,
-    publisher: { '@type': 'Organization', name: 'Airportlink', url: SITE },
+    publisher: { '@id': SITE + '/#org' },
     blogPost: meus.map((p) => ({
       '@type': 'BlogPosting',
       headline: p[lang].title,
       url: `${SITE}${pref}/blog/${p.slug}/`,
       datePublished: p.date
     }))
+      }
+    ]
   };
 
   const cartao = (p) => `  <a class="card" href="${pref}/blog/${p.slug}/">
