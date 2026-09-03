@@ -893,15 +893,109 @@ $('goBtn').addEventListener('click', function () {
     return;
   }
 
-  // AQUI entra a chamada ao /api/create-checkout-session.
-  //
-  // Fica por ligar de propósito: o servidor ainda não conhece as
-  // classes de veículo, e ligá-lo agora faria o Premium Sedan ser
-  // cobrado ao preço do Sedan.
-  $('warn').textContent = 'Checkout is not connected yet. The server needs to know about ' +
-    'vehicle classes first, otherwise the price you chose is not the price you would pay.';
-  $('warn').classList.add('on');
+  pagar();
 });
+
+/**
+ * O pagamento.
+ *
+ * O servidor recalcula a rota e o preço antes de falar com o
+ * Stripe — a classe de veículo, os quilómetros e a zona, tudo. O
+ * que vai daqui é o pedido, não o valor: um preço vindo do browser
+ * seria um preço que qualquer pessoa podia editar.
+ */
+var API = 'https://airportlink.onrender.com';
+
+async function pagar() {
+  var btn = $('goBtn');
+  var original = btn.textContent;
+
+  btn.disabled = true;
+  btn.textContent = T('co.working', 'One moment...');
+
+  var reserva = {
+    full_name: $('name').value.trim(),
+    email: $('email').value.trim(),
+    /**
+     * O telefone é um campo só, com o indicativo lá dentro.
+     *
+     * O servidor espera código e número separados, por isso
+     * separam-se aqui: o que vem depois de um + até ao primeiro
+     * espaço é o indicativo. Sem +, assume-se Portugal — é onde
+     * estão quase todas as reservas de hoje.
+     */
+    phone_code: (function () {
+      var m = /^\+(\d{1,4})/.exec($('phone').value.trim());
+      return m ? m[1] : '351';
+    })(),
+    phone_number: $('phone').value.trim().replace(/^\+\d{1,4}\s*/, ''),
+
+    passenger_name: $('name').value.trim(),
+    passenger_phone: $('phone').value.trim(),
+    passenger_email: $('email').value.trim(),
+
+    pickup: trip.from,
+    dropoff: $('dropoff').value.trim() || trip.to,
+    date: trip.date,
+    time: trip.time,
+    passengers: trip.pax,
+
+    // A classe escolhida. O servidor aplica o multiplicador dela —
+    // sem isto, o Premium Sedan era cobrado ao preço do Sedan.
+    vehicle_class: trip.vehicle,
+
+    flight_number: ($('flight') && $('flight').value.trim()) || '',
+    notes: ($('notes') && $('notes').value.trim()) || '',
+    currency: trip.currency || 'EUR',
+    payment_mode: payMode,
+
+    return_leg: trip.returnDate ? {
+      date: trip.returnDate,
+      time: trip.returnTime || trip.time,
+      pickup: $('dropoff').value.trim() || trip.to,
+      dropoff: trip.from
+    } : null
+  };
+
+  try {
+    var headers = { 'Content-Type': 'application/json' };
+
+    // O token, se houver sessão. É com ele que o servidor sabe se
+    // quem reserva é uma agência com desconto.
+    try {
+      var cli = supa();
+      if (cli) {
+        var ses = await cli.auth.getSession();
+        var tk = ses.data && ses.data.session && ses.data.session.access_token;
+        if (tk) headers.Authorization = 'Bearer ' + tk;
+      }
+    } catch (e) {}
+
+    var res = await fetch(API + '/api/create-checkout-session', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ booking: reserva })
+    });
+
+    var out = await res.json();
+
+    if (!res.ok || out.error) {
+      throw new Error(out.error || ('HTTP ' + res.status));
+    }
+
+    if (!out.url) {
+      throw new Error('The server did not return a checkout link.');
+    }
+
+    window.location.href = out.url;
+    return;
+  } catch (e) {
+    $('warn').textContent = e.message;
+    $('warn').classList.add('on');
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+}
 
 /**
  * Entrar e registar sem sair da página.
