@@ -111,6 +111,52 @@ html[data-theme="dark"] .agent-redirect.rejected{background:#2b1114;border-color
 .agent-redirect .go{border:0;border-radius:13px;padding:11px 18px;background:#333B50;color:#fff;
   font-weight:800;font-size:13.5px;cursor:pointer;white-space:nowrap;flex:0 0 auto;align-self:center}
 html[data-theme="dark"] .agent-redirect .go{background:#e7ebf2;color:#11161D}
+/* ---------- o chat ---------- */
+.tab-n{display:inline-block;min-width:18px;padding:1px 6px;margin-left:6px;
+  border-radius:999px;background:var(--err-rule);color:#fff;
+  font-family:var(--mono);font-size:10px;font-weight:600;vertical-align:1px}
+.tab-n.hidden{display:none!important}
+
+.ag-chat-head{display:flex;align-items:center;gap:12px;padding:14px 16px;
+  border:1px solid var(--rule);border-radius:16px;background:var(--surface-2);
+  margin-bottom:14px}
+.ag-chat-av{width:38px;height:38px;border-radius:999px;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;object-fit:cover;
+  background:var(--teal);color:#fff;font-family:var(--display);
+  font-weight:700;font-size:14px}
+.ag-chat-who{flex:1;min-width:0}
+.ag-chat-who b{display:block;font-size:14.5px;font-weight:600}
+.ag-chat-who span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+
+.ag-chat-thread{max-height:420px;overflow-y:auto;padding:4px 2px;
+  display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+
+.ag-msg{max-width:76%;padding:11px 14px;border-radius:16px;font-size:14px;
+  line-height:1.55;word-break:break-word}
+.ag-msg.them{align-self:flex-start;background:var(--surface-2);
+  border:1px solid var(--rule);border-bottom-left-radius:5px}
+.ag-msg.me{align-self:flex-end;background:var(--teal);color:#fff;
+  border-bottom-right-radius:5px}
+html[data-theme="dark"] .ag-msg.me{background:var(--amber);color:#141A28}
+.ag-msg .who{display:block;font-family:var(--mono);font-size:10px;
+  letter-spacing:.06em;text-transform:uppercase;opacity:.6;margin-bottom:4px}
+
+.ag-chat-write{display:flex;gap:10px;align-items:flex-end}
+.ag-chat-write textarea{flex:1;padding:11px 14px;border-radius:14px;
+  border:1px solid var(--rule-strong);background:var(--field);
+  font-family:inherit;font-size:14.5px;line-height:1.5;resize:vertical}
+.ag-chat-write .btn{width:auto;margin:0;padding:0 22px;flex:0 0 auto}
+
+#agChat textarea{width:100%;padding:12px 14px;border-radius:14px;
+  border:1px solid var(--rule-strong);background:var(--field);
+  font-family:inherit;font-size:15px;line-height:1.55;resize:vertical}
+
+@media (max-width:640px){
+  .ag-chat-write{flex-direction:column;align-items:stretch}
+  .ag-chat-write .btn{width:100%}
+  .ag-msg{max-width:88%}
+}
+
 @media (max-width:640px){.agent-redirect{flex-direction:column}.agent-redirect .go{width:100%}}
 .policy-note{display:flex;gap:10px;align-items:flex-start;background:var(--success-bg);border:1px solid #a7f3d0;color:#065f46;border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.55;font-weight:600;margin-bottom:16px}
 html[data-theme="dark"] .policy-note{border-color:#14532d;color:#6ee7b7}
@@ -364,6 +410,9 @@ html[data-theme="dark"] .ag-book:hover{color:#141A28}
         <button class="tab" data-agtab="agTravellers" type="button">Travellers</button>
         <button class="tab" data-agtab="agStatements" type="button">Statements</button>
         <button class="tab" data-agtab="agSettings" type="button">Agency</button>
+        <button class="tab" data-agtab="agChat" type="button">
+          Support <span class="tab-n hidden" id="agChatN">0</span>
+        </button>
       </div>
 
       <!-- ---------- reservas ---------- -->
@@ -473,6 +522,63 @@ html[data-theme="dark"] .ag-book:hover{color:#141A28}
         </div>
       </div>
 
+      <!-- ---------- apoio ---------- -->
+      <div class="tab-content" id="agChat">
+        <div class="card full">
+          <h2 id="agChatTitle">Talk to us</h2>
+          <p class="sub" id="agChatSub">About a booking, a payment or anything
+          else. One conversation at a time, so nothing gets split across two
+          threads.</p>
+
+          <div id="agChatStart">
+            <div class="grid">
+              <div class="field">
+                <label for="agChatSubject">What is it about?</label>
+                <select id="agChatSubject">
+                  <option value="booking">A booking</option>
+                  <option value="payment">A payment or invoice</option>
+                  <option value="rate">My trade rate</option>
+                  <option value="account">My account</option>
+                  <option value="other">Something else</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="agChatRef">Booking reference <span style="opacity:.6">optional</span></label>
+                <input id="agChatRef" type="text" placeholder="AL-48210">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="agChatFirst">Your message</label>
+              <textarea id="agChatFirst" rows="4"
+                placeholder="Tell us what is going on."></textarea>
+            </div>
+
+            <button class="btn btn-primary" id="agChatGo" type="button"
+              style="width:100%">Start the conversation</button>
+            <div id="agChatErr" class="msg err"></div>
+          </div>
+
+          <div id="agChatLive" class="hidden">
+            <div class="ag-chat-head">
+              <span class="ag-chat-av" id="agChatAv">A</span>
+              <span class="ag-chat-who">
+                <b id="agChatAgent">Airportlink</b>
+                <span id="agChatState">Waiting for an agent</span>
+              </span>
+              <button class="av-act" id="agChatClose" type="button">Close</button>
+            </div>
+
+            <div class="ag-chat-thread" id="agChatThread"></div>
+
+            <div class="ag-chat-write">
+              <textarea id="agChatMsg" rows="2" placeholder="Write a message"></textarea>
+              <button class="btn btn-primary" id="agChatSend" type="button">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ---------- dados da agência ---------- -->
       <div class="tab-content" id="agSettings">
         <div class="card full">
@@ -560,6 +666,16 @@ function longDate(d) {
 qsa('[data-agtab]').forEach(function (b) {
   b.addEventListener('click', function () {
     var alvo = b.getAttribute('data-agtab');
+
+    // Abrir o separador é o mesmo que dizer "já vi".
+    if (alvo === 'agChat' && chat) {
+      $('agChatN').classList.add('hidden');
+
+      db.from('support_chats')
+        .update({ unread_for_user: 0 })
+        .eq('id', chat.chat_id || chat.id)
+        .then(function () {});
+    }
     qsa('[data-agtab]').forEach(function (x) { x.classList.remove('active'); });
     qsa('.tab-content').forEach(function (p) {
       p.classList.toggle('active', p.id === alvo);
@@ -578,7 +694,10 @@ qsa('[data-agtab]').forEach(function (b) {
   if (!s.data || !s.data.session) {
     // Sem sessão vai para o login, e volta aqui depois. O ?next
     // é o que evita cair no myaccount de quem só queria isto.
-    window.location.href = '/login?next=/agency';
+    // A porta das agências, não a dos clientes. Quem chega aqui
+    // sem sessão veio para o painel da agência — mandá-lo para o
+    // login geral obrigava-o a perceber sozinho que era o mesmo.
+    window.location.href = '/agencylogin';
     return;
   }
 
@@ -615,7 +734,7 @@ qsa('[data-agtab]').forEach(function (b) {
   $('agApp').classList.remove('hidden');
 
   pintarAgencia();
-  await Promise.all([carregarReservas(), carregarViajantes()]);
+  await Promise.all([carregarReservas(), carregarViajantes(), carregarChat()]);
 
   var hoje = new Date();
   $('agMonth').value = hoje.getFullYear() + '-' +
@@ -982,6 +1101,222 @@ $('agInvSave').addEventListener('click', async function () {
   show($('agInvOk'), $('agInvMsg'), quer
     ? 'From next month, the invoice goes to ' + esc(email) + '.'
     : 'Monthly invoice turned off. The statement stays on this page.');
+});
+
+// ============================================================
+// APOIO
+//
+// A mesma tabela dos clientes, separada pela coluna audience. Uma
+// agência pergunta pela comissão e pelo extrato; um cliente pela
+// reserva. Misturá-los na mesma fila obriga o agente a mudar de
+// cabeça a cada conversa.
+// ============================================================
+var chat = null, chatCanal = null;
+
+async function carregarChat() {
+  var r = await db.from('support_chat_queue')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('status', 'open')
+    .maybeSingle();
+
+  chat = r.error ? null : r.data;
+
+  $('agChatStart').classList.toggle('hidden', Boolean(chat));
+  $('agChatLive').classList.toggle('hidden', !chat);
+
+  if (!chat) return;
+
+  pintarCabecalho();
+
+  /**
+   * O aviso no separador.
+   *
+   * Uma resposta que chega enquanto a pessoa está a ver os extratos
+   * passaria despercebida. O número diz que há coisa nova sem a
+   * obrigar a mudar de separador.
+   */
+  var n = $('agChatN');
+  var porLer = chat.unread_for_user || 0;
+
+  n.textContent = porLer;
+  n.classList.toggle('hidden', !porLer);
+
+  await carregarMensagens();
+  ouvirMensagens();
+}
+
+function pintarCabecalho() {
+  var nome = chat.assigned_agent_name;
+
+  $('agChatAgent').textContent = nome || 'Airportlink';
+
+  /**
+   * O estado, em palavras honestas.
+   *
+   * "Em breve" não é informação. Um número de minutos é — e a
+   * pessoa decide se espera ou se volta mais tarde.
+   */
+  $('agChatState').textContent = nome
+    ? 'Here with you now · ' + (chat.ticket_number || '')
+    : (chat.waiting_minutes > 0
+        ? 'Waiting · ' + chat.waiting_minutes + ' min'
+        : 'Waiting for an agent');
+
+  var av = $('agChatAv');
+
+  if (chat.assigned_agent_avatar) {
+    av.outerHTML = '<img class="ag-chat-av" id="agChatAv" src="' +
+      esc(SUPABASE_URL + '/storage/v1/object/public/avatars/' +
+      chat.assigned_agent_avatar) + '" alt="">';
+  } else {
+    av.textContent = nome
+      ? nome.trim().split(/\s+/).slice(0, 2).map(function (p) { return p[0]; })
+          .join('').toUpperCase()
+      : 'A';
+  }
+}
+
+async function carregarMensagens() {
+  if (!chat) return;
+
+  var r = await db.from('support_messages')
+    .select('*')
+    .eq('chat_id', chat.chat_id || chat.id)
+    .eq('internal', false)
+    .order('created_at');
+
+  if (r.error) return;
+
+  var box = $('agChatThread');
+
+  box.innerHTML = (r.data || []).map(function (m) {
+    var meu = m.sender_type !== 'admin';
+
+    return '<div class="ag-msg ' + (meu ? 'me' : 'them') + '">' +
+      (meu ? '' : '<span class="who">' + esc(m.sender_name || 'Airportlink') + '</span>') +
+      esc(m.message) + '</div>';
+  }).join('');
+
+  box.scrollTop = box.scrollHeight;
+}
+
+/**
+ * As mensagens novas chegam sozinhas.
+ *
+ * Sem isto seria preciso recarregar a página para ver a resposta —
+ * e quem escreve fica a olhar para um ecrã parado sem saber se
+ * alguém leu.
+ */
+function ouvirMensagens() {
+  if (chatCanal || !chat) return;
+
+  chatCanal = db.channel('ag-chat-' + (chat.chat_id || chat.id))
+    .on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'support_messages',
+      filter: 'chat_id=eq.' + (chat.chat_id || chat.id)
+    }, function () {
+      carregarMensagens();
+      // O cabeçalho também: a resposta pode vir de alguém que
+      // acabou de pegar a conversa.
+      carregarChat();
+    })
+    .subscribe();
+}
+
+$('agChatGo').addEventListener('click', async function () {
+  var texto = $('agChatFirst').value.trim();
+
+  if (!texto) {
+    return show($('agChatErr'), null, 'Tell us what is going on first.');
+  }
+
+  $('agChatGo').disabled = true;
+
+  try {
+    var assunto = $('agChatSubject').value;
+    var ref = $('agChatRef').value.trim();
+
+    var r = await db.rpc('open_support_chat', {
+      p_user_id: user.id,
+      p_email: user.email,
+      p_subject: assunto,
+      p_topic: assunto,
+      p_audience: 'agency'
+    });
+
+    if (r.error) throw new Error(r.error.message);
+
+    var novo = r.data;
+
+    // A referência entra na primeira mensagem em vez de num campo
+    // próprio: o agente lê tudo de uma vez, sem ter de procurar.
+    await db.from('support_messages').insert({
+      chat_id: novo.id,
+      sender_type: 'user',
+      sender_name: agency.agency_name || user.email,
+      message: (ref ? '[' + ref + '] ' : '') + texto
+    });
+
+    $('agChatFirst').value = '';
+    $('agChatRef').value = '';
+
+    await carregarChat();
+  } catch (e) {
+    show($('agChatErr'), null, esc(e.message));
+  } finally {
+    $('agChatGo').disabled = false;
+  }
+});
+
+$('agChatSend').addEventListener('click', enviarMensagem);
+
+$('agChatMsg').addEventListener('keydown', function (e) {
+  // Enter envia, Shift+Enter faz parágrafo. É o que toda a gente
+  // espera de uma caixa de chat.
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    enviarMensagem();
+  }
+});
+
+async function enviarMensagem() {
+  var texto = $('agChatMsg').value.trim();
+  if (!texto || !chat) return;
+
+  $('agChatMsg').value = '';
+
+  var r = await db.from('support_messages').insert({
+    chat_id: chat.chat_id || chat.id,
+    sender_type: 'user',
+    sender_name: agency.agency_name || user.email,
+    message: texto
+  });
+
+  if (r.error) {
+    // Devolve o texto: perder o que se escreveu é pior do que ver
+    // um erro.
+    $('agChatMsg').value = texto;
+    return;
+  }
+
+  await carregarMensagens();
+}
+
+$('agChatClose').addEventListener('click', async function () {
+  if (!chat) return;
+
+  await db.from('support_chats')
+    .update({ status: 'closed', closed_at: new Date().toISOString(),
+              closed_reason: 'partner_closed' })
+    .eq('id', chat.chat_id || chat.id);
+
+  if (chatCanal) { db.removeChannel(chatCanal); chatCanal = null; }
+
+  chat = null;
+  await carregarChat();
 });
 
 $('agSignOut').addEventListener('click', async function () {
