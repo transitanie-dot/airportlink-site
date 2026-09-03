@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Travel Agent Partners | Trade Rate on Airport Transfers | Airportlink</title>
 <meta name="description" content="Travel agencies book airport transfers at a 12% trade rate, with free cancellation until 12 hours before pick-up and one consolidated statement a month. No joining fee, no minimum volume.">
-<meta property="og:image" content="https://www.airportlink.app/assets/og-image.jpg">
+<meta property="og:image" content="https://www.airportlink.app/assets/og-square.jpg">
 <meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:height" content="1200">
 <link rel="canonical" href="https://www.airportlink.app/travelagents">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Airportlink">
@@ -15,7 +15,7 @@
 <meta property="og:description" content="The transfer part of your itineraries, handled. 12% trade rate, 12-hour cancellation window, one statement a month.">
 <meta property="og:url" content="https://www.airportlink.app/travelagents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.airportlink.app/assets/og-image.jpg">
+<meta name="twitter:image" content="https://www.airportlink.app/assets/og-square.jpg">
 <meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
 <script>
@@ -317,6 +317,26 @@ html[data-theme="dark"] .btn.danger{background:transparent;color:#FDA4AF;border-
   .tabs{max-width:none}
 }
 </style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebSite",
+ "@id": "https://www.airportlink.app/#site",
+ "url": "https://www.airportlink.app/",
+ "name": "Airportlink",
+ "publisher": {
+  "@type": "Organization",
+  "@id": "https://www.airportlink.app/#org",
+  "name": "Airportlink",
+  "url": "https://www.airportlink.app/",
+  "logo": {
+   "@type": "ImageObject",
+   "url": "https://www.airportlink.app/apple-touch-icon.png",
+   "width": 180, "height": 180
+  }
+ }
+}
+</script>
 </head>
 <body data-cta-href="#account" data-cta-label="Become a partner">
 
@@ -1638,7 +1658,16 @@ function jumpToAccount(mode) {
 }
 
 $('heroApplyBtn').addEventListener('click', function () { jumpToAccount('signup'); });
-$('heroSignInBtn').addEventListener('click', function () { jumpToAccount('signin'); });
+/**
+ * "Já tenho conta" leva à porta das agências.
+ *
+ * Abria um formulário nesta página, o que funcionava — mas depois
+ * de entrar a pessoa ficava aqui, numa página que lhe explica o
+ * que ganha por se candidatar a algo que já tem.
+ */
+$('heroSignInBtn').addEventListener('click', function () {
+  window.location.href = '/agencylogin';
+});
 
 // ============================================================
 // ARRANQUE
