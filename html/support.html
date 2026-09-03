@@ -432,8 +432,33 @@ function ownedOnly(rows, email) {
 
 async function loadChats() {
   if (!currentUser) return;
-  var res = await supabaseClient.from('support_chats').select('*')
+  /**
+   * Da vista, não da tabela.
+   *
+   * A vista traz o nome de quem está a atender e há quanto tempo a
+   * conversa espera — coisas que vivem noutras tabelas e que a
+   * pessoa precisa de ver.
+   *
+   * A RLS aplica-se na mesma: a vista corre com as permissões de
+   * quem a lê.
+   */
+  var res = await supabaseClient.from('support_chat_queue').select('*')
     .eq('email', currentUser.email).order('updated_at', { ascending: false });
+
+  // Se a vista ainda não existir, lê-se a tabela como antes. Isto
+  // evita que o chat pare enquanto a migração não correr.
+  if (res.error) {
+    res = await supabaseClient.from('support_chats').select('*')
+      .eq('email', currentUser.email).order('updated_at', { ascending: false });
+  } else if (res.data) {
+    // A vista chama chat_id ao que a tabela chama id. O resto do
+    // ficheiro espera 'id', e mudá-lo em vinte sítios seria pior do
+    // que traduzir aqui.
+    res.data = res.data.map(function (c) {
+      if (c.chat_id && !c.id) c.id = c.chat_id;
+      return c;
+    });
+  }
 
   if (res.error) {
     console.error('loadChats error:', res.error);
@@ -470,7 +495,34 @@ function renderActiveChatHeader() {
   var chat = chats.find(function (c) { return c.id === activeChatId; });
   if (!chat) return;
   $('activeChatSubject').textContent = chat.subject;
-  $('activeChatMeta').textContent = T('sup.ticket', 'Ticket #') + chatReference(chat) + ' \u00b7 opened ' + formatListTime(chat.created_at);
+  /**
+   * Quem está do outro lado, e desde quando.
+   *
+   * O cabeçalho dizia só o número do ticket e a data. Quem escreve
+   * e não vê nada acontecer assume que ninguém leu — e escreve
+   * outra vez. Saber que "a Ana está aqui" muda a espera de
+   * silêncio para atendimento.
+   */
+  var meta = T('sup.ticket', 'Ticket #') + chatReference(chat);
+
+  if (chat.assigned_agent_name) {
+    meta = chat.assigned_agent_name + ' ' +
+      T('sup.withYou', 'is with you') + ' \u00b7 ' + meta;
+  } else if (chat.status === 'open') {
+    // Sem ninguém atribuído, diz-se há quanto tempo espera. Um
+    // número honesto vale mais do que um "em breve" que não se
+    // cumpre.
+    var min = chat.waiting_minutes;
+
+    meta = (min > 0
+      ? T('sup.waitingFor', 'Waiting') + ' \u00b7 ' + min + ' min'
+      : T('sup.waiting', 'Waiting for an agent')) + ' \u00b7 ' + meta;
+  } else {
+    meta += ' \u00b7 ' + T('sup.opened', 'opened') + ' ' +
+      formatListTime(chat.created_at);
+  }
+
+  $('activeChatMeta').textContent = meta;
   $('activeChatStatus').textContent = statusLabel(chat.status);
   $('activeChatStatus').className = 'status-badge ' + chat.status;
 }
@@ -713,14 +765,36 @@ async function submitNewChat() {
 
   $('newChatSubmitBtn').disabled = true;
   try {
-    var chatRes = await supabaseClient.from('support_chats').insert({
-      email: currentUser.email,
-      full_name: currentFullName || null,
-      subject: subjectType,
-      subject_type: subjectType,
-      status: 'open',
-      ticket_number: 'SU' + Math.floor(10000 + Math.random() * 90000)
-    }).select().single();
+    /**
+     * A conversa abre pela função, não por um insert direto.
+     *
+     * Três razões:
+     *
+     *  - O ticket vinha de Math.random() com cinco dígitos. Isso
+     *    colide ao fim de umas centenas de conversas, e dois
+     *    clientes com o mesmo número é um problema de apoio que
+     *    ninguém consegue explicar.
+     *
+     *  - Só pode haver uma conversa aberta de cada vez. Duas do
+     *    mesmo cliente são duas filas para o mesmo assunto, e o
+     *    agente responde à errada.
+     *
+     *  - A coluna audience separa clientes de agências no painel.
+     *    Sem ela, a conversa não aparece em fila nenhuma.
+     */
+    var chatRes = await supabaseClient.rpc('open_support_chat', {
+      p_user_id: currentUser.id,
+      p_email: currentUser.email,
+      p_subject: subjectType,
+      p_topic: subjectType,
+      p_audience: 'customer'
+    });
+
+    // A função devolve a linha diretamente; o resto do código
+    // espera o formato do insert.
+    if (chatRes.data && !Array.isArray(chatRes.data)) {
+      chatRes = { data: chatRes.data, error: chatRes.error };
+    }
 
     if (chatRes.error) {
       $('newChatError').textContent = chatRes.error.message || T('sup.startFail', 'Could not start the conversation.');
