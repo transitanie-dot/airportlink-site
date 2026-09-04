@@ -104,9 +104,20 @@
 # Acrescenta aqui todos os URLs que a Wix tinha e que mudaram.
 # ============================================================
 
-/travelagents.html   /travelagents   301
-/drivers.html        /drivers        301
-/login.html          /login          301
+# As três linhas que mandavam o .html de volta para o URL limpo
+# foram removidas. Faziam um CICLO:
+#
+#   /drivers       ->  /drivers.html   (200, reescrita)
+#   /drivers.html  ->  /drivers        (301, redirecionamento)
+#
+# O Render seguia a primeira, chegava ao .html, encontrava o
+# caminho de volta, e recomeçava. O resultado era uma página em
+# branco — sem erro, sem nada.
+#
+# O URL com .html não precisa de redirecionamento: ninguém o
+# escreve, e as reescritas acima já servem o conteúdo no endereço
+# limpo. Se alguém chegar ao .html por um link antigo, vê a página
+# na mesma.
 /agents              /travelagents   301
 /partners            /drivers        301
 /home                /               301
