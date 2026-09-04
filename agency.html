@@ -111,6 +111,45 @@ html[data-theme="dark"] .agent-redirect.rejected{background:#2b1114;border-color
 .agent-redirect .go{border:0;border-radius:13px;padding:11px 18px;background:#333B50;color:#fff;
   font-weight:800;font-size:13.5px;cursor:pointer;white-space:nowrap;flex:0 0 auto;align-self:center}
 html[data-theme="dark"] .agent-redirect .go{background:#e7ebf2;color:#11161D}
+/* ============================================================
+   OS SEPARADORES
+
+   Não tinham estilo nenhum — nem aqui nem no site.css. Apareciam
+   como botões por omissão do browser, que é o "design antigo" que
+   se via.
+
+   Uma linha por baixo do ativo em vez de uma caixa cheia: com
+   cinco separadores, cinco caixas competem entre si e nenhuma
+   ganha.
+   ============================================================ */
+.tabs{display:flex;gap:2px;margin-bottom:24px;overflow-x:auto;
+  border-bottom:1px solid var(--rule);scrollbar-width:none;
+  -webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+
+.tab{position:relative;flex:0 0 auto;background:transparent;border:0;
+  padding:13px 18px 12px;font-family:inherit;font-size:14.5px;font-weight:600;
+  color:var(--muted);cursor:pointer;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:color .15s ease}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--text)}
+
+.tab::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;
+  height:2.5px;border-radius:2px 2px 0 0;background:transparent;
+  transition:background .18s ease}
+.tab.active::after{background:var(--teal)}
+html[data-theme="dark"] .tab.active::after{background:var(--amber)}
+
+/* O .tab-content já vem do bloco herdado do myaccount, mais acima.
+   Repeti-lo aqui seriam duas regras a dizer o mesmo — e um dia
+   alguém muda uma e não a outra. */
+
+@media (max-width:640px){
+  .tabs{margin-bottom:18px;padding:0}
+  .tab{padding:12px 14px 11px;font-size:13.5px}
+}
+
 /* ---------- o chat ---------- */
 .tab-n{display:inline-block;min-width:18px;padding:1px 6px;margin-left:6px;
   border-radius:999px;background:var(--err-rule);color:#fff;
