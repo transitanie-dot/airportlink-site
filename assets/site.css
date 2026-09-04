@@ -132,7 +132,18 @@ html[data-theme="dark"] .hbtn{background:#E9EDF3;color:#141A28}
 @media (max-width:900px){
   .site-nav{display:none}
   .burger{display:flex}
-  .header-right .hbtn.line{display:none}
+
+  /**
+   * O botão de conta FICA no cabeçalho.
+   *
+   * Saía abaixo dos 900px e passava para dentro do menu, a dois
+   * toques. Mas entrar na conta é das coisas que mais se faz — e
+   * quem já reservou volta para ver a viagem, não para ler as
+   * páginas do menu.
+   *
+   * Fica mais estreito, sem o texto completo, mas fica.
+   */
+  .header-right .hbtn.line{display:inline-flex;padding:0 12px;font-size:11px}
   /* O botão principal pode ser curto ("Get a price") ou longo
      ("Become a partner"). Sem limite, o longo empurrava o
      hambúrguer para fora da margem. */
@@ -140,9 +151,18 @@ html[data-theme="dark"] .hbtn{background:#E9EDF3;color:#141A28}
     white-space:nowrap;padding:0 14px}
 }
 @media (max-width:560px){
-  /* Em ecrãs estreitos o botão sai de vez: está no menu, a dois
-     toques, e o hambúrguer precisa do espaço mais do que ele. */
-  .header-right .hbtn{display:none}
+  /**
+   * Num ecrã de 380px o canto leva quatro coisas: língua, tema,
+   * conta e menu. Somadas ao logótipo dão 368 dos 380 pixels — doze
+   * de folga, que é pouco para um ecrã de 360.
+   *
+   * Por isso o botão do tema sai: mudar de tema faz-se uma vez e
+   * fica guardado, entrar na conta faz-se sempre. Ele continua no
+   * menu, a dois toques.
+   */
+  .header-right #themeBtn{display:none}
+
+  .header-right .hbtn.line{padding:0 10px;font-size:10.5px;letter-spacing:.04em}
   .header-inner{padding:0 14px;gap:12px}
 }
 
@@ -380,7 +400,21 @@ html[data-theme="dark"] .phone-menu{box-shadow:0 18px 44px rgba(0,0,0,.5)}
 html[data-theme="dark"] .lang-menu button[aria-current="true"]{background:#D8DEE8;color:#141A28}
 .lang-tag{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;
   text-transform:uppercase;opacity:.6}
-@media (max-width:520px){.lang-btn .lang-code{display:none}.lang-btn{padding:0}}
+/**
+ * O código da língua fica visível.
+ *
+ * Escondia-se abaixo dos 520px e restava um globo de 40 pixels —
+ * pequeno para o polegar, e sem dizer que língua está escolhida.
+ * "EN" ao lado do globo custa doze pixels e responde à pergunta.
+ */
+@media (max-width:520px){
+  .lang-btn .lang-code{display:inline}
+  /* Com o código de volta, o botão precisa de largura para ele.
+     O padding:0 que aqui estava era o que o fazia parecer
+     esmagado — e um alvo de 40 pixels é o mínimo para um polegar,
+     não uma meta. */
+  .lang-btn{width:auto;padding:0 11px;min-width:56px}
+}
 
 /* ---------- árabe: da direita para a esquerda ----------
    O dir="rtl" espelha o texto e a ordem das colunas sozinho. Só as
