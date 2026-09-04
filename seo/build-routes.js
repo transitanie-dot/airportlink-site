@@ -1179,13 +1179,19 @@ function calculator(airport, current, cc, mapsKey, lang) {
     var cl = $$('cl');
     if (!cf || !ct) return;
 
-    // Daqui a três dias, não amanhã.
-    //
-    // Amanhã está dentro das 48 horas, e isso tira o "pagar depois"
-    // a toda a gente logo à partida — a vantagem que mais nos
-    // distingue desapareceria antes de alguém a ver.
-    var t = new Date(); t.setDate(t.getDate() + 3);
-    cdate.value = t.toISOString().slice(0, 10);
+    /**
+     * O campo da data começa VAZIO.
+     *
+     * Estava preenchido com "daqui a três dias", e a linha de baixo
+     * dizia "pague a 5 de setembro" — uma data que a pessoa não
+     * escolheu e provavelmente não é a dela.
+     *
+     * Uma data inventada no ecrã lê-se como um compromisso. Vazio,
+     * a linha diz "pague depois", que é verdade em qualquer caso.
+     *
+     * O mínimo continua a ser hoje: uma data no passado não faz
+     * sentido e o browser recusa-a sozinho.
+     */
     cdate.min = new Date().toISOString().slice(0, 10);
 
     // ---------- a mesma fórmula do site ----------
