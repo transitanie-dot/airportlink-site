@@ -478,6 +478,43 @@ const ES_FALLBACK = { base: 39.76, perKm: 1.2843, premium: 1.530,
 /** Rotas com preço combinado. O Sitges custa-lhes o dobro da fórmula. */
 const ES_FIXED = { 'sitges': { sedan: 128.56, premium: 175.57 } };
 
+/**
+ * Itália: cada cidade tem tabela própria.
+ *
+ * As do concorrente diferem muito entre si — Florença cobra
+ * 2,74 €/km no premium contra 1,64 de Roma. Uma fórmula nacional
+ * falharia por larga margem.
+ *
+ * O premium tem RETA PRÓPRIA, não um multiplicador: o sedan e o
+ * premium deles não crescem ao mesmo ritmo, e um multiplicador
+ * fixo ou nos punha 38% acima nas rotas longas ou abaixo deles nas
+ * curtas.
+ */
+const IT_ZONES = {
+  'rome-fiumicino': { base: 46.25, perKm: 1.5100, premiumBase: 76.75, premiumKm: 1.9500 },
+  'rome-ciampino':  { base: 46.25, perKm: 1.5100, premiumBase: 76.75, premiumKm: 1.9500 },
+  'bologna':        { base: 65.03, perKm: 1.6083, premiumBase: 85.25, premiumKm: 2.1050 },
+  'naples':         { base: 58.96, perKm: 1.5028, premiumBase: 81.25, premiumKm: 2.1300 },
+  'palermo':        { base: 43.24, perKm: 1.2041, premiumBase: 71.75, premiumKm: 1.9800,
+                      van: 1.586, two_vans: 3.978 },
+  'venice':         { base: 58.93, perKm: 1.5475, premiumBase: 71.50, premiumKm: 1.8550 },
+  'florence':       { base: 114.54, perKm: 2.3303, premiumBase: 138.25, premiumKm: 2.7900 },
+  'milan-malpensa': { base: 64.86, perKm: 1.5628, premiumBase: 89.25, premiumKm: 1.8150 }
+};
+
+/**
+ * Roma serve toda a Itália não medida.
+ *
+ * AVISO: Roma é cidade cara. Palermo mostra que o sul corre cerca
+ * de 30% mais barato. Abrir Bari ou Catânia com esta tabela põe-nos
+ * acima do mercado.
+ */
+const IT_FALLBACK = { base: 46.25, perKm: 1.5100,
+  premiumBase: 76.75, premiumKm: 1.9500 };
+
+/** Os multiplicadores das classes maiores, calculados sobre o sedan. */
+const IT_MULT = { van: 1.304, van_sedan: 3.462, two_vans: 3.846 };
+
 /** A tabela desta página: zona, multiplicadores e preço fixo se houver. */
 function zoneFor(cc, zoneSlug, dest) {
   const PT_MULT = { premium: 1.47, van: 1.7, van_sedan: 2.85, two_vans: 3.6 };
@@ -488,6 +525,7 @@ function zoneFor(cc, zoneSlug, dest) {
     return z;
   }
   if (cc === 'PT') return { ...(PT_ZONES[zoneSlug] || PT_FALLBACK), ...PT_MULT };
+  if (cc === 'IT') return { ...IT_MULT, ...(IT_ZONES[zoneSlug] || IT_FALLBACK) };
   return null;
 }
 
@@ -510,6 +548,26 @@ function priceEUR(km, passengers, countryCode, zoneSlug, destSlug) {
     }
 
     return Math.max(24, (z.base + km * z.perKm) * (cls === 'sedan' ? 1 : z[cls]));
+  }
+
+  /**
+   * Itália: o premium tem reta própria.
+   *
+   * O sedan e o premium do concorrente não crescem ao mesmo ritmo
+   * — em Roma o rácio vai de 1,22 aos 8 km a 1,09 aos 234. Um
+   * multiplicador fixo é a média de duas curvas diferentes e falha
+   * nas pontas.
+   */
+  if (countryCode === 'IT') {
+    const z = IT_ZONES[zoneSlug] || IT_FALLBACK;
+    const sedan = z.base + km * z.perKm;
+
+    if (cls === 'premium') {
+      return Math.max(24, z.premiumBase + km * z.premiumKm);
+    }
+    if (cls === 'sedan') return Math.max(24, sedan);
+
+    return Math.max(24, sedan * (z[cls] || IT_MULT[cls]));
   }
 
   const m = cls === 'sedan' ? 1 : cls === 'premium' ? 1.47
