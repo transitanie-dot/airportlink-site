@@ -499,7 +499,11 @@ const IT_ZONES = {
                       van: 1.586, two_vans: 3.978 },
   'venice':         { base: 58.93, perKm: 1.5475, premiumBase: 71.50, premiumKm: 1.8550 },
   'florence':       { base: 114.54, perKm: 2.3303, premiumBase: 138.25, premiumKm: 2.7900 },
-  'milan-malpensa': { base: 64.86, perKm: 1.5628, premiumBase: 89.25, premiumKm: 1.8150 }
+  'milan-malpensa': { base: 64.86, perKm: 1.5628, premiumBase: 89.25, premiumKm: 1.8150 },
+  // O Cagliari tem tabela própria do estudo e ficou de fora por
+  // lapso. Sem ele, as páginas da Sardenha saíam com preços de
+  // Roma — cerca de 10% acima do que a calculadora cobra.
+  'cagliari':       { base: 38.97, perKm: 1.6212, premiumBase: 46.75, premiumKm: 1.9500 }
 };
 
 /**
