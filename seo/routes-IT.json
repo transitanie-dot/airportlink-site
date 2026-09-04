@@ -1,0 +1,824 @@
+{
+  "_leia_me": "Itália. Oito aeroportos, quarenta rotas. Os preços vêm da fórmula por cidade no server.js — cada cidade tem tabela própria porque as do concorrente diferem muito entre si (Florença cobra 2,74 €/km no premium contra 1,64 de Roma). Quatro cidades — Veneza, Florença, Milão e Cagliari — não têm sedan do lado deles, e é aí que a nossa vantagem é maior. Estudo de 02/09/2026.",
+
+  "country": "Italy",
+  "countryCode": "IT",
+  "currency": "EUR",
+
+  "countryI18n": {
+    "en": "Italy",
+    "es": "Italia",
+    "pt": "Itália",
+    "fr": "Italie"
+  },
+
+  "airports": [
+    {
+      "iata": "FCO",
+      "slug": "rome-fiumicino",
+      "name": "Rome Fiumicino Airport",
+      "official": "Leonardo da Vinci–Fiumicino Airport",
+      "city": "Rome",
+      "image": "rome",
+      "about": "Fiumicino sits thirty kilometres from the centre, on the coast. Terminal 3 handles almost all international arrivals, and the walk from the far gates to the taxi rank is longer than most people expect — allow twenty minutes from wheels down to the kerb.",
+      "tips": [
+        "Terminal 3 for international arrivals, Terminal 1 for Italian and short-haul Schengen. The two are ten minutes apart on foot.",
+        "The taxi fare to the centre is fixed by the city at €55, but that covers the historic centre only. Anywhere outside the Aurelian walls and the meter starts again.",
+        "The Leonardo Express runs to Termini in thirty-two minutes. It is fast, but Termini is not where most hotels are, and the second leg with luggage is the part nobody plans for."
+      ],
+      "local": [
+        [
+          "The €55 fixed taxi fare, and where it stops",
+          "Rome caps the airport taxi fare to the historic centre. It is a good deal if that is where you are going. Outside the walls — Trastevere south of Viale Trastevere, the Vatican museums area, Monteverde — the cap does not apply and the meter runs. Our price is the same wherever inside the city you are heading."
+        ],
+        [
+          "Two roads in, and both fill up",
+          "The A91 and the Via Portuense both feed into the centre and both queue between 07:00 and 09:30. The GRA ring road adds fifteen minutes but often saves more. Your driver decides on the day; the fare does not change either way."
+        ],
+        [
+          "Cruise passengers going to Civitavecchia",
+          "Seventy kilometres north, about an hour, and the road is straightforward. Book it as a transfer rather than a taxi — the taxi meter on that route is unpredictable and there is no fixed fare."
+        ]
+      ],
+      "compare": [
+        ["Leonardo Express", "32 min to Termini", "€14.00", "No traffic, and it runs every 15 minutes.", "Termini is rarely the final stop. Steps, crowds and a second journey with bags."],
+        ["Fixed-fare taxi", "45–60 min to the centre", "€55.00", "Regulated price to the historic centre.", "The cap ends at the Aurelian walls. Outside them, the meter runs and the price is unknown."],
+        ["Regional train", "48 min to Trastevere", "€8.00", "Cheapest way in.", "Stops everywhere. No luggage space at peak times."]
+      ],
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Rome city centre",
+          "km": 27,
+          "minutes": 45,
+          "about": "Twenty-seven kilometres, and between forty and sixty minutes depending on the hour. The centre is a limited-traffic zone — our licensed vehicles are cleared to enter, which is not true of a hire car. Give the street name and the number: Via del Corso alone runs for a kilometre and a half.",
+          "i18n": {
+            "es": { "name": "Centro de Roma", "about": "Veintisiete kilómetros, entre cuarenta y sesenta minutos según la hora. El centro es zona de tráfico limitado: nuestros vehículos con licencia pueden entrar, cosa que no ocurre con un coche de alquiler. Danos la calle y el número." },
+            "pt": { "name": "Centro de Roma", "about": "Vinte e sete quilómetros, entre quarenta e sessenta minutos conforme a hora. O centro é zona de trânsito limitado: os nossos veículos licenciados podem entrar, ao contrário de um carro alugado. Dê-nos a rua e o número." },
+            "fr": { "name": "Centre de Rome", "about": "Vingt-sept kilomètres, entre quarante et soixante minutes selon l'heure. Le centre est une zone à trafic limité : nos véhicules agréés peuvent y entrer, contrairement à une voiture de location. Donnez-nous la rue et le numéro." }
+          }
+        },
+        {
+          "slug": "ostia",
+          "name": "Ostia",
+          "km": 8,
+          "minutes": 15,
+          "about": "Eight kilometres south along the coast, fifteen minutes. Ostia Antica — the Roman port ruins — is a separate stop from Ostia Lido, the beach town. Say which one you mean when you book; they are four kilometres apart and the drivers know the difference.",
+          "i18n": {
+            "es": { "name": "Ostia", "about": "Ocho kilómetros al sur por la costa, quince minutos. Ostia Antica —las ruinas del puerto romano— es una parada distinta de Ostia Lido, el pueblo de playa. Indica cuál quieres al reservar." },
+            "pt": { "name": "Ostia", "about": "Oito quilómetros para sul pela costa, quinze minutos. Ostia Antica — as ruínas do porto romano — é uma paragem diferente de Ostia Lido, a vila balnear. Diga qual quer ao reservar." },
+            "fr": { "name": "Ostie", "about": "Huit kilomètres au sud le long de la côte, quinze minutes. Ostia Antica — les ruines du port romain — est un arrêt distinct d'Ostia Lido, la station balnéaire. Précisez laquelle à la réservation." }
+          }
+        },
+        {
+          "slug": "civitavecchia",
+          "name": "Civitavecchia",
+          "km": 73,
+          "minutes": 60,
+          "about": "Seventy-three kilometres north on the A12, about an hour. This is the cruise port for Rome, and the terminals are spread along two kilometres of quay — tell us the ship and the driver takes you to the right gate rather than the port entrance.",
+          "i18n": {
+            "es": { "name": "Civitavecchia", "about": "Setenta y tres kilómetros al norte por la A12, alrededor de una hora. Es el puerto de cruceros de Roma y las terminales se reparten por dos kilómetros de muelle: dinos el barco y el conductor te lleva a la puerta correcta." },
+            "pt": { "name": "Civitavecchia", "about": "Setenta e três quilómetros para norte pela A12, cerca de uma hora. É o porto de cruzeiros de Roma e os terminais espalham-se por dois quilómetros de cais: diga-nos o navio e o motorista leva-o ao portão certo." },
+            "fr": { "name": "Civitavecchia", "about": "Soixante-treize kilomètres au nord par l'A12, environ une heure. C'est le port de croisière de Rome et les terminaux s'étendent sur deux kilomètres de quai : dites-nous le navire et le chauffeur vous dépose à la bonne porte." }
+          }
+        },
+        {
+          "slug": "orvieto",
+          "name": "Orvieto",
+          "km": 124,
+          "minutes": 90,
+          "about": "A hundred and twenty-four kilometres north on the A1, an hour and a half. The old town sits on a plug of volcanic rock and cars cannot climb the last stretch — the drop-off is at the funicular station or the Campo della Fiera car park, whichever you prefer.",
+          "i18n": {
+            "es": { "name": "Orvieto", "about": "Ciento veinticuatro kilómetros al norte por la A1, hora y media. El casco antiguo está sobre una roca volcánica y los coches no suben el último tramo: la parada es en el funicular o en el aparcamiento de Campo della Fiera." },
+            "pt": { "name": "Orvieto", "about": "Cento e vinte e quatro quilómetros para norte pela A1, hora e meia. A cidade velha fica sobre uma rocha vulcânica e os carros não sobem o último troço: a paragem é no funicular ou no parque do Campo della Fiera." },
+            "fr": { "name": "Orvieto", "about": "Cent vingt-quatre kilomètres au nord par l'A1, une heure et demie. La vieille ville est perchée sur un rocher volcanique et les voitures ne montent pas le dernier tronçon : la dépose se fait au funiculaire ou au parking Campo della Fiera." }
+          }
+        },
+        {
+          "slug": "naples",
+          "name": "Naples",
+          "km": 234,
+          "minutes": 150,
+          "about": "Two hundred and thirty-four kilometres south on the A1, two and a half hours. Long enough that the train is usually the better choice — but for a family with luggage, or an arrival after the last connection, the door-to-door price is fixed and there is no changing platforms at Termini.",
+          "i18n": {
+            "es": { "name": "Nápoles", "about": "Doscientos treinta y cuatro kilómetros al sur por la A1, dos horas y media. Suele salir mejor el tren, pero para una familia con equipaje, o una llegada después del último enlace, el precio puerta a puerta es fijo." },
+            "pt": { "name": "Nápoles", "about": "Duzentos e trinta e quatro quilómetros para sul pela A1, duas horas e meia. Costuma compensar o comboio, mas para uma família com bagagem, ou uma chegada depois da última ligação, o preço porta a porta é fixo." },
+            "fr": { "name": "Naples", "about": "Deux cent trente-quatre kilomètres au sud par l'A1, deux heures et demie. Le train est souvent préférable, mais pour une famille avec bagages, ou une arrivée après la dernière correspondance, le prix porte-à-porte est fixe." }
+          }
+        }
+      ],
+      "i18n": {
+        "es": { "name": "Aeropuerto de Roma Fiumicino", "official": "Aeropuerto Leonardo da Vinci–Fiumicino", "about": "Fiumicino está a treinta kilómetros del centro, en la costa. La Terminal 3 recibe casi todas las llegadas internacionales, y el paseo desde las puertas más lejanas hasta la parada de taxis es más largo de lo que parece." },
+        "pt": { "name": "Aeroporto de Roma Fiumicino", "official": "Aeroporto Leonardo da Vinci–Fiumicino", "about": "Fiumicino fica a trinta quilómetros do centro, na costa. O Terminal 3 recebe quase todas as chegadas internacionais, e a caminhada das portas mais distantes até à praça de táxis é maior do que parece." },
+        "fr": { "name": "Aéroport de Rome Fiumicino", "official": "Aéroport Léonard-de-Vinci de Fiumicino", "about": "Fiumicino se trouve à trente kilomètres du centre, sur la côte. Le terminal 3 accueille presque toutes les arrivées internationales, et la marche depuis les portes les plus éloignées jusqu'à la station de taxis est plus longue qu'on ne le pense." }
+      }
+    },
+
+    {
+      "iata": "CIA",
+      "slug": "rome-ciampino",
+      "name": "Rome Ciampino Airport",
+      "official": "Rome Ciampino–G. B. Pastine Airport",
+      "city": "Rome",
+      "image": "rome",
+      "about": "Ciampino is small, close and almost entirely low-cost. One terminal, one arrivals hall, and you are outside within ten minutes of landing. It is fifteen kilometres from the centre, but the road in is slower than the distance suggests.",
+      "tips": [
+        "One terminal. Arrivals and departures share the same hall, and it gets crowded when two flights land together.",
+        "The fixed taxi fare from Ciampino to the historic centre is €40 — again, only to inside the walls.",
+        "There is no train station at the airport. Every route out involves a bus or a car."
+      ],
+      "local": [
+        [
+          "Closer than Fiumicino, not always faster",
+          "Fifteen kilometres against thirty, but the Via Appia Nuova and the Tuscolana both run through built-up areas with traffic lights. At rush hour a Ciampino transfer can take as long as one from Fiumicino."
+        ],
+        [
+          "The Castelli Romani are on the doorstep",
+          "Frascati, Castel Gandolfo and Albano are all within twenty kilometres. If you are heading to the hills rather than the city, Ciampino is much the better arrival airport."
+        ],
+        [
+          "Late arrivals",
+          "Low-cost schedules put a lot of flights in after 23:00. The last bus to Termini goes at 00:15 and the taxi queue at that hour is long. A booked transfer waits regardless of when you land."
+        ]
+      ],
+      "compare": [
+        ["Terravision bus", "40 min to Termini", "€6.00", "Cheap, and it runs to schedule.", "Only to Termini. No service after 00:15. Bags go in the hold and come out slowly."],
+        ["Fixed-fare taxi", "30–50 min to the centre", "€40.00", "Regulated to the historic centre.", "Queues after late arrivals. Outside the walls the meter runs."],
+        ["ATRAL bus + Metro", "50 min via Anagnina", "€3.20", "The cheapest route in.", "Two vehicles, one change, and steps at the metro with luggage."]
+      ],
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Rome city centre",
+          "km": 34,
+          "minutes": 40,
+          "about": "Thirty-four kilometres by the ring road, or fifteen straight through the suburbs — the driver takes whichever is moving. Forty minutes on a good day, an hour at five in the afternoon. The centre is a limited-traffic zone and our vehicles are cleared for it.",
+          "i18n": {
+            "es": { "name": "Centro de Roma", "about": "Treinta y cuatro kilómetros por la circunvalación, o quince directos por los suburbios: el conductor toma la que esté despejada. Cuarenta minutos en un buen día, una hora a las cinco de la tarde." },
+            "pt": { "name": "Centro de Roma", "about": "Trinta e quatro quilómetros pela circular, ou quinze diretos pelos subúrbios — o motorista escolhe o que estiver a andar. Quarenta minutos num bom dia, uma hora às cinco da tarde." },
+            "fr": { "name": "Centre de Rome", "about": "Trente-quatre kilomètres par le périphérique, ou quinze en traversant la banlieue : le chauffeur prend ce qui roule. Quarante minutes un bon jour, une heure à dix-sept heures." }
+          }
+        },
+        {
+          "slug": "frascati",
+          "name": "Frascati",
+          "km": 12,
+          "minutes": 20,
+          "about": "Twelve kilometres uphill into the Castelli Romani, twenty minutes. The old centre is closed to traffic during the day — the drop-off is at Piazza Marconi, a two-minute walk from most of the town.",
+          "i18n": {
+            "es": { "name": "Frascati", "about": "Doce kilómetros cuesta arriba hacia los Castelli Romani, veinte minutos. El casco antiguo está cerrado al tráfico de día: la parada es en Piazza Marconi." },
+            "pt": { "name": "Frascati", "about": "Doze quilómetros a subir para os Castelli Romani, vinte minutos. O centro velho está fechado ao trânsito de dia: a paragem é na Piazza Marconi." },
+            "fr": { "name": "Frascati", "about": "Douze kilomètres en montée vers les Castelli Romani, vingt minutes. Le vieux centre est fermé à la circulation en journée : la dépose se fait Piazza Marconi." }
+          }
+        },
+        {
+          "slug": "castel-gandolfo",
+          "name": "Castel Gandolfo",
+          "km": 15,
+          "minutes": 25,
+          "about": "Fifteen kilometres, twenty-five minutes, and the road climbs the whole way. The town sits above Lake Albano and the papal palace is now open to visitors. Parking near the centre is scarce, which is an argument for being dropped rather than driving.",
+          "i18n": {
+            "es": { "name": "Castel Gandolfo", "about": "Quince kilómetros, veinticinco minutos, subiendo todo el camino. El pueblo domina el lago Albano y el palacio papal ya se puede visitar. Aparcar cerca del centro es difícil." },
+            "pt": { "name": "Castel Gandolfo", "about": "Quinze quilómetros, vinte e cinco minutos, a subir todo o caminho. A vila fica sobre o lago Albano e o palácio papal já se pode visitar. Estacionar perto do centro é difícil." },
+            "fr": { "name": "Castel Gandolfo", "about": "Quinze kilomètres, vingt-cinq minutes, en montée tout du long. Le village domine le lac Albano et le palais papal se visite désormais. Se garer près du centre est difficile." }
+          }
+        },
+        {
+          "slug": "tivoli",
+          "name": "Tivoli",
+          "km": 35,
+          "minutes": 40,
+          "about": "Thirty-five kilometres east, forty minutes. Villa d'Este and Villa Adriana are six kilometres apart and both take half a day — if you are visiting both, an hourly booking usually works out better than two transfers.",
+          "i18n": {
+            "es": { "name": "Tívoli", "about": "Treinta y cinco kilómetros al este, cuarenta minutos. Villa d'Este y Villa Adriana están a seis kilómetros y cada una lleva media jornada." },
+            "pt": { "name": "Tivoli", "about": "Trinta e cinco quilómetros para leste, quarenta minutos. A Villa d'Este e a Villa Adriana estão a seis quilómetros uma da outra e cada uma leva meio dia." },
+            "fr": { "name": "Tivoli", "about": "Trente-cinq kilomètres à l'est, quarante minutes. La Villa d'Este et la Villa Adriana sont à six kilomètres l'une de l'autre et prennent chacune une demi-journée." }
+          }
+        },
+        {
+          "slug": "anzio",
+          "name": "Anzio",
+          "km": 48,
+          "minutes": 50,
+          "about": "Forty-eight kilometres south to the coast, fifty minutes. Anzio is the ferry port for Ponza — if you are catching the boat, tell us the sailing time and the driver plans the departure backwards from it.",
+          "i18n": {
+            "es": { "name": "Anzio", "about": "Cuarenta y ocho kilómetros al sur hacia la costa, cincuenta minutos. Anzio es el puerto de ferry a Ponza: si vas a coger el barco, dinos la hora de salida." },
+            "pt": { "name": "Anzio", "about": "Quarenta e oito quilómetros para sul até à costa, cinquenta minutos. Anzio é o porto de ferry para Ponza: se vai apanhar o barco, diga-nos a hora da partida." },
+            "fr": { "name": "Anzio", "about": "Quarante-huit kilomètres au sud vers la côte, cinquante minutes. Anzio est le port de ferry pour Ponza : si vous prenez le bateau, indiquez-nous l'heure du départ." }
+          }
+        }
+      ],
+      "i18n": {
+        "es": { "name": "Aeropuerto de Roma Ciampino", "official": "Aeropuerto de Roma Ciampino–G. B. Pastine", "about": "Ciampino es pequeño, cercano y casi todo de bajo coste. Una sola terminal, y sales a la calle diez minutos después de aterrizar." },
+        "pt": { "name": "Aeroporto de Roma Ciampino", "official": "Aeroporto de Roma Ciampino–G. B. Pastine", "about": "Ciampino é pequeno, perto e quase todo de baixo custo. Um só terminal, e está na rua dez minutos depois de aterrar." },
+        "fr": { "name": "Aéroport de Rome Ciampino", "official": "Aéroport de Rome Ciampino–G. B. Pastine", "about": "Ciampino est petit, proche et presque entièrement low-cost. Un seul terminal, et vous êtes dehors dix minutes après l'atterrissage." }
+      }
+    },
+
+    {
+      "iata": "MXP",
+      "slug": "milan-malpensa",
+      "name": "Milan Malpensa Airport",
+      "official": "Milan Malpensa Airport",
+      "city": "Milan",
+      "image": "milan",
+      "about": "Malpensa is fifty kilometres north-west of Milan, which surprises people who booked it thinking it was the city airport. Terminal 1 takes long-haul and most international flights; Terminal 2 is low-cost, and the two are four kilometres apart.",
+      "tips": [
+        "Terminal 1 and Terminal 2 are linked by a free shuttle every seven minutes. It takes ten minutes, and you need it if you land at the wrong one.",
+        "The Malpensa Express runs to Cadorna and Centrale. Cadorna is closer to the Duomo; Centrale is where the high-speed trains leave from.",
+        "There is no fixed taxi fare from Malpensa. The meter runs, and €90 to €110 into the centre is normal."
+      ],
+      "local": [
+        [
+          "It is not the Milan airport people expect",
+          "Fifty kilometres and fifty minutes on a clear road. Linate is the one eight kilometres from the centre. If your meeting is at nine and you land at eight at Malpensa, the arithmetic does not work — plan for it."
+        ],
+        [
+          "The lakes are closer than the city",
+          "Como is fifty kilometres, Stresa on Lake Maggiore is forty. If the lakes are why you are coming, Malpensa is the right airport and the transfer is shorter than the one into Milan."
+        ],
+        [
+          "Fashion week and the Salone",
+          "Twice a year the city fills and the taxi queues at Malpensa run to an hour. Those are the weeks when a booked car matters most, and the weeks when they get booked first."
+        ]
+      ],
+      "compare": [
+        ["Malpensa Express", "50 min to Cadorna", "€13.00", "Reliable and frequent.", "Two stations to choose between, and a second journey from either."],
+        ["Metered taxi", "50–70 min to the centre", "€90–110", "Available at all hours.", "No fixed fare. Traffic on the A8 is charged to you."],
+        ["Shuttle bus", "60 min to Centrale", "€10.00", "Cheapest option.", "Fills up. Bags in the hold. One stop only."]
+      ],
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Milan city centre",
+          "km": 48,
+          "minutes": 50,
+          "about": "Forty-eight kilometres on the A8, fifty minutes when it moves and eighty when it does not. Central Milan is a congestion-charge zone — Area C — and the charge is included in the fare. Give the street number: the one-way system means a hundred metres can cost five minutes.",
+          "i18n": {
+            "es": { "name": "Centro de Milán", "about": "Cuarenta y ocho kilómetros por la A8, cincuenta minutos si circula y ochenta si no. El centro es zona de peaje urbano, Area C, y el cargo va incluido en la tarifa." },
+            "pt": { "name": "Centro de Milão", "about": "Quarenta e oito quilómetros pela A8, cinquenta minutos quando anda e oitenta quando não anda. O centro é zona de portagem urbana, a Area C, e a taxa está incluída no preço." },
+            "fr": { "name": "Centre de Milan", "about": "Quarante-huit kilomètres par l'A8, cinquante minutes quand ça roule et quatre-vingts quand ça bouchonne. Le centre est une zone à péage urbain, l'Area C, et la taxe est comprise dans le tarif." }
+          }
+        },
+        {
+          "slug": "como",
+          "name": "Como",
+          "km": 50,
+          "minutes": 50,
+          "about": "Fifty kilometres north, fifty minutes, and the last stretch runs along the lake. If you are going to Bellagio or Varenna the road narrows and slows considerably — worth allowing an extra half hour beyond what a map suggests.",
+          "i18n": {
+            "es": { "name": "Como", "about": "Cincuenta kilómetros al norte, cincuenta minutos, y el último tramo bordea el lago. Si vas a Bellagio o Varenna la carretera se estrecha: cuenta con media hora más." },
+            "pt": { "name": "Como", "about": "Cinquenta quilómetros para norte, cinquenta minutos, e o último troço acompanha o lago. Se vai para Bellagio ou Varenna a estrada estreita: conte com mais meia hora." },
+            "fr": { "name": "Côme", "about": "Cinquante kilomètres au nord, cinquante minutes, et le dernier tronçon longe le lac. Pour Bellagio ou Varenna la route se rétrécit : comptez une demi-heure de plus." }
+          }
+        },
+        {
+          "slug": "bergamo",
+          "name": "Bergamo",
+          "km": 87,
+          "minutes": 70,
+          "about": "Eighty-seven kilometres east, an hour and ten. The Città Alta sits above the modern town and cars are restricted inside the walls — the drop-off is at Porta Sant'Agostino or the funicular, both a short walk from the old streets.",
+          "i18n": {
+            "es": { "name": "Bérgamo", "about": "Ochenta y siete kilómetros al este, una hora y diez. La Città Alta está sobre la ciudad nueva y los coches tienen restricciones dentro de las murallas." },
+            "pt": { "name": "Bérgamo", "about": "Oitenta e sete quilómetros para leste, uma hora e dez. A Città Alta fica sobre a cidade nova e os carros têm restrições dentro das muralhas." },
+            "fr": { "name": "Bergame", "about": "Quatre-vingt-sept kilomètres à l'est, une heure dix. La Città Alta domine la ville basse et les voitures sont limitées à l'intérieur des remparts." }
+          }
+        },
+        {
+          "slug": "verona",
+          "name": "Verona",
+          "km": 163,
+          "minutes": 110,
+          "about": "A hundred and sixty-three kilometres east on the A4, close to two hours. Long, and the train is often quicker — but for an opera night at the Arena that ends near midnight, a car waiting is worth more than the time saved.",
+          "i18n": {
+            "es": { "name": "Verona", "about": "Ciento sesenta y tres kilómetros al este por la A4, casi dos horas. El tren suele ser más rápido, pero para una noche de ópera en la Arena que acaba a medianoche, un coche esperando vale más." },
+            "pt": { "name": "Verona", "about": "Cento e sessenta e três quilómetros para leste pela A4, quase duas horas. O comboio costuma ser mais rápido, mas para uma noite de ópera na Arena que acaba à meia-noite, um carro à espera vale mais." },
+            "fr": { "name": "Vérone", "about": "Cent soixante-trois kilomètres à l'est par l'A4, près de deux heures. Le train est souvent plus rapide, mais pour une soirée d'opéra aux Arènes qui finit à minuit, une voiture qui attend vaut mieux." }
+          }
+        },
+        {
+          "slug": "turin",
+          "name": "Turin",
+          "km": 146,
+          "minutes": 105,
+          "about": "A hundred and forty-six kilometres west, an hour and three quarters. The A4 runs the whole way and is dull but quick. Turin has its own airport, but the connections through Malpensa are better and the transfer closes the gap.",
+          "i18n": {
+            "es": { "name": "Turín", "about": "Ciento cuarenta y seis kilómetros al oeste, una hora y tres cuartos. La A4 va todo el camino y es aburrida pero rápida." },
+            "pt": { "name": "Turim", "about": "Cento e quarenta e seis quilómetros para oeste, uma hora e três quartos. A A4 vai todo o caminho e é aborrecida mas rápida." },
+            "fr": { "name": "Turin", "about": "Cent quarante-six kilomètres à l'ouest, une heure trois quarts. L'A4 fait tout le trajet, monotone mais rapide." }
+          }
+        }
+      ],
+      "i18n": {
+        "es": { "name": "Aeropuerto de Milán Malpensa", "official": "Aeropuerto de Milán-Malpensa", "about": "Malpensa está a cincuenta kilómetros al noroeste de Milán, lo que sorprende a quien lo reservó pensando que era el aeropuerto de la ciudad." },
+        "pt": { "name": "Aeroporto de Milão Malpensa", "official": "Aeroporto de Milão-Malpensa", "about": "Malpensa fica a cinquenta quilómetros a noroeste de Milão, o que surpreende quem o reservou a pensar que era o aeroporto da cidade." },
+        "fr": { "name": "Aéroport de Milan Malpensa", "official": "Aéroport de Milan-Malpensa", "about": "Malpensa se trouve à cinquante kilomètres au nord-ouest de Milan, ce qui surprend ceux qui l'ont réservé en croyant que c'était l'aéroport de la ville." }
+      }
+    },
+
+    {
+      "iata": "VCE",
+      "slug": "venice",
+      "name": "Venice Marco Polo Airport",
+      "official": "Venice Marco Polo Airport",
+      "city": "Venice",
+      "image": "venice",
+      "about": "Marco Polo is thirteen kilometres from Venice, on the mainland. No car reaches the historic centre — the road ends at Piazzale Roma, and from there it is a boat or a walk. That is not a limitation of the transfer; it is how the city works.",
+      "tips": [
+        "Piazzale Roma is where every car stops. From there, a vaporetto, a water taxi, or your own two feet with the bags.",
+        "If your hotel is on the Grand Canal, a water taxi from the airport dock may suit you better than a road transfer. Ask us and we will say so.",
+        "Mestre is on the mainland, ten minutes from the airport, and half the price of a Venice hotel. Many people stay there without realising it is an option."
+      ],
+      "local": [
+        [
+          "The car stops at Piazzale Roma",
+          "There is no road into Venice proper. Every land vehicle — taxi, bus, private car — ends at the same square. What matters is how far your hotel is from there, and whether you are carrying bags over bridges."
+        ],
+        [
+          "Water taxi or road transfer",
+          "A water taxi from the airport dock costs €120 to €140 and takes thirty minutes to most of the centre. A road transfer to Piazzale Roma costs a fraction of that. Which is better depends entirely on where you are sleeping."
+        ],
+        [
+          "Mestre, and why people stay there",
+          "Ten minutes from the airport, on the mainland, with trains into Venice every ten minutes. Rooms cost half. If you are visiting for three days and not two, the sums usually favour it."
+        ]
+      ],
+      "compare": [
+        ["ATVO bus", "20 min to Piazzale Roma", "€10.00", "Direct and frequent.", "Bags in the hold. Crowded when three flights land together."],
+        ["Water taxi", "30 min to the centre", "€120–140", "Door to door, if your door is on a canal.", "Expensive. Rough in bad weather. Not every hotel has a dock."],
+        ["Alilaguna boat", "70 min to San Marco", "€15.00", "Cheapest way onto the water.", "Slow, with many stops. Luggage space is limited."]
+      ],
+      "destinations": [
+        {
+          "slug": "piazzale-roma",
+          "name": "Venice Piazzale Roma",
+          "km": 13,
+          "minutes": 20,
+          "about": "Thirteen kilometres across the causeway, twenty minutes. This is as close as a car gets to Venice. From Piazzale Roma the vaporetto lines run the length of the Grand Canal, and the People Mover connects to the cruise terminal in three minutes.",
+          "i18n": {
+            "es": { "name": "Venecia Piazzale Roma", "about": "Trece kilómetros por el puente, veinte minutos. Es lo más cerca que un coche llega de Venecia. Desde Piazzale Roma salen los vaporettos por el Gran Canal." },
+            "pt": { "name": "Veneza Piazzale Roma", "about": "Treze quilómetros pela ponte, vinte minutos. É o mais perto que um carro chega de Veneza. De Piazzale Roma partem os vaporettos ao longo do Grande Canal." },
+            "fr": { "name": "Venise Piazzale Roma", "about": "Treize kilomètres par le pont, vingt minutes. C'est au plus près qu'une voiture approche de Venise. De Piazzale Roma partent les vaporettos le long du Grand Canal." }
+          }
+        },
+        {
+          "slug": "mestre",
+          "name": "Mestre",
+          "km": 11,
+          "minutes": 18,
+          "about": "Eleven kilometres, under twenty minutes. Mestre is the mainland half of Venice — ordinary, cheaper, and ten minutes from the island by train. If your hotel is here, the transfer goes to the door rather than to a square.",
+          "i18n": {
+            "es": { "name": "Mestre", "about": "Once kilómetros, menos de veinte minutos. Mestre es la mitad continental de Venecia: normal, más barata, y a diez minutos de la isla en tren." },
+            "pt": { "name": "Mestre", "about": "Onze quilómetros, menos de vinte minutos. Mestre é a metade continental de Veneza: normal, mais barata, e a dez minutos da ilha de comboio." },
+            "fr": { "name": "Mestre", "about": "Onze kilomètres, moins de vingt minutes. Mestre est la moitié continentale de Venise : ordinaire, moins chère, et à dix minutes de l'île en train." }
+          }
+        },
+        {
+          "slug": "padua",
+          "name": "Padua",
+          "km": 46,
+          "minutes": 45,
+          "about": "Forty-six kilometres west, forty-five minutes. Padua has the Scrovegni Chapel and a university older than most countries. It is also a common base for people who find Venice hotels too dear and the trains too crowded.",
+          "i18n": {
+            "es": { "name": "Padua", "about": "Cuarenta y seis kilómetros al oeste, cuarenta y cinco minutos. Padua tiene la Capilla de los Scrovegni y una universidad más antigua que muchos países." },
+            "pt": { "name": "Pádua", "about": "Quarenta e seis quilómetros para oeste, quarenta e cinco minutos. Pádua tem a Capela dos Scrovegni e uma universidade mais antiga do que muitos países." },
+            "fr": { "name": "Padoue", "about": "Quarante-six kilomètres à l'ouest, quarante-cinq minutes. Padoue possède la chapelle des Scrovegni et une université plus ancienne que bien des pays." }
+          }
+        },
+        {
+          "slug": "verona",
+          "name": "Verona",
+          "km": 122,
+          "minutes": 90,
+          "about": "A hundred and twenty-two kilometres west on the A4, an hour and a half. Worth booking rather than training when the Arena season is on and the last train back leaves before the opera ends.",
+          "i18n": {
+            "es": { "name": "Verona", "about": "Ciento veintidós kilómetros al oeste por la A4, hora y media. Merece la pena reservar en temporada de la Arena, cuando el último tren sale antes de que acabe la ópera." },
+            "pt": { "name": "Verona", "about": "Cento e vinte e dois quilómetros para oeste pela A4, hora e meia. Compensa reservar na época da Arena, quando o último comboio parte antes de a ópera acabar." },
+            "fr": { "name": "Vérone", "about": "Cent vingt-deux kilomètres à l'ouest par l'A4, une heure et demie. À réserver pendant la saison des Arènes, quand le dernier train part avant la fin de l'opéra." }
+          }
+        },
+        {
+          "slug": "treviso",
+          "name": "Treviso",
+          "km": 28,
+          "minutes": 30,
+          "about": "Twenty-eight kilometres north, half an hour. Treviso has its own low-cost airport, but people often fly into Marco Polo and travel across. The old centre is walled and partly canalled — quieter than Venice and far cheaper.",
+          "i18n": {
+            "es": { "name": "Treviso", "about": "Veintiocho kilómetros al norte, media hora. Treviso tiene su propio aeropuerto de bajo coste, pero mucha gente llega a Marco Polo y cruza." },
+            "pt": { "name": "Treviso", "about": "Vinte e oito quilómetros para norte, meia hora. Treviso tem aeroporto próprio de baixo custo, mas muita gente chega a Marco Polo e atravessa." },
+            "fr": { "name": "Trévise", "about": "Vingt-huit kilomètres au nord, une demi-heure. Trévise a son propre aéroport low-cost, mais beaucoup atterrissent à Marco Polo et font le trajet." }
+          }
+        }
+      ],
+      "i18n": {
+        "es": { "name": "Aeropuerto de Venecia Marco Polo", "official": "Aeropuerto de Venecia-Marco Polo", "about": "Marco Polo está a trece kilómetros de Venecia, en tierra firme. Ningún coche llega al centro histórico: la carretera termina en Piazzale Roma." },
+        "pt": { "name": "Aeroporto de Veneza Marco Polo", "official": "Aeroporto de Veneza-Marco Polo", "about": "Marco Polo fica a treze quilómetros de Veneza, em terra firme. Nenhum carro chega ao centro histórico: a estrada acaba em Piazzale Roma." },
+        "fr": { "name": "Aéroport de Venise Marco Polo", "official": "Aéroport de Venise-Marco Polo", "about": "Marco Polo se trouve à treize kilomètres de Venise, sur la terre ferme. Aucune voiture n'atteint le centre historique : la route s'arrête à Piazzale Roma." }
+      }
+    },
+
+    {
+      "iata": "FLR",
+      "slug": "florence",
+      "name": "Florence Airport",
+      "official": "Florence Airport, Peretola",
+      "city": "Florence",
+      "image": "florence",
+      "about": "Peretola is six kilometres from the Duomo, which makes it one of the closest city airports in Italy. It is also small, with a single runway that closes in strong crosswinds — diversions to Pisa or Bologna happen a few times a year.",
+      "tips": [
+        "Six kilometres to the centre. Fifteen minutes, twenty-five if the Viale is busy.",
+        "The tram line T2 runs to Santa Maria Novella in twenty minutes for €1.50. It works well if you travel light.",
+        "In fog or high wind the airport diverts to Pisa. If that happens, tell us — we move the pick-up rather than charge you twice."
+      ],
+      "local": [
+        [
+          "The ZTL, and why it matters more here",
+          "Florence's limited-traffic zone covers most of the historic centre and the cameras are unforgiving. Our vehicles are authorised. A hire car is not, and the fine arrives by post six months later."
+        ],
+        [
+          "A small airport that diverts",
+          "One runway, and it points the wrong way for the prevailing wind. Diversions to Pisa are not common but they are not rare either. We track the flight, so a diversion means we meet you where you actually land."
+        ],
+        [
+          "Tuscany starts at the door",
+          "Siena is seventy kilometres, San Gimignano fifty, Chianti begins twenty minutes out. For a day in the hills an hourly booking works better than two transfers — you keep the car and the driver waits."
+        ]
+      ],
+      "compare": [
+        ["Tram T2", "20 min to Santa Maria Novella", "€1.50", "Cheap, frequent, and it avoids the traffic.", "One bag each in practice. Standing room only at peak times."],
+        ["Metered taxi", "15–25 min to the centre", "€22–30", "Short trip, so the meter stays low.", "Queues after each arrival wave. Supplements for bags and evenings."],
+        ["Hire car", "15 min to the centre", "from €35/day", "Freedom to explore Tuscany.", "The ZTL cameras. Parking in Florence costs €30 a day and is hard to find."]
+      ],
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Florence city centre",
+          "km": 6,
+          "minutes": 15,
+          "about": "Six kilometres, fifteen minutes. The centre is a limited-traffic zone with camera enforcement and our vehicles are registered to enter. Give the street and number — many hotels are on streets a car cannot turn into, and the driver needs to know where to stop.",
+          "i18n": {
+            "es": { "name": "Centro de Florencia", "about": "Seis kilómetros, quince minutos. El centro es zona de tráfico limitado con cámaras, y nuestros vehículos están autorizados a entrar." },
+            "pt": { "name": "Centro de Florença", "about": "Seis quilómetros, quinze minutos. O centro é zona de trânsito limitado com câmaras, e os nossos veículos estão autorizados a entrar." },
+            "fr": { "name": "Centre de Florence", "about": "Six kilomètres, quinze minutes. Le centre est une zone à trafic limité sous caméras, et nos véhicules sont autorisés à y entrer." }
+          }
+        },
+        {
+          "slug": "fiesole",
+          "name": "Fiesole",
+          "km": 11,
+          "minutes": 25,
+          "about": "Eleven kilometres, but twenty-five minutes — the road climbs sharply and turns constantly. Fiesole looks down on Florence from three hundred metres up, and the view at sunset is the reason most people go.",
+          "i18n": {
+            "es": { "name": "Fiesole", "about": "Once kilómetros, pero veinticinco minutos: la carretera sube con fuerza y no deja de girar. Fiesole mira a Florencia desde trescientos metros de altura." },
+            "pt": { "name": "Fiesole", "about": "Onze quilómetros, mas vinte e cinco minutos — a estrada sobe muito e não para de curvar. Fiesole olha Florença de trezentos metros de altura." },
+            "fr": { "name": "Fiesole", "about": "Onze kilomètres, mais vingt-cinq minutes : la route grimpe fort et tourne sans cesse. Fiesole domine Florence de trois cents mètres." }
+          }
+        },
+        {
+          "slug": "siena",
+          "name": "Siena",
+          "km": 72,
+          "minutes": 70,
+          "about": "Seventy-two kilometres south through Chianti, an hour and ten. The old town is closed to traffic and built on three ridges — the drop-off point matters, because the walk from the wrong gate to the Campo is steep and long.",
+          "i18n": {
+            "es": { "name": "Siena", "about": "Setenta y dos kilómetros al sur por el Chianti, una hora y diez. El casco antiguo está cerrado al tráfico y construido sobre tres colinas." },
+            "pt": { "name": "Siena", "about": "Setenta e dois quilómetros para sul pelo Chianti, uma hora e dez. O centro antigo está fechado ao trânsito e construído sobre três colinas." },
+            "fr": { "name": "Sienne", "about": "Soixante-douze kilomètres au sud par le Chianti, une heure dix. La vieille ville est fermée à la circulation et bâtie sur trois collines." }
+          }
+        },
+        {
+          "slug": "pisa",
+          "name": "Pisa",
+          "km": 86,
+          "minutes": 75,
+          "about": "Eighty-six kilometres west, an hour and a quarter. Pisa has its own airport, and if your onward flight leaves from there this transfer is the usual way across. The tower and the cathedral are in one square, twenty minutes from the station.",
+          "i18n": {
+            "es": { "name": "Pisa", "about": "Ochenta y seis kilómetros al oeste, hora y cuarto. Pisa tiene aeropuerto propio, y si tu vuelo de salida sale de allí este traslado es el camino habitual." },
+            "pt": { "name": "Pisa", "about": "Oitenta e seis quilómetros para oeste, hora e um quarto. Pisa tem aeroporto próprio, e se o seu voo seguinte parte de lá este transfer é o caminho habitual." },
+            "fr": { "name": "Pise", "about": "Quatre-vingt-six kilomètres à l'ouest, une heure et quart. Pise a son propre aéroport, et si votre vol de départ part de là, ce transfert est le trajet habituel." }
+          }
+        },
+        {
+          "slug": "lucca",
+          "name": "Lucca",
+          "km": 78,
+          "minutes": 70,
+          "about": "Seventy-eight kilometres north-west, an hour and ten. Lucca is walled and the walls are intact — you can cycle the whole circuit. Cars stop outside the gates, which is a short walk from anywhere inside.",
+          "i18n": {
+            "es": { "name": "Lucca", "about": "Setenta y ocho kilómetros al noroeste, una hora y diez. Lucca está amurallada y las murallas siguen enteras: se pueden recorrer en bici." },
+            "pt": { "name": "Lucca", "about": "Setenta e oito quilómetros para noroeste, uma hora e dez. Lucca é murada e as muralhas estão inteiras: dá para as percorrer de bicicleta." },
+            "fr": { "name": "Lucques", "about": "Soixante-dix-huit kilomètres au nord-ouest, une heure dix. Lucques est fortifiée et ses remparts sont intacts : on peut en faire le tour à vélo." }
+          }
+        }
+      ],
+      "i18n": {
+        "es": { "name": "Aeropuerto de Florencia", "official": "Aeropuerto de Florencia-Peretola", "about": "Peretola está a seis kilómetros del Duomo, uno de los aeropuertos urbanos más cercanos de Italia. También es pequeño, con una sola pista." },
+        "pt": { "name": "Aeroporto de Florença", "official": "Aeroporto de Florença-Peretola", "about": "Peretola fica a seis quilómetros do Duomo, um dos aeroportos urbanos mais próximos de Itália. É também pequeno, com uma só pista." },
+        "fr": { "name": "Aéroport de Florence", "official": "Aéroport de Florence-Peretola", "about": "Peretola est à six kilomètres du Duomo, l'un des aéroports urbains les plus proches d'Italie. Il est aussi petit, avec une seule piste." }
+      }
+    },
+
+    {
+      "iata": "BLQ",
+      "slug": "bologna",
+      "name": "Bologna Airport",
+      "official": "Bologna Guglielmo Marconi Airport",
+      "city": "Bologna",
+      "image": "bologna",
+      "about": "Marconi is six kilometres from the centre, connected by an elevated monorail that opened in 2020. Bologna is also the junction of Italy's rail network, which makes the airport a common arrival point for people going somewhere else entirely.",
+      "tips": [
+        "The Marconi Express monorail runs to the central station in seven minutes, every seven minutes, for €11.",
+        "Bologna Centrale is the crossroads of Italian rail. Florence is thirty-five minutes, Milan an hour, Venice ninety minutes.",
+        "The centre has forty kilometres of covered arcades. It rains in Emilia and nobody carries an umbrella."
+      ],
+      "local": [
+        [
+          "A hub for somewhere else",
+          "A lot of people land at Bologna and leave immediately — for Florence, for Rimini, for the Adriatic coast. The airport is well placed for it, and a transfer beats a train when there are three of you with cases."
+        ],
+        [
+          "The motor valley",
+          "Ferrari at Maranello, Lamborghini at Sant'Agata, Ducati in the city. All within an hour, all doable in a day with a car and a driver who knows the roads."
+        ],
+        [
+          "Fiera district and the trade fairs",
+          "Cosmoprof, Cersaie, Motor Show. During fair weeks the hotels fill for forty kilometres around and the taxi queue at the airport runs long. Book ahead in those weeks."
+        ]
+      ],
+      "compare": [
+        ["Marconi Express", "7 min to Centrale", "€11.00", "Fast and immune to traffic.", "Ends at the station. A second journey from there, usually."],
+        ["Metered taxi", "20 min to the centre", "€20–25", "Short trip and a modest fare.", "Queues at peak arrival times. Supplements after 22:00."],
+        ["Bus 944", "30 min to the centre", "€1.50", "Cheapest by far.", "Infrequent. Not designed for luggage."]
+      ],
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Bologna city centre",
+          "km": 10,
+          "minutes": 20,
+          "about": "Ten kilometres, twenty minutes. The centre is a limited-traffic zone and the arcaded streets are narrow — the driver takes you to the door, but the door may be on a street where stopping is a matter of seconds rather than minutes.",
+          "i18n": {
+            "es": { "name": "Centro de Bolonia", "about": "Diez kilómetros, veinte minutos. El centro es zona de tráfico limitado y las calles porticadas son estrechas." },
+            "pt": { "name": "Centro de Bolonha", "about": "Dez quilómetros, vinte minutos. O centro é zona de trânsito limitado e as ruas com arcadas são estreitas." },
+            "fr": { "name": "Centre de Bologne", "about": "Dix kilomètres, vingt minutes. Le centre est une zone à trafic limité et les rues à arcades sont étroites." }
+          }
+        },
+        {
+          "slug": "modena",
+          "name": "Modena",
+          "km": 54,
+          "minutes": 45,
+          "about": "Fifty-four kilometres west, forty-five minutes. Modena is balsamic vinegar, Ferrari and one of the finest restaurants in the world. The Enzo Ferrari museum is in the town; the Maranello factory is another twenty minutes south.",
+          "i18n": {
+            "es": { "name": "Módena", "about": "Cincuenta y cuatro kilómetros al oeste, cuarenta y cinco minutos. Módena es vinagre balsámico, Ferrari y uno de los mejores restaurantes del mundo." },
+            "pt": { "name": "Módena", "about": "Cinquenta e quatro quilómetros para oeste, quarenta e cinco minutos. Módena é vinagre balsâmico, Ferrari e um dos melhores restaurantes do mundo." },
+            "fr": { "name": "Modène", "about": "Cinquante-quatre kilomètres à l'ouest, quarante-cinq minutes. Modène, c'est le vinaigre balsamique, Ferrari et l'un des meilleurs restaurants du monde." }
+          }
+        },
+        {
+          "slug": "ferrara",
+          "name": "Ferrara",
+          "km": 52,
+          "minutes": 45,
+          "about": "Fifty-two kilometres north-east, forty-five minutes. A Renaissance town that stayed intact, with a moated castle in the middle of it and more bicycles than cars. Flat, walkable, and rarely crowded.",
+          "i18n": {
+            "es": { "name": "Ferrara", "about": "Cincuenta y dos kilómetros al noreste, cuarenta y cinco minutos. Una ciudad renacentista intacta, con un castillo rodeado de foso y más bicicletas que coches." },
+            "pt": { "name": "Ferrara", "about": "Cinquenta e dois quilómetros para nordeste, quarenta e cinco minutos. Uma cidade renascentista intacta, com um castelo rodeado de fosso e mais bicicletas do que carros." },
+            "fr": { "name": "Ferrare", "about": "Cinquante-deux kilomètres au nord-est, quarante-cinq minutes. Une ville Renaissance intacte, avec un château entouré de douves et plus de vélos que de voitures." }
+          }
+        },
+        {
+          "slug": "rimini",
+          "name": "Rimini",
+          "km": 120,
+          "minutes": 90,
+          "about": "A hundred and twenty kilometres south-east to the Adriatic, an hour and a half. Rimini is fifteen kilometres of beach and the gateway to San Marino. In August the coast road slows considerably — the motorway is the better run.",
+          "i18n": {
+            "es": { "name": "Rímini", "about": "Ciento veinte kilómetros al sureste hacia el Adriático, hora y media. Rímini son quince kilómetros de playa y la puerta a San Marino." },
+            "pt": { "name": "Rimini", "about": "Cento e vinte quilómetros para sudeste até ao Adriático, hora e meia. Rimini são quinze quilómetros de praia e a porta para São Marinho." },
+            "fr": { "name": "Rimini", "about": "Cent vingt kilomètres au sud-est vers l'Adriatique, une heure et demie. Rimini, c'est quinze kilomètres de plage et la porte de Saint-Marin." }
+          }
+        },
+        {
+          "slug": "florence",
+          "name": "Florence",
+          "km": 115,
+          "minutes": 80,
+          "about": "A hundred and fifteen kilometres south over the Apennines, an hour and twenty. The A1 climbs and tunnels the whole way. The train does it in thirty-five minutes, so this transfer makes sense for luggage, groups, or arrivals after the last service.",
+          "i18n": {
+            "es": { "name": "Florencia", "about": "Ciento quince kilómetros al sur cruzando los Apeninos, una hora y veinte. El tren tarda treinta y cinco minutos, así que este traslado tiene sentido con equipaje o en grupo." },
+            "pt": { "name": "Florença", "about": "Cento e quinze quilómetros para sul pelos Apeninos, uma hora e vinte. O comboio faz em trinta e cinco minutos, por isso este transfer faz sentido com bagagem ou em grupo." },
+            "fr": { "name": "Florence", "about": "Cent quinze kilomètres au sud à travers les Apennins, une heure vingt. Le train met trente-cinq minutes : ce transfert se justifie avec des bagages ou en groupe." }
+          }
+        }
+      ],
+      "i18n": {
+        "es": { "name": "Aeropuerto de Bolonia", "official": "Aeropuerto de Bolonia-Guglielmo Marconi", "about": "Marconi está a seis kilómetros del centro, conectado por un monorraíl elevado. Bolonia es además el nudo ferroviario de Italia." },
+        "pt": { "name": "Aeroporto de Bolonha", "official": "Aeroporto de Bolonha-Guglielmo Marconi", "about": "Marconi fica a seis quilómetros do centro, ligado por um monocarril elevado. Bolonha é também o nó ferroviário de Itália." },
+        "fr": { "name": "Aéroport de Bologne", "official": "Aéroport de Bologne-Guglielmo Marconi", "about": "Marconi est à six kilomètres du centre, relié par un monorail aérien. Bologne est aussi le nœud ferroviaire de l'Italie." }
+      }
+    },
+
+    {
+      "iata": "NAP",
+      "slug": "naples",
+      "name": "Naples Airport",
+      "official": "Naples International Airport",
+      "city": "Naples",
+      "image": "naples",
+      "about": "Capodichino sits inside the city, six kilometres from the port. That is unusual and convenient, but it also means the road out is city traffic from the first metre — twelve kilometres to the centre can take forty minutes.",
+      "tips": [
+        "The airport is in the city, not outside it. There is no motorway stretch to make up time.",
+        "For the Amalfi Coast, the road narrows past Sorrento and buses cannot pass each other in places. Allow more time than a map suggests.",
+        "The Alibus to the port and Piazza Garibaldi costs €5 and takes twenty-five minutes."
+      ],
+      "local": [
+        [
+          "City traffic from the gate",
+          "Capodichino has no ring road. Every journey starts in Naples traffic, which is dense and improvisational. Our price is fixed; the taxi meter is not, and the difference shows on a bad day."
+        ],
+        [
+          "The Amalfi Coast road",
+          "Beautiful, and slow. The stretch from Sorrento to Positano is single-lane in places with buses coming the other way. Ninety minutes is realistic for a journey a map calls sixty."
+        ],
+        [
+          "Pompeii and Herculaneum",
+          "Pompeii is twenty-eight kilometres, Herculaneum fifteen. Both are on the Circumvesuviana line, which is cheap and often unpleasant with luggage. For a family, the car wins."
+        ]
+      ],
+      "compare": [
+        ["Alibus", "25 min to the port", "€5.00", "Direct, and it serves both the station and the port.", "Two stops only. Crowded and slow in traffic."],
+        ["Metered taxi", "30–45 min to the centre", "€25–35", "Fixed fares exist for some destinations.", "The fixed list is not well advertised. Ask before setting off."],
+        ["Circumvesuviana", "35 min to Pompeii", "€2.80", "The cheapest way to the ruins.", "No airport station. Crowded, hot, and hard with bags."]
+      ],
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Naples city centre",
+          "km": 12,
+          "minutes": 25,
+          "about": "Twelve kilometres, but twenty-five to forty minutes depending on the hour. The historic centre is a UNESCO site with streets built for carts — the driver gets as close as the street allows, and tells you where that is before you set off.",
+          "i18n": {
+            "es": { "name": "Centro de Nápoles", "about": "Doce kilómetros, pero entre veinticinco y cuarenta minutos según la hora. El centro histórico tiene calles hechas para carros." },
+            "pt": { "name": "Centro de Nápoles", "about": "Doze quilómetros, mas entre vinte e cinco e quarenta minutos conforme a hora. O centro histórico tem ruas feitas para carroças." },
+            "fr": { "name": "Centre de Naples", "about": "Douze kilomètres, mais de vingt-cinq à quarante minutes selon l'heure. Le centre historique a des rues faites pour des charrettes." }
+          }
+        },
+        {
+          "slug": "pompeii",
+          "name": "Pompeii",
+          "km": 28,
+          "minutes": 35,
+          "about": "Twenty-eight kilometres south-east, thirty-five minutes. The site has three entrances and they are a kilometre apart — Porta Marina for the main route, Piazza Anfiteatro for the quieter one. Say which you want and the driver takes you there.",
+          "i18n": {
+            "es": { "name": "Pompeya", "about": "Veintiocho kilómetros al sureste, treinta y cinco minutos. El yacimiento tiene tres entradas separadas por un kilómetro: Porta Marina para la ruta principal." },
+            "pt": { "name": "Pompeia", "about": "Vinte e oito quilómetros para sudeste, trinta e cinco minutos. O sítio tem três entradas a um quilómetro umas das outras: a Porta Marina para o percurso principal." },
+            "fr": { "name": "Pompéi", "about": "Vingt-huit kilomètres au sud-est, trente-cinq minutes. Le site a trois entrées distantes d'un kilomètre : Porta Marina pour le parcours principal." }
+          }
+        },
+        {
+          "slug": "sorrento",
+          "name": "Sorrento",
+          "km": 63,
+          "minutes": 70,
+          "about": "Sixty-three kilometres around the bay, an hour and ten. The last twenty kilometres are the slow part — the coast road is narrow and busy from June to September. Sorrento is also the ferry port for Capri.",
+          "i18n": {
+            "es": { "name": "Sorrento", "about": "Sesenta y tres kilómetros bordeando la bahía, una hora y diez. Los últimos veinte kilómetros son los lentos: la carretera de la costa es estrecha." },
+            "pt": { "name": "Sorrento", "about": "Sessenta e três quilómetros a contornar a baía, uma hora e dez. Os últimos vinte quilómetros são os lentos: a estrada da costa é estreita." },
+            "fr": { "name": "Sorrente", "about": "Soixante-trois kilomètres autour de la baie, une heure dix. Les vingt derniers kilomètres sont les plus lents : la route côtière est étroite." }
+          }
+        },
+        {
+          "slug": "salerno",
+          "name": "Salerno",
+          "km": 76,
+          "minutes": 60,
+          "about": "Seventy-six kilometres south on the motorway, an hour. Salerno is the eastern gateway to the Amalfi Coast and the ferry port for Amalfi and Positano in summer — often faster than the coast road, and considerably calmer.",
+          "i18n": {
+            "es": { "name": "Salerno", "about": "Setenta y seis kilómetros al sur por autopista, una hora. Salerno es la puerta oriental a la Costa Amalfitana y el puerto de ferry en verano." },
+            "pt": { "name": "Salerno", "about": "Setenta e seis quilómetros para sul pela autoestrada, uma hora. Salerno é a porta oriental da Costa Amalfitana e o porto de ferry no verão." },
+            "fr": { "name": "Salerne", "about": "Soixante-seize kilomètres au sud par l'autoroute, une heure. Salerne est la porte orientale de la côte amalfitaine et le port de ferry en été." }
+          }
+        },
+        {
+          "slug": "amalfi",
+          "name": "Amalfi",
+          "km": 80,
+          "minutes": 90,
+          "about": "Eighty kilometres, and an hour and a half — the distance is short and the road is the reason. Hairpins, buses, and no overtaking for the last thirty kilometres. Worth every minute, and worth booking a driver who has done it before.",
+          "i18n": {
+            "es": { "name": "Amalfi", "about": "Ochenta kilómetros, y hora y media: la distancia es corta y la culpa es de la carretera. Curvas cerradas, autobuses y nada de adelantar en los últimos treinta kilómetros." },
+            "pt": { "name": "Amalfi", "about": "Oitenta quilómetros, e hora e meia — a distância é curta e a culpa é da estrada. Curvas apertadas, autocarros, e nada de ultrapassar nos últimos trinta quilómetros." },
+            "fr": { "name": "Amalfi", "about": "Quatre-vingts kilomètres, et une heure et demie : la distance est courte, c'est la route qui est en cause. Épingles, autocars et aucun dépassement sur les trente derniers kilomètres." }
+          }
+        }
+      ],
+      "i18n": {
+        "es": { "name": "Aeropuerto de Nápoles", "official": "Aeropuerto Internacional de Nápoles", "about": "Capodichino está dentro de la ciudad, a seis kilómetros del puerto. Es cómodo, pero también significa tráfico urbano desde el primer metro." },
+        "pt": { "name": "Aeroporto de Nápoles", "official": "Aeroporto Internacional de Nápoles", "about": "Capodichino fica dentro da cidade, a seis quilómetros do porto. É cómodo, mas significa também trânsito urbano desde o primeiro metro." },
+        "fr": { "name": "Aéroport de Naples", "official": "Aéroport international de Naples", "about": "Capodichino se trouve dans la ville, à six kilomètres du port. C'est pratique, mais cela signifie aussi de la circulation urbaine dès le premier mètre." }
+      }
+    },
+
+    {
+      "iata": "PMO",
+      "slug": "palermo",
+      "name": "Palermo Airport",
+      "official": "Falcone Borsellino Airport",
+      "city": "Palermo",
+      "image": "palermo",
+      "about": "Punta Raisi sits on a strip of land between the mountains and the sea, thirty-five kilometres west of Palermo. The approach is spectacular and the drive in follows the coast most of the way.",
+      "tips": [
+        "Thirty-five kilometres to the city, about forty minutes on the A29.",
+        "The Trinacria Express train runs to Palermo Centrale in an hour, but only once or twice an hour.",
+        "For Cefalù or the west coast, going straight from the airport saves doubling back through the city."
+      ],
+      "local": [
+        [
+          "The coast road, and the motorway",
+          "The A29 runs inland and is quick. The old coast road through Isola delle Femmine is slower and much better looking. Tell the driver if you would rather see it — the fare is the same."
+        ],
+        [
+          "Cefalù without going through Palermo",
+          "Eighty-five kilometres east, and the route bypasses the city entirely. A transfer straight from the airport saves an hour against going in and out again."
+        ],
+        [
+          "The temples at Agrigento",
+          "A hundred and thirty kilometres south, two hours across the middle of the island. Long, but the Valley of the Temples is one of the great Greek sites and the road there is empty."
+        ]
+      ],
+      "compare": [
+        ["Trinacria Express", "60 min to Centrale", "€6.50", "Cheap, and it avoids the motorway.", "One or two an hour. Slow, and the station is not central for most hotels."],
+        ["Prestia e Comandè bus", "50 min to the centre", "€6.30", "Frequent and direct.", "Bags in the hold. Three stops, none of them your hotel."],
+        ["Metered taxi", "40–50 min to the centre", "€45–55", "Available at all hours.", "No fixed fare. Expect the higher end at night and on Sundays."]
+      ],
+      "destinations": [
+        {
+          "slug": "city-centre",
+          "name": "Palermo city centre",
+          "km": 35,
+          "minutes": 40,
+          "about": "Thirty-five kilometres on the A29, forty minutes. The historic centre is dense and the streets around the Vucciria and Ballarò markets are barely wide enough for a car — the driver will say where the nearest stopping point is.",
+          "i18n": {
+            "es": { "name": "Centro de Palermo", "about": "Treinta y cinco kilómetros por la A29, cuarenta minutos. El centro histórico es denso y las calles junto a los mercados apenas dan para un coche." },
+            "pt": { "name": "Centro de Palermo", "about": "Trinta e cinco quilómetros pela A29, quarenta minutos. O centro histórico é denso e as ruas junto aos mercados mal dão para um carro." },
+            "fr": { "name": "Centre de Palerme", "about": "Trente-cinq kilomètres par l'A29, quarante minutes. Le centre historique est dense et les rues autour des marchés font à peine la largeur d'une voiture." }
+          }
+        },
+        {
+          "slug": "mondello",
+          "name": "Mondello",
+          "km": 23,
+          "minutes": 30,
+          "about": "Twenty-three kilometres, half an hour. Mondello is Palermo's beach — a crescent of white sand under Monte Pellegrino, with art nouveau villas behind it. In August the road in queues from midday.",
+          "i18n": {
+            "es": { "name": "Mondello", "about": "Veintitrés kilómetros, media hora. Mondello es la playa de Palermo: una media luna de arena blanca bajo el Monte Pellegrino." },
+            "pt": { "name": "Mondello", "about": "Vinte e três quilómetros, meia hora. Mondello é a praia de Palermo: uma meia-lua de areia branca sob o Monte Pellegrino." },
+            "fr": { "name": "Mondello", "about": "Vingt-trois kilomètres, une demi-heure. Mondello est la plage de Palerme : un croissant de sable blanc sous le Monte Pellegrino." }
+          }
+        },
+        {
+          "slug": "cefalu",
+          "name": "Cefalù",
+          "km": 85,
+          "minutes": 70,
+          "about": "Eighty-five kilometres east along the coast, an hour and ten. The route bypasses Palermo entirely, which saves an hour against going in and out. The old town is closed to traffic and the drop-off is at the edge of it.",
+          "i18n": {
+            "es": { "name": "Cefalù", "about": "Ochenta y cinco kilómetros al este por la costa, una hora y diez. La ruta evita Palermo, lo que ahorra una hora frente a entrar y salir." },
+            "pt": { "name": "Cefalù", "about": "Oitenta e cinco quilómetros para leste pela costa, uma hora e dez. O caminho evita Palermo, o que poupa uma hora face a entrar e sair." },
+            "fr": { "name": "Cefalù", "about": "Quatre-vingt-cinq kilomètres à l'est le long de la côte, une heure dix. L'itinéraire évite Palerme, ce qui fait gagner une heure." }
+          }
+        },
+        {
+          "slug": "trapani",
+          "name": "Trapani",
+          "km": 95,
+          "minutes": 75,
+          "about": "Ninety-five kilometres west, an hour and a quarter. Trapani is the port for the Egadi islands and the salt pans stretch along the coast south of it. Erice, the medieval town on the mountain above, is another twenty minutes up.",
+          "i18n": {
+            "es": { "name": "Trapani", "about": "Noventa y cinco kilómetros al oeste, hora y cuarto. Trapani es el puerto de las islas Égadas y las salinas se extienden por la costa al sur." },
+            "pt": { "name": "Trapani", "about": "Noventa e cinco quilómetros para oeste, hora e um quarto. Trapani é o porto das ilhas Égadas e as salinas estendem-se pela costa a sul." },
+            "fr": { "name": "Trapani", "about": "Quatre-vingt-quinze kilomètres à l'ouest, une heure et quart. Trapani est le port des îles Égades et les salines s'étendent sur la côte au sud." }
+          }
+        },
+        {
+          "slug": "agrigento",
+          "name": "Agrigento",
+          "km": 130,
+          "minutes": 110,
+          "about": "A hundred and thirty kilometres south, nearly two hours across the middle of Sicily. The Valley of the Temples is the reason to go — seven Doric temples in a row, better preserved than most of what stands in Greece.",
+          "i18n": {
+            "es": { "name": "Agrigento", "about": "Ciento treinta kilómetros al sur, casi dos horas cruzando Sicilia. El Valle de los Templos es el motivo: siete templos dóricos en fila." },
+            "pt": { "name": "Agrigento", "about": "Cento e trinta quilómetros para sul, quase duas horas a atravessar a Sicília. O Vale dos Templos é a razão: sete templos dóricos em fila." },
+            "fr": { "name": "Agrigente", "about": "Cent trente kilomètres au sud, près de deux heures à traverser la Sicile. La Vallée des Temples en est la raison : sept temples doriques alignés." }
+          }
+        }
+      ],
+      "i18n": {
+        "es": { "name": "Aeropuerto de Palermo", "official": "Aeropuerto Falcone-Borsellino", "about": "Punta Raisi está sobre una franja de tierra entre las montañas y el mar, a treinta y cinco kilómetros al oeste de Palermo." },
+        "pt": { "name": "Aeroporto de Palermo", "official": "Aeroporto Falcone-Borsellino", "about": "Punta Raisi fica sobre uma faixa de terra entre as montanhas e o mar, a trinta e cinco quilómetros a oeste de Palermo." },
+        "fr": { "name": "Aéroport de Palerme", "official": "Aéroport Falcone-Borsellino", "about": "Punta Raisi occupe une bande de terre entre les montagnes et la mer, à trente-cinq kilomètres à l'ouest de Palerme." }
+      }
+    }
+  ]
+}
