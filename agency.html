@@ -1347,8 +1347,15 @@ async function enviarMensagem() {
 $('agChatClose').addEventListener('click', async function () {
   if (!chat) return;
 
+  /**
+   * 'resolved' e não 'closed'.
+   *
+   * A support_chats nasceu antes deste trabalho e só aceita open,
+   * pending e resolved. Gravar 'closed' dá erro de restrição — e o
+   * botão não fazia nada sem dizer porquê.
+   */
   await db.from('support_chats')
-    .update({ status: 'closed', closed_at: new Date().toISOString(),
+    .update({ status: 'resolved', closed_at: new Date().toISOString(),
               closed_reason: 'partner_closed' })
     .eq('id', chat.chat_id || chat.id);
 
