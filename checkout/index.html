@@ -375,6 +375,31 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
           <span class="hint">The driver calls or messages this number on the day.</span>
           <span class="err" data-i18n="co.errPhone">We need a number the driver can reach on the day.</span>
         </div>
+
+        <!-- O idioma, opcional.
+             É o melhor sinal que existe para escolher o motorista:
+             uma viagem com alguém que fala a nossa língua é outra
+             viagem. Opcional porque cada campo obrigatório a mais
+             perde vendas — e quem não responder recebe um motorista
+             na mesma. -->
+        <div class="f wide" id="langField">
+          <label for="prefLang">Preferred language <span class="opt">optional</span></label>
+          <select id="prefLang">
+            <option value="">No preference</option>
+            <option value="en">English</option>
+            <option value="pt">Português</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="nl">Nederlands</option>
+            <option value="pl">Polski</option>
+            <option value="ru">Русский</option>
+            <option value="ar">العربية</option>
+            <option value="zh">中文</option>
+          </select>
+          <span class="hint">We send a driver who speaks it when there is one.</span>
+        </div>
       </div>
     </section>
 
@@ -943,6 +968,10 @@ async function pagar() {
     // A classe escolhida. O servidor aplica o multiplicador dela —
     // sem isto, o Premium Sedan era cobrado ao preço do Sedan.
     vehicle_class: trip.vehicle,
+
+    // O idioma preferido, se o disseram. É o critério que mais
+    // pesa na escolha do motorista.
+    preferred_language: ($('prefLang') && $('prefLang').value) || null,
 
     flight_number: ($('flight') && $('flight').value.trim()) || '',
     notes: ($('notes') && $('notes').value.trim()) || '',
