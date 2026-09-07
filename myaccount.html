@@ -278,6 +278,32 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
   .trip-meta-grid{grid-template-columns:1fr}
   .receipt-grid{grid-template-columns:1fr}
 }
+
+/* ---------- alterar a reserva ----------
+   Dois campos por linha nos curtos, largura toda nas moradas.
+   Um formulário que se preenche com o polegar. */
+.ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ch-f{display:flex;flex-direction:column;gap:5px}
+.ch-f.wide{grid-column:1 / -1}
+
+.ch-f label{font-size:12.5px;font-weight:600;color:var(--muted)}
+.ch-f input{padding:10px 12px;border-radius:10px;
+  border:1px solid var(--rule);background:var(--card);
+  font-family:inherit;font-size:15px;color:var(--text);width:100%}
+.ch-f input:focus{outline:none;border-color:var(--teal);
+  box-shadow:0 0 0 3px rgba(13,148,136,.13)}
+
+/* O botão de alterar vem antes do de cancelar e com mais peso: a
+   maior parte de quem cancela queria mudar alguma coisa. */
+.change-btn{display:inline-block;margin-right:8px;padding:9px 15px;
+  border-radius:10px;border:none;background:var(--teal);color:#fff;
+  font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
+.change-btn:hover{filter:brightness(1.06)}
+
+@media (max-width:520px){
+  .ch-grid{grid-template-columns:1fr}
+  .change-btn{display:block;width:100%;margin:0 0 8px}
+}
 </style>
 </head>
 <body data-cta-href="/" data-cta-label="Book a transfer">
@@ -532,6 +558,80 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
   </div>
 </div></div>
 
+<!-- ============ ALTERAR A RESERVA ============
+     A janela é a mesma do cancelamento: 24 horas. Uma regra só, e
+     a mesma para toda a gente.
+
+     Só os campos que o cliente pode mesmo mudar. O preço é
+     recalculado no servidor — o que aqui se escreve é um pedido,
+     não um valor. -->
+<div class="modal-overlay" id="changeModal" hidden>
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Change your booking</h3>
+      <button class="modal-x" id="changeCloseBtn" type="button" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <p class="sub" id="changeSummary" style="margin-bottom:16px;"></p>
+
+      <div class="ch-grid">
+        <div class="ch-f">
+          <label for="chDate">Date</label>
+          <input type="date" id="chDate">
+        </div>
+
+        <div class="ch-f">
+          <label for="chTime">Pick-up time</label>
+          <input type="time" id="chTime">
+        </div>
+
+        <div class="ch-f">
+          <label for="chPax">Passengers</label>
+          <input type="number" id="chPax" min="1" max="16">
+        </div>
+
+        <div class="ch-f">
+          <label for="chFlight">Flight number</label>
+          <input type="text" id="chFlight" placeholder="TP1234" maxlength="10">
+        </div>
+
+        <div class="ch-f wide">
+          <label for="chPickup">Pick-up address</label>
+          <input type="text" id="chPickup">
+        </div>
+
+        <div class="ch-f wide">
+          <label for="chDropoff">Drop-off address</label>
+          <input type="text" id="chDropoff">
+        </div>
+
+        <div class="ch-f wide">
+          <label for="chPhone">Phone</label>
+          <input type="tel" id="chPhone">
+        </div>
+      </div>
+
+      <!-- O aviso do preço.
+           Mudar a morada ou os passageiros muda o preço, e o
+           cliente tem de saber isso ANTES de carregar em guardar.
+           Descobri-lo no extrato é uma reclamação. -->
+      <p class="sub" style="margin-top:16px;">
+        Changing the address or the number of passengers may change the price.
+        If it goes up we charge the difference to the card you booked with;
+        if it goes down we refund it.
+      </p>
+
+      <div id="changeError" class="msg err"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button id="changeDismissBtn" class="btn btn-secondary" type="button">Never mind</button>
+      <button id="changeSaveBtn" class="btn" type="button">Save changes</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /** A tradução, com o inglês como rede. */
 var T = function (k, en) { return (window.i18n ? window.i18n.t(k, en) : en); };
@@ -677,6 +777,150 @@ function canCancel(trip) {
 
   var h = hoursUntilPickup(trip);
   return isFinite(h) && h >= FREE_CANCELLATION_HOURS;
+}
+
+/**
+ * Ainda dá para alterar?
+ *
+ * Vinte e quatro horas. Uma regra só, e a mesma para toda a gente —
+ * três janelas com regras diferentes seriam mais justas e ninguém
+ * as leria.
+ */
+// ============================================================
+// ALTERAR A RESERVA
+//
+// A maior parte de quem cancela não queria cancelar — queria mudar
+// a hora, ou o voo. Dar-lhes essa opção é a diferença entre perder
+// o cliente e mudar-lhe a viagem.
+// ============================================================
+var changingKey = null;
+
+function openChange(key) {
+  var trip = tripsByKey[key];
+  if (!trip) return;
+
+  changingKey = key;
+
+  $('changeSummary').textContent =
+    (trip.pickup || '') + ' to ' + (trip.dropoff || '');
+
+  // Os campos começam com o que lá está: o cliente muda o que
+  // quer e deixa o resto.
+  $('chDate').value = trip.booking_date || '';
+  $('chTime').value = (trip.booking_time || '').slice(0, 5);
+  $('chPax').value = trip.passengers || 1;
+  $('chFlight').value = trip.flight_number || '';
+  $('chPickup').value = trip.pickup || '';
+  $('chDropoff').value = trip.dropoff || '';
+  $('chPhone').value = trip.passenger_phone || trip.phone_number || '';
+
+  // Uma data no passado não faz sentido, e o browser recusa-a
+  // sozinho.
+  $('chDate').min = new Date().toISOString().slice(0, 10);
+
+  $('changeError').style.display = 'none';
+  $('changeModal').hidden = false;
+}
+
+function closeChange() {
+  $('changeModal').hidden = true;
+  changingKey = null;
+}
+
+async function saveChange() {
+  var trip = tripsByKey[changingKey];
+  if (!trip) return;
+
+  var btn = $('changeSaveBtn');
+
+  /**
+   * Só o que MUDOU vai para o servidor.
+   *
+   * Mandar tudo faria o servidor pensar que a morada mudou sempre
+   * que se altera a hora — e medir a rota outra vez custa uma
+   * chamada paga ao Google por cada alteração.
+   */
+  var changes = {};
+
+  var campos = [
+    ['chDate', 'booking_date', trip.booking_date],
+    ['chTime', 'booking_time', (trip.booking_time || '').slice(0, 5)],
+    ['chPax', 'passengers', String(trip.passengers || 1)],
+    ['chFlight', 'flight_number', trip.flight_number || ''],
+    ['chPickup', 'pickup', trip.pickup || ''],
+    ['chDropoff', 'dropoff', trip.dropoff || ''],
+    ['chPhone', 'passenger_phone', trip.passenger_phone || trip.phone_number || '']
+  ];
+
+  campos.forEach(function (c) {
+    var novo = ($(c[0]).value || '').trim();
+    if (novo !== String(c[2] || '').trim()) changes[c[1]] = novo;
+  });
+
+  if (!Object.keys(changes).length) {
+    return closeChange();
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  $('changeError').style.display = 'none';
+
+  try {
+    var sessionRes = await supabaseClient.auth.getSession();
+    var token = sessionRes.data && sessionRes.data.session
+      && sessionRes.data.session.access_token;
+
+    if (!token) throw new Error('Your session expired. Please sign in again.');
+
+    var res = await fetch(RENDER_URL + '/api/booking/change', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ booking_id: trip.id, changes: changes })
+    });
+
+    var data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || 'We could not change it.');
+
+    closeChange();
+
+    /**
+     * A diferença, dita depois de guardar.
+     *
+     * Antes seria uma estimativa — o preço só se sabe depois de o
+     * servidor medir a rota. Dizer um número que depois muda é
+     * pior do que não dizer nada.
+     */
+    if (data.price_difference > 0.5) {
+      alert('Changed. The price went up by ' +
+        data.price_difference.toFixed(2) +
+        ' — we have charged the difference to your card.');
+    } else if (data.price_difference < -0.5) {
+      alert('Changed. The price went down by ' +
+        Math.abs(data.price_difference).toFixed(2) +
+        ' — we are refunding the difference.');
+    }
+
+    await loadTrips();
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Save changes';
+    $('changeError').textContent = e.message;
+    $('changeError').style.display = 'block';
+  }
+}
+
+function canChange(trip) {
+  if (!trip) return false;
+
+  var st = normalizeStatus(trip.status);
+  if (st === 'cancelled' || st === 'completed') return false;
+
+  var h = hoursUntilPickup(trip);
+  return isFinite(h) && h >= 24;
 }
 
 function paymentLine(trip) {
@@ -874,7 +1118,22 @@ function renderTripCard(trip, key, type) {
     } else if (canCancel(trip)) {
       // Sem contagem decrescente: um relógio a correr ao lado do botão
       // convida a cancelar. A política está explicada no separador Help.
-      actions = '<button class="cancel-btn" data-cancel-key="' + esc(key) + '" type="button">' +
+      /**
+       * Alterar antes de cancelar.
+       *
+       * A maior parte de quem cancela não queria cancelar — queria
+       * mudar a hora, ou o voo. Pôr o "change" primeiro e com mais
+       * peso visual é a diferença entre perder o cliente e mudar-lhe
+       * a viagem.
+       *
+       * A janela é a mesma do cancelamento: 24 horas.
+       */
+      actions =
+        (canChange(trip)
+          ? '<button class="change-btn" data-change-key="' + esc(key) +
+            '" type="button">Change this booking</button>'
+          : '') +
+        '<button class="cancel-btn" data-cancel-key="' + esc(key) + '" type="button">' +
         (notYetCharged(trip) ? 'Cancel booking' : 'Cancel and refund') + '</button>';
     } else {
       actions = '<div class="cancel-info">This trip can no longer be cancelled online. Contact support if you need help.</div>';
@@ -934,8 +1193,18 @@ document.addEventListener('click', function (e) {
   if (cancelBtn) {
     var c = tripsByKey[cancelBtn.getAttribute('data-cancel-key')];
     if (c) openCancelModal(c, cancelBtn);
+    return;
+  }
+
+  var changeBtn = e.target.closest('[data-change-key]');
+  if (changeBtn) {
+    openChange(changeBtn.getAttribute('data-change-key'));
   }
 });
+
+$('changeCloseBtn').addEventListener('click', closeChange);
+$('changeDismissBtn').addEventListener('click', closeChange);
+$('changeSaveBtn').addEventListener('click', saveChange);
 
 function renderList(container, trips, type, emptyText) {
   if (!trips || !trips.length) {
