@@ -1709,11 +1709,40 @@ function setupAutocomplete(inputId, boxId, type) {
 
 function selectPrediction(placeId, description, type) {
   window.placesService.getDetails({
-    placeId, fields: ['name', 'formatted_address', 'geometry', 'place_id']
+    /**
+     * Os TYPES vêm com o resto.
+     *
+     * O Google sabe o que cada sítio é — airport, lodging,
+     * train_station — e diz-nos aqui de graça, no momento em que
+     * há mais informação disponível.
+     *
+     * Guardar isso vale mais do que qualquer lista de aeroportos
+     * nossa: funciona no mundo inteiro desde o primeiro dia, e se
+     * um aeroporto abrir amanhã o Google já sabe.
+     *
+     * Sem isto, o sistema tinha de adivinhar o tipo comparando o
+     * texto da morada contra uma lista — e adivinhar mal significa
+     * dar 15 minutos de espera a quem devia ter 60.
+     */
+    placeId, fields: ['name', 'formatted_address', 'geometry', 'place_id', 'types']
   }, function (place, status) {
     if (status !== google.maps.places.PlacesServiceStatus.OK || !place || !place.geometry) return;
 
-    var data = { fullDescription: description, placeId: place.place_id || placeId };
+    var data = {
+      fullDescription: description,
+      placeId: place.place_id || placeId,
+
+      /**
+       * O tipo, reduzido ao que nos interessa.
+       *
+       * O Google devolve uma lista — ["airport", "point_of_interest",
+       * "establishment"] — e só a primeira palavra importa. Guardar
+       * a lista inteira seria guardar ruído.
+       */
+      placeType: (place.types || []).indexOf('airport') >= 0
+        ? 'airport'
+        : (place.types || [])[0] || null
+    };
 
     if (type === 'pickup') { pickupPlace = data; $('pickup').value = description; }
     else if (type === 'dropoff') { dropoffPlace = data; $('dropoff').value = description; }
@@ -2450,6 +2479,18 @@ $('proceedBtn').addEventListener('click', function () {
     time: $('travelTime').value || '12:00',
     pax: String(Math.max(1, Math.min(16, parseInt($('passengers').value, 10) || 1)))
   });
+
+  /**
+   * O tipo do local de recolha segue.
+   *
+   * É o Google que sabe se aquilo é um aeroporto, e sabe-o agora.
+   * Adivinhá-lo depois, comparando o texto da morada contra uma
+   * lista, é adivinhação — e adivinhar mal significa dar 15 minutos
+   * de espera a quem devia ter 60.
+   */
+  if (pickupPlace && pickupPlace.placeType) {
+    q.set('ptype', pickupPlace.placeType);
+  }
 
   // Os quilometros ja medidos seguem: /booking/ reaproveita-os em vez
   // de pagar ao Google uma segunda medicao da mesma rota.
