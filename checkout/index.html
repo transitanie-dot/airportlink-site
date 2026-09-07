@@ -798,6 +798,16 @@ var payMode = 'later';
   trip.pax = Math.min(16, Math.max(1, Number(q.get('pax')) || 2));
   trip.vehicle = CLASSES[q.get('vehicle')] ? q.get('vehicle') : 'sedan';
   trip.km = Number(q.get('km')) || 0;
+
+  /**
+   * O tipo do local de recolha, dito pelo Google.
+   *
+   * Decide o tempo de espera grátis: 60 minutos num aeroporto, 15
+   * numa morada. Guardado na reserva em vez de adivinhado depois —
+   * comparar texto de moradas contra uma lista de aeroportos é
+   * adivinhação, e funciona mal fora dos países que já lançámos.
+   */
+  trip.pickupType = q.get('ptype') || null;
   trip.returnDate = q.get('return_date') || '';
   trip.returnTime = q.get('return_time') || '';
 })();
@@ -981,6 +991,7 @@ async function pagar() {
     // O idioma preferido, se o disseram. É o critério que mais
     // pesa na escolha do motorista.
     preferred_language: ($('prefLang') && $('prefLang').value) || null,
+    pickup_type: trip.pickupType,
 
     flight_number: ($('flight') && $('flight').value.trim()) || '',
     notes: ($('notes') && $('notes').value.trim()) || '',
