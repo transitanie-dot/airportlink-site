@@ -219,15 +219,34 @@ svg.map{display:block;width:100%;height:auto}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<!--
+  A configuração vem do servidor, não daqui.
+
+  A chave estava escrita nesta página, e isso obriga a republicar o
+  site sempre que ela muda. Quando o Supabase mudou o formato das
+  chaves, a página ficou com uma antiga e respondia "Invalid API
+  key" sem dizer porquê.
+-->
+<script src="https://airportlink.onrender.com/api/maps/config.js"></script>
+
 <script>
 (function () {
 'use strict';
 
-var SUPABASE_URL = 'https://ujpagsccfiledbtfeyuq.supabase.co';
-var SUPABASE_ANON = 'sb_publishable_1Oc8DziBDPMs0MAyzXQeAA_qRIT7YRC';
-var API = 'https://airportlink.onrender.com';
+var CFG = window.MAP_CFG || {};
 
-var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+var API = CFG.apiUrl || 'https://airportlink.onrender.com';
+
+if (!CFG.supabaseUrl || !CFG.supabaseAnonKey) {
+  document.getElementById('gateErr').textContent =
+    'The server did not send the sign-in settings. ' +
+    'Check SUPABASE_URL and SUPABASE_ANON_KEY on Render.';
+  document.getElementById('gateErr').style.display = 'block';
+  return;
+}
+
+var db = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey);
 
 var $ = function (id) { return document.getElementById(id); };
 var qsa = function (s) {
