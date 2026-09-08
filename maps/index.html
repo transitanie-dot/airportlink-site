@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Coverage map · Airportlink</title>
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+
+<style>
+/* ============================================================
+   O MAPA
+
+   Ecrã inteiro. Um mapa numa caixa de trezentos píxeis não mostra
+   nada — a única razão para o fazer era caber num painel que já
+   estava cheio.
+   ============================================================ */
+:root{
+  --bg:#FAFAF8; --card:#FFFFFF; --card-2:#F4F4F1;
+  --text:#1A1A17; --muted:#6B6B63;
+  --border:#E4E4DE; --border-soft:#EFEFEA;
+  --teal:#0D9488;
+  --ok:#16A34A; --warn:#CA8A04; --bad:#DC2626;
+  --mono:ui-monospace,'SF Mono',Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif;
+}
+
+[data-theme="dark"]{
+  --bg:#0F1115; --card:#171A20; --card-2:#1E222A;
+  --text:#F0F0EC; --muted:#9A9A93;
+  --border:#282D36; --border-soft:#21252C;
+}
+
+*{box-sizing:border-box}
+
+body{margin:0;font-family:var(--sans);background:var(--bg);
+  color:var(--text);-webkit-font-smoothing:antialiased}
+
+/* ---------- o cabeçalho ---------- */
+.top{display:flex;align-items:center;gap:16px;padding:14px 22px;
+  border-bottom:1px solid var(--border);background:var(--card);
+  position:sticky;top:0;z-index:10;flex-wrap:wrap}
+
+.top h1{margin:0;font-size:17px;font-weight:600}
+.top .sub{margin:0;font-size:12.5px;color:var(--muted)}
+
+.spacer{flex:1 1 auto}
+
+.btn{padding:7px 14px;border-radius:9px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);font-family:inherit;
+  font-size:12.5px;font-weight:600;cursor:pointer}
+.btn:hover{color:var(--text)}
+.btn.on{background:var(--text);color:var(--card);border-color:var(--text)}
+
+/* ---------- os números ---------- */
+.stats{display:flex;gap:22px;padding:16px 22px;flex-wrap:wrap;
+  border-bottom:1px solid var(--border);background:var(--card)}
+
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat b{font-family:var(--mono);font-size:22px;font-weight:600}
+.stat span{font-size:11.5px;color:var(--muted)}
+
+/* O que não se serve destaca-se: é o número que decide onde
+   recrutar. */
+.stat.hot b{color:var(--bad)}
+
+/* ---------- as camadas ---------- */
+.layers{display:flex;gap:8px;padding:14px 22px;flex-wrap:wrap;
+  border-bottom:1px solid var(--border)}
+
+/* ---------- o mapa ---------- */
+.map-wrap{position:relative;background:var(--card-2)}
+
+svg.map{display:block;width:100%;height:auto}
+
+.land{fill:var(--border);opacity:.5}
+[data-theme="dark"] .land{opacity:.35}
+
+.dot{cursor:pointer;stroke:var(--card-2);stroke-width:1.5;
+  transition:opacity .15s}
+.dot:hover{stroke:var(--text);stroke-width:2}
+.dot.full{fill:var(--ok)}
+.dot.partial{fill:var(--warn)}
+.dot.none{fill:var(--bad)}
+
+/* As reservas: azul, e por baixo dos pontos de cobertura. */
+.bk{fill:#2563EB;opacity:.28;pointer-events:none}
+.bk.hot{fill:var(--bad);opacity:.35}
+
+/* Os parceiros: um anel, para se ver a cobertura por baixo. */
+.pt{fill:none;stroke:var(--teal);stroke-width:2;opacity:.7;
+  pointer-events:none}
+
+/* ---------- a caixa de informação ---------- */
+.tip{position:absolute;background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:12px 15px;font-size:13px;min-width:200px;
+  box-shadow:0 12px 32px rgba(0,0,0,.14);pointer-events:none;z-index:5}
+.tip[hidden]{display:none}
+.tip h4{margin:0 0 6px;font-size:14px}
+.tip .row{display:flex;justify-content:space-between;gap:14px;
+  padding:2px 0;color:var(--muted)}
+.tip .row b{color:var(--text)}
+.tip .miss{margin-top:7px;padding-top:7px;
+  border-top:1px solid var(--border-soft);color:var(--bad);
+  font-weight:600;font-size:12.5px}
+
+/* ---------- a lista ---------- */
+.list{padding:20px 22px 60px}
+.list h2{margin:0 0 4px;font-size:15px}
+.list .sub{margin:0 0 14px;font-size:12.5px;color:var(--muted)}
+
+.rows{border:1px solid var(--border);border-radius:14px;overflow:hidden}
+
+.row{display:flex;align-items:center;gap:12px;padding:11px 16px;
+  background:var(--card);font-size:13.5px}
+.row + .row{border-top:1px solid var(--border-soft)}
+
+.pip{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.pip.full{background:var(--ok)}
+.pip.partial{background:var(--warn)}
+.pip.none{background:var(--bad)}
+
+.row b{flex:0 0 auto;min-width:130px}
+.row .cars{color:var(--muted);flex:1 1 auto;font-size:12.5px}
+.row .dem{font-family:var(--mono);font-size:12px;font-weight:600;
+  color:var(--bad)}
+.row .dem.quiet{color:var(--muted);font-weight:400}
+
+/* ---------- o portão ---------- */
+.gate{max-width:380px;margin:80px auto;padding:28px;
+  background:var(--card);border:1px solid var(--border);border-radius:18px}
+.gate h1{margin:0 0 6px;font-size:19px}
+.gate p{margin:0 0 18px;font-size:13.5px;color:var(--muted);line-height:1.5}
+
+.gate input{width:100%;padding:11px 14px;margin-bottom:10px;
+  border:1px solid var(--border);border-radius:10px;
+  background:var(--card-2);font-family:inherit;font-size:15px;
+  color:var(--text)}
+.gate input:focus{outline:none;border-color:var(--teal)}
+
+.gate button{width:100%;padding:11px;border:none;border-radius:10px;
+  background:var(--teal);color:#fff;font-family:inherit;font-size:14px;
+  font-weight:600;cursor:pointer}
+
+.err{margin-top:12px;padding:10px 13px;border-radius:9px;
+  background:rgba(220,38,38,.1);color:var(--bad);font-size:13px;
+  display:none}
+
+@media (max-width:640px){
+  .top,.stats,.layers,.list{padding-left:14px;padding-right:14px}
+  .stats{gap:16px}
+  .stat b{font-size:18px}
+  .row{flex-wrap:wrap}
+  .row b{min-width:0}
+  .row .cars{flex:1 1 100%;order:3}
+}
+</style>
+</head>
+<body>
+
+<!-- O portão. Aparece até haver sessão de administrador. -->
+<div class="gate" id="gate">
+  <h1>Coverage map</h1>
+  <p>This shows where we can operate and where we cannot.
+     Administrator sign-in required.</p>
+
+  <input type="email" id="email" placeholder="Email" autocomplete="username">
+  <input type="password" id="pass" placeholder="Password"
+         autocomplete="current-password">
+  <button id="signIn" type="button">Sign in</button>
+
+  <div class="err" id="gateErr"></div>
+</div>
+
+
+<div id="app" hidden>
+
+  <div class="top">
+    <div>
+      <h1>Coverage map</h1>
+      <p class="sub" id="asOf"></p>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- O filtro por classe.
+         Uma zona com quatro sedans e nenhuma van fica verde nos
+         sedans e vermelha nas vans. É assim que se vê o que falta
+         onde. -->
+    <button class="btn on" data-class="all" type="button">All</button>
+    <button class="btn" data-class="sedan" type="button">Sedans</button>
+    <button class="btn" data-class="van" type="button">Vans</button>
+
+    <button class="btn" id="theme" type="button">Dark</button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <!-- As camadas. Sobrepostas, respondem à pergunta que interessa:
+       onde há procura sem quem a sirva. -->
+  <div class="layers">
+    <button class="btn on" data-layer="coverage" type="button">Coverage</button>
+    <button class="btn on" data-layer="bookings" type="button">Bookings</button>
+    <button class="btn" data-layer="partners" type="button">Partners</button>
+  </div>
+
+  <div class="map-wrap">
+    <svg id="map" class="map" viewBox="0 0 1200 620"></svg>
+    <div class="tip" id="tip" hidden></div>
+  </div>
+
+  <div class="list">
+    <h2>Where to recruit next</h2>
+    <p class="sub">Zones without full coverage, ordered by the demand
+       we are losing.</p>
+    <div class="rows" id="rows"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(function () {
+'use strict';
+
+var SUPABASE_URL = 'https://ujpagsccfiledbtfeyuq.supabase.co';
+var SUPABASE_ANON = 'sb_publishable_1Oc8DziBDPMs0MAyzXQeAA_qRIT7YRC';
+var API = 'https://airportlink.onrender.com';
+
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+var $ = function (id) { return document.getElementById(id); };
+var qsa = function (s) {
+  return Array.prototype.slice.call(document.querySelectorAll(s));
+};
+
+function esc(v) {
+  return String(v == null ? '' : v)
+    .replace(/[&<>"']/g, function (c) {
+      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+    });
+}
+
+var dados = null;
+var classe = 'all';
+var camadas = { coverage: true, bookings: true, partners: false };
+
+
+// ============================================================
+// O PORTÃO
+// ============================================================
+
+async function verSessao() {
+  var s = await db.auth.getSession();
+  if (s.data && s.data.session) return carregar();
+}
+
+$('signIn').addEventListener('click', async function () {
+  var b = $('signIn');
+  b.disabled = true;
+  b.textContent = 'Signing in...';
+  $('gateErr').style.display = 'none';
+
+  try {
+    var r = await db.auth.signInWithPassword({
+      email: $('email').value.trim(),
+      password: $('pass').value
+    });
+
+    if (r.error) throw new Error(r.error.message);
+
+    await carregar();
+  } catch (e) {
+    $('gateErr').textContent = e.message;
+    $('gateErr').style.display = 'block';
+    b.disabled = false;
+    b.textContent = 'Sign in';
+  }
+});
+
+// Enter entra: um formulário de duas linhas não devia obrigar a
+// procurar o botão.
+['email', 'pass'].forEach(function (id) {
+  $(id).addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') $('signIn').click();
+  });
+});
+
+
+async function carregar() {
+  try {
+    var s = await db.auth.getSession();
+    var token = s.data && s.data.session && s.data.session.access_token;
+
+    if (!token) throw new Error('Sign in again.');
+
+    var res = await fetch(API + '/api/maps/data', {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+
+    var d = await res.json();
+
+    if (!res.ok) throw new Error(d.error || 'Could not load the map.');
+
+    dados = d;
+
+    $('gate').hidden = true;
+    $('app').hidden = false;
+
+    desenhar();
+  } catch (e) {
+    $('gateErr').textContent = e.message;
+    $('gateErr').style.display = 'block';
+    $('signIn').disabled = false;
+    $('signIn').textContent = 'Sign in';
+  }
+}
+
+
+// ============================================================
+// O MAPA
+//
+// Sem bibliotecas: uma projeção de Mercator cabe em cinco linhas,
+// e um mapa de pontos não precisa de mais. Uma biblioteca de mapas
+// são 200 KB para desenhar sessenta círculos.
+// ============================================================
+
+var L = 1200, A = 620;
+
+/**
+ * Latitude e longitude para píxeis.
+ *
+ * Mercator, cortado nos 72º norte e 55º sul — acima e abaixo disso
+ * não há aeroportos nossos, e incluir a Antártida esmagaria a
+ * Europa a metade do tamanho.
+ */
+function proj(lat, lng) {
+  var x = (Number(lng) + 180) / 360 * L;
+
+  var r = Number(lat) * Math.PI / 180;
+  var m = Math.log(Math.tan(Math.PI / 4 + r / 2));
+
+  var cima = Math.log(Math.tan(Math.PI / 4 + (72 * Math.PI / 180) / 2));
+  var baixo = Math.log(Math.tan(Math.PI / 4 + (-55 * Math.PI / 180) / 2));
+
+  return { x: x, y: A - ((m - baixo) / (cima - baixo)) * A };
+}
+
+/**
+ * O contorno dos continentes.
+ *
+ * Não é cartografia — é um pano de fundo para os pontos se
+ * situarem. Uma pessoa reconhece a Europa e a América do Sul, e
+ * isso chega para saber onde está a olhar.
+ */
+var MUNDO =
+  'M560,105 L625,92 L672,112 L690,158 L672,200 L625,218 L588,242 ' +
+  'L560,278 L528,300 L504,275 L516,228 L540,192 L546,140 Z ' +
+  'M690,112 L840,92 L960,120 L1032,168 L1056,228 L1008,276 L936,288 ' +
+  'L864,258 L792,228 L720,192 L694,150 Z ' +
+  'M564,282 L636,270 L684,300 L696,372 L666,444 L612,474 L570,444 ' +
+  'L546,372 L552,318 Z ' +
+  'M144,96 L300,84 L372,120 L360,180 L312,228 L264,258 L228,306 ' +
+  'L198,276 L180,216 L144,168 Z ' +
+  'M300,318 L366,306 L396,360 L384,444 L348,504 L318,474 L300,408 Z ' +
+  'M972,384 L1056,378 L1080,426 L1038,468 L984,450 L966,414 Z';
+
+
+function corDe(z) {
+  if (classe === 'sedan') {
+    return z.sedans >= 2 ? 'full' : (z.sedans > 0 ? 'partial' : 'none');
+  }
+
+  if (classe === 'van') {
+    return z.vans >= 2 ? 'full' : (z.vans > 0 ? 'partial' : 'none');
+  }
+
+  return z.status || 'none';
+}
+
+
+function desenhar() {
+  var cob = dados.coverage || [];
+  var res = dados.bookings || [];
+  var par = dados.partners || [];
+  var t = dados.totals || {};
+
+  // ---------- os números ----------
+  var contagens = {
+    full: cob.filter(function (z) { return corDe(z) === 'full'; }).length,
+    partial: cob.filter(function (z) { return corDe(z) === 'partial'; }).length,
+    none: cob.filter(function (z) { return corDe(z) === 'none'; }).length
+  };
+
+  $('stats').innerHTML =
+    stat(contagens.full, 'covered') +
+    stat(contagens.partial, 'partial') +
+    stat(contagens.none, 'empty') +
+    stat(t.bookings_90d || 0, 'bookings, 90 days') +
+    stat(t.demand_uncovered || 0, 'of those where we are not covered', true);
+
+  $('asOf').textContent = dados.generated_at
+    ? 'As of ' + new Date(dados.generated_at).toLocaleString('en-GB', {
+        day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+      })
+    : '';
+
+  // ---------- o mapa ----------
+  var svg = '<path class="land" d="' + MUNDO + '"/>';
+
+  /**
+   * A ordem das camadas importa.
+   *
+   * As reservas por baixo, grandes e translúcidas: são a procura,
+   * o contexto. A cobertura por cima, pequena e sólida: é a
+   * resposta. Os anéis dos parceiros a fechar.
+   *
+   * Ao contrário, os pontos de cobertura desapareciam debaixo das
+   * manchas azuis.
+   */
+  if (camadas.bookings) {
+    svg += res.map(function (b) {
+      var p = proj(b.lat, b.lng);
+      var r = Math.min(30, 6 + Math.sqrt(Number(b.total || 0)) * 3.2);
+
+      // Vermelho quando há reservas por atribuir: é procura que
+      // não se está a servir.
+      var quente = Number(b.unassigned || 0) > 0;
+
+      return '<circle class="bk' + (quente ? ' hot' : '') + '" cx="' +
+        p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="' +
+        r.toFixed(1) + '"/>';
+    }).join('');
+  }
+
+  if (camadas.partners) {
+    svg += par.map(function (x) {
+      var p = proj(x.lat, x.lng);
+      var r = 9 + Math.min(12, Number(x.partners || 0) * 3);
+
+      return '<circle class="pt" cx="' + p.x.toFixed(1) + '" cy="' +
+        p.y.toFixed(1) + '" r="' + r.toFixed(1) + '"/>';
+    }).join('');
+  }
+
+  if (camadas.coverage) {
+    svg += cob.map(function (z) {
+      var p = proj(z.lat, z.lng);
+
+      return '<circle class="dot ' + corDe(z) + '" cx="' + p.x.toFixed(1) +
+        '" cy="' + p.y.toFixed(1) + '" r="6" data-iata="' +
+        esc(z.iata) + '"/>';
+    }).join('');
+  }
+
+  $('map').innerHTML = svg;
+
+  // ---------- a caixa ao passar ----------
+  qsa('#map [data-iata]').forEach(function (c) {
+    c.addEventListener('mouseenter', function (e) { mostrarCaixa(e, c); });
+    c.addEventListener('mouseleave', function () { $('tip').hidden = true; });
+
+    // No telemóvel não há mouseenter.
+    c.addEventListener('click', function (e) { mostrarCaixa(e, c); });
+  });
+
+  pintarLista();
+}
+
+
+function stat(n, texto, quente) {
+  return '<div class="stat' + (quente ? ' hot' : '') + '">' +
+    '<b>' + esc(n) + '</b><span>' + esc(texto) + '</span></div>';
+}
+
+
+function mostrarCaixa(e, alvo) {
+  var iata = alvo.getAttribute('data-iata');
+
+  var z = (dados.coverage || []).find(function (x) { return x.iata === iata; });
+  if (!z) return;
+
+  var b = (dados.bookings || []).find(function (x) { return x.iata === iata; });
+  var p = (dados.partners || []).find(function (x) { return x.iata === iata; });
+
+  var linhas =
+    '<h4>' + esc(z.city || z.iata) + '</h4>' +
+    linha('Sedans', z.sedans) +
+    linha('Vans', z.vans) +
+    linha('Drivers', z.drivers) +
+    linha('Partners', (p && p.partners) || 0);
+
+  if (b) {
+    linhas += linha('Bookings, 90d', b.total);
+
+    if (b.unassigned) {
+      linhas += linha('Never assigned', b.unassigned);
+    }
+  }
+
+  if (z.missing && z.missing.trim()) {
+    linhas += '<div class="miss">Needs ' + esc(z.missing.trim()) + '</div>';
+  }
+
+  var tip = $('tip');
+  tip.innerHTML = linhas;
+  tip.hidden = false;
+
+  // Ao lado do ponto, e dentro do ecrã.
+  var caixa = $('map').getBoundingClientRect();
+  var ponto = alvo.getBoundingClientRect();
+
+  var x = ponto.left - caixa.left + 16;
+  var y = ponto.top - caixa.top - 10;
+
+  if (x + 230 > caixa.width) x = ponto.left - caixa.left - 230;
+
+  tip.style.left = Math.max(8, x) + 'px';
+  tip.style.top = Math.max(8, y) + 'px';
+}
+
+function linha(k, v) {
+  return '<div class="row"><span>' + esc(k) + '</span><b>' +
+    esc(v == null ? 0 : v) + '</b></div>';
+}
+
+
+/**
+ * A lista, por procura.
+ *
+ * O mapa mostra onde. A lista diz por onde começar — e ordená-la
+ * por reservas perdidas é a diferença entre recrutar onde faz
+ * falta e recrutar onde é fácil.
+ */
+function pintarLista() {
+  var res = dados.bookings || [];
+
+  var precisam = (dados.coverage || [])
+    .filter(function (z) { return corDe(z) !== 'full'; })
+    .map(function (z) {
+      var b = res.find(function (x) { return x.iata === z.iata; });
+      return Object.assign({}, z, { demand: (b && b.total) || 0 });
+    })
+    .sort(function (a, b) { return b.demand - a.demand; })
+    .slice(0, 20);
+
+  if (!precisam.length) {
+    $('rows').innerHTML =
+      '<div class="row">Every zone has two sedans and two vans.</div>';
+    return;
+  }
+
+  $('rows').innerHTML = precisam.map(function (z) {
+    return '<div class="row">' +
+      '<span class="pip ' + corDe(z) + '"></span>' +
+      '<b>' + esc(z.city || z.iata) + '</b>' +
+      '<span class="cars">' + esc(z.sedans) + ' sedan · ' +
+        esc(z.vans) + ' van · ' + esc(z.drivers) + ' drivers</span>' +
+      (z.demand
+        ? '<span class="dem">' + esc(z.demand) + ' bookings</span>'
+        : '<span class="dem quiet">no demand yet</span>') +
+      '</div>';
+  }).join('');
+}
+
+
+// ============================================================
+// OS BOTÕES
+// ============================================================
+
+qsa('[data-class]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    classe = b.getAttribute('data-class');
+
+    qsa('[data-class]').forEach(function (x) {
+      x.classList.toggle('on', x === b);
+    });
+
+    desenhar();
+  });
+});
+
+qsa('[data-layer]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var k = b.getAttribute('data-layer');
+    camadas[k] = !camadas[k];
+    b.classList.toggle('on', camadas[k]);
+    desenhar();
+  });
+});
+
+$('theme').addEventListener('click', function () {
+  var escuro = document.documentElement.getAttribute('data-theme') === 'dark';
+
+  document.documentElement.setAttribute('data-theme', escuro ? 'light' : 'dark');
+  $('theme').textContent = escuro ? 'Dark' : 'Light';
+});
+
+verSessao();
+
+})();
+</script>
+</body>
+</html>
