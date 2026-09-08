@@ -4,16 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Coverage map · Airportlink</title>
+<title>Coverage · Airportlink</title>
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 
 <style>
 /* ============================================================
-   O MAPA
+   ONDE PODEMOS OPERAR
 
-   Ecrã inteiro. Um mapa numa caixa de trezentos píxeis não mostra
-   nada — a única razão para o fazer era caber num painel que já
-   estava cheio.
+   A primeira versão era um mapa mundial com 801 pontos. Não se
+   lia: tudo tinha o mesmo peso visual, e um aeroporto com dez
+   reservas parecia igual a um onde nunca ninguém reservou.
+
+   Com três parceiros e trinta reservas, o que interessa cabe numa
+   lista de dez linhas. O mapa fica como apoio, para se ver onde as
+   coisas estão.
    ============================================================ */
 :root{
   --bg:#FAFAF8; --card:#FFFFFF; --card-2:#F4F4F1;
@@ -34,85 +38,43 @@
 *{box-sizing:border-box}
 
 body{margin:0;font-family:var(--sans);background:var(--bg);
-  color:var(--text);-webkit-font-smoothing:antialiased}
+  color:var(--text);-webkit-font-smoothing:antialiased;
+  font-size:15px;line-height:1.5}
+
+.wrap{max-width:820px;margin:0 auto;padding:0 20px 80px}
 
 /* ---------- o cabeçalho ---------- */
-.top{display:flex;align-items:center;gap:16px;padding:14px 22px;
-  border-bottom:1px solid var(--border);background:var(--card);
-  position:sticky;top:0;z-index:10;flex-wrap:wrap}
+.top{display:flex;align-items:baseline;gap:14px;padding:26px 0 20px;
+  flex-wrap:wrap}
+.top h1{margin:0;font-size:21px;font-weight:600}
+.top .when{font-size:12.5px;color:var(--muted)}
+.grow{flex:1 1 auto}
 
-.top h1{margin:0;font-size:17px;font-weight:600}
-.top .sub{margin:0;font-size:12.5px;color:var(--muted)}
-
-.spacer{flex:1 1 auto}
-
-.btn{padding:7px 14px;border-radius:9px;border:1px solid var(--border);
+.btn{padding:6px 13px;border-radius:9px;border:1px solid var(--border);
   background:transparent;color:var(--muted);font-family:inherit;
   font-size:12.5px;font-weight:600;cursor:pointer}
 .btn:hover{color:var(--text)}
 .btn.on{background:var(--text);color:var(--card);border-color:var(--text)}
 
-/* ---------- os números ---------- */
-.stats{display:flex;gap:22px;padding:16px 22px;flex-wrap:wrap;
-  border-bottom:1px solid var(--border);background:var(--card)}
+/* ---------- a frase que resume ----------
+   Um número sozinho não decide nada. Uma frase decide. */
+.lede{margin:0 0 26px;padding:18px 20px;border-radius:14px;
+  background:var(--card);border:1px solid var(--border);
+  font-size:16px;line-height:1.6}
+.lede b{font-weight:600}
+.lede .big{font-family:var(--mono);font-size:19px;font-weight:600}
+.lede .bad{color:var(--bad)}
+.lede .ok{color:var(--ok)}
 
-.stat{display:flex;flex-direction:column;gap:2px}
-.stat b{font-family:var(--mono);font-size:22px;font-weight:600}
-.stat span{font-size:11.5px;color:var(--muted)}
-
-/* O que não se serve destaca-se: é o número que decide onde
-   recrutar. */
-.stat.hot b{color:var(--bad)}
-
-/* ---------- as camadas ---------- */
-.layers{display:flex;gap:8px;padding:14px 22px;flex-wrap:wrap;
-  border-bottom:1px solid var(--border)}
-
-/* ---------- o mapa ---------- */
-.map-wrap{position:relative;background:var(--card-2)}
-
-svg.map{display:block;width:100%;height:auto}
-
-.land{fill:var(--border);opacity:.5}
-[data-theme="dark"] .land{opacity:.35}
-
-.dot{cursor:pointer;stroke:var(--card-2);stroke-width:1.5;
-  transition:opacity .15s}
-.dot:hover{stroke:var(--text);stroke-width:2}
-.dot.full{fill:var(--ok)}
-.dot.partial{fill:var(--warn)}
-.dot.none{fill:var(--bad)}
-
-/* As reservas: azul, e por baixo dos pontos de cobertura. */
-.bk{fill:#2563EB;opacity:.28;pointer-events:none}
-.bk.hot{fill:var(--bad);opacity:.35}
-
-/* Os parceiros: um anel, para se ver a cobertura por baixo. */
-.pt{fill:none;stroke:var(--teal);stroke-width:2;opacity:.7;
-  pointer-events:none}
-
-/* ---------- a caixa de informação ---------- */
-.tip{position:absolute;background:var(--card);border:1px solid var(--border);
-  border-radius:12px;padding:12px 15px;font-size:13px;min-width:200px;
-  box-shadow:0 12px 32px rgba(0,0,0,.14);pointer-events:none;z-index:5}
-.tip[hidden]{display:none}
-.tip h4{margin:0 0 6px;font-size:14px}
-.tip .row{display:flex;justify-content:space-between;gap:14px;
-  padding:2px 0;color:var(--muted)}
-.tip .row b{color:var(--text)}
-.tip .miss{margin-top:7px;padding-top:7px;
-  border-top:1px solid var(--border-soft);color:var(--bad);
-  font-weight:600;font-size:12.5px}
-
-/* ---------- a lista ---------- */
-.list{padding:20px 22px 60px}
-.list h2{margin:0 0 4px;font-size:15px}
-.list .sub{margin:0 0 14px;font-size:12.5px;color:var(--muted)}
+/* ---------- a lista, que é o principal ---------- */
+h2{margin:30px 0 4px;font-size:15px;font-weight:600}
+h2 + .sub{margin:0 0 14px;font-size:13px;color:var(--muted)}
 
 .rows{border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.rows:empty{display:none}
 
-.row{display:flex;align-items:center;gap:12px;padding:11px 16px;
-  background:var(--card);font-size:13.5px}
+.row{display:flex;align-items:center;gap:12px;padding:13px 16px;
+  background:var(--card);font-size:14px}
 .row + .row{border-top:1px solid var(--border-soft)}
 
 .pip{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
@@ -120,17 +82,54 @@ svg.map{display:block;width:100%;height:auto}
 .pip.partial{background:var(--warn)}
 .pip.none{background:var(--bad)}
 
-.row b{flex:0 0 auto;min-width:130px}
-.row .cars{color:var(--muted);flex:1 1 auto;font-size:12.5px}
-.row .dem{font-family:var(--mono);font-size:12px;font-weight:600;
-  color:var(--bad)}
-.row .dem.quiet{color:var(--muted);font-weight:400}
+.row .place{flex:1 1 auto;min-width:0}
+.row .place b{display:block;font-weight:600}
+.row .place span{font-size:12.5px;color:var(--muted)}
+
+/* O que falta, em palavras. É o que se leva para a conversa com
+   um parceiro novo. */
+.need{font-size:12.5px;color:var(--bad);font-weight:600;
+  flex:0 0 auto;text-align:right}
+.need.ok{color:var(--ok)}
+
+.dem{font-family:var(--mono);font-size:13px;font-weight:600;
+  flex:0 0 auto;min-width:66px;text-align:right}
+.dem span{display:block;font-family:var(--sans);font-size:11px;
+  font-weight:400;color:var(--muted)}
+
+.empty{padding:20px;text-align:center;color:var(--muted);font-size:14px;
+  background:var(--card);border:1px solid var(--border);border-radius:14px}
+
+/* ---------- o mapa, em baixo e recolhido ----------
+   Serve para ver ONDE as coisas estão. A lista já disse o quê. */
+.map-head{display:flex;align-items:center;gap:10px;margin:30px 0 12px}
+.map-head h2{margin:0}
+
+.regions{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.regions .btn{padding:5px 11px;font-size:12px}
+
+.map-box{border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;background:var(--card-2)}
+
+svg.map{display:block;width:100%;height:auto}
+
+.land{fill:var(--border);opacity:.55}
+[data-theme="dark"] .land{opacity:.32}
+
+.dot{stroke:var(--card-2);stroke-width:1.2}
+.dot.full{fill:var(--ok)}
+.dot.partial{fill:var(--warn)}
+.dot.none{fill:var(--bad);opacity:.35}
+
+/* Os que têm procura destacam-se: são os que interessam. */
+.dot.hasdemand{opacity:1;stroke-width:2;stroke:var(--card)}
+[data-theme="dark"] .dot.hasdemand{stroke:var(--card-2)}
 
 /* ---------- o portão ---------- */
-.gate{max-width:380px;margin:80px auto;padding:28px;
+.gate{max-width:360px;margin:90px auto;padding:28px;
   background:var(--card);border:1px solid var(--border);border-radius:18px}
 .gate h1{margin:0 0 6px;font-size:19px}
-.gate p{margin:0 0 18px;font-size:13.5px;color:var(--muted);line-height:1.5}
+.gate p{margin:0 0 18px;font-size:13.5px;color:var(--muted)}
 
 .gate input{width:100%;padding:11px 14px;margin-bottom:10px;
   border:1px solid var(--border);border-radius:10px;
@@ -146,22 +145,19 @@ svg.map{display:block;width:100%;height:auto}
   background:rgba(220,38,38,.1);color:var(--bad);font-size:13px;
   display:none}
 
-@media (max-width:640px){
-  .top,.stats,.layers,.list{padding-left:14px;padding-right:14px}
-  .stats{gap:16px}
-  .stat b{font-size:18px}
+@media (max-width:560px){
+  .wrap{padding:0 14px 60px}
   .row{flex-wrap:wrap}
-  .row b{min-width:0}
-  .row .cars{flex:1 1 100%;order:3}
+  .need{flex:1 1 100%;text-align:left;order:3}
+  .lede{font-size:15px}
 }
 </style>
 </head>
 <body>
 
-<!-- O portão. Aparece até haver sessão de administrador. -->
 <div class="gate" id="gate">
-  <h1>Coverage map</h1>
-  <p>This shows where we can operate and where we cannot.
+  <h1>Coverage</h1>
+  <p>Where we can operate, and where we cannot.
      Administrator sign-in required.</p>
 
   <input type="email" id="email" placeholder="Email" autocomplete="username">
@@ -173,61 +169,43 @@ svg.map{display:block;width:100%;height:auto}
 </div>
 
 
-<div id="app" hidden>
+<div class="wrap" id="app" hidden>
 
   <div class="top">
-    <div>
-      <h1>Coverage map</h1>
-      <p class="sub" id="asOf"></p>
-    </div>
-
-    <div class="spacer"></div>
-
-    <!-- O filtro por classe.
-         Uma zona com quatro sedans e nenhuma van fica verde nos
-         sedans e vermelha nas vans. É assim que se vê o que falta
-         onde. -->
-    <button class="btn on" data-class="all" type="button">All</button>
-    <button class="btn" data-class="sedan" type="button">Sedans</button>
-    <button class="btn" data-class="van" type="button">Vans</button>
-
+    <h1>Coverage</h1>
+    <span class="when" id="when"></span>
+    <span class="grow"></span>
     <button class="btn" id="theme" type="button">Dark</button>
   </div>
 
-  <div class="stats" id="stats"></div>
+  <!-- A frase que resume. Um número sozinho não decide nada. -->
+  <p class="lede" id="lede"></p>
 
-  <!-- As camadas. Sobrepostas, respondem à pergunta que interessa:
-       onde há procura sem quem a sirva. -->
-  <div class="layers">
-    <button class="btn on" data-layer="coverage" type="button">Coverage</button>
-    <button class="btn on" data-layer="bookings" type="button">Bookings</button>
-    <button class="btn" data-layer="partners" type="button">Partners</button>
+  <h2>Where the bookings are</h2>
+  <p class="sub">The airports people are actually booking from, and
+     whether we can serve them.</p>
+  <div class="rows" id="withDemand"></div>
+
+  <h2>Covered, no bookings yet</h2>
+  <p class="sub">We have partners here. Nobody has booked in 90 days.</p>
+  <div class="rows" id="quiet"></div>
+
+  <div class="map-head">
+    <h2>On the map</h2>
+    <span class="grow"></span>
+    <button class="btn" id="mapToggle" type="button">Show</button>
   </div>
 
-  <div class="map-wrap">
-    <svg id="map" class="map" viewBox="0 0 1200 620"></svg>
-    <div class="tip" id="tip" hidden></div>
-  </div>
-
-  <div class="list">
-    <h2>Where to recruit next</h2>
-    <p class="sub">Zones without full coverage, ordered by the demand
-       we are losing.</p>
-    <div class="rows" id="rows"></div>
+  <div id="mapArea" hidden>
+    <div class="regions" id="regions"></div>
+    <div class="map-box">
+      <svg id="map" class="map" viewBox="0 0 1200 620"></svg>
+    </div>
   </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-
-<!--
-  A configuração vem do servidor, não daqui.
-
-  A chave estava escrita nesta página, e isso obriga a republicar o
-  site sempre que ela muda. Quando o Supabase mudou o formato das
-  chaves, a página ficou com uma antiga e respondia "Invalid API
-  key" sem dizer porquê.
--->
 <script src="https://airportlink.onrender.com/api/maps/config.js"></script>
 
 <script>
@@ -235,18 +213,7 @@ svg.map{display:block;width:100%;height:auto}
 'use strict';
 
 var CFG = window.MAP_CFG || {};
-
 var API = CFG.apiUrl || 'https://airportlink.onrender.com';
-
-if (!CFG.supabaseUrl || !CFG.supabaseAnonKey) {
-  document.getElementById('gateErr').textContent =
-    'The server did not send the sign-in settings. ' +
-    'Check SUPABASE_URL and SUPABASE_ANON_KEY on Render.';
-  document.getElementById('gateErr').style.display = 'block';
-  return;
-}
-
-var db = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey);
 
 var $ = function (id) { return document.getElementById(id); };
 var qsa = function (s) {
@@ -254,25 +221,27 @@ var qsa = function (s) {
 };
 
 function esc(v) {
-  return String(v == null ? '' : v)
-    .replace(/[&<>"']/g, function (c) {
-      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
-    });
+  return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
 }
 
+if (!CFG.supabaseUrl || !CFG.supabaseAnonKey) {
+  $('gateErr').textContent = 'The server did not send the sign-in settings. ' +
+    'Check SUPABASE_URL and SUPABASE_ANON_KEY on Render.';
+  $('gateErr').style.display = 'block';
+  return;
+}
+
+var db = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey);
+
 var dados = null;
-var classe = 'all';
-var camadas = { coverage: true, bookings: true, partners: false };
+var regiao = 'all';
 
 
 // ============================================================
 // O PORTÃO
 // ============================================================
-
-async function verSessao() {
-  var s = await db.auth.getSession();
-  if (s.data && s.data.session) return carregar();
-}
 
 $('signIn').addEventListener('click', async function () {
   var b = $('signIn');
@@ -287,7 +256,6 @@ $('signIn').addEventListener('click', async function () {
     });
 
     if (r.error) throw new Error(r.error.message);
-
     await carregar();
   } catch (e) {
     $('gateErr').textContent = e.message;
@@ -297,8 +265,6 @@ $('signIn').addEventListener('click', async function () {
   }
 });
 
-// Enter entra: um formulário de duas linhas não devia obrigar a
-// procurar o botão.
 ['email', 'pass'].forEach(function (id) {
   $(id).addEventListener('keydown', function (e) {
     if (e.key === 'Enter') $('signIn').click();
@@ -318,11 +284,9 @@ async function carregar() {
     });
 
     var d = await res.json();
-
-    if (!res.ok) throw new Error(d.error || 'Could not load the map.');
+    if (!res.ok) throw new Error(d.error || 'Could not load.');
 
     dados = d;
-
     $('gate').hidden = true;
     $('app').hidden = false;
 
@@ -337,41 +301,151 @@ async function carregar() {
 
 
 // ============================================================
+// A LISTA
+//
+// É a peça principal. O mapa mostra onde as coisas estão; a lista
+// diz o que fazer com elas.
+// ============================================================
+
+function desenhar() {
+  var cob = dados.coverage || [];
+  var res = dados.bookings || [];
+
+  // A procura, por aeroporto.
+  var procura = {};
+  res.forEach(function (b) { procura[b.iata] = b; });
+
+  /**
+   * Os que têm reservas.
+   *
+   * São estes que interessam hoje: procura que existe, e cobertura
+   * que existe ou não. Tudo o resto é potencial.
+   */
+  var comProcura = cob
+    .filter(function (z) { return (procura[z.iata] || {}).total > 0; })
+    .map(function (z) {
+      return Object.assign({}, z, { demand: procura[z.iata] });
+    })
+    .sort(function (a, b) { return b.demand.total - a.demand.total; });
+
+  // E os que temos cobertos sem ninguém a reservar.
+  var calados = cob
+    .filter(function (z) {
+      return z.partners > 0 && !(procura[z.iata] || {}).total;
+    })
+    .sort(function (a, b) { return b.partners - a.partners; });
+
+  // ---------- a frase ----------
+  var semCobertura = comProcura.filter(function (z) { return z.status !== 'full'; });
+
+  var perdidas = semCobertura.reduce(function (n, z) {
+    return n + z.demand.total;
+  }, 0);
+
+  if (!comProcura.length) {
+    $('lede').innerHTML = 'No bookings in the last 90 days.';
+  } else if (!semCobertura.length) {
+    $('lede').innerHTML =
+      '<span class="big ok">' + comProcura.length + '</span> airport' +
+      (comProcura.length === 1 ? '' : 's') +
+      ' with bookings, and we cover them all.';
+  } else {
+    /**
+     * O número que decide onde recrutar.
+     *
+     * "Doze reservas em três aeroportos onde não temos ninguém" é
+     * uma frase que se lê e se age. "12" sozinho não é.
+     */
+    $('lede').innerHTML =
+      '<span class="big bad">' + perdidas + '</span> booking' +
+      (perdidas === 1 ? '' : 's') + ' in the last 90 days came from ' +
+      '<b>' + semCobertura.length + ' airport' +
+      (semCobertura.length === 1 ? '' : 's') + '</b> where we cannot ' +
+      'guarantee a car.' +
+      (comProcura.length > semCobertura.length
+        ? ' The other ' + (comProcura.length - semCobertura.length) +
+          ' we cover.'
+        : '');
+  }
+
+  $('when').textContent = dados.generated_at
+    ? new Date(dados.generated_at).toLocaleString('en-GB', {
+        day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+      })
+    : '';
+
+  // ---------- as duas listas ----------
+  $('withDemand').innerHTML = comProcura.length
+    ? comProcura.map(linhaComProcura).join('')
+    : '<div class="empty">No bookings in the last 90 days.</div>';
+
+  $('quiet').innerHTML = calados.length
+    ? calados.map(linhaCalada).join('')
+    : '<div class="empty">Nothing yet.</div>';
+
+  pintarRegioes();
+  if (!$('mapArea').hidden) pintarMapa();
+}
+
+
+function linhaComProcura(z) {
+  var d = z.demand || {};
+
+  return '<div class="row">' +
+    '<span class="pip ' + z.status + '"></span>' +
+
+    '<span class="place"><b>' + esc(z.city || z.iata) + '</b>' +
+      '<span>' + esc(z.country || '') + ' · ' +
+      esc(z.sedans) + ' sedan, ' + esc(z.vans) + ' van' +
+      '</span></span>' +
+
+    /**
+     * O que falta, em palavras.
+     *
+     * "Needs 2 sedan 1 van" leva-se para a conversa com um parceiro
+     * novo. Um ponto vermelho não.
+     */
+    (z.status === 'full'
+      ? '<span class="need ok">covered</span>'
+      : '<span class="need">needs ' + esc((z.missing || '').trim() || 'drivers') +
+        '</span>') +
+
+    '<span class="dem">' + esc(d.total) +
+      '<span>bookings</span></span>' +
+
+    '</div>';
+}
+
+
+function linhaCalada(z) {
+  return '<div class="row">' +
+    '<span class="pip ' + z.status + '"></span>' +
+    '<span class="place"><b>' + esc(z.city || z.iata) + '</b>' +
+      '<span>' + esc(z.country || '') + '</span></span>' +
+    '<span class="dem">' + esc(z.partners) +
+      '<span>partner' + (z.partners === 1 ? '' : 's') + '</span></span>' +
+    '</div>';
+}
+
+
+// ============================================================
 // O MAPA
 //
-// Sem bibliotecas: uma projeção de Mercator cabe em cinco linhas,
-// e um mapa de pontos não precisa de mais. Uma biblioteca de mapas
-// são 200 KB para desenhar sessenta círculos.
+// Recolhido por omissão. Serve para ver ONDE as coisas estão — a
+// lista já disse o quê.
 // ============================================================
 
 var L = 1200, A = 620;
 
-/**
- * Latitude e longitude para píxeis.
- *
- * Mercator, cortado nos 72º norte e 55º sul — acima e abaixo disso
- * não há aeroportos nossos, e incluir a Antártida esmagaria a
- * Europa a metade do tamanho.
- */
 function proj(lat, lng) {
   var x = (Number(lng) + 180) / 360 * L;
-
   var r = Number(lat) * Math.PI / 180;
   var m = Math.log(Math.tan(Math.PI / 4 + r / 2));
-
   var cima = Math.log(Math.tan(Math.PI / 4 + (72 * Math.PI / 180) / 2));
   var baixo = Math.log(Math.tan(Math.PI / 4 + (-55 * Math.PI / 180) / 2));
-
   return { x: x, y: A - ((m - baixo) / (cima - baixo)) * A };
 }
 
-/**
- * O contorno dos continentes.
- *
- * Não é cartografia — é um pano de fundo para os pontos se
- * situarem. Uma pessoa reconhece a Europa e a América do Sul, e
- * isso chega para saber onde está a olhar.
- */
 var MUNDO =
   'M560,105 L625,92 L672,112 L690,158 L672,200 L625,218 L588,242 ' +
   'L560,278 L528,300 L504,275 L516,228 L540,192 L546,140 Z ' +
@@ -384,238 +458,104 @@ var MUNDO =
   'M300,318 L366,306 L396,360 L384,444 L348,504 L318,474 L300,408 Z ' +
   'M972,384 L1056,378 L1080,426 L1038,468 L984,450 L966,414 Z';
 
+/**
+ * As regiões, por caixa no mapa.
+ *
+ * Um mapa mundial com oitocentos pontos não se lê. Um da Europa
+ * com duzentos e setenta lê-se bem — e é onde estão quase todas as
+ * reservas.
+ */
+var REGIOES = {
+  all:      { label: 'World',    x: [0, 1200],   y: [0, 620] },
+  europe:   { label: 'Europe',   x: [520, 760],  y: [70, 300] },
+  americas: { label: 'Americas', x: [100, 420],  y: [60, 540] },
+  asia:     { label: 'Asia',     x: [700, 1120], y: [80, 400] },
+  africa:   { label: 'Africa',   x: [500, 720],  y: [230, 500] },
+  oceania:  { label: 'Oceania',  x: [900, 1160], y: [330, 560] }
+};
 
-function corDe(z) {
-  if (classe === 'sedan') {
-    return z.sedans >= 2 ? 'full' : (z.sedans > 0 ? 'partial' : 'none');
-  }
+function pintarRegioes() {
+  $('regions').innerHTML = Object.keys(REGIOES).map(function (k) {
+    return '<button class="btn' + (k === regiao ? ' on' : '') +
+      '" data-region="' + k + '" type="button">' +
+      esc(REGIOES[k].label) + '</button>';
+  }).join('');
 
-  if (classe === 'van') {
-    return z.vans >= 2 ? 'full' : (z.vans > 0 ? 'partial' : 'none');
-  }
-
-  return z.status || 'none';
+  qsa('#regions [data-region]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      regiao = b.getAttribute('data-region');
+      pintarRegioes();
+      pintarMapa();
+    });
+  });
 }
 
-
-function desenhar() {
+function pintarMapa() {
   var cob = dados.coverage || [];
   var res = dados.bookings || [];
-  var par = dados.partners || [];
-  var t = dados.totals || {};
 
-  // ---------- os números ----------
-  var contagens = {
-    full: cob.filter(function (z) { return corDe(z) === 'full'; }).length,
-    partial: cob.filter(function (z) { return corDe(z) === 'partial'; }).length,
-    none: cob.filter(function (z) { return corDe(z) === 'none'; }).length
-  };
+  var procura = {};
+  res.forEach(function (b) { procura[b.iata] = b.total; });
 
-  $('stats').innerHTML =
-    stat(contagens.full, 'covered') +
-    stat(contagens.partial, 'partial') +
-    stat(contagens.none, 'empty') +
-    stat(t.bookings_90d || 0, 'bookings, 90 days') +
-    stat(t.demand_uncovered || 0, 'of those where we are not covered', true);
+  var r = REGIOES[regiao];
 
-  $('asOf').textContent = dados.generated_at
-    ? 'As of ' + new Date(dados.generated_at).toLocaleString('en-GB', {
-        day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
-      })
-    : '';
-
-  // ---------- o mapa ----------
-  var svg = '<path class="land" d="' + MUNDO + '"/>';
-
-  /**
-   * A ordem das camadas importa.
-   *
-   * As reservas por baixo, grandes e translúcidas: são a procura,
-   * o contexto. A cobertura por cima, pequena e sólida: é a
-   * resposta. Os anéis dos parceiros a fechar.
-   *
-   * Ao contrário, os pontos de cobertura desapareciam debaixo das
-   * manchas azuis.
-   */
-  if (camadas.bookings) {
-    svg += res.map(function (b) {
-      var p = proj(b.lat, b.lng);
-      var r = Math.min(30, 6 + Math.sqrt(Number(b.total || 0)) * 3.2);
-
-      // Vermelho quando há reservas por atribuir: é procura que
-      // não se está a servir.
-      var quente = Number(b.unassigned || 0) > 0;
-
-      return '<circle class="bk' + (quente ? ' hot' : '') + '" cx="' +
-        p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="' +
-        r.toFixed(1) + '"/>';
-    }).join('');
-  }
-
-  if (camadas.partners) {
-    svg += par.map(function (x) {
-      var p = proj(x.lat, x.lng);
-      var r = 9 + Math.min(12, Number(x.partners || 0) * 3);
-
-      return '<circle class="pt" cx="' + p.x.toFixed(1) + '" cy="' +
-        p.y.toFixed(1) + '" r="' + r.toFixed(1) + '"/>';
-    }).join('');
-  }
-
-  if (camadas.coverage) {
-    svg += cob.map(function (z) {
+  var svg = '<path class="land" d="' + MUNDO + '"/>' +
+    cob.map(function (z) {
       var p = proj(z.lat, z.lng);
 
-      return '<circle class="dot ' + corDe(z) + '" cx="' + p.x.toFixed(1) +
-        '" cy="' + p.y.toFixed(1) + '" r="6" data-iata="' +
-        esc(z.iata) + '"/>';
+      // Fora da região escolhida.
+      if (p.x < r.x[0] || p.x > r.x[1] || p.y < r.y[0] || p.y > r.y[1]) {
+        return '';
+      }
+
+      /**
+       * Os que têm procura destacam-se.
+       *
+       * Os outros ficam esbatidos: existem, mas não são o que se
+       * anda a olhar. Sem isto, oitocentos pontos vermelhos iguais
+       * escondem os cinco que importam.
+       */
+      var tem = procura[z.iata] > 0;
+      var raio = tem ? Math.min(13, 5 + Math.sqrt(procura[z.iata]) * 2) : 3.5;
+
+      return '<circle class="dot ' + z.status + (tem ? ' hasdemand' : '') +
+        '" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
+        '" r="' + raio.toFixed(1) + '"><title>' +
+        esc(z.city + (tem ? ' · ' + procura[z.iata] + ' bookings' : '')) +
+        '</title></circle>';
     }).join('');
-  }
 
-  $('map').innerHTML = svg;
+  var m = $('map');
+  m.innerHTML = svg;
 
-  // ---------- a caixa ao passar ----------
-  qsa('#map [data-iata]').forEach(function (c) {
-    c.addEventListener('mouseenter', function (e) { mostrarCaixa(e, c); });
-    c.addEventListener('mouseleave', function () { $('tip').hidden = true; });
-
-    // No telemóvel não há mouseenter.
-    c.addEventListener('click', function (e) { mostrarCaixa(e, c); });
-  });
-
-  pintarLista();
+  // A vista aproxima-se da região, em vez de mostrar o mundo todo.
+  m.setAttribute('viewBox',
+    r.x[0] + ' ' + r.y[0] + ' ' +
+    (r.x[1] - r.x[0]) + ' ' + (r.y[1] - r.y[0]));
 }
 
 
-function stat(n, texto, quente) {
-  return '<div class="stat' + (quente ? ' hot' : '') + '">' +
-    '<b>' + esc(n) + '</b><span>' + esc(texto) + '</span></div>';
-}
+$('mapToggle').addEventListener('click', function () {
+  var area = $('mapArea');
+  area.hidden = !area.hidden;
 
+  $('mapToggle').textContent = area.hidden ? 'Show' : 'Hide';
 
-function mostrarCaixa(e, alvo) {
-  var iata = alvo.getAttribute('data-iata');
-
-  var z = (dados.coverage || []).find(function (x) { return x.iata === iata; });
-  if (!z) return;
-
-  var b = (dados.bookings || []).find(function (x) { return x.iata === iata; });
-  var p = (dados.partners || []).find(function (x) { return x.iata === iata; });
-
-  var linhas =
-    '<h4>' + esc(z.city || z.iata) + '</h4>' +
-    linha('Sedans', z.sedans) +
-    linha('Vans', z.vans) +
-    linha('Drivers', z.drivers) +
-    linha('Partners', (p && p.partners) || 0);
-
-  if (b) {
-    linhas += linha('Bookings, 90d', b.total);
-
-    if (b.unassigned) {
-      linhas += linha('Never assigned', b.unassigned);
-    }
-  }
-
-  if (z.missing && z.missing.trim()) {
-    linhas += '<div class="miss">Needs ' + esc(z.missing.trim()) + '</div>';
-  }
-
-  var tip = $('tip');
-  tip.innerHTML = linhas;
-  tip.hidden = false;
-
-  // Ao lado do ponto, e dentro do ecrã.
-  var caixa = $('map').getBoundingClientRect();
-  var ponto = alvo.getBoundingClientRect();
-
-  var x = ponto.left - caixa.left + 16;
-  var y = ponto.top - caixa.top - 10;
-
-  if (x + 230 > caixa.width) x = ponto.left - caixa.left - 230;
-
-  tip.style.left = Math.max(8, x) + 'px';
-  tip.style.top = Math.max(8, y) + 'px';
-}
-
-function linha(k, v) {
-  return '<div class="row"><span>' + esc(k) + '</span><b>' +
-    esc(v == null ? 0 : v) + '</b></div>';
-}
-
-
-/**
- * A lista, por procura.
- *
- * O mapa mostra onde. A lista diz por onde começar — e ordená-la
- * por reservas perdidas é a diferença entre recrutar onde faz
- * falta e recrutar onde é fácil.
- */
-function pintarLista() {
-  var res = dados.bookings || [];
-
-  var precisam = (dados.coverage || [])
-    .filter(function (z) { return corDe(z) !== 'full'; })
-    .map(function (z) {
-      var b = res.find(function (x) { return x.iata === z.iata; });
-      return Object.assign({}, z, { demand: (b && b.total) || 0 });
-    })
-    .sort(function (a, b) { return b.demand - a.demand; })
-    .slice(0, 20);
-
-  if (!precisam.length) {
-    $('rows').innerHTML =
-      '<div class="row">Every zone has two sedans and two vans.</div>';
-    return;
-  }
-
-  $('rows').innerHTML = precisam.map(function (z) {
-    return '<div class="row">' +
-      '<span class="pip ' + corDe(z) + '"></span>' +
-      '<b>' + esc(z.city || z.iata) + '</b>' +
-      '<span class="cars">' + esc(z.sedans) + ' sedan · ' +
-        esc(z.vans) + ' van · ' + esc(z.drivers) + ' drivers</span>' +
-      (z.demand
-        ? '<span class="dem">' + esc(z.demand) + ' bookings</span>'
-        : '<span class="dem quiet">no demand yet</span>') +
-      '</div>';
-  }).join('');
-}
-
-
-// ============================================================
-// OS BOTÕES
-// ============================================================
-
-qsa('[data-class]').forEach(function (b) {
-  b.addEventListener('click', function () {
-    classe = b.getAttribute('data-class');
-
-    qsa('[data-class]').forEach(function (x) {
-      x.classList.toggle('on', x === b);
-    });
-
-    desenhar();
-  });
-});
-
-qsa('[data-layer]').forEach(function (b) {
-  b.addEventListener('click', function () {
-    var k = b.getAttribute('data-layer');
-    camadas[k] = !camadas[k];
-    b.classList.toggle('on', camadas[k]);
-    desenhar();
-  });
+  if (!area.hidden) pintarMapa();
 });
 
 $('theme').addEventListener('click', function () {
   var escuro = document.documentElement.getAttribute('data-theme') === 'dark';
-
   document.documentElement.setAttribute('data-theme', escuro ? 'light' : 'dark');
   $('theme').textContent = escuro ? 'Dark' : 'Light';
 });
 
-verSessao();
+
+// Se já houver sessão, entra direto.
+(async function () {
+  var s = await db.auth.getSession();
+  if (s.data && s.data.session) carregar();
+})();
 
 })();
 </script>
