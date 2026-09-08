@@ -1,6 +1,10 @@
 User-agent: *
 Allow: /
 
+# O mapa de cobertura. Mostra onde conseguimos operar e onde não —
+# um concorrente que o visse saberia exatamente onde atacar.
+Disallow: /maps
+
 # Páginas de conta e de fluxo de pagamento: não são conteúdo.
 Disallow: /myaccount
 Disallow: /agency
