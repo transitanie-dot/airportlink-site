@@ -153,6 +153,22 @@ html[data-theme="dark"] .modal-msg{background:#2b1114;color:#fda4af;border-color
   .chat-list-scroll{max-height:260px}
   .messages-scroll{height:360px}
 }
+
+/* ============================================================
+   A VEZ DE ESCREVER
+
+   Num ticket é à vez: o cliente escreve uma mensagem e espera.
+   Sem isto, um cliente ansioso escreve seis seguidas e o agente
+   não sabe a qual responder.
+   ============================================================ */
+.turn-lock{padding:14px 18px;margin:0 0 4px;border-radius:12px;
+  background:#F7F7F4;border:1px solid #E4E4DE;
+  font-size:14px;line-height:1.55;color:#6B6B63;text-align:center}
+.turn-lock.hidden{display:none}
+
+/* A área de escrita desaparece: um campo desativado convida a
+   tentar, e falhar convida a desistir. */
+.chat-input-row.locked{display:none}
 </style>
 </head>
 <body data-cta-href="/" data-cta-label="Book a transfer">
@@ -189,7 +205,17 @@ html[data-theme="dark"] .modal-msg{background:#2b1114;color:#fda4af;border-color
         </div>
         <div id="messagesScroll" class="messages-scroll"></div>
         <div id="chatNote" class="chat-note hidden"></div>
-        <div class="chat-input-row">
+        <!-- Quando não é a vez do cliente.
+             Num ticket é à vez: ele escreve uma mensagem e espera.
+             Deixar escrever seis seguidas faz o agente não saber a
+             qual responder — e dá ao cliente a ideia de que está a
+             ser ignorado seis vezes. -->
+        <div class="turn-lock hidden" id="turnLock">
+          <span id="turnLockText">An agent will reply as soon as possible.
+            You will get an email when they do.</span>
+        </div>
+
+        <div class="chat-input-row" id="inputRow">
           <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
               <input type="file" id="fileInput" style="display:none;" accept="image/*,.pdf,.doc,.docx,.txt">
@@ -491,10 +517,66 @@ function upsertLocalChat(row) {
   if (row.id === activeChatId) renderActiveChatHeader();
 }
 
+/**
+ * Pode escrever agora?
+ *
+ * Ao vivo, sempre. Num ticket, só quando é a vez dele — ele
+ * escreve uma mensagem e espera pela resposta.
+ *
+ * Sem isto, um cliente ansioso escreve seis seguidas e o agente
+ * não sabe a qual responder. E o cliente sente que foi ignorado
+ * seis vezes em vez de uma.
+ */
+function aplicarVez(chat) {
+  var lock = $('turnLock');
+  var row = $('inputRow');
+
+  if (!lock || !row) return;
+
+  var fechado = chat.status && chat.status !== 'open' && chat.status !== 'pending';
+
+  // Num chat fechado ninguém escreve.
+  if (fechado) {
+    lock.classList.remove('hidden');
+    $('turnLockText').textContent = T('sup.closedNote',
+      'This conversation is closed.');
+    row.classList.add('locked');
+    return;
+  }
+
+  // Ao vivo escreve-se à vontade.
+  if (chat.mode !== 'ticket') {
+    lock.classList.add('hidden');
+    row.classList.remove('locked');
+    return;
+  }
+
+  /**
+   * Num ticket, a vez alterna.
+   *
+   * O awaiting_customer é ligado quando a conversa passa a ticket
+   * e sempre que um agente responde.
+   */
+  if (chat.awaiting_customer) {
+    lock.classList.add('hidden');
+    row.classList.remove('locked');
+    return;
+  }
+
+  lock.classList.remove('hidden');
+  $('turnLockText').textContent = T('sup.waitingAgent',
+    'An agent will reply as soon as possible. ' +
+    'You will get an email when they do.');
+  row.classList.add('locked');
+}
+
+
 function renderActiveChatHeader() {
   var chat = chats.find(function (c) { return c.id === activeChatId; });
   if (!chat) return;
   $('activeChatSubject').textContent = chat.subject;
+
+  aplicarVez(chat);
   /**
    * Quem está do outro lado, e desde quando.
    *
