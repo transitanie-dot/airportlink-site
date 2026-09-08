@@ -72,6 +72,53 @@ body{margin:0;font-family:var(--sans);background:var(--bg);
 .find:focus{outline:none;border-color:var(--teal)}
 
 /* ============================================================
+   AS TRÊS LISTAS DO TOPO
+
+   A árvore serve para procurar. Estas servem para decidir.
+   ============================================================ */
+.panel{border:1px solid var(--border);border-radius:14px;
+  margin-bottom:10px;overflow:hidden;background:var(--card)}
+.panel[hidden]{display:none}
+
+.panel-head{display:flex;align-items:center;gap:12px;width:100%;
+  padding:15px 18px;background:transparent;border:none;cursor:pointer;
+  font-family:inherit;font-size:15.5px;color:var(--text);text-align:left}
+.panel-head:hover{background:var(--card-2)}
+.panel-head b{font-weight:600;flex:0 0 auto}
+
+.sub-inline{font-size:12.5px;color:var(--muted);flex:1 1 auto}
+
+.count{font-family:var(--mono);font-size:13px;font-weight:600;
+  padding:2px 10px;border-radius:999px;flex:0 0 auto;
+  margin-left:auto;background:var(--card-2);color:var(--muted)}
+.count.warn{background:rgba(202,138,4,.15);color:var(--warn)}
+.count.bad{background:rgba(220,38,38,.12);color:var(--bad)}
+.count.ok{background:rgba(22,163,74,.13);color:var(--ok)}
+
+.panel-body{border-top:1px solid var(--border-soft)}
+.panel-body[hidden]{display:none}
+
+.item{display:flex;align-items:center;gap:12px;padding:12px 18px;
+  font-size:13.5px}
+.item + .item{border-top:1px solid var(--border-soft)}
+
+.item .nm{flex:1 1 auto;min-width:0}
+.item .nm b{display:block;font-weight:600}
+.item .nm span{font-size:12.5px;color:var(--muted)}
+
+/* Os dias à espera. Uma candidatura parada é um parceiro que
+   desiste — e a partir de três dias isso grita. */
+.days{font-family:var(--mono);font-size:12px;font-weight:600;
+  flex:0 0 auto;color:var(--muted)}
+.days.late{color:var(--bad)}
+
+.codes{display:flex;gap:4px;flex-wrap:wrap;flex:0 0 auto}
+.code-chip{font-family:var(--mono);font-size:10.5px;padding:2px 6px;
+  border-radius:5px;background:var(--card-2);color:var(--muted)}
+
+.tree-title{margin:34px 0 12px;font-size:15px;font-weight:600}
+
+/* ============================================================
    A ÁRVORE
    ============================================================ */
 .tree{border:1px solid var(--border);border-radius:14px;overflow:hidden}
@@ -100,6 +147,13 @@ body{margin:0;font-family:var(--sans);background:var(--bg);
   text-align:left}
 .ct-head:hover{background:var(--border-soft)}
 .ct-head b{font-weight:500;flex:1 1 auto}
+
+/* Um país que precisa de gente marca-se no nome.
+   Percorrer a lista à procura de números pequenos não é forma de
+   encontrar onde falta. */
+.country.needs .ct-head b{color:var(--bad);font-weight:600}
+.country.needs .ct-head b::after{content:' ●';font-size:9px;
+  vertical-align:middle}
 
 /* ---------- aeroporto ---------- */
 .airports{background:var(--card)}
@@ -159,6 +213,62 @@ body{margin:0;font-family:var(--sans);background:var(--bg);
 
 .nofirms{padding:11px 14px;font-size:13px;color:var(--muted);
   font-style:italic}
+
+/* ============================================================
+   O FUNIL DE RECRUTAMENTO
+
+   Quem já se contactou, o que se disse, e em que ponto está. Sem
+   isto, dois vendedores ligam à mesma empresa na mesma semana.
+   ============================================================ */
+.owner-bar{display:flex;align-items:center;gap:10px;padding:9px 14px;
+  margin-bottom:10px;border-radius:9px;background:var(--card);
+  border:1px solid var(--border);font-size:12.5px}
+.owner-bar .muted{color:var(--muted)}
+
+.sec-label{font-size:11px;font-weight:600;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--muted);margin:14px 0 7px}
+
+.mini-btn{padding:4px 10px;border-radius:7px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);font-family:inherit;
+  font-size:11.5px;font-weight:600;cursor:pointer;margin-left:auto}
+.mini-btn:hover{color:var(--text);border-color:var(--muted)}
+
+.lead{padding:11px 14px;border:1px solid var(--border);border-radius:10px;
+  background:var(--card);font-size:13px}
+.lead + .lead{margin-top:7px}
+
+.lead-top{display:flex;align-items:center;gap:10px;margin-bottom:3px}
+.lead-top b{font-weight:600;flex:1 1 auto}
+
+.lead-info{font-size:12.5px;color:var(--muted)}
+
+/* A última coisa que se disse. É o que faz a diferença entre
+   continuar uma conversa e começar outra do zero. */
+.lead-note{margin-top:8px;padding:8px 11px;border-radius:8px;
+  background:var(--card-2);font-size:12.5px;line-height:1.5}
+.lead-note b{font-weight:600}
+
+.lead-next{margin-top:6px;font-size:12px;font-weight:600;color:var(--warn)}
+
+.lead-acts{display:flex;align-items:center;gap:10px;margin-top:9px}
+.lead-acts .mini-btn{margin-left:0}
+.lead-acts .muted{font-size:11.5px;color:var(--muted);margin-left:auto;
+  font-family:var(--mono)}
+
+.add-lead{width:100%;margin-top:10px;padding:9px;border-radius:9px;
+  border:1px dashed var(--border);background:transparent;
+  color:var(--muted);font-family:inherit;font-size:12.5px;
+  font-weight:600;cursor:pointer}
+.add-lead:hover{color:var(--text);border-color:var(--muted)}
+
+/* As fases do funil. Verde no fim, âmbar a meio, cinzento nos
+   que pararam. */
+.tag.new{background:var(--card-2);color:var(--muted)}
+.tag.contacted{background:rgba(37,99,235,.12);color:#2563EB}
+.tag.interested{background:rgba(202,138,4,.15);color:var(--warn)}
+.tag.signing{background:rgba(22,163,74,.13);color:var(--ok)}
+.tag.applied{background:rgba(22,163,74,.18);color:var(--ok)}
+.tag.declined,.tag.unreachable{background:var(--card-2);color:var(--muted)}
 
 /* ---------- números pequenos ---------- */
 .mini{display:flex;gap:8px;flex:0 0 auto;font-family:var(--mono);
@@ -225,6 +335,41 @@ body{margin:0;font-family:var(--sans);background:var(--bg);
   </div>
 
   <p class="lede" id="lede"></p>
+
+  <!-- ============ AS TRÊS LISTAS ============
+       A árvore serve para procurar. Estas servem para decidir — e
+       é isso que se faz ao abrir a página. -->
+
+  <div class="panel" id="reviewPanel" hidden>
+    <button class="panel-head" data-panel="review" type="button">
+      <span class="caret">▶</span>
+      <b>Waiting for us</b>
+      <span class="count warn" id="reviewCount">0</span>
+    </button>
+    <div class="panel-body" id="reviewList" hidden></div>
+  </div>
+
+  <div class="panel">
+    <button class="panel-head" data-panel="recruit" type="button">
+      <span class="caret">▶</span>
+      <b>Recruit next</b>
+      <span class="sub-inline">Tier 1 airports without cover</span>
+      <span class="count bad" id="recruitCount">0</span>
+    </button>
+    <div class="panel-body" id="recruitList" hidden></div>
+  </div>
+
+  <div class="panel">
+    <button class="panel-head" data-panel="partners" type="button">
+      <span class="caret">▶</span>
+      <b>Our partners</b>
+      <span class="count ok" id="partnersCount">0</span>
+    </button>
+    <div class="panel-body" id="partnersList" hidden></div>
+  </div>
+
+
+  <h2 class="tree-title">Everywhere else</h2>
 
   <!-- Procurar salta a árvore toda. Quem sabe o que quer não
        devia ter de abrir três níveis para lá chegar. -->
@@ -327,19 +472,156 @@ async function pedir(caminho) {
 }
 
 
+var resumo = null;
+
 async function carregar() {
   try {
-    arvore = await pedir('/api/maps/tree');
+    /**
+     * As duas chamadas ao mesmo tempo.
+     *
+     * Uma a seguir à outra seriam dois segundos cada no plano
+     * gratuito do Render — quatro segundos a olhar para nada.
+     */
+    var r = await Promise.all([
+      pedir('/api/maps/tree'),
+      pedir('/api/maps/summary')
+    ]);
+
+    arvore = r[0];
+    resumo = r[1];
 
     $('gate').hidden = true;
     $('app').hidden = false;
 
+    desenharListas();
     desenharArvore();
   } catch (e) {
     $('gateErr').textContent = e.message;
     $('gateErr').style.display = 'block';
     $('signIn').disabled = false;
     $('signIn').textContent = 'Sign in';
+  }
+}
+
+
+// ============================================================
+// AS TRÊS LISTAS
+// ============================================================
+
+function desenharListas() {
+  var espera = resumo.under_review || [];
+  var recrutar = resumo.recruit_next || [];
+  var socios = resumo.partners || [];
+
+  // ---------- quem espera por nós ----------
+  $('reviewPanel').hidden = !espera.length;
+  $('reviewCount').textContent = espera.length;
+
+  $('reviewList').innerHTML = espera.map(function (p) {
+    var frota = [];
+    if (p.sedans) frota.push(p.sedans + ' sedan');
+    if (p.vans) frota.push(p.vans + ' van');
+    if (p.drivers) frota.push(p.drivers + ' driver' + (p.drivers === 1 ? '' : 's'));
+
+    return '<div class="item">' +
+      '<span class="nm"><b>' + esc(p.name) + '</b>' +
+        '<span>' + esc(p.country || '') +
+        (frota.length ? ' · ' + esc(frota.join(' · ')) : ' · nothing registered') +
+        (p.missing ? ' · missing ' + esc(p.missing.trim()) : '') +
+        '</span></span>' +
+
+      (p.airports && p.airports.length
+        ? '<span class="codes">' + p.airports.slice(0, 4).map(function (c) {
+            return '<span class="code-chip">' + esc(c) + '</span>';
+          }).join('') +
+          (p.airports.length > 4
+            ? '<span class="code-chip">+' + (p.airports.length - 4) + '</span>'
+            : '') +
+          '</span>'
+        : '<span class="code-chip">no airports</span>') +
+
+      /**
+       * Os dias à espera.
+       *
+       * Uma candidatura parada é um parceiro que desiste — e a
+       * partir de três dias isso grita a vermelho.
+       */
+      '<span class="days' + (p.days_waiting >= 3 ? ' late' : '') + '">' +
+        (p.days_waiting === 0 ? 'today' : p.days_waiting + 'd') +
+      '</span>' +
+      '</div>';
+  }).join('') || '<div class="nofirms">Nobody waiting.</div>';
+
+  // ---------- onde recrutar ----------
+  $('recruitCount').textContent = recrutar.length;
+
+  $('recruitList').innerHTML = recrutar.map(function (a) {
+    return '<div class="item">' +
+      '<span class="pip ' + esc(a.status) + '"></span>' +
+      '<span class="code">' + esc(a.iata) + '</span>' +
+
+      '<span class="nm"><b>' + esc(a.city) + '</b>' +
+        '<span>' + esc(a.country) +
+        (a.status === 'pending'
+          ? ' · ' + a.pending_partners + ' under review'
+          : ' · needs ' + esc((a.missing || '').trim() || 'partners')) +
+        '</span></span>' +
+
+      '<span class="bk' + (a.bookings_90d ? '' : ' zero') + '">' +
+        (a.bookings_90d || 0) +
+      '</span>' +
+      '</div>';
+  }).join('') || '<div class="nofirms">Every tier 1 airport is covered.</div>';
+
+  // ---------- quem já temos ----------
+  $('partnersCount').textContent = socios.length;
+
+  $('partnersList').innerHTML = socios.map(function (p) {
+    var frota = [];
+    if (p.sedans) frota.push(p.sedans + ' sedan');
+    if (p.vans) frota.push(p.vans + ' van');
+    if (p.drivers) frota.push(p.drivers + ' driver' + (p.drivers === 1 ? '' : 's'));
+
+    return '<div class="item">' +
+      '<span class="nm"><b>' + esc(p.name) + '</b>' +
+        '<span>' + esc(p.country || '') +
+        (frota.length ? ' · ' + esc(frota.join(' · ')) : ' · no fleet registered') +
+        (p.rides_90d ? ' · ' + p.rides_90d + ' rides' : '') +
+        '</span></span>' +
+
+      (p.airports && p.airports.length
+        ? '<span class="codes">' + p.airports.slice(0, 5).map(function (c) {
+            return '<span class="code-chip">' + esc(c) + '</span>';
+          }).join('') +
+          (p.airports.length > 5
+            ? '<span class="code-chip">+' + (p.airports.length - 5) + '</span>'
+            : '') +
+          '</span>'
+        : '<span class="code-chip">no airports</span>') +
+      '</div>';
+  }).join('') || '<div class="nofirms">No approved partners yet.</div>';
+
+  // Os painéis abrem e fecham.
+  qsa('[data-panel]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var nome = b.getAttribute('data-panel');
+      var caixa = $(nome === 'review' ? 'reviewList'
+        : nome === 'recruit' ? 'recruitList' : 'partnersList');
+
+      caixa.hidden = !caixa.hidden;
+      b.parentElement.classList.toggle('open', !caixa.hidden);
+    });
+  });
+
+  /**
+   * Quem espera abre sozinho.
+   *
+   * É o único dos três com prazo: um parceiro que se registou há
+   * três dias e ninguém olhou desiste.
+   */
+  if (espera.length) {
+    $('reviewList').hidden = false;
+    $('reviewPanel').classList.add('open');
   }
 }
 
@@ -440,7 +722,17 @@ function abrirContinente(el) {
   });
 
   caixa.innerHTML = paises.map(function (p) {
-    return '<div class="country" data-country="' + esc(p.name) + '">' +
+    /**
+     * O país marca-se quando precisa de gente.
+     *
+     * Precisa se tem reservas e não tem tudo coberto, ou se não tem
+     * um único aeroporto verde. Percorrer a lista à procura de
+     * números pequenos não é forma de encontrar onde falta.
+     */
+    var precisa = (p.bookings > 0 && p.full < p.airports) || p.full === 0;
+
+    return '<div class="country' + (precisa ? ' needs' : '') +
+      '" data-country="' + esc(p.name) + '">' +
       '<button class="ct-head" type="button">' +
         '<span class="caret">▶</span>' +
         '<b>' + esc(p.name) + '</b>' +
@@ -544,40 +836,242 @@ function pintarAeroportos(caixa, lista) {
 
 
 /**
- * As empresas de um aeroporto.
+ * O que se passa num aeroporto.
  *
- * Incluindo as que estão por aprovar — são o que distingue um
- * aeroporto onde alguém se registou ontem de um vazio. Sem isto,
- * alguém ia recrutar para um sítio onde já há candidatura.
+ * Os parceiros que lá temos, e as empresas com quem estamos a
+ * falar. Sem a segunda parte, dois vendedores ligam à mesma
+ * empresa na mesma semana.
  */
-function pintarEmpresas(caixa, a) {
-  var lista = (a && a.companies) || [];
+async function pintarEmpresas(caixa, a) {
+  caixa.innerHTML = '<div class="nofirms">Loading...</div>';
 
-  if (!lista.length) {
-    caixa.innerHTML = '<div class="nofirms">No company covers this airport.</div>';
+  var d;
+
+  try {
+    d = await pedir('/api/maps/pipeline?iata=' + encodeURIComponent(a.iata));
+  } catch (e) {
+    caixa.innerHTML = '<div class="nofirms">' + esc(e.message) + '</div>';
     return;
   }
 
-  caixa.innerHTML = lista.map(function (c) {
-    var frota = [];
-    if (c.sedans) frota.push(c.sedans + ' sedan');
-    if (c.vans) frota.push(c.vans + ' van');
-    if (c.drivers) frota.push(c.drivers + ' driver' + (c.drivers === 1 ? '' : 's'));
+  var html = '';
 
-    return '<div class="firm">' +
-      '<span class="nm"><b>' + esc(c.name) + '</b>' +
-        '<span>' +
-        (frota.length ? esc(frota.join(' · ')) : 'nothing registered yet') +
-        (c.status !== 'approved' && c.missing
-          ? ' · missing ' + esc(c.missing.trim())
-          : '') +
-        '</span></span>' +
+  // ---------- quem trata daqui ----------
+  html += '<div class="owner-bar">' +
+    (d.owner
+      ? '<span>Owned by <b>' + esc(d.owner.name || 'someone') + '</b></span>'
+      : '<span class="muted">Nobody owns this airport</span>') +
+    '<button class="mini-btn" data-claim="' + esc(a.iata) + '">' +
+      (d.owner ? 'Take over' : 'I will take it') + '</button>' +
+    '</div>';
 
-      '<span class="tag ' + esc(c.status) + '">' +
-        esc(c.status === 'in_review' ? 'under review' : c.status) +
-      '</span>' +
-      '</div>';
-  }).join('');
+  // ---------- os parceiros ----------
+  var socios = d.partners || [];
+
+  if (socios.length) {
+    html += '<div class="sec-label">Partners here</div>' +
+      socios.map(function (c) {
+        var frota = [];
+        if (c.sedans) frota.push(c.sedans + ' sedan');
+        if (c.vans) frota.push(c.vans + ' van');
+        if (c.drivers) frota.push(c.drivers + ' driver' + (c.drivers === 1 ? '' : 's'));
+
+        return '<div class="firm">' +
+          '<span class="nm"><b>' + esc(c.name) + '</b>' +
+            '<span>' +
+            (frota.length ? esc(frota.join(' · ')) : 'nothing registered yet') +
+            (c.status !== 'approved' && c.missing
+              ? ' · missing ' + esc(c.missing.trim()) : '') +
+            '</span></span>' +
+          '<span class="tag ' + esc(c.status) + '">' +
+            esc(c.status === 'in_review' ? 'under review' : c.status) +
+          '</span></div>';
+      }).join('');
+  }
+
+  /**
+   * As empresas que andamos a contactar.
+   *
+   * É a parte que faltava. Quem já se falou, o que se disse, e em
+   * que ponto está — para o trabalho não se repetir.
+   */
+  var leads = d.leads || [];
+
+  html += '<div class="sec-label">Companies we are talking to' +
+    (leads.length ? ' (' + leads.length + ')' : '') + '</div>';
+
+  html += leads.length
+    ? leads.map(cartaoLead).join('')
+    : '<div class="nofirms">Nobody contacted here yet.</div>';
+
+  // E um botão para acrescentar.
+  html += '<button class="add-lead" data-add="' + esc(a.iata) +
+    '" type="button">+ Add a company to contact</button>';
+
+  caixa.innerHTML = html;
+
+  ligarAcoes(caixa, a);
+}
+
+
+function cartaoLead(l) {
+  var ultimo = (l.touches || [])[0];
+
+  var frota = [];
+  if (l.sedans) frota.push(l.sedans + ' sedan');
+  if (l.vans) frota.push(l.vans + ' van');
+
+  return '<div class="lead" data-lead="' + esc(l.id) + '">' +
+
+    '<div class="lead-top">' +
+      '<b>' + esc(l.company) + '</b>' +
+      '<span class="tag ' + esc(l.stage) + '">' + esc(l.stage) + '</span>' +
+    '</div>' +
+
+    '<div class="lead-info">' +
+      (l.phone ? esc(l.phone) + ' · ' : '') +
+      (l.email ? esc(l.email) + ' · ' : '') +
+      (frota.length ? esc(frota.join(', ')) : esc(l.fleet || 'fleet unknown')) +
+    '</div>' +
+
+    /**
+     * A última coisa que se disse.
+     *
+     * É o que faz a diferença entre continuar uma conversa e
+     * começar outra do zero — e o cliente nota a diferença.
+     */
+    (ultimo
+      ? '<div class="lead-note">' +
+          '<b>' + esc(ultimo.by || 'someone') + '</b> · ' +
+          esc(new Date(ultimo.at).toLocaleDateString('en-GB', {
+            day: '2-digit', month: 'short' })) + ' · ' +
+          esc(ultimo.note) +
+        '</div>'
+      : '') +
+
+    (l.next_action
+      ? '<div class="lead-next">Next: ' + esc(l.next_action) + '</div>'
+      : '') +
+
+    '<div class="lead-acts">' +
+      '<button class="mini-btn" data-touch="' + esc(l.id) + '">Log a call</button>' +
+      (l.contacts ? '<span class="muted">' + l.contacts + ' contacts</span>' : '') +
+    '</div>' +
+
+    '</div>';
+}
+
+
+function ligarAcoes(caixa, a) {
+  // Ficar com o aeroporto.
+  qsa('[data-claim]', caixa).forEach(function (b) {
+    b.addEventListener('click', async function () {
+      try {
+        await enviar('/api/maps/owner', { iata: b.getAttribute('data-claim') });
+        pintarEmpresas(caixa, a);
+      } catch (e) { alert(e.message); }
+    });
+  });
+
+  // Registar um contacto.
+  qsa('[data-touch]', caixa).forEach(function (b) {
+    b.addEventListener('click', function () {
+      abrirTouch(b.getAttribute('data-touch'), caixa, a);
+    });
+  });
+
+  // Acrescentar uma empresa.
+  qsa('[data-add]', caixa).forEach(function (b) {
+    b.addEventListener('click', function () {
+      abrirNovoLead(b.getAttribute('data-add'), caixa, a);
+    });
+  });
+}
+
+
+/**
+ * Registar um contacto.
+ *
+ * A nota é obrigatória, e é de propósito: "liguei" sem dizer o que
+ * se disse não serve a ninguém.
+ */
+async function abrirTouch(id, caixa, a) {
+  var nota = prompt('What was said?\n\n' +
+    'Write it as if for somebody else to pick this up tomorrow.');
+
+  if (!nota || !nota.trim()) return;
+
+  var fase = prompt(
+    'New stage? Leave empty to keep it as it is.\n\n' +
+    'contacted · interested · signing · declined · unreachable'
+  );
+
+  var quando = prompt(
+    'Call back on? (YYYY-MM-DD)\n\n' +
+    'Leave empty if there is nothing to chase.'
+  );
+
+  try {
+    await enviar('/api/maps/touch', {
+      lead_id: id,
+      kind: 'call',
+      note: nota.trim(),
+      stage: (fase || '').trim() || null,
+      next_action: (quando || '').trim() || null
+    });
+
+    pintarEmpresas(caixa, a);
+  } catch (e) {
+    alert(e.message);
+  }
+}
+
+
+async function abrirNovoLead(iata, caixa, a) {
+  var nome = prompt('Company name');
+  if (!nome || !nome.trim()) return;
+
+  var tel = prompt('Phone (optional)') || '';
+  var mail = prompt('Email (optional)') || '';
+  var frota = prompt('What do they have? (optional)\n\n' +
+    'e.g. "8 cars, 2 vans, airport transfers since 2015"') || '';
+
+  try {
+    await enviar('/api/maps/lead', {
+      company_name: nome.trim(),
+      airports: [iata],
+      country: a.country || null,
+      phone: tel.trim() || null,
+      email: mail.trim() || null,
+      fleet_note: frota.trim() || null
+    });
+
+    pintarEmpresas(caixa, a);
+  } catch (e) {
+    alert(e.message);
+  }
+}
+
+
+async function enviar(caminho, corpo) {
+  var s = await db.auth.getSession();
+  var token = s.data && s.data.session && s.data.session.access_token;
+
+  if (!token) throw new Error('Sign in again.');
+
+  var res = await fetch(API + caminho, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token
+    },
+    body: JSON.stringify(corpo)
+  });
+
+  var d = await res.json();
+  if (!res.ok) throw new Error(d.error || 'Could not save.');
+
+  return d;
 }
 
 
