@@ -436,6 +436,17 @@ var $ = function (id) { return document.getElementById(id); };
 // A sessão não atravessa origens, por isso esta página não faz
 // login: leva a pessoa ao portal e é lá que tudo acontece.
 function goToPortal(path) {
+  /**
+   * Um motorista clicou para se registar.
+   *
+   * O registo acontece noutro domínio, e o Analytics não o segue.
+   * Este é o último ponto que podemos medir — e chega para saber
+   * se a página está a converter.
+   */
+  if (window.alTrack && String(path || '').indexOf('signup') !== -1) {
+    window.alTrack('partner_signup', { kind: 'driver' });
+  }
+
   window.location.href = PORTAL_URL + (path || '');
 }
 
