@@ -560,6 +560,139 @@
             "Les trajets transfrontaliers vers le Portugal se calculent comme n'importe quelle autre route — mettez l'aéroport et l'hôtel, et le prix arrive péages inclus."
           ]
         ]
+      },
+      "de": {
+        "title": "Vom Flughafen Santiago nach Vigo, zu den Rías und nach Nordportugal",
+        "desc": "Wie Sie vom Flughafen Santiago de Compostela wegkommen, was jede Option kostet, und warum die Grenze nach Porto weniger zählt, als man denkt.",
+        "lead": "Santiago ist ein kleiner Flughafen mit einem grossen Einzugsgebiet. Dreizehn Kilometer von der Kathedrale, anderthalb Stunden von Vigo, und näher an Porto, als die meisten vermuten.",
+        "deck": "Galicien und Nordportugal",
+        "body": [
+          [
+            "h2",
+            "Wohin Sie tatsächlich wollen"
+          ],
+          [
+            "p",
+            "Kaum jemand fliegt nach Santiago, um in Santiago zu bleiben. Die Kathedrale ist das Ende des Jakobswegs und die Altstadt lohnt zwei Tage, aber der Flughafen bedient ganz Galicien — und zunehmend den Norden Portugals."
+          ],
+          [
+            "p",
+            "Er liegt dreizehn Kilometer östlich der Stadt, in Lavacolla. Ein einziges Terminal, leicht zu verlassen, und die Strasse ist in jede Richtung gut. Was sich ändert, ist die Entfernung."
+          ],
+          [
+            "h2",
+            "Santiago ins Zentrum"
+          ],
+          [
+            "p",
+            "Dreizehn Kilometer, zwanzig Minuten. Der Bus fährt halbstündlich und kostet drei Euro. Die richtige Wahl, wenn Sie einen Koffer haben und Ihr Hotel nahe der Praza de Galicia liegt."
+          ],
+          [
+            "p",
+            "Das Problem ist die Altstadt selbst. Sie ist Fussgängerzone — ein Auto bringt Sie nicht bis zur Tür. Am nächsten kommt man an der Praza de Galicia oder an einem der Tore, und von dort geht man zu Fuss. Mit einem Koffer über Granitpflaster um elf Uhr abends wirkt dieses Stück länger, als es ist."
+          ],
+          [
+            "quote",
+            "Die Altstadt ist für Autos gesperrt. Das letzte Stück geht jeder zu Fuss, wir eingeschlossen."
+          ],
+          [
+            "h2",
+            "Santiago nach Vigo"
+          ],
+          [
+            "p",
+            "Neunzig Kilometer über die AP-9, eine Stunde und ein Viertel ohne Verkehr. Vigo hat einen eigenen Flughafen, bekommt aber weit weniger Flüge — viele landen in Santiago, weil es der Flug war, den es gab."
+          ],
+          [
+            "p",
+            "Der Bus braucht zwei Stunden mit Umsteigen. Der Zug ist schneller, aber der Flughafen hat keinen Bahnhof: Sie brauchen erst ein Taxi zum Bahnhof Santiago, und dann zahlen Sie zweimal und schleppen das Gepäck durch zwei Gebäude."
+          ],
+          [
+            "p",
+            "Hier ist ein Direkttransfer die ehrliche Antwort. Nicht das Billigste, aber das Einzige, das Sie mit dem Gepäck noch im Kofferraum vor der Hoteltür absetzt."
+          ],
+          [
+            "h2",
+            "Santiago nach Portugal"
+          ],
+          [
+            "p",
+            "Hier irren sich die meisten. Porto ist zweihundertdreissig Kilometer von Santiago entfernt — drei Stunden Fahrt, und die Grenze ist ein Schild auf der Autobahn. Niemand hält Sie an. Es gibt keine Formalitäten."
+          ],
+          [
+            "p",
+            "Wer in Santiago landet und im Minho bleibt — Viana do Castelo, Braga, Guimarães — fährt keine zwei Stunden. Oft ist es günstiger, nach Santiago zu fliegen und südwärts zu fahren, als im August einen Flug nach Porto zu finden."
+          ],
+          [
+            "p",
+            "Wir fahren diese Strecke. Ein grenzüberschreitender Transfer, als eine einzige Fahrt berechnet, mit demselben Fahrer den ganzen Weg. Kein Fahrzeugwechsel an der Grenze, keine zweite Buchung."
+          ],
+          [
+            "h2",
+            "Die Rías"
+          ],
+          [
+            "p",
+            "Galiciens Küste ist von tiefen Meeresarmen zerschnitten — den Rías — und jede liegt in irgendeiner Richtung unter einer Stunde vom Flughafen. Pontevedra, Sanxenxo, Combarro, O Grove."
+          ],
+          [
+            "p",
+            "Die Strassen sind gut und die Entfernungen kurz, aber die letzten Kilometer sind oft eng und schlecht ausgeschildert. Ein Fahrer, der die Gegend kennt, bringt Sie hin; ein Mietwagen und ein Handy ohne Empfang nicht."
+          ],
+          [
+            "h2",
+            "Was es kostet"
+          ],
+          [
+            "prices",
+            "ES:santiago"
+          ],
+          [
+            "h2",
+            "Bevor Sie irgendetwas buchen"
+          ],
+          [
+            "ul",
+            "Ist der Preis fest oder nach Taxameter? Ein Taxameter berechnet Ihnen den Stau auf der AP-9. Ein Festpreis nicht.",
+            "Sind Mautgebühren enthalten? Die AP-9 nach Vigo ist mautpflichtig, die A3 nach Portugal ebenfalls.",
+            "Was passiert bei Verspätung? Sechzig Minuten kostenlose Wartezeit ab der tatsächlichen Landung ist der vernünftige Standard.",
+            "Passt das Gepäck? Vier Personen mit vier grossen Koffern passen in keine Limousine, was das Formular auch sagt.",
+            "Wo ist die Abholung? In Santiago in der Ankunftshalle, beim Ausgang. Ein Fahrer mit Ihrem Namen auf einem Schild, kein Anruf vom Parkplatz."
+          ],
+          [
+            "h2",
+            "Unsere Strecken ab Santiago"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-vigo/",
+            "Santiago nach Vigo"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-pontevedra/",
+            "Santiago nach Pontevedra"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-a-coruna/",
+            "Santiago nach A Coruña"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-finisterre/",
+            "Santiago nach Finisterre"
+          ],
+          [
+            "link",
+            "/airports/spain/santiago/",
+            "Alle Transfers ab Santiago"
+          ],
+          [
+            "p",
+            "Grenzüberschreitende Fahrten nach Portugal werden wie jede andere Strecke berechnet — geben Sie Flughafen und Hotel ein, und der Preis kommt inklusive Maut zurück."
+          ]
+        ]
       }
     },
     {
@@ -959,7 +1092,106 @@
         ]
       },
       "art": "noite",
-      "image": "/assets/img/blog/airportlink-is-live.jpg"
+      "image": "/assets/img/blog/airportlink-is-live.jpg",
+      "de": {
+        "title": "Airportlink ist online",
+        "desc": "Private Flughafentransfers zum vorher vereinbarten Preis, in Portugal und Spanien. Was wir gebaut haben und warum der Preis sich nicht bewegt.",
+        "lead": "Wir haben Airportlink gebaut, weil das Letzte, worüber Sie sich nach einem langen Flug Gedanken machen sollten, der Preis der Fahrt zum Hotel ist. So funktioniert es.",
+        "deck": "Was wir gebaut haben",
+        "body": [
+          [
+            "h2",
+            "Das Problem mit dem Ankommen"
+          ],
+          [
+            "p",
+            "Sie landen nach einem verspäteten Flug, um elf Uhr nachts, in einem Land, dessen Sprache Sie nicht sprechen. Da ist eine Taxischlange, ein Taxameter, das Sie nicht nachrechnen können, und eine Fahrt, deren Preis Sie erst am Ziel erfahren."
+          ],
+          [
+            "p",
+            "Ein Taxameter berechnet Ihnen den Stau. Eine Fahrdienst-App hebt den Preis an, wenn die Ankunftshalle voll ist — genau dann, wenn Sie am wenigsten Wahl haben. Keines von beiden ist für den Moment gemacht, in dem Sie mit Gepäck aus dem Flugzeug kommen."
+          ],
+          [
+            "h2",
+            "Was wir stattdessen tun"
+          ],
+          [
+            "p",
+            "Sie geben ein, wo Sie landen und wohin Sie fahren. Sie bekommen einen Preis. Dieser Preis enthält Maut, Steuern und das ganze Fahrzeug — und er ändert sich danach nicht mehr."
+          ],
+          [
+            "quote",
+            "Die Zahl, die Sie bei der Buchung sehen, ist die Zahl, die Sie zahlen."
+          ],
+          [
+            "p",
+            "Ihr Fahrer verfolgt den Flug, den Sie uns genannt haben. Landen Sie neunzig Minuten später, verschiebt sich die Abholung mit Ihnen, und die ersten sechzig Minuten Wartezeit nach der Landung sind kostenlos."
+          ],
+          [
+            "h2",
+            "Wer tatsächlich fährt"
+          ],
+          [
+            "p",
+            "Wir sind keine Flotte. Jeden Transfer fährt ein lizenziertes lokales Unternehmen — TVDE oder Taxi in Portugal, VTC in Spanien — und wir prüfen die Lizenzen, bevor jemand eine Fahrt bekommt."
+          ],
+          [
+            "p",
+            "Das zählt mehr, als es klingt. Ein lizenzierter Betreiber hat eine gewerbliche Versicherung, die zahlende Fahrgäste abdeckt. Ein Privatwagen hat das nicht, und das merken Sie erst, wenn etwas passiert."
+          ],
+          [
+            "h2",
+            "Wo wir heute fahren"
+          ],
+          [
+            "p",
+            "Portugal und Spanien, mit 160 Strecken über 31 Flughäfen. Lissabon, Porto und Faro decken die Algarve und beide Küsten ab; in Spanien fahren wir ab Madrid und Barcelona bis zu den Inseln."
+          ],
+          [
+            "explorer"
+          ],
+          [
+            "p",
+            "Am häufigsten gebucht werden die Strecken, auf denen öffentliche Verkehrsmittel mit Gepäck wirklich mühsam sind:"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-albufeira/",
+            "Flughafen Faro nach Albufeira"
+          ],
+          [
+            "link",
+            "/transfers/portugal/lisbon-to-cascais/",
+            "Flughafen Lissabon nach Cascais"
+          ],
+          [
+            "link",
+            "/transfers/spain/madrid-to-toledo/",
+            "Flughafen Madrid nach Toledo"
+          ],
+          [
+            "link",
+            "/transfers/spain/malaga-to-marbella/",
+            "Flughafen Málaga nach Marbella"
+          ],
+          [
+            "p",
+            "Wir kommen stetig in neue Länder. Steht Ihre Strecke noch nicht in der Liste, berechnet der Rechner sie trotzdem — wir fahren überall, wo unsere Partner fahren."
+          ],
+          [
+            "h2",
+            "Kostenlose Stornierung, und heute keine Karte"
+          ],
+          [
+            "p",
+            "Pläne ändern sich. Stornieren Sie bis 24 Stunden vor der Abholung, und die Erstattung ist automatisch und vollständig. Auf vielen Strecken können Sie ganz ohne Zahlung buchen, und wir belasten die Karte erst kurz vor der Fahrt."
+          ],
+          [
+            "p",
+            "Das ist das ganze Produkt. Ein Fahrer, der auf Sie wartet, zu einem Preis, den Sie schon kennen."
+          ]
+        ]
+      }
     },
     {
       "slug": "faro-airport-to-algarve-what-it-costs",
@@ -1511,7 +1743,143 @@
         "deck": "Les chiffres, sans les astérisques"
       },
       "image": "/assets/img/blog/faro-algarve.jpg",
-      "heroStyle": "band"
+      "heroStyle": "band",
+      "de": {
+        "title": "Was die Fahrt vom Flughafen Faro an die Algarve wirklich kostet",
+        "desc": "Taxi, Bus, Mietwagen oder privater Transfer. Die echten Zahlen für Albufeira, Vilamoura, Lagos und vier weitere Orte, und wo jede Option scheitert.",
+        "lead": "Der Flughafen Faro bedient die ganze Algarve, und fast niemand, der dort landet, bleibt in Faro. Vor der Buchung stellt jeder dieselbe Frage: Was kostet es bis zum Hotel? Hier sind die Zahlen, ohne Sternchen.",
+        "deck": "Preise an der Algarve",
+        "body": [
+          [
+            "h2",
+            "Die vier Wege vom Flughafen weg"
+          ],
+          [
+            "p",
+            "Faro hat ein Terminal und vier Möglichkeiten, es zu verlassen. Jede passt zu jemandem, und jede versagt bei jemandem."
+          ],
+          [
+            "p",
+            "Der Bus Nummer 16 bringt Sie für 2,70 € in zwanzig Minuten in die Stadt Faro. Das Billigste, was es gibt, und für die meisten Fluggäste nutzlos — er fährt nicht nach Albufeira, Vilamoura oder Lagos. Er endet vor 20 Uhr und nimmt nur Bargeld."
+          ],
+          [
+            "p",
+            "Der Zug klingt gut, bis man merkt, dass es keinen Flughafenanschluss gibt. Sie brauchen ein Taxi zum Bahnhof Faro, dann Wartezeit, dann Umsteigen. Mit Gepäck und Kindern haben Sie beim Fahrpreis gespart und zwei Stunden Ihres Lebens verloren."
+          ],
+          [
+            "h2",
+            "Das Taxi mit Taxameter"
+          ],
+          [
+            "p",
+            "Der Stand ist immer da und braucht keine Buchung, und das ist sein echter Vorteil. Das Problem ist, dass Sie den Preis erst am Ende erfahren."
+          ],
+          [
+            "p",
+            "Albufeira kostet unter normalen Bedingungen 60 bis 70 € auf dem Taxameter. An einem Samstag im August um fünf Uhr nachmittags, bei voller A22, können daraus über 85 € werden — weil das Taxameter auch das Stillstehen berechnet. Nach 21 Uhr und am Wochenende kommen rund 20 % dazu."
+          ],
+          [
+            "quote",
+            "Ein Taxameter berechnet Ihnen den Stau. Ein Festpreis nicht."
+          ],
+          [
+            "p",
+            "Und dann ist da die Schlange. An einem Sommersamstag ist die Ankunftshalle in Faro die vollste Portugals, und die Wartezeit am Stand kann eine halbe Stunde überschreiten."
+          ],
+          [
+            "h2",
+            "Der Mietwagen"
+          ],
+          [
+            "p",
+            "Sinnvoll, wenn Sie jeden Tag die Algarve erkunden wollen. Sinnlos, wenn Sie in einer Anlage wohnen und zweimal ausgehen."
+          ],
+          [
+            "p",
+            "Der beworbene Preis — 30 bis 40 € pro Tag ausserhalb der Saison — ist nicht der, den Sie zahlen. Dazu kommen Versicherung, Sprit, Hotelparkplatz und die auf der Karte blockierte Kaution. Und im August stehen Sie am Flughafenschalter eine Stunde an, am Ende eines Reisetages."
+          ],
+          [
+            "h2",
+            "Der private Transfer"
+          ],
+          [
+            "p",
+            "Der Preis wird vor der Buchung vereinbart und bewegt sich nicht. Er umfasst das ganze Fahrzeug, die Maut und die Steuern. Das sind unsere aktuellen Preise ab Faro, für bis zu vier Personen:"
+          ],
+          [
+            "prices",
+            "PT:faro"
+          ],
+          [
+            "p",
+            "Für Gruppen von fünf bis acht wird daraus ein Van — Albufeira 93 €, Lagos 178 €. Auf sechs Personen verteilt sind das unter 16 € pro Person bis Albufeira."
+          ],
+          [
+            "h2",
+            "Wo die Rechnung kippt"
+          ],
+          [
+            "p",
+            "Für ein oder zwei Personen mit leichtem Gepäck, die in Faro selbst bleiben, gewinnt der Bus, und darüber gibt es keine Diskussion. Zwei Euro siebzig gegen alles andere ist kein Vergleich."
+          ],
+          [
+            "p",
+            "Ab drei Personen, oder für jedes Ziel westlich von Faro, dreht sich die Rechnung um. Eine vierköpfige Familie nach Albufeira zahlt 55 € im Festpreistransfer, gegen 60 bis 85 € im Taxi, dessen Endsumme sie erst am Ziel erfährt."
+          ],
+          [
+            "p",
+            "Und es gibt eine Variable, die keine Tabelle zeigt: der Flug hat Verspätung. Landen Sie neunzig Minuten später, ist das Taxi nicht für Sie gebucht, und der Mietwagenschalter kann geschlossen sein. Ein Transfer folgt der Flugnummer und passt sich selbst an."
+          ],
+          [
+            "h2",
+            "Was Sie vor jeder Buchung fragen sollten"
+          ],
+          [
+            "ul",
+            "Ist die Maut im Preis? Die A22 hat sie 2025 abgeschafft, die Strassen nach Norden nicht.",
+            "Was passiert bei Verspätung? Sechzig Minuten kostenlose Wartezeit ist der vernünftige Standard.",
+            "Passt das Gepäck? Ein grosser Koffer pro Person passt selten in eine viersitzige Limousine.",
+            "Wo genau ist die Abholung? In Faro in der Ankunftshalle, direkt hinter dem Zoll."
+          ],
+          [
+            "h2",
+            "Eine Anmerkung zu Ortsnamen"
+          ],
+          [
+            "p",
+            "Albufeira hat drei Hotelgebiete, kilometerweit auseinander. Vilamoura erstreckt sich über mehrere Kilometer rund um den Yachthafen. Nur den Ortsnamen anzugeben ist die häufigste Ursache für eine verspätete Ankunft an der Algarve."
+          ],
+          [
+            "p",
+            "Geben Sie den Namen des Hotels oder der Anlage an. Es ist die eine Information, die der Fahrer braucht, und die, die die meisten vergessen."
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-albufeira/",
+            "Faro nach Albufeira"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-vilamoura/",
+            "Faro nach Vilamoura"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-lagos/",
+            "Faro nach Lagos"
+          ],
+          [
+            "link",
+            "/transfers/portugal/faro-to-carvoeiro/",
+            "Faro nach Carvoeiro"
+          ],
+          [
+            "link",
+            "/airports/portugal/faro/",
+            "Alle Transfers ab Faro"
+          ]
+        ]
+      }
     }
   ]
 }
