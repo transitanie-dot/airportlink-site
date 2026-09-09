@@ -25,6 +25,43 @@
  * 776 sítios para mudar de cada vez que a conta mudasse.
  * ---------------------------------------------------------------
  */
+/**
+ * ---------------------------------------------------------------
+ * OS EVENTOS QUE INTERESSAM
+ *
+ * O Analytics mede visitas sozinho. O que ele não sabe é o que
+ * conta para este negócio: quantas pessoas pediram um preço,
+ * quantas chegaram ao checkout, e quantas desistiram no meio.
+ *
+ * Cinco eventos e mais nenhum. Uma lista de trinta não se lê, e
+ * uma que se não lê não muda decisão nenhuma.
+ *
+ *   quote_requested   pediu um preço na calculadora
+ *   checkout_started  carregou em reservar
+ *   booking_paid      pagou
+ *   booking_saved     guardou o cartão (pay later)
+ *   partner_signup    um parceiro ou agência candidatou-se
+ *
+ * A função é global de propósito: as páginas geradas e o checkout
+ * chamam-na sem ter de importar nada.
+ * ---------------------------------------------------------------
+ */
+window.alTrack = function (nome, dados) {
+  try {
+    if (!window.gtag) return;
+
+    /**
+     * O valor vai em euros, sempre.
+     *
+     * O Analytics soma valores de moedas diferentes sem avisar. Um
+     * dia com uma reserva de 300 libras e outra de 300 euros
+     * mostrava 600, e esse número não quer dizer nada.
+     */
+    window.gtag('event', nome, dados || {});
+  } catch (e) {}
+};
+
+
 (function cookies() {
   var GA_ID = 'G-GTP634FCKN';
   var KEY = 'airportlink-consent';
@@ -336,6 +373,12 @@
       '</div>' +
     '</div>';
 
+  // O boneco da conta, para quem já entrou.
+  var PERSON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>' +
+    '<circle cx="12" cy="7" r="4"/></svg>';
+
   var MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
     'stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
   var BARS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
@@ -381,8 +424,20 @@
       '<div class="header-right">' +
         LANG_PICK +
         '<button class="icon-btn" id="themeBtn" type="button" aria-label="Switch theme">' + MOON + '</button>' +
-        '<a class="hbtn line" href="' + esc(account.href) + '"' + key(account) + '>' +
-          esc(account.label) + '</a>' +
+        /**
+         * Logado: um boneco. Deslogado: "Sign in".
+         *
+         * Quem já entrou não precisa de ler "My account" — sabe
+         * que tem conta. O ícone diz o mesmo em 40 pixels em vez
+         * de 110, e no telemóvel esses 70 são a diferença entre o
+         * menu caber ou não.
+         */
+        (signedIn
+          ? '<a class="icon-btn account-btn" href="' + esc(account.href) + '" ' +
+            'aria-label="' + esc(account.label) + '" title="' + esc(account.label) + '">' +
+            PERSON + '</a>'
+          : '<a class="hbtn line" href="' + esc(account.href) + '"' + key(account) + '>' +
+            esc(account.label) + '</a>') +
         '<a class="hbtn" href="' + esc(ctaHref) + '" data-i18n="nav.getPrice">' +
           esc(ctaLabel) + '</a>' +
         '<button class="icon-btn burger" id="burger" type="button" aria-label="Menu" ' +
