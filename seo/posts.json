@@ -24,6 +24,545 @@
   ],
   "posts": [
     {
+      "slug": "santiago-airport-to-vigo-and-portugal",
+      "date": "2026-09-09",
+      "tag": "routes",
+      "image": "/assets/img/blog/santiago-airport.jpg",
+      "art": "costa",
+      "en": {
+        "title": "Santiago Airport to Vigo, the rías and northern Portugal",
+        "desc": "How to get out of Santiago de Compostela airport, what each option costs, and why the border to Porto matters less than you think.",
+        "lead": "Santiago is a small airport with a big catchment. Thirteen kilometres from the cathedral, ninety minutes from Vigo, and closer to Porto than most people realise.",
+        "deck": "Galicia and northern Portugal",
+        "body": [
+          [
+            "h2",
+            "Where you actually want to go"
+          ],
+          [
+            "p",
+            "Almost nobody flies into Santiago to stay in Santiago. The cathedral is the end of the Camino and the old town is worth two days, but the airport serves the whole of Galicia — and, increasingly, the north of Portugal."
+          ],
+          [
+            "p",
+            "The airport sits thirteen kilometres east of the city, at Lavacolla. It is a single terminal, easy to leave, and the road out is good in every direction. What changes is how far you are going."
+          ],
+          [
+            "h2",
+            "Santiago to the city centre"
+          ],
+          [
+            "p",
+            "Thirteen kilometres, twenty minutes. The bus runs every half hour and costs three euros. It is the right choice if you have one bag and your hotel is near Praza de Galicia."
+          ],
+          [
+            "p",
+            "The catch is the old town itself. It is pedestrian — a driver cannot take you to your door. The closest a car gets is Praza de Galicia or one of the gates, and from there you walk. With a suitcase on granite cobbles at eleven at night, that walk feels longer than it is."
+          ],
+          [
+            "quote",
+            "The old town is closed to traffic. Everyone walks the last part, including us."
+          ],
+          [
+            "h2",
+            "Santiago to Vigo"
+          ],
+          [
+            "p",
+            "Ninety kilometres down the AP-9, an hour and a quarter without traffic. Vigo has its own airport, but it takes far fewer flights — plenty of people land in Santiago because that was the flight that existed."
+          ],
+          [
+            "p",
+            "The bus takes two hours with a change. The train is faster but the airport has no station, so you need a taxi to Santiago station first, and then you are paying twice and carrying bags through two buildings."
+          ],
+          [
+            "p",
+            "A direct transfer is the honest answer for this one. It is not the cheapest way, but it is the only one that puts you at your hotel door with the bags still in the boot."
+          ],
+          [
+            "h2",
+            "Santiago to Portugal"
+          ],
+          [
+            "p",
+            "This is the part people get wrong. Porto is two hundred and thirty kilometres from Santiago — three hours by road, and the border is a sign on the motorway. Nobody stops you. There is no formality."
+          ],
+          [
+            "p",
+            "For anyone flying into Santiago and staying in the Minho — Viana do Castelo, Braga, Guimarães — the drive is under two hours. It is often cheaper to fly to Santiago and drive south than to find a flight into Porto in August."
+          ],
+          [
+            "p",
+            "We do this route. It is a cross-border transfer, priced as one journey, with one driver the whole way. No change of car at the border, no second booking."
+          ],
+          [
+            "h2",
+            "The rías"
+          ],
+          [
+            "p",
+            "Galicia's coastline is cut into deep inlets — the rías — and each of them is under an hour from the airport in some direction. Pontevedra, Sanxenxo, Combarro, O Grove."
+          ],
+          [
+            "p",
+            "The roads are good and the distances are short, but the last few kilometres are often narrow and badly signposted. A driver who knows the area gets you there; a hire car and a phone with no signal does not."
+          ],
+          [
+            "h2",
+            "What it costs"
+          ],
+          [
+            "prices",
+            "ES:santiago"
+          ],
+          [
+            "h2",
+            "Before you book anything"
+          ],
+          [
+            "ul",
+            "Is the price fixed or metered? A meter charges you for traffic on the AP-9. A fixed price does not.",
+            "Does it include tolls? The AP-9 to Vigo is a toll road, and so is the A3 into Portugal.",
+            "What happens if the flight is late? Sixty minutes of free waiting from the actual landing time is the reasonable standard.",
+            "Will the luggage fit? Four people with four large cases do not fit a sedan, whatever the booking form says.",
+            "Where is the pick-up? At Santiago it is arrivals, by the exit. A driver with your name on a sign, not a phone call from the car park."
+          ],
+          [
+            "h2",
+            "The routes we run from Santiago"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-vigo/",
+            "Santiago to Vigo"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-pontevedra/",
+            "Santiago to Pontevedra"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-a-coruna/",
+            "Santiago to A Coruña"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-finisterre/",
+            "Santiago to Finisterre"
+          ],
+          [
+            "link",
+            "/airports/spain/santiago/",
+            "All Santiago transfers"
+          ],
+          [
+            "p",
+            "Cross-border journeys into Portugal are quoted on the calculator like any other route — put the airport in and your hotel in, and the price comes back with the tolls in it."
+          ]
+        ]
+      },
+      "pt": {
+        "title": "Do aeroporto de Santiago para Vigo, as rias e o norte de Portugal",
+        "desc": "Como sair do aeroporto de Santiago de Compostela, quanto custa cada opção, e porque é que a fronteira até ao Porto conta menos do que se pensa.",
+        "lead": "Santiago é um aeroporto pequeno com uma área de influência grande. Treze quilómetros da catedral, hora e meia de Vigo, e mais perto do Porto do que a maioria das pessoas imagina.",
+        "deck": "Galiza e norte de Portugal",
+        "body": [
+          [
+            "h2",
+            "Para onde se vai mesmo"
+          ],
+          [
+            "p",
+            "Quase ninguém voa para Santiago para ficar em Santiago. A catedral é o fim do Caminho e o centro histórico dá para dois dias, mas o aeroporto serve a Galiza inteira — e, cada vez mais, o norte de Portugal."
+          ],
+          [
+            "p",
+            "Fica treze quilómetros a leste da cidade, em Lavacolla. É um terminal só, fácil de sair, e a estrada é boa em todas as direções. O que muda é a distância."
+          ],
+          [
+            "h2",
+            "Santiago para o centro"
+          ],
+          [
+            "p",
+            "Treze quilómetros, vinte minutos. O autocarro passa de meia em meia hora e custa três euros. É a escolha certa se levar uma mala e o hotel for perto da Praza de Galicia."
+          ],
+          [
+            "p",
+            "O problema é o centro histórico. É pedonal — um carro não o deixa à porta. O mais perto que chega é a Praza de Galicia ou uma das portas, e daí vai a pé. Com uma mala sobre calçada de granito às onze da noite, esse bocado parece mais longo do que é."
+          ],
+          [
+            "quote",
+            "O centro é fechado ao trânsito. Toda a gente faz a última parte a pé, nós incluídos."
+          ],
+          [
+            "h2",
+            "Santiago para Vigo"
+          ],
+          [
+            "p",
+            "Noventa quilómetros pela AP-9, hora e um quarto sem trânsito. Vigo tem aeroporto próprio, mas recebe muito menos voos — muita gente aterra em Santiago porque era o voo que havia."
+          ],
+          [
+            "p",
+            "O autocarro leva duas horas com uma mudança. O comboio é mais rápido, mas o aeroporto não tem estação: precisa de um táxi até à estação de Santiago primeiro, e aí já paga duas vezes e arrasta as malas por dois edifícios."
+          ],
+          [
+            "p",
+            "Para esta, um transfer direto é a resposta honesta. Não é a mais barata, mas é a única que o põe à porta do hotel com as malas ainda na mala do carro."
+          ],
+          [
+            "h2",
+            "Santiago para Portugal"
+          ],
+          [
+            "p",
+            "É aqui que as pessoas se enganam. O Porto fica a duzentos e trinta quilómetros de Santiago — três horas de estrada, e a fronteira é uma placa na autoestrada. Ninguém o pára. Não há formalidade nenhuma."
+          ],
+          [
+            "p",
+            "Para quem aterra em Santiago e fica no Minho — Viana do Castelo, Braga, Guimarães — são menos de duas horas. Sai muitas vezes mais barato voar para Santiago e descer do que encontrar um voo para o Porto em agosto."
+          ],
+          [
+            "p",
+            "Fazemos esta rota. É um transfer transfronteiriço, cobrado como uma viagem só, com o mesmo motorista todo o caminho. Sem trocar de carro na fronteira, sem segunda reserva."
+          ],
+          [
+            "h2",
+            "As rias"
+          ],
+          [
+            "p",
+            "A costa galega é recortada em braços de mar profundos — as rias — e cada um deles fica a menos de uma hora do aeroporto, em alguma direção. Pontevedra, Sanxenxo, Combarro, O Grove."
+          ],
+          [
+            "p",
+            "As estradas são boas e as distâncias curtas, mas os últimos quilómetros costumam ser estreitos e mal sinalizados. Um motorista que conhece a zona leva-o lá; um carro alugado e um telemóvel sem rede não."
+          ],
+          [
+            "h2",
+            "Quanto custa"
+          ],
+          [
+            "prices",
+            "ES:santiago"
+          ],
+          [
+            "h2",
+            "Antes de reservar seja o que for"
+          ],
+          [
+            "ul",
+            "O preço é fixo ou ao taxímetro? Um taxímetro cobra-lhe o trânsito na AP-9. Um preço fixo não.",
+            "Inclui portagens? A AP-9 até Vigo é portajada, e a A3 para Portugal também.",
+            "E se o voo atrasar? Sessenta minutos de espera grátis a contar da aterragem real é o padrão razoável.",
+            "As malas cabem? Quatro pessoas com quatro malas grandes não cabem num sedan, diga o formulário o que disser.",
+            "Onde é a recolha? Em Santiago é nas chegadas, junto à saída. Um motorista com o seu nome numa placa, não uma chamada do parque."
+          ],
+          [
+            "h2",
+            "As rotas que fazemos de Santiago"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-vigo/",
+            "Santiago para Vigo"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-pontevedra/",
+            "Santiago para Pontevedra"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-a-coruna/",
+            "Santiago para A Coruña"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-finisterre/",
+            "Santiago para Finisterra"
+          ],
+          [
+            "link",
+            "/airports/spain/santiago/",
+            "Todos os transfers de Santiago"
+          ],
+          [
+            "p",
+            "As viagens transfronteiriças para Portugal são calculadas como qualquer outra rota — ponha o aeroporto e o hotel, e o preço vem com as portagens incluídas."
+          ]
+        ]
+      },
+      "es": {
+        "title": "Del aeropuerto de Santiago a Vigo, las rías y el norte de Portugal",
+        "desc": "Cómo salir del aeropuerto de Santiago de Compostela, qué cuesta cada opción y por qué la frontera con Oporto importa menos de lo que parece.",
+        "lead": "Santiago es un aeropuerto pequeño con un área de influencia grande. Trece kilómetros de la catedral, hora y media de Vigo, y más cerca de Oporto de lo que la mayoría imagina.",
+        "deck": "Galicia y el norte de Portugal",
+        "body": [
+          [
+            "h2",
+            "Adónde se va de verdad"
+          ],
+          [
+            "p",
+            "Casi nadie vuela a Santiago para quedarse en Santiago. La catedral es el final del Camino y el casco viejo da para dos días, pero el aeropuerto sirve a toda Galicia — y, cada vez más, al norte de Portugal."
+          ],
+          [
+            "p",
+            "Está trece kilómetros al este de la ciudad, en Lavacolla. Es una sola terminal, fácil de dejar, y la carretera es buena en todas las direcciones. Lo que cambia es la distancia."
+          ],
+          [
+            "h2",
+            "Santiago al centro"
+          ],
+          [
+            "p",
+            "Trece kilómetros, veinte minutos. El autobús pasa cada media hora y cuesta tres euros. Es la opción correcta si lleva una maleta y el hotel está cerca de la Praza de Galicia."
+          ],
+          [
+            "p",
+            "El problema es el casco viejo. Es peatonal — un coche no le deja en la puerta. Lo más cerca que llega es Praza de Galicia o una de las puertas, y desde ahí se camina. Con una maleta sobre adoquines de granito a las once de la noche, ese tramo se hace largo."
+          ],
+          [
+            "quote",
+            "El casco viejo está cerrado al tráfico. Todo el mundo hace el último trozo a pie, nosotros incluidos."
+          ],
+          [
+            "h2",
+            "Santiago a Vigo"
+          ],
+          [
+            "p",
+            "Noventa kilómetros por la AP-9, hora y cuarto sin tráfico. Vigo tiene aeropuerto propio, pero recibe muchos menos vuelos — mucha gente aterriza en Santiago porque era el vuelo que había."
+          ],
+          [
+            "p",
+            "El autobús tarda dos horas con un cambio. El tren es más rápido, pero el aeropuerto no tiene estación: necesita un taxi hasta la estación de Santiago primero, y ahí ya paga dos veces y arrastra maletas por dos edificios."
+          ],
+          [
+            "p",
+            "Para esta, un traslado directo es la respuesta honesta. No es lo más barato, pero es lo único que le deja en la puerta del hotel con las maletas todavía en el maletero."
+          ],
+          [
+            "h2",
+            "Santiago a Portugal"
+          ],
+          [
+            "p",
+            "Aquí es donde la gente se equivoca. Oporto está a doscientos treinta kilómetros de Santiago — tres horas de carretera, y la frontera es un cartel en la autopista. Nadie le para. No hay ningún trámite."
+          ],
+          [
+            "p",
+            "Para quien aterriza en Santiago y se queda en el Miño — Viana do Castelo, Braga, Guimarães — son menos de dos horas. Muchas veces sale más barato volar a Santiago y bajar que encontrar un vuelo a Oporto en agosto."
+          ],
+          [
+            "p",
+            "Hacemos esta ruta. Es un traslado transfronterizo, con precio de un solo viaje y el mismo conductor todo el camino. Sin cambiar de coche en la frontera, sin segunda reserva."
+          ],
+          [
+            "h2",
+            "Las rías"
+          ],
+          [
+            "p",
+            "La costa gallega está recortada en brazos de mar profundos — las rías — y cada uno queda a menos de una hora del aeropuerto, en alguna dirección. Pontevedra, Sanxenxo, Combarro, O Grove."
+          ],
+          [
+            "p",
+            "Las carreteras son buenas y las distancias cortas, pero los últimos kilómetros suelen ser estrechos y mal señalizados. Un conductor que conoce la zona le lleva; un coche de alquiler y un móvil sin cobertura no."
+          ],
+          [
+            "h2",
+            "Qué cuesta"
+          ],
+          [
+            "prices",
+            "ES:santiago"
+          ],
+          [
+            "h2",
+            "Antes de reservar nada"
+          ],
+          [
+            "ul",
+            "¿El precio es fijo o con taxímetro? Un taxímetro le cobra el tráfico en la AP-9. Un precio fijo no.",
+            "¿Incluye peajes? La AP-9 hasta Vigo es de pago, y la A3 hacia Portugal también.",
+            "¿Y si el vuelo se retrasa? Sesenta minutos de espera gratis desde el aterrizaje real es el estándar razonable.",
+            "¿Caben las maletas? Cuatro personas con cuatro maletas grandes no caben en un sedán, diga lo que diga el formulario.",
+            "¿Dónde es la recogida? En Santiago es en llegadas, junto a la salida. Un conductor con su nombre en un cartel, no una llamada desde el aparcamiento."
+          ],
+          [
+            "h2",
+            "Las rutas que hacemos desde Santiago"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-vigo/",
+            "Santiago a Vigo"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-pontevedra/",
+            "Santiago a Pontevedra"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-a-coruna/",
+            "Santiago a A Coruña"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-finisterre/",
+            "Santiago a Finisterre"
+          ],
+          [
+            "link",
+            "/airports/spain/santiago/",
+            "Todos los traslados de Santiago"
+          ],
+          [
+            "p",
+            "Los viajes transfronterizos a Portugal se calculan como cualquier otra ruta — ponga el aeropuerto y el hotel, y el precio viene con los peajes dentro."
+          ]
+        ]
+      },
+      "fr": {
+        "title": "De l'aéroport de Saint-Jacques à Vigo, aux rías et au nord du Portugal",
+        "desc": "Comment sortir de l'aéroport de Saint-Jacques-de-Compostelle, ce que coûte chaque option, et pourquoi la frontière vers Porto compte moins qu'on ne le croit.",
+        "lead": "Saint-Jacques est un petit aéroport avec une grande zone d'influence. Treize kilomètres de la cathédrale, une heure et demie de Vigo, et plus près de Porto que la plupart des gens ne l'imaginent.",
+        "deck": "Galice et nord du Portugal",
+        "body": [
+          [
+            "h2",
+            "Où l'on va vraiment"
+          ],
+          [
+            "p",
+            "Presque personne ne vole vers Saint-Jacques pour rester à Saint-Jacques. La cathédrale est la fin du Chemin et la vieille ville vaut deux jours, mais l'aéroport dessert toute la Galice — et, de plus en plus, le nord du Portugal."
+          ],
+          [
+            "p",
+            "Il se trouve à treize kilomètres à l'est de la ville, à Lavacolla. Un seul terminal, facile à quitter, et la route est bonne dans toutes les directions. Ce qui change, c'est la distance."
+          ],
+          [
+            "h2",
+            "Saint-Jacques au centre"
+          ],
+          [
+            "p",
+            "Treize kilomètres, vingt minutes. Le bus passe toutes les demi-heures et coûte trois euros. C'est le bon choix avec une valise et un hôtel près de la Praza de Galicia."
+          ],
+          [
+            "p",
+            "Le problème, c'est la vieille ville. Elle est piétonne — une voiture ne vous dépose pas à la porte. Le plus près, c'est la Praza de Galicia ou l'une des portes, et de là on marche. Avec une valise sur des pavés de granit à onze heures du soir, ce bout de chemin paraît long."
+          ],
+          [
+            "quote",
+            "La vieille ville est fermée à la circulation. Tout le monde fait la fin à pied, nous compris."
+          ],
+          [
+            "h2",
+            "Saint-Jacques à Vigo"
+          ],
+          [
+            "p",
+            "Quatre-vingt-dix kilomètres par l'AP-9, une heure et quart sans circulation. Vigo a son propre aéroport, mais reçoit bien moins de vols — beaucoup de gens atterrissent à Saint-Jacques parce que c'était le vol disponible."
+          ],
+          [
+            "p",
+            "Le bus met deux heures avec un changement. Le train est plus rapide, mais l'aéroport n'a pas de gare : il faut d'abord un taxi jusqu'à la gare de Saint-Jacques, et là vous payez deux fois en traînant les bagages dans deux bâtiments."
+          ],
+          [
+            "p",
+            "Pour celle-ci, un transfert direct est la réponse honnête. Ce n'est pas le moins cher, mais c'est le seul qui vous dépose à la porte de l'hôtel avec les valises encore dans le coffre."
+          ],
+          [
+            "h2",
+            "Saint-Jacques au Portugal"
+          ],
+          [
+            "p",
+            "C'est là que les gens se trompent. Porto est à deux cent trente kilomètres de Saint-Jacques — trois heures de route, et la frontière est un panneau sur l'autoroute. Personne ne vous arrête. Aucune formalité."
+          ],
+          [
+            "p",
+            "Pour qui atterrit à Saint-Jacques et loge dans le Minho — Viana do Castelo, Braga, Guimarães — c'est moins de deux heures. Il revient souvent moins cher de voler sur Saint-Jacques et de descendre que de trouver un vol sur Porto en août."
+          ],
+          [
+            "p",
+            "Nous faisons cette route. C'est un transfert transfrontalier, facturé comme un seul trajet, avec le même chauffeur tout du long. Pas de changement de voiture à la frontière, pas de deuxième réservation."
+          ],
+          [
+            "h2",
+            "Les rías"
+          ],
+          [
+            "p",
+            "La côte galicienne est découpée en bras de mer profonds — les rías — et chacun se trouve à moins d'une heure de l'aéroport, dans une direction ou une autre. Pontevedra, Sanxenxo, Combarro, O Grove."
+          ],
+          [
+            "p",
+            "Les routes sont bonnes et les distances courtes, mais les derniers kilomètres sont souvent étroits et mal indiqués. Un chauffeur qui connaît la région vous y emmène ; une voiture de location et un téléphone sans réseau, non."
+          ],
+          [
+            "h2",
+            "Ce que ça coûte"
+          ],
+          [
+            "prices",
+            "ES:santiago"
+          ],
+          [
+            "h2",
+            "Avant de réserver quoi que ce soit"
+          ],
+          [
+            "ul",
+            "Le prix est-il fixe ou au compteur ? Un compteur vous facture les embouteillages sur l'AP-9. Un prix fixe, non.",
+            "Les péages sont-ils inclus ? L'AP-9 vers Vigo est payante, et l'A3 vers le Portugal aussi.",
+            "Et si le vol a du retard ? Soixante minutes d'attente gratuite à partir de l'atterrissage réel est la norme raisonnable.",
+            "Les bagages rentrent-ils ? Quatre personnes avec quatre grandes valises ne rentrent pas dans une berline, quoi qu'en dise le formulaire.",
+            "Où se fait la prise en charge ? À Saint-Jacques, aux arrivées, près de la sortie. Un chauffeur avec votre nom sur une pancarte, pas un appel depuis le parking."
+          ],
+          [
+            "h2",
+            "Les trajets que nous assurons depuis Saint-Jacques"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-vigo/",
+            "Saint-Jacques à Vigo"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-pontevedra/",
+            "Saint-Jacques à Pontevedra"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-a-coruna/",
+            "Saint-Jacques à La Corogne"
+          ],
+          [
+            "link",
+            "/transfers/spain/santiago-to-finisterre/",
+            "Saint-Jacques à Finisterre"
+          ],
+          [
+            "link",
+            "/airports/spain/santiago/",
+            "Tous les transferts de Saint-Jacques"
+          ],
+          [
+            "p",
+            "Les trajets transfrontaliers vers le Portugal se calculent comme n'importe quelle autre route — mettez l'aéroport et l'hôtel, et le prix arrive péages inclus."
+          ]
+        ]
+      }
+    },
+    {
       "slug": "airportlink-is-live",
       "date": "2026-08-31",
       "tag": "company",
