@@ -1880,6 +1880,56 @@ function calculateRouteAndPrice() {
 
   setStatus('Calculating route and fare...');
 
+  /**
+   * Servimos aqui?
+   *
+   * Perguntado antes de calcular. Dar um preço para um sítio onde
+   * não há ninguém é vender uma coisa que não existe — e a
+   * devolução do dinheiro não devolve a confiança.
+   *
+   * O servidor sabe: são os 440 aeroportos operacionais, em 129
+   * países. Abrir um mercado novo é uma linha de SQL, e isto
+   * acompanha sozinho.
+   */
+  fetch(RENDER_URL + '/api/coverage' +
+    '?from=' + encodeURIComponent(pickupPlace.fullDescription || '') +
+    '&to=' + encodeURIComponent(dropoffPlace.fullDescription || ''))
+    .then(function (r) { return r.json(); })
+    .then(function (c) {
+      if (c.covered === false) {
+        setStatus(c.message ||
+          'We are not operating here yet.', true);
+
+        $('distanceValue').textContent = '\u2014';
+        $('durationValue').textContent = '\u2014';
+        $('priceValue').textContent = '\u2014';
+
+        /**
+         * E o botão desaparece.
+         *
+         * Deixá-lo lá, desativado, convida a tentar — e falhar
+         * convida a escrever para o apoio a perguntar porquê.
+         */
+        var cta = $('book');
+        if (cta) cta.disabled = true;
+
+        return;
+      }
+
+      var cta2 = $('book');
+      if (cta2) cta2.disabled = false;
+
+      calcularRota();
+    })
+    .catch(function () {
+      // Se a pergunta falhar, calcula-se na mesma: o checkout
+      // verifica outra vez, e é lá que a decisão conta.
+      calcularRota();
+    });
+}
+
+
+function calcularRota() {
   directionsService.route({
     origin: { placeId: pickupPlace.placeId },
     destination: { placeId: dropoffPlace.placeId },
