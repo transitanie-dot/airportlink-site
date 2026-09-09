@@ -61,6 +61,20 @@
     // o cabeçalho tem de sair na língua do texto, não na que a
     // pessoa escolheu noutra visita.
     if (window.__PAGE_LANG && CODES.indexOf(window.__PAGE_LANG) !== -1) {
+      /**
+       * E fica guardada.
+       *
+       * Devolvia a língua da página mas não a escrevia. Quem
+       * abrisse o blogue em alemão via essa página em alemão — e a
+       * seguinte em inglês, porque a preferência guardada era
+       * outra.
+       *
+       * Abrir uma página numa língua É escolher essa língua. É o
+       * que se espera, e é o que o Google espera também: um link
+       * /de/ que leva a um site em inglês parece partido.
+       */
+      try { localStorage.setItem('airportlink-lang', window.__PAGE_LANG); } catch (e) {}
+
       return window.__PAGE_LANG;
     }
 
