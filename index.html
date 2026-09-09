@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>window.__PAGE_LANG="en";</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Airportlink — Worldwide Private Airport Transfers</title>
@@ -474,7 +475,6 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
   .band{padding:44px 0}
 }
 </style>
-<script>window.__PAGE_LANG="en";</script>
 <link rel="alternate" hreflang="en" href="https://www.airportlink.app/">
 <link rel="alternate" hreflang="es" href="https://www.airportlink.app/es/">
 <link rel="alternate" hreflang="pt" href="https://www.airportlink.app/pt/">
@@ -2769,6 +2769,31 @@ $('payNowBtn').addEventListener('click', async function () {
       body: JSON.stringify({ booking: window.__latestBooking })
     });
     var result = await response.json();
+
+    /**
+     * Demasiados pedidos.
+     *
+     * O servidor limita os pedidos por endereço, e o 429 diz
+     * quantos segundos faltam. Dizer "Error: HTTP 429" a um
+     * cliente que carregou duas vezes no botão é assustá-lo sem
+     * razão — ele não fez nada de errado.
+     */
+    if (response.status === 429) {
+      var espera = result.retry_after_seconds || 30;
+
+      $('payStatus').textContent =
+        'One moment — try again in ' + espera + ' seconds.';
+
+      btn.disabled = true;
+
+      setTimeout(function () {
+        btn.disabled = false;
+        btn.textContent = original;
+        $('payStatus').textContent = '';
+      }, espera * 1000);
+
+      return;
+    }
 
     if (!response.ok || result.error) {
       $('payStatus').textContent = 'Error: ' + (result.error || ('HTTP ' + response.status));
