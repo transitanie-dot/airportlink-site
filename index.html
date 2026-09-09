@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -1111,16 +1111,33 @@ if (window.ResizeObserver) new ResizeObserver(reportHeight).observe(document.bod
 window.addEventListener('load', reportHeight);
 [300, 900, 2000, 4000].forEach(function (ms) { setTimeout(reportHeight, ms); });
 
+/**
+ * O tema só muda quando alguém o muda.
+ *
+ * Isto ouvia mensagens de uma página-mãe — era do tempo em que a
+ * calculadora vivia num iframe no Wix. Qualquer mensagem que
+ * chegasse sem ser "dark" era convertida em "light" e guardada
+ * por cima da escolha do visitante.
+ *
+ * Extensões do browser mandam mensagens. O resultado: quem
+ * escolhia o modo escuro e voltava à homepage via tudo claro
+ * outra vez.
+ *
+ * Só aceita "dark" ou "light" explícitos, e só de mensagens que
+ * digam que são de tema. O resto é ignorado.
+ */
 function applyTheme(theme) {
-  var t = theme === 'dark' ? 'dark' : 'light';
-  document.documentElement.setAttribute('data-theme', t);
-  try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+  if (theme !== 'dark' && theme !== 'light') return;
+
+  document.documentElement.setAttribute('data-theme', theme);
+  try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
 }
+
 window.addEventListener('message', function (event) {
   var d = event.data;
-  if (!d) return;
-  if (typeof d === 'string') return applyTheme(d);
-  if (d.type === 'theme') applyTheme(d.value);
+  if (!d || typeof d !== 'object' || d.type !== 'theme') return;
+
+  applyTheme(d.value);
 });
 notifyParent('ready');
 
@@ -1995,6 +2012,27 @@ function calcularRota() {
     $('distanceValue').textContent = distanceKm.toFixed(1) + ' km';
     $('durationValue').textContent = leg.duration.text;
     updatePriceDisplay(priceEUR, deNoite);
+
+    /**
+     * Pediu um preço.
+     *
+     * É o primeiro sinal de intenção real, e o denominador de tudo
+     * o resto: sem ele, "dez reservas" não diz se foram dez de
+     * doze ou dez de mil.
+     */
+    if (window.alTrack) {
+      window.alTrack('quote_requested', {
+        value: Math.round(priceEUR),
+        currency: 'EUR',
+        distance_km: Math.round(distanceKm),
+        passengers: passengers,
+        night: deNoite ? 'yes' : 'no',
+
+        // As moradas não vão: são dados pessoais, e o que
+        // interessa é o padrão, não quem.
+        route_country: country(from, to) || 'other'
+      });
+    }
     updateCheckoutSummary();
     refreshPaymentOptions();
     setStatus('Fare calculated. ' + passengers + ' passenger(s), ' + getVehicleType(passengers) + '.');
@@ -2700,6 +2738,24 @@ $('payNowBtn').addEventListener('click', async function () {
       var tk = sess.data && sess.data.session && sess.data.session.access_token;
       if (tk) headers['Authorization'] = 'Bearer ' + tk;
     } catch (e) {}
+
+    /**
+     * Chegou ao checkout.
+     *
+     * A distância entre isto e o "quote_requested" é onde se perde
+     * mais gente — e é a única parte do funil que se pode mudar
+     * sem gastar dinheiro em anúncios.
+     */
+    if (window.alTrack) {
+      var b = window.__latestBooking || {};
+
+      window.alTrack('checkout_started', {
+        value: Math.round(Number(b.price_eur || b.price || 0)),
+        currency: 'EUR',
+        payment_mode: b.payment_mode || 'now',
+        passengers: b.passengers || 1
+      });
+    }
 
     var response = await fetch(RENDER_URL + '/api/create-checkout-session', {
       method: 'POST', headers: headers,
