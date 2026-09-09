@@ -304,6 +304,25 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
   .ch-grid{grid-template-columns:1fr}
   .change-btn{display:block;width:100%;margin:0 0 8px}
 }
+
+/* ============================================================
+   O MODO LEITURA
+
+   Um agente a ver a conta de um cliente. A faixa está sempre
+   visível de propósito: sem ela, dois minutos depois já não se
+   sabe se o que está no ecrã é a nossa conta ou a de outra
+   pessoa.
+   ============================================================ */
+.viewas-bar{position:sticky;top:0;z-index:9998;padding:11px 20px;
+  background:#8A5A12;color:#fff;font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.02em;text-align:center}
+.viewas-bar.bad{background:#B42318}
+.viewas-bar b{font-weight:600}
+
+/* Os campos ficam legíveis, mas sem parecerem editáveis. */
+html[data-viewas="on"] input:disabled,
+html[data-viewas="on"] select:disabled{opacity:1;background:var(--surface-2);
+  border-style:dashed;cursor:default}
 </style>
 </head>
 <body data-cta-href="/" data-cta-label="Book a transfer">
@@ -1718,7 +1737,102 @@ supabaseClient.auth.onAuthStateChange(function (event) {
   if (event === 'SIGNED_OUT') bounceToLogin();
 });
 
+/**
+ * O modo leitura.
+ *
+ * Um agente com um código de dez minutos vê esta página como o
+ * cliente a vê, com tudo o que escreve desligado.
+ *
+ * Não é uma sessão do cliente: os dados vêm de uma rota do
+ * servidor que só lê. Um clique errado não pode cancelar nada
+ * porque não há nada para clicar.
+ */
+var VENDO = new URLSearchParams(location.search).get('viewas');
+
+async function bootVendo(codigo) {
+  var faixa = document.createElement('div');
+  faixa.className = 'viewas-bar';
+  faixa.textContent = 'Loading...';
+  document.body.insertBefore(faixa, document.body.firstChild);
+
+  try {
+    var res = await fetch(RENDER_URL + '/api/view-as/' + encodeURIComponent(codigo) +
+      '?page=myaccount');
+
+    var d = await res.json();
+
+    if (!res.ok) throw new Error(d.error || 'Could not open it.');
+
+    var dados = d.data || {};
+
+    faixa.innerHTML = '<b>Read-only</b> &middot; ' + esc(d.email) +
+      ' &middot; nothing here can be changed';
+
+    // O cliente falso, para as funções que o esperam.
+    currentUser = { id: dados.profile && dados.profile.id, email: d.email };
+
+    $('bootView').classList.add('hidden');
+    $('accountApp').classList.remove('hidden');
+
+    $('email').value = d.email;
+    $('fullName').value = (dados.profile && dados.profile.full_name) || '';
+    $('phoneNumber').value = (dados.profile && dados.profile.phone_number) || '';
+
+    // As viagens, dos dados que vieram.
+    var agora = new Date();
+    var todas = dados.bookings || [];
+
+    var futuras = todas.filter(function (t) {
+      var dt = new Date(t.booking_date + 'T' + (t.booking_time || '23:59'));
+      return !isNaN(dt.getTime()) && dt >= agora;
+    });
+
+    var passadas = todas.filter(function (t) {
+      var dt = new Date(t.booking_date + 'T' + (t.booking_time || '23:59'));
+      return isNaN(dt.getTime()) || dt < agora;
+    });
+
+    renderList($('futureTripList'), futuras, 'future', 'No upcoming trips.');
+    renderList($('pastTripList'), passadas, 'past', 'No past trips.');
+
+    /**
+     * E tudo o que escreve desaparece.
+     *
+     * Desativar não chega: um campo cinzento convida a tentar, e
+     * falhar convida a ligar para o apoio. Se não se pode fazer,
+     * não deve estar lá.
+     */
+    document.documentElement.setAttribute('data-viewas', 'on');
+
+    qsa('button').forEach(function (b) {
+      if (b === faixa) return;
+
+      var mantem = ['profileTabBtn', 'tripsTabBtn', 'helpTabBtn',
+                    'agencyTabBtn', 'receiptCloseBtn', 'cancelCloseBtn',
+                    'changeCloseBtn', 'receiptDownloadBtn'];
+
+      if (mantem.indexOf(b.id) === -1) b.remove();
+    });
+
+    qsa('input, select, textarea').forEach(function (i) {
+      i.disabled = true;
+    });
+
+  } catch (e) {
+    faixa.className = 'viewas-bar bad';
+    faixa.textContent = e.message;
+    $('bootView').textContent = e.message;
+  }
+}
+
+function qsa(sel) {
+  return Array.prototype.slice.call(document.querySelectorAll(sel));
+}
+
 (async function boot() {
+  // Em modo leitura não há sessão a validar.
+  if (VENDO) return bootVendo(VENDO);
+
   var ok = false;
   try { ok = await loadAccount(); } catch (e) { console.error('boot error:', e); }
 
