@@ -1,4 +1,3 @@
-
 /**
  * layout.js — cabeçalho e rodapé partilhados
  * ---------------------------------------------------------------
@@ -298,6 +297,31 @@ window.alTrack = function (nome, dados) {
     : { href: '/login', label: 'Sign in', i18nKey: 'nav.signIn' };
 
   // ---------- o menu vive aqui ----------
+  /**
+   * O prefixo da língua, nos links internos.
+   *
+   * Um espanhol que abra /es/ e clique em "Motoristas" deve ir
+   * para /es/drivers. Sem isto, a primeira página é a única
+   * traduzida — e ele sai do site em espanhol sem perceber
+   * porquê.
+   *
+   * Só nas páginas que existem traduzidas. As de conta e checkout
+   * têm uma versão só, e mandá-lo para /es/login daria um 404.
+   */
+  var TRADUZIDAS = ['/', '/drivers', '/travelagents'];
+
+  var PREFIXO = (function () {
+    var m = window.location.pathname.match(/^\/(es|pt|de|fr)(\/|$)/);
+    return m ? '/' + m[1] : '';
+  })();
+
+  function comLingua(href) {
+    if (!PREFIXO) return href;
+    if (TRADUZIDAS.indexOf(href) === -1) return href;
+
+    return PREFIXO + (href === '/' ? '/' : href);
+  }
+
   var NAV = [
     { href: '/',             label: 'Book a transfer', i18nKey: 'nav.book' },
     { href: '/travelagents', label: 'Travel agents', i18nKey: 'nav.agents' },
@@ -418,7 +442,7 @@ window.alTrack = function (nome, dados) {
       '<a class="logo" href="/" aria-label="Airportlink home">' + LOGO + '</a>' +
       '<nav class="site-nav" aria-label="Main">' +
         NAV.map(function (i) {
-          return '<a href="' + esc(i.href) + '"' + (isHere(i.href) ? ' class="on"' : '') +
+          return '<a href="' + esc(comLingua(i.href)) + '"' + (isHere(i.href) ? ' class="on"' : '') +
             key(i) + '>' + esc(i.label) + '</a>';
         }).join('') +
       '</nav>' +
@@ -452,7 +476,7 @@ window.alTrack = function (nome, dados) {
   menu.setAttribute('aria-label', 'Mobile');
   menu.innerHTML =
     NAV.map(function (i) {
-      return '<a href="' + esc(i.href) + '"' + key(i) + '>' + esc(i.label) + '</a>';
+      return '<a href="' + esc(comLingua(i.href)) + '"' + key(i) + '>' + esc(i.label) + '</a>';
     }).join('') +
     '<a href="' + esc(account.href) + '"' + key(account) + '>' + esc(account.label) + '</a>' +
     (signedIn ? '' : '<a href="/createaccount">Create account</a>') +
@@ -492,7 +516,7 @@ window.alTrack = function (nome, dados) {
             var extra = l.href === '#cookies'
               ? ' onclick="event.preventDefault();window.airportlinkCookies&&window.airportlinkCookies()"'
               : '';
-            return '<a href="' + esc(l.href) + '"' + key(l) + extra + '>' +
+            return '<a href="' + esc(comLingua(l.href)) + '"' + key(l) + extra + '>' +
               esc(l.label) + '</a>';
           }).join('') + '</div>';
       }).join('') +
