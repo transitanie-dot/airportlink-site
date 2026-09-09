@@ -323,6 +323,21 @@ html[data-theme="dark"] .btn-danger{border-color:#7F1D1D}
 html[data-viewas="on"] input:disabled,
 html[data-viewas="on"] select:disabled{opacity:1;background:var(--surface-2);
   border-style:dashed;cursor:default}
+
+/* Apagar a conta: discreto, no fim, e vermelho só quando se toca.
+   É o fim de uma relação, não uma opção do dia a dia — mas
+   escondê-la seria fazer da promessa uma letra pequena. */
+.danger-zone{margin-top:26px;padding-top:20px;
+  border-top:1px solid var(--line)}
+.link-danger{background:none;border:none;padding:0;cursor:pointer;
+  font-family:inherit;font-size:13px;color:var(--muted);
+  text-decoration:underline;text-underline-offset:3px}
+.link-danger:hover{color:#B42318}
+.link-danger:disabled{opacity:.5;cursor:default}
+.danger-note{margin:10px 0 0;font-size:12.5px;line-height:1.5;
+  color:var(--muted)}
+.danger-note.bad{color:#B42318}
+.danger-note[hidden]{display:none}
 </style>
 </head>
 <body data-cta-href="/" data-cta-label="Book a transfer">
@@ -432,6 +447,15 @@ html[data-viewas="on"] select:disabled{opacity:1;background:var(--surface-2);
           <button id="saveProfileBtn" class="btn btn-secondary" type="button" style="width:100%;" data-i18n="ma.saveProfile">Save profile</button>
           <div id="profileError" class="msg err"></div>
           <div id="profileSuccess" class="msg ok"></div>
+
+          <!-- Apagar a conta.
+               Obrigação do RGPD e prometida na política de
+               privacidade. Discreto e no fim, porque é o fim de
+               uma relação — não é uma opção do dia a dia. -->
+          <div class="danger-zone">
+            <button id="deleteAccountBtn" class="link-danger" type="button">Close my account</button>
+            <p class="danger-note" id="deleteNote" hidden></p>
+          </div>
         </div>
         <div class="card">
           <h2 data-i18n="ma.cancelPolicy">Cancellation policy</h2>
@@ -1841,6 +1865,84 @@ async function bootVendo(codigo) {
 function qsa(sel) {
   return Array.prototype.slice.call(document.querySelectorAll(sel));
 }
+
+/**
+ * Apagar a conta.
+ *
+ * Dois passos: aqui pede-se, e o email confirma. Um botão que
+ * apaga tudo a um clique é um botão que se carrega por engano.
+ *
+ * A confirmação escrita — a pessoa escrever a palavra — é de
+ * propósito: um "tem a certeza?" clica-se sem ler.
+ */
+$('deleteAccountBtn')?.addEventListener('click', async function () {
+  var b = $('deleteAccountBtn');
+  var nota = $('deleteNote');
+
+  var resposta = prompt(
+    'This closes your account and removes your personal details.\n\n' +
+    'Past bookings are kept without your name, because tax law requires it.\n\n' +
+    'Type CLOSE to continue.'
+  );
+
+  if (resposta === null) return;
+
+  if (String(resposta).trim().toUpperCase() !== 'CLOSE') {
+    nota.hidden = false;
+    nota.textContent = 'Nothing was done.';
+    return;
+  }
+
+  b.disabled = true;
+  var antes = b.textContent;
+  b.textContent = 'Working...';
+
+  try {
+    var res = await fetch(RENDER_URL + '/api/account/delete-request', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + (await (async function () {
+          var r = await supabaseClient.auth.getSession();
+          var t = r.data && r.data.session && r.data.session.access_token;
+          if (!t) throw new Error('Your session expired. Please sign in again.');
+          return t;
+        })())
+      },
+      body: JSON.stringify({ kind: 'customer' })
+    });
+
+    var d = await res.json();
+
+    nota.hidden = false;
+
+    if (!res.ok) {
+      /**
+       * Bloqueada: dizer porquê.
+       *
+       * "Não pode fechar" sem explicação leva a um email para o
+       * apoio. "Tem duas viagens marcadas" resolve-se sozinho.
+       */
+      nota.textContent = d.error || 'Could not do it. Write to us.';
+      nota.className = 'danger-note bad';
+      b.disabled = false;
+      b.textContent = antes;
+      return;
+    }
+
+    nota.textContent = d.message ||
+      'Check your email. The link works for 24 hours.';
+    nota.className = 'danger-note';
+    b.textContent = 'Email sent';
+  } catch (e) {
+    nota.hidden = false;
+    nota.textContent = e.message;
+    nota.className = 'danger-note bad';
+    b.disabled = false;
+    b.textContent = antes;
+  }
+});
+
 
 (async function boot() {
   // Em modo leitura não há sessão a validar.
