@@ -126,10 +126,18 @@ function lerRotas() {
 const ROOT = process.cwd();
 const SITE = 'https://www.airportlink.app';
 
+/**
+ * As mesmas línguas que as páginas de rota.
+ *
+ * O alemão faltava aqui e existia lá — um visitante alemão via as
+ * rotas na língua dele e o blogue em inglês. Uma língua a meio é
+ * pior do que nenhuma: sugere que o site não foi acabado.
+ */
 const LANGS = [
   { code: 'en', prefix: '' },
   { code: 'es', prefix: '/es' },
   { code: 'pt', prefix: '/pt' },
+  { code: 'de', prefix: '/de' },
   { code: 'fr', prefix: '/fr' }
 ];
 
@@ -209,6 +217,32 @@ const T = {
     more: 'Otros artículos',
     minRead: 'min de lectura'
   },
+  de: {
+    "upTo4": "Bis zu 4 Personen, ganzes Fahrzeug",
+    "destination": "Ziel",
+    "distance": "Entfernung",
+    "time": "Dauer",
+    "price": "Ab",
+    "tableNote": "Maut und Steuern inklusive. Kostenlose Stornierung bis 24 Stunden vor der Abholung.",
+    "prices": "Preise",
+    "coverage": "Wo wir heute fahren",
+    "airports": "Flughäfen",
+    "route1": "Strecke",
+    "routeN": "Strecken",
+    "deck": "Was wir gebaut haben",
+    blog: 'Blog',
+    title: 'Notizen von unterwegs',
+    intro: 'Was ein Transfer wirklich kostet, wie lange er tatsächlich dauert, und was Ihnen niemand sagt, bevor Sie landen.',
+    back: 'Alle Artikel',
+    cta: 'Transfer berechnen',
+    ctaLead: 'Sagen Sie uns, wo Sie landen und wohin Sie fahren. Der angezeigte Preis ist der Preis, den Sie zahlen.',
+    company: 'Das Unternehmen',
+    routes: 'Strecken in diesem Artikel',
+    prices: 'Preise',
+    more: 'Weitere Artikel',
+    minRead: 'Min. Lesezeit'
+  },
+
   fr: {
     "upTo4": "Jusqu'à 4 passagers, voiture entière",
     "destination": "Destination",
@@ -249,7 +283,9 @@ function esc(s) {
 function ensure(dir) { fs.mkdirSync(dir, { recursive: true }); }
 
 function dataPorExtenso(iso, lang) {
-  const loc = { pt: 'pt-PT', es: 'es-ES', fr: 'fr-FR' }[lang] || 'en-GB';
+  const loc = {
+    pt: 'pt-PT', es: 'es-ES', de: 'de-DE', fr: 'fr-FR'
+  }[lang] || 'en-GB';
   return new Date(iso + 'T12:00:00Z').toLocaleDateString(loc, {
     day: 'numeric', month: 'long', year: 'numeric'
   });
