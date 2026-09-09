@@ -556,6 +556,15 @@ html[data-viewas="on"] select:disabled{opacity:1;background:var(--surface-2);
       <div class="receipt-item"><div class="receipt-label" data-i18n="h.flight">Flight</div><div class="receipt-value" id="receiptFlight">&mdash;</div></div>
       <div class="receipt-item"><div class="receipt-label" data-i18n="common.passengers">Passengers</div><div class="receipt-value" id="receiptPassengers">&mdash;</div></div>
       <div class="receipt-item"><div class="receipt-label" data-i18n="h.price">Price</div><div class="receipt-value" id="receiptPrice">&mdash;</div></div>
+
+      <!-- O suplemento noturno, aqui e não na calculadora.
+           Antes de comprar, o cliente vê o preço e decide. No
+           recibo é onde se procura quando se quer perceber um
+           valor. -->
+      <div class="receipt-item" id="receiptNightWrap" hidden>
+        <div class="receipt-label">Night surcharge</div>
+        <div class="receipt-value">20% &middot; pick-up 22:55&ndash;06:00</div>
+      </div>
     </div>
     <div class="receipt-item" style="margin-bottom:10px"><div class="receipt-label" data-i18n="common.pickup">Pick-up</div><div class="receipt-value" id="receiptPickup">&mdash;</div></div>
     <div class="receipt-item"><div class="receipt-label" data-i18n="common.dropoff">Drop-off</div><div class="receipt-value" id="receiptDropoff">&mdash;</div></div>
@@ -994,6 +1003,10 @@ function openReceipt(trip) {
   $('receiptFlight').textContent = trip.flight_number || '\u2014';
   $('receiptPassengers').textContent = trip.passengers ? String(trip.passengers) : '\u2014';
   $('receiptPrice').textContent = formatPrice(trip.price, trip.currency);
+
+  // Só aparece quando houve.
+  var noite = $('receiptNightWrap');
+  if (noite) noite.hidden = !trip.night_surcharge;
   $('receiptPickup').textContent = trip.pickup || '\u2014';
   $('receiptDropoff').textContent = trip.dropoff || '\u2014';
   $('receiptOverlay').classList.add('show');
@@ -1262,7 +1275,7 @@ async function loadTrips() {
   tripsByKey = Object.create(null);
 
   var res = await supabaseClient.from('bookings')
-    .select('id, booking_id, booking_reference, pickup, dropoff, booking_date, booking_time, passengers, price, currency, status, flight_number, full_name, email, receipt_url, payment_mode, payment_status, charge_at, charged_at, last_charge_error')
+    .select('id, booking_id, booking_reference, pickup, dropoff, booking_date, booking_time, passengers, price, currency, status, flight_number, full_name, email, receipt_url, payment_mode, payment_status, charge_at, charged_at, last_charge_error, night_surcharge')
     .eq('email', currentUser.email)
     .order('booking_date', { ascending: false });
 
