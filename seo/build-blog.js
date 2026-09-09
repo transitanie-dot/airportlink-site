@@ -472,12 +472,22 @@ main{position:relative;z-index:1}
 }
 `;
 
-function head({ title, description, canonical, lang, alternates, schema }) {
+function head({ title, description, canonical, lang, alternates, schema, image }) {
   const hreflang = (alternates || [])
     .map((a) => `<link rel="alternate" hreflang="${a.lang}" href="${a.url}">`)
     .join('\n');
   const xdefault = (alternates || []).find((a) => a.lang === 'en');
-  const og = `${SITE}/assets/og-square.jpg`;
+  /**
+   * A foto do artigo, quando há uma.
+   *
+   * O og:image é o que aparece quando alguém partilha o link no
+   * WhatsApp ou no LinkedIn. Usar sempre o logótipo genérico
+   * desperdiça a única imagem que a maioria das pessoas vai ver
+   * antes de decidir se clica.
+   */
+  const og = image
+    ? (image.startsWith('http') ? image : `${SITE}${image}`)
+    : `${SITE}/assets/og-square.jpg`;
 
   return `<!DOCTYPE html>
 <html lang="${lang}">
@@ -671,7 +681,10 @@ function postPage(post, lang, alternates, paises, precos) {
 
   return head({
     title: `${c.title} | Airportlink`, description: c.desc,
-    canonical: url, lang, alternates, schema
+    canonical: url, lang, alternates, schema,
+
+    // A foto do artigo é melhor og:image do que o logótipo.
+    image: post.image
   }) + `
 ${post.heroStyle === 'band' ? `<figure class="band">
   <img src="${post.image}" alt="" width="1400" height="788" fetchpriority="high">
