@@ -46,6 +46,122 @@
  * chamam-na sem ter de importar nada.
  * ---------------------------------------------------------------
  */
+/**
+ * ---------------------------------------------------------------
+ * OS ERROS QUE ACONTECEM AQUI
+ *
+ * Um erro no JavaScript não deixava rasto nenhum: a página parte,
+ * o cliente desiste, e nós ficamos a achar que ninguém quis
+ * reservar naquele dia.
+ *
+ * Isto manda-os para o servidor, que avisa no Telegram quando é um
+ * erro novo. Não é o Sentry — é o suficiente para saber que algo
+ * partiu antes de alguém reclamar.
+ * ---------------------------------------------------------------
+ */
+(function apanharErros() {
+  var API = 'https://airportlink.onrender.com';
+
+  /**
+   * No máximo cinco por sessão.
+   *
+   * Um erro dentro de um ciclo dispara centenas de vezes por
+   * segundo. Sem travão, o browser do cliente passava a atacar o
+   * nosso servidor — e o problema dele ficava pior.
+   */
+  var enviados = 0;
+  var vistos = {};
+
+  function mandar(dados) {
+    if (enviados >= 5) return;
+
+    /**
+     * E o mesmo erro só uma vez.
+     *
+     * Numa página que faça um pedido em ciclo, o mesmo erro
+     * repete-se sem parar. A primeira vez chega para saber.
+     */
+    var chave = (dados.message || '') + '|' + (dados.line || 0);
+    if (vistos[chave]) return;
+
+    vistos[chave] = true;
+    enviados += 1;
+
+    try {
+      /**
+       * Sem esperar pela resposta.
+       *
+       * O sendBeacon sobrevive à navegação: um erro que aconteça
+       * enquanto a pessoa sai da página chega na mesma. E não
+       * atrasa nada, porque não há nada a receber.
+       */
+      var corpo = JSON.stringify(dados);
+
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(API + '/api/client-error',
+          new Blob([corpo], { type: 'application/json' }));
+        return;
+      }
+
+      fetch(API + '/api/client-error', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: corpo,
+        keepalive: true
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
+  window.addEventListener('error', function (ev) {
+    /**
+     * Os erros de recursos não contam.
+     *
+     * Uma imagem que não carrega dispara este evento sem
+     * mensagem. É ruído: acontece com bloqueadores de anúncios e
+     * com redes fracas, e não parte nada.
+     */
+    if (!ev.message) return;
+
+    mandar({
+      message: ev.message,
+      source: ev.filename || '',
+      line: ev.lineno || 0,
+      column: ev.colno || 0,
+      stack: ev.error && ev.error.stack ? String(ev.error.stack).slice(0, 1500) : '',
+
+      /**
+       * O endereço sem a query.
+       *
+       * Um /myaccount?booking=AL123 levava a referência da reserva
+       * para o registo de erros. O caminho chega para saber onde
+       * partiu.
+       */
+      url: location.pathname,
+      ua: navigator.userAgent
+    });
+  });
+
+  /**
+   * E as promessas que ninguém apanhou.
+   *
+   * Um fetch que falhe sem catch não dispara o "error" — cai aqui.
+   * É metade dos erros de uma aplicação que fala com uma API.
+   */
+  window.addEventListener('unhandledrejection', function (ev) {
+    var r = ev.reason;
+
+    mandar({
+      message: 'Unhandled: ' + String(r && r.message ? r.message : r).slice(0, 200),
+      source: '',
+      line: 0,
+      stack: r && r.stack ? String(r.stack).slice(0, 1500) : '',
+      url: location.pathname,
+      ua: navigator.userAgent
+    });
+  });
+})();
+
+
 window.alTrack = function (nome, dados) {
   try {
     if (!window.gtag) return;
