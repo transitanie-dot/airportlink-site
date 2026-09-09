@@ -1215,6 +1215,18 @@ $('applyBtn').addEventListener('click', async function () {
     });
     var result = await res.json();
     if (!res.ok || result.error) throw new Error(result.error || ('HTTP ' + res.status));
+
+    /**
+     * Uma agência candidatou-se.
+     *
+     * Vale mais do que uma reserva: uma agência aprovada traz
+     * dezenas por mês. Medir isto separadamente é o que diz se
+     * vale a pena investir na página deles.
+     */
+    if (window.alTrack) {
+      window.alTrack('partner_signup', { kind: 'agency' });
+    }
+
     await refreshAgentState();
   } catch (e) {
     console.error('apply error:', e);
