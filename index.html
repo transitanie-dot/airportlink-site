@@ -1920,16 +1920,38 @@ function calculateRouteAndPrice() {
       priceEUR = Math.max(25, (20 + distanceKm * 3.5) * 1.3 * mult);
     }
 
+    /**
+     * O suplemento noturno: 20% entre as 22h55 e as 6h.
+     *
+     * Calculado aqui e no servidor. Duas contas iguais em sítios
+     * diferentes são um risco — mas o servidor é quem manda, e uma
+     * calculadora que só diz o preço depois de o cliente pagar não
+     * é uma calculadora.
+     *
+     * As 22h55 e não as 23h porque a recolha de um voo que aterra
+     * às 23h é quase sempre uns minutos antes.
+     */
+    var hora = ($('travelTime').value || '').match(/^(\d{1,2}):(\d{2})/);
+
+    var deNoite = false;
+
+    if (hora) {
+      var minutos = Number(hora[1]) * 60 + Number(hora[2]);
+      deNoite = minutos >= (22 * 60 + 55) || minutos < (6 * 60);
+    }
+
+    if (deNoite) priceEUR = priceEUR * 1.2;
+
     $('distanceValue').textContent = distanceKm.toFixed(1) + ' km';
     $('durationValue').textContent = leg.duration.text;
-    updatePriceDisplay(priceEUR);
+    updatePriceDisplay(priceEUR, deNoite);
     updateCheckoutSummary();
     refreshPaymentOptions();
     setStatus('Fare calculated. ' + passengers + ' passenger(s), ' + getVehicleType(passengers) + '.');
   });
 }
 
-function updatePriceDisplay(priceEUR) {
+function updatePriceDisplay(priceEUR, deNoite) {
   var currency = $('currency').value || 'EUR';
   var fmt = function (v, cur) {
     return new Intl.NumberFormat('en-IE', {
@@ -1942,6 +1964,22 @@ function updatePriceDisplay(priceEUR) {
 
   $('priceValue').textContent = fmt(payable);
   $('priceValue').dataset.basePrice = String(priceEUR);
+
+  /**
+   * O suplemento noturno não aparece aqui.
+   *
+   * O cliente vê o preço e decide. Explicar a mecânica antes de
+   * comprar convida a discutir uma regra que não vai mudar — e
+   * quem reserva às três da manhã já espera pagar mais.
+   *
+   * No recibo é outra coisa: aí explica uma linha da conta, e é
+   * onde se procura quando se quer perceber um valor.
+   */
+  if (deNoite) {
+    $('priceValue').dataset.night = '1';
+  } else {
+    delete $('priceValue').dataset.night;
+  }
 
   // O equivalente em euros, quando a moeda escolhida não é o euro.
   // O cartão é debitado na moeda mostrada; este número existe para a
