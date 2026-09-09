@@ -117,6 +117,29 @@ html[data-theme="dark"] .btn.line{background:transparent;color:var(--text)}
     return r.json();
   }).then(function (data) {
     console.log('Booking confirmed:', data.payment_status);
+
+    /**
+     * A conversão, com o valor real.
+     *
+     * Aqui e não no momento de carregar em pagar: entre os dois
+     * há o Stripe, e uma parte das pessoas desiste lá. Contar o
+     * clique como venda dava números bonitos e falsos.
+     *
+     * O valor vem do servidor, não do browser — é o que foi
+     * mesmo cobrado.
+     */
+    if (!window.alTrack || !data) return;
+
+    var pago = data.payment_status === 'paid' ||
+               data.payment_status === 'succeeded';
+
+    window.alTrack(pago ? 'booking_paid' : 'booking_saved', {
+      value: Number(data.price_eur || data.price || 0),
+      currency: 'EUR',
+      transaction_id: data.booking_id || sessionId,
+      payment_mode: data.payment_mode || (pago ? 'now' : 'later'),
+      round_trip: data.trip_group_id ? 'yes' : 'no'
+    });
   }).catch(function (e) {
     console.log('Confirmation check skipped:', e.message);
   });
