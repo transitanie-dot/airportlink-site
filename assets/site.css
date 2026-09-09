@@ -160,20 +160,22 @@ html[data-theme="dark"] .hbtn{background:#E9EDF3;color:#141A28}
    * fica guardado, entrar na conta faz-se sempre. Ele continua no
    * menu, a dois toques.
    */
-  .header-right #themeBtn{display:none}
-
   /**
-   * E o botão secundário também.
+   * O botão secundário sai; o do tema fica.
    *
-   * As contas acima assumiam um botão de texto. São dois — "Sign
-   * in" e "Get a price" — e o segundo empurrava o menu para fora
-   * do ecrã. Num ecrã de 360 ficava metade do botão e nenhum
-   * hambúrguer.
+   * As contas antigas assumiam um botão de texto. São dois — "Sign
+   * in" e "Get a price" — e o segundo empurrava o menu para fora do
+   * ecrã.
    *
-   * O de entrar fica: é o que mais se usa. O principal continua no
-   * menu e na página, onde tem espaço.
+   * Tirar o botão do tema resolvia a largura, mas tirava uma coisa
+   * que se usa: quem lê no escuro quer mudar onde está, não a dois
+   * toques dentro do menu.
+   *
+   * O de texto é que sai. Ocupa quatro vezes mais espaço e o mesmo
+   * link está no menu e na página.
    */
   .header-right .hbtn:not(.line){display:none}
+  .header-right #themeBtn{display:flex}
 
   .header-right .hbtn.line{padding:0 10px;font-size:10.5px;letter-spacing:.04em}
   .header-inner{padding:0 14px;gap:10px}
