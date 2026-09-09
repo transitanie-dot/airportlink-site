@@ -178,11 +178,33 @@ function cabecalho(html, lang, url) {
    * Sem isto, alguém que tenha inglês guardado abria /es/ e via a
    * página em inglês — a tradução do servidor seria desfeita pela
    * do browser.
+   *
+   * SUBSTITUI, não acrescenta. O index.html já traz esta linha com
+   * "en" lá dentro. Só a acrescentar quando falta, a cópia
+   * espanhola ficava a dizer que era inglesa — e o i18n.js
+   * traduzia-a de volta.
    */
-  if (!out.includes('__PAGE_LANG')) {
-    out = out.replace('</head>',
-      '<script>window.__PAGE_LANG=' + JSON.stringify(lang) + ';</script>\n</head>');
-  }
+  const marca = '<script>window.__PAGE_LANG=' +
+    JSON.stringify(lang) + ';</script>';
+
+  // Fora, primeiro.
+  out = out.replace(
+    /<script>\s*window\.__PAGE_LANG\s*=\s*[^<]*<\/script>\n?/g, ''
+  );
+
+  /**
+   * E no TOPO do head, antes de tudo.
+   *
+   * O i18n.js carrega sem defer — corre no momento em que o
+   * browser o encontra. Se a marca vier depois dele, a variável
+   * ainda não existe quando ele a lê, e ele usa a língua guardada
+   * em vez desta.
+   *
+   * Era isso que fazia /es/ abrir em inglês para quem já tinha
+   * visitado o site: a página vinha traduzida do servidor e o
+   * browser traduzia-a de volta.
+   */
+  out = out.replace(/(<head[^>]*>)/, '$1\n' + marca);
 
   return out;
 }
