@@ -112,6 +112,8 @@ html[data-theme="dark"] .logo b{color:#17A398}
 .icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--rule-strong);
   background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .icon-btn svg{width:17px;height:17px}
+.account-btn{text-decoration:none;color:var(--text)}
+.account-btn:hover{border-color:var(--teal);color:var(--teal)}
 .icon-btn:hover{border-color:var(--teal)}
 .burger{display:none}
 .hbtn{display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 20px;
@@ -176,6 +178,9 @@ html[data-theme="dark"] .hbtn{background:#E9EDF3;color:#141A28}
    */
   .header-right .hbtn:not(.line){display:none}
   .header-right #themeBtn{display:flex}
+
+  /* O boneco da conta fica sempre: é um ícone, cabe. */
+  .header-right .account-btn{display:flex}
 
   .header-right .hbtn.line{padding:0 10px;font-size:10.5px;letter-spacing:.04em}
   .header-inner{padding:0 14px;gap:10px}
