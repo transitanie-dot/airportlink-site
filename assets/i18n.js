@@ -141,10 +141,53 @@
     }
   }
 
+  /**
+   * Mudar de língua vai ao endereço dessa língua.
+   *
+   * Guardava a escolha e recarregava. Mas as páginas traduzidas
+   * declaram a sua língua com __PAGE_LANG, e essa ganha à
+   * preferência guardada — de propósito, senão quem tivesse inglês
+   * guardado abria /es/ em inglês.
+   *
+   * O resultado era um seletor que não fazia nada em /es/: a
+   * escolha era guardada e a página ignorava-a.
+   *
+   * Ir para o endereço da língua resolve os dois: a página que
+   * carrega já é a certa, e a preferência fica guardada para as
+   * páginas que não têm versão traduzida.
+   */
+  var TRADUZIDAS = ['/', '/drivers', '/travelagents'];
+
   function setLang(next) {
     if (CODES.indexOf(next) === -1) return;
+
     try { localStorage.setItem('airportlink-lang', next); } catch (e) {}
-    window.location.reload();
+
+    var caminho = window.location.pathname;
+
+    // O caminho sem o prefixo de língua que lá esteja.
+    var limpo = caminho.replace(/^\/(es|pt|de|fr)(?=\/|$)/, '') || '/';
+
+    /**
+     * Só as páginas que existem traduzidas.
+     *
+     * As de rota e do blogue também: são geradas nas cinco
+     * línguas. As de conta e checkout não — mandá-lo para
+     * /es/login daria um 404, e um seletor que parte a navegação
+     * é pior do que um que não muda nada.
+     */
+    var temVersao = TRADUZIDAS.indexOf(limpo) !== -1
+      || /^\/(transfers|airports|blog)\//.test(limpo);
+
+    if (!temVersao) {
+      window.location.reload();
+      return;
+    }
+
+    var prefixo = next === 'en' ? '' : '/' + next;
+
+    window.location.href = prefixo + (limpo === '/' ? '/' : limpo) +
+      window.location.search + window.location.hash;
   }
 
   /** Carrega o dicionário e pinta a página. */
