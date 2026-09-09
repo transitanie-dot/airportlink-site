@@ -625,6 +625,33 @@ function esc(v) {
 
 const today = new Date().toISOString().slice(0, 10);
 
+/**
+ * A data do lastmod vem do CONTEÚDO, não do dia do build.
+ *
+ * Estava a pôr a data de hoje em todas as URLs, a cada publicação.
+ * Com vários deploys por dia, o sitemap dizia que as 1300 páginas
+ * mudaram todas — incluindo as que não foram tocadas há semanas.
+ *
+ * O Google repara nisso. Quando os lastmod de um site nunca
+ * correspondem a mudanças reais, ele deixa de os usar e passa a
+ * decidir sozinho quando volta. Perde-se o sinal que serve para
+ * dizer "esta mudou, vem vê-la".
+ *
+ * Aqui a data é a da última alteração do ficheiro de rotas do país.
+ * Se o routes-IT.json não mudou, as páginas de Itália não mudaram.
+ */
+function dataDoConteudo(ficheiro) {
+  try {
+    return fs.statSync(ficheiro).mtime.toISOString().slice(0, 10);
+  } catch (e) {
+    // Sem ficheiro, hoje. Melhor uma data a mais do que nenhuma.
+    return today;
+  }
+}
+
+/** A data de cada país, calculada uma vez. */
+const dataPorPais = {};
+
 // ============================================================
 // O MOLDE
 // ============================================================
@@ -1940,6 +1967,10 @@ let routeCount = 0;
 for (const file of files) {
   const country = JSON.parse(fs.readFileSync(path.join(SEO_DIR, file), 'utf8'));
 
+  // A data deste país: a última vez que o ficheiro de rotas mudou.
+  // É o que faz o lastmod dizer a verdade em vez de "hoje".
+  dataPorPais[countrySlug(country)] = dataDoConteudo(path.join(SEO_DIR, file));
+
   const cslug = countrySlug(country);
 
   // Uma pasta por país, dos dois lados.
@@ -2029,10 +2060,28 @@ for (const file of files) {
 // A barra no fim é obrigatória nas pastas: o Render não a
 // acrescenta sozinho, e sem ela a página vem em branco. O canonical
 // e o sitemap têm de apontar para o endereço que funciona.
+/**
+ * As três páginas fixas traduzidas.
+ *
+ * O seo/build-pages.js gera-as em espanhol, português, alemão e
+ * francês. Sem elas no sitemap, o Google só as encontra pelos
+ * hreflang — e isso demora semanas em vez de dias.
+ *
+ * As outras dez não: são legais ou de conta, e ninguém as procura
+ * numa língua específica.
+ */
+const traduzidas = ['/', '/drivers', '/travelagents']
+  .flatMap((u) => ['es', 'pt', 'de', 'fr'].map((l) => ({
+    loc: SITE + '/' + l + (u === '/' ? '/' : u),
+    priority: u === '/' ? '0.9' : '0.8',
+    freq: 'monthly'
+  })));
+
 const fixed = [
   { loc: SITE + '/', priority: '1.0', freq: 'weekly' },
   { loc: SITE + '/travelagents', priority: '0.9', freq: 'monthly' },
   { loc: SITE + '/drivers', priority: '0.9', freq: 'monthly' },
+  ...traduzidas,
   { loc: SITE + '/support', priority: '0.5', freq: 'monthly' },
   { loc: SITE + '/terms', priority: '0.3', freq: 'yearly' },
   { loc: SITE + '/privacypolicy', priority: '0.3', freq: 'yearly' },
@@ -2048,13 +2097,13 @@ const fixed = [
 // os junta. O Search Console mostra a indexação de cada ficheiro em
 // separado — quando Espanha entrar, vês logo se as páginas dela
 // estão a ser apanhadas sem misturar com Portugal.
-function urlsetXml(list) {
+function urlsetXml(list, quando) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <!-- Gerado por seo/build-routes.js. Não editar à mão. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${list.map((u) => `  <url>
     <loc>${u.loc}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${quando || today}</lastmod>
     <changefreq>${u.freq}</changefreq>
     <priority>${u.priority}</priority>
   </url>`).join('\n')}
@@ -2077,7 +2126,21 @@ for (const u of urls) {
 const SM_DIR = path.join(ROOT, 'sitemaps');
 fs.mkdirSync(SM_DIR, { recursive: true });
 
-fs.writeFileSync(path.join(SM_DIR, 'static.xml'), urlsetXml(fixed));
+// As páginas fixas mudam quando o HTML delas muda. A mais recente
+// das treze serve de data para todas — é uma aproximação, mas é
+// muito melhor do que "hoje" a cada publicação.
+const dataFixas = (function () {
+  let mais = '2000-01-01';
+
+  for (const f of fs.readdirSync(ROOT).filter((x) => x.endsWith('.html'))) {
+    const d = dataDoConteudo(path.join(ROOT, f));
+    if (d > mais) mais = d;
+  }
+
+  return mais === '2000-01-01' ? today : mais;
+})();
+
+fs.writeFileSync(path.join(SM_DIR, 'static.xml'), urlsetXml(fixed, dataFixas));
 
 const parts = ['sitemaps/static.xml'];
 
@@ -2089,7 +2152,10 @@ if (fs.existsSync(path.join(ROOT, 'sitemaps/blog.xml'))) {
 }
 for (const [cc, list] of Object.entries(byCountry)) {
   const name = `${cc}.xml`;
-  fs.writeFileSync(path.join(SM_DIR, name), urlsetXml(list));
+  // A data do país é a do ficheiro de rotas dele. Se o
+  // routes-IT.json não mudou, as páginas de Itália não mudaram —
+  // por muitos deploys que se façam entretanto.
+  fs.writeFileSync(path.join(SM_DIR, name), urlsetXml(list, dataPorPais[cc] || today));
   parts.push('sitemaps/' + name);
 }
 
