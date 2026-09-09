@@ -498,6 +498,27 @@ main{position:relative;z-index:1}
   .exp{margin:34px 0;padding:24px 20px 20px}
   .deck{padding:38px 0 30px}
   .hero-in{padding:146px 20px 34px}
+
+  /**
+   * A foto no telemóvel.
+   *
+   * A altura do cabeçalho vem do texto — um título de três linhas
+   * faz o bloco crescer, e a foto com height:100% cresce com ele.
+   * Com uma foto de 1400×788 num ecrã de 380 de largura, isso dava
+   * um quadrado esticado.
+   *
+   * Uma altura fixa resolve: a foto corta em vez de esticar, e o
+   * texto senta-se por cima com o véu a garantir contraste.
+   */
+  .hero{min-height:0}
+  .hero-art{position:relative;inset:auto;height:220px}
+  .hero-art img,.hero-art svg{height:220px}
+
+  /* O véu fica só sobre a foto. O texto senta-se por baixo, no
+     azul do fundo, onde o branco já era legível. */
+  .hero-veil{top:0;height:220px}
+  .hero-in{padding:22px 20px 30px}
+  .hero-in h1{font-size:26px;line-height:1.15}
   .pull{margin:34px 0;padding:26px 22px}
   .b-head{padding:48px 0 32px}
   .cta{padding:30px 24px}
