@@ -658,7 +658,17 @@ var CLASSES = [
     art: ART.twoVans }
 ];
 
-var trip = { from: '', to: '', date: '', time: '', pax: 2, km: 0, dur: '', isPT: true };
+/**
+ * O país começa por decidir, não por Portugal.
+ *
+ * Nascia com isPT: true. Uma rota em Dublin era cobrada pela
+ * tabela de Faro — 27 euros em vez de 87.
+ *
+ * O valor por omissão de uma coisa que se vai calcular é null,
+ * não um palpite. Um palpite errado dá um preço errado em
+ * silêncio.
+ */
+var trip = { from: '', to: '', date: '', time: '', pax: 2, km: 0, dur: '', isPT: null };
 var chosen = null;
 var hasReturn = false;
 
@@ -858,7 +868,15 @@ function measure(force) {
      * O texto das moradas chega para decidir: o Google escreve o
      * país no fim.
      */
-    if (trip.isPT === undefined) {
+    /**
+     * O país, decidido pelo texto das moradas.
+     *
+     * O Google escreve-o no fim: "Rua X, Albufeira, Portugal".
+     * Quando o km vem no endereço, esta função sai antes de
+     * chegar ao Google — e sem isto o isPT ficava com o valor
+     * inicial.
+     */
+    if (trip.isPT === null) {
       trip.isPT = /portugal/i.test(trip.from) || /portugal/i.test(trip.to);
     }
 
