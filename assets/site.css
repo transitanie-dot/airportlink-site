@@ -112,6 +112,15 @@ html[data-theme="dark"] .logo b{color:#17A398}
 .icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--rule-strong);
   background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .icon-btn svg{width:17px;height:17px}
+/**
+ * O boneco só existe no telemóvel.
+ *
+ * Num ecrã largo há espaço para "My account", e um rótulo é
+ * sempre mais claro do que um ícone — ninguém aprende um símbolo
+ * novo se puder ler.
+ */
+.acc-icon{display:none}
+
 .account-btn{text-decoration:none;color:var(--text)}
 .account-btn:hover{border-color:var(--teal);color:var(--teal)}
 .icon-btn:hover{border-color:var(--teal)}
@@ -179,8 +188,9 @@ html[data-theme="dark"] .hbtn{background:#E9EDF3;color:#141A28}
   .header-right .hbtn:not(.line){display:none}
   .header-right #themeBtn{display:flex}
 
-  /* O boneco da conta fica sempre: é um ícone, cabe. */
-  .header-right .account-btn{display:flex}
+  /* No telemóvel, o boneco em vez do texto. */
+  .header-right .acc-text{display:none}
+  .header-right .acc-icon{display:flex}
 
   .header-right .hbtn.line{padding:0 10px;font-size:10.5px;letter-spacing:.04em}
   .header-inner{padding:0 14px;gap:10px}
