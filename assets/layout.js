@@ -566,17 +566,21 @@ window.alTrack = function (nome, dados) {
         LANG_PICK +
         '<button class="icon-btn" id="themeBtn" type="button" aria-label="Switch theme">' + MOON + '</button>' +
         /**
-         * Logado: um boneco. Deslogado: "Sign in".
+         * O texto no computador, o boneco no telemóvel.
          *
-         * Quem já entrou não precisa de ler "My account" — sabe
-         * que tem conta. O ícone diz o mesmo em 40 pixels em vez
-         * de 110, e no telemóvel esses 70 são a diferença entre o
-         * menu caber ou não.
+         * Num ecrã largo há espaço para "My account", e um rótulo
+         * é sempre mais claro do que um ícone. Num de 380 pixels
+         * esses 110 são a diferença entre o menu caber ou não.
+         *
+         * Os dois são desenhados; o CSS esconde um. Decidir aqui
+         * obrigava a recarregar a página ao virar o telemóvel.
          */
         (signedIn
-          ? '<a class="icon-btn account-btn" href="' + esc(account.href) + '" ' +
-            'aria-label="' + esc(account.label) + '" title="' + esc(account.label) + '">' +
-            PERSON + '</a>'
+          ? '<a class="hbtn line acc-text" href="' + esc(account.href) + '"' +
+              key(account) + '>' + esc(account.label) + '</a>' +
+            '<a class="icon-btn account-btn acc-icon" href="' + esc(account.href) + '" ' +
+              'aria-label="' + esc(account.label) + '" title="' + esc(account.label) + '">' +
+              PERSON + '</a>'
           : '<a class="hbtn line" href="' + esc(account.href) + '"' + key(account) + '>' +
             esc(account.label) + '</a>') +
         '<a class="hbtn" href="' + esc(ctaHref) + '" data-i18n="nav.getPrice">' +
