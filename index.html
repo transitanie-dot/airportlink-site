@@ -1905,15 +1905,19 @@ function calculateRouteAndPrice() {
   setStatus('Calculating route and fare...');
 
   /**
-   * Servimos aqui?
+   * Este país está fora?
    *
-   * Perguntado antes de calcular. Dar um preço para um sítio onde
-   * não há ninguém é vender uma coisa que não existe — e a
-   * devolução do dinheiro não devolve a confiança.
+   * A pergunta é ao contrário do que parece: o servidor só recusa
+   * países que estão EXPLICITAMENTE fora da lista. Tudo o resto
+   * passa.
    *
-   * O servidor sabe: são os 440 aeroportos operacionais, em 129
-   * países. Abrir um mercado novo é uma linha de SQL, e isto
-   * acompanha sozinho.
+   * A versão anterior perguntava "servimos aqui?" e recusava
+   * quando não sabia — e como a maioria das moradas não tem o país
+   * escrito, recusava quase tudo.
+   *
+   * Uma reserva a mais num sítio onde não operamos resolve-se com
+   * um telefonema. Uma calculadora fechada perde os clientes
+   * todos.
    */
   fetch(RENDER_URL + '/api/coverage' +
     '?from=' + encodeURIComponent(pickupPlace.fullDescription || '') +
@@ -1946,8 +1950,13 @@ function calculateRouteAndPrice() {
       calcularRota();
     })
     .catch(function () {
-      // Se a pergunta falhar, calcula-se na mesma: o checkout
-      // verifica outra vez, e é lá que a decisão conta.
+      /**
+       * Se a pergunta falhar, calcula-se na mesma.
+       *
+       * O Render adormece, a rede falha, o servidor demora. Nada
+       * disso é razão para não dar um preço a quem está a tentar
+       * reservar.
+       */
       calcularRota();
     });
 }
