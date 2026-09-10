@@ -72,8 +72,43 @@
   var enviados = 0;
   var vistos = {};
 
+  /**
+   * Os erros que não são nossos.
+   *
+   * Um bloqueador de anúncios, uma extensão do browser, uma rede
+   * de hotel com filtro — todos produzem erros que não vêm do
+   * nosso código e que não temos como corrigir.
+   *
+   * O "Could not load places" é o mais comum: o Google Maps
+   * bloqueado. Avisar sobre ele é encher o canal com uma coisa
+   * que acontece a uma percentagem fixa de visitantes, todos os
+   * dias.
+   *
+   * O que interessa saber é quando o NOSSO código parte.
+   */
+  var ALHEIOS = [
+    /could not load ["']?places/i,
+    /google is not defined/i,
+    /gtag is not defined/i,
+    /Script error/i,
+    /ResizeObserver loop/i,
+    /Non-Error promise rejection/i,
+    /chrome-extension:/i,
+    /moz-extension:/i,
+    /safari-extension:/i,
+    /Load failed/i,
+    /NetworkError/i,
+    /Failed to fetch/i
+  ];
+
   function mandar(dados) {
     if (enviados >= 5) return;
+
+    var texto = String(dados.message || '') + ' ' + String(dados.source || '');
+
+    for (var i = 0; i < ALHEIOS.length; i++) {
+      if (ALHEIOS[i].test(texto)) return;
+    }
 
     /**
      * E o mesmo erro só uma vez.
