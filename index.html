@@ -1351,7 +1351,7 @@ async function refreshPaymentOptions() {
       date: $('travelDate').value,
       time: $('travelTime').value,
       price_eur: base,
-      distance_km: parseFloat(($('distanceValue').textContent || '').replace(' km', '')) || 0,
+      distance_km: Number(window.__km) || 0,
       pickup: pickupPlace ? pickupPlace.fullDescription : '',
       dropoff: dropoffPlace ? dropoffPlace.fullDescription : ''
     }
@@ -1987,47 +1987,81 @@ function calcularRota() {
 
     var from = $('pickup').value, to = $('dropoff').value;
     var mult = passengerMultiplier(passengers);
-    var c = country(from, to) || (isPortugalRoute() ? 'PT' : null);
-    var priceEUR;
-
-    if (c === 'ES') {
-      var ez = esZone(from, to);
-      var fixo = null;
-      for (var d in ES_FIXED) if (hasWord(to, [d])) fixo = ES_FIXED[d];
-      priceEUR = fixo ? fixo.sedan * mult
-        : Math.max(24, (ez.base + distanceKm * ez.perKm) * mult);
-    } else if (c === 'PT') {
-      var z = ptZone(from, to);
-      priceEUR = Math.max(24, (z.base + distanceKm * z.perKm) * mult);
-    } else {
-      priceEUR = Math.max(25, (20 + distanceKm * 3.5) * 1.3 * mult);
-    }
-
     /**
-     * O suplemento noturno: 20% entre as 22h55 e as 6h.
+     * O preço vem do servidor, não daqui.
      *
-     * Calculado aqui e no servidor. Duas contas iguais em sítios
-     * diferentes são um risco — mas o servidor é quem manda, e uma
-     * calculadora que só diz o preço depois de o cliente pagar não
-     * é uma calculadora.
+     * O site tinha uma cópia da fórmula. Duas cópias são duas
+     * verdades: mudei a do servidor e esta ficou para trás, e um
+     * cliente viu 87 euros na calculadora e 30 no checkout.
      *
-     * As 22h55 e não as 23h porque a recolha de um voo que aterra
-     * às 23h é quase sempre uns minutos antes.
+     * Custa um pedido de rede por cotação. Vale a pena — um preço
+     * errado custa a reserva inteira, e três fórmulas divergentes
+     * custam a confiança.
      */
-    var hora = ($('travelTime').value || '').match(/^(\d{1,2}):(\d{2})/);
-
-    var deNoite = false;
-
-    if (hora) {
-      var minutos = Number(hora[1]) * 60 + Number(hora[2]);
-      deNoite = minutos >= (22 * 60 + 55) || minutos < (6 * 60);
-    }
-
-    if (deNoite) priceEUR = priceEUR * 1.2;
+    /**
+     * A distância guardada, não lida do ecrã.
+     *
+     * O checkout fazia parseFloat do texto do elemento. Enquanto
+     * o preço estava a ser pedido ao servidor, esse texto era
+     * "..." — e o parseFloat devolvia zero.
+     *
+     * Zero quilómetros dá o preço mínimo: 24 euros para uma
+     * viagem de 75.
+     *
+     * Um número guardado numa variável não tem este problema.
+     */
+    window.__km = distanceKm;
 
     $('distanceValue').textContent = distanceKm.toFixed(1) + ' km';
     $('durationValue').textContent = leg.duration.text;
-    updatePriceDisplay(priceEUR, deNoite);
+    $('priceValue').textContent = '...';
+
+    /**
+     * O botão desliga-se enquanto não há preço.
+     *
+     * Sem isto, quem carregasse durante o segundo em que o
+     * servidor calcula ia para o checkout com o preço por chegar
+     * — e era exatamente aí que a distância ia a zero.
+     */
+    var cta0 = $('book');
+    if (cta0) cta0.disabled = true;
+
+    fetch(RENDER_URL + '/api/price' +
+      '?km=' + distanceKm.toFixed(2) +
+      '&pax=' + passengers +
+      '&from=' + encodeURIComponent(pickupPlace.fullDescription || '') +
+      '&to=' + encodeURIComponent(dropoffPlace.fullDescription || '') +
+      '&time=' + encodeURIComponent($('travelTime').value || ''))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.covered === false) {
+          setStatus(d.message || 'We are not operating here yet.', true);
+          window.__km = 0;
+          $('priceValue').textContent = '\u2014';
+
+          var cta = $('book');
+          if (cta) cta.disabled = true;
+          return;
+        }
+
+        var cta2 = $('book');
+        if (cta2) cta2.disabled = false;
+
+        updatePriceDisplay(Number(d.price_eur), Boolean(d.night_surcharge));
+        setStatus('Fare calculated. ' + passengers + ' passenger(s), ' +
+                  getVehicleType(passengers) + '.');
+      })
+      .catch(function (e) {
+        /**
+         * Se o servidor não responder, não se inventa um preço.
+         *
+         * Mostrar um número errado é pior do que não mostrar
+         * nenhum: o cliente reserva com base nele e descobre a
+         * diferença no checkout.
+         */
+        setStatus('We could not get a price right now. Try again in a moment.', true);
+        $('priceValue').textContent = '\u2014';
+      });
 
     /**
      * Pediu um preço.
