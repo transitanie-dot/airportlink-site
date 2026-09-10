@@ -279,6 +279,15 @@ var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KE
 
 var $ = function (id) { return document.getElementById(id); };
 
+/**
+ * A conversa do link do email já foi aberta?
+ *
+ * Declarada aqui, com as outras: uma variável usada na linha 900 e
+ * declarada na 1200 funciona por hoisting, mas quem lê o ficheiro
+ * de cima a baixo encontra o uso antes da explicação.
+ */
+var abriuDoLink = false;
+
 var currentUser = null, currentFullName = '';
 var chats = [], activeChatId = null;
 var renderedMessageIds = new Set();
@@ -505,6 +514,36 @@ async function loadChats() {
 
   chats.sort(function (a, b) { return new Date(b.updated_at) - new Date(a.updated_at); });
   renderChatList();
+
+  /**
+   * A conversa que veio no link do email.
+   *
+   * O botão "Reply to this message" traz ?chat=<id>. Sem isto, o
+   * cliente clicava, chegava aqui, e via a lista — tinha de
+   * adivinhar qual das conversas era a do email que acabou de
+   * ler.
+   *
+   * Só na primeira vez: depois disso ele navega como quiser, e
+   * reabrir a mesma a cada atualização da lista seria tirar-lhe o
+   * controlo.
+   */
+  if (!abriuDoLink) {
+    var pedido = new URLSearchParams(location.search).get('chat');
+
+    if (pedido && chats.some(function (c) { return c.id === pedido; })) {
+      abriuDoLink = true;
+      selectChat(pedido);
+
+      /**
+       * E o endereço fica limpo.
+       *
+       * Sem isto, uma atualização da página reabria a mesma
+       * conversa — e partilhar o link levava o id de uma conversa
+       * privada para onde não devia ir.
+       */
+      history.replaceState({}, '', location.pathname);
+    }
+  }
 }
 
 function upsertLocalChat(row) {
