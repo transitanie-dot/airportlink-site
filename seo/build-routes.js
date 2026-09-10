@@ -1346,6 +1346,50 @@ function calculator(airport, current, cc, mapsKey, lang) {
       sc.src = 'https://maps.googleapis.com/maps/api/js?key=' + KEY +
         '&loading=async&libraries=places&callback=alReady&language=en&region=PT';
       sc.async = true;
+
+      /**
+       * Se o Google não carregar, diz-se.
+       *
+       * Um bloqueador de anúncios, uma rede de hotel com filtro,
+       * ou a quota esgotada — em qualquer dos casos o script não
+       * chega e a página fica com um campo que não faz nada.
+       *
+       * Sem isto, a pessoa escrevia a morada, não via sugestões, e
+       * concluía que o site está partido.
+       */
+      sc.onerror = function () {
+        loading = false;
+
+        var aviso = document.getElementById('cn');
+
+        if (aviso) {
+          aviso.textContent =
+            'Address suggestions are blocked on this network. ' +
+            'Type the full address and press the button anyway.';
+        }
+      };
+
+      /**
+       * E um limite de dez segundos.
+       *
+       * O onerror não dispara quando o script carrega mas a
+       * biblioteca falha por dentro — que é o que o "Could not
+       * load places" é. Um temporizador apanha os dois casos.
+       */
+      setTimeout(function () {
+        if (!ready && loading) {
+          loading = false;
+
+          var a2 = document.getElementById('cn');
+
+          if (a2) {
+            a2.textContent =
+              'Address suggestions are taking too long. ' +
+              'Type the full address and press the button anyway.';
+          }
+        }
+      }, 10000);
+
       document.head.appendChild(sc);
     }
 
