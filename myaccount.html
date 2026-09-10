@@ -338,6 +338,18 @@ html[data-viewas="on"] select:disabled{opacity:1;background:var(--surface-2);
   color:var(--muted)}
 .danger-note.bad{color:#B42318}
 .danger-note[hidden]{display:none}
+
+/* Mudar a palavra-passe. */
+.pw-box{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.pw-title{margin:0 0 12px;font-size:14px;font-weight:600}
+.pw-box input{display:block;width:100%;margin-bottom:8px;padding:9px 11px;
+  border-radius:9px;border:1px solid var(--line);font-family:inherit;
+  font-size:14px;background:var(--surface)}
+.pw-box input:focus{outline:none;border-color:var(--teal)}
+.pw-msg{margin:10px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.pw-msg.bad{color:#B42318}
+.pw-msg.ok{color:#065F46}
+.pw-msg[hidden]{display:none}
 </style>
 </head>
 <body data-cta-href="/" data-cta-label="Book a transfer">
@@ -447,6 +459,24 @@ html[data-viewas="on"] select:disabled{opacity:1;background:var(--surface-2);
           <button id="saveProfileBtn" class="btn btn-secondary" type="button" style="width:100%;" data-i18n="ma.saveProfile">Save profile</button>
           <div id="profileError" class="msg err"></div>
           <div id="profileSuccess" class="msg ok"></div>
+
+          <!-- Mudar a palavra-passe.
+               A conta existia e não se geria: quem quisesse mudar
+               tinha de fingir que se tinha esquecido. -->
+          <div class="pw-box">
+            <h3 class="pw-title">Password</h3>
+
+            <input type="password" id="pwCurrent" placeholder="Current password"
+                   autocomplete="current-password">
+            <input type="password" id="pwNew" placeholder="New password — at least 8 characters"
+                   autocomplete="new-password">
+            <input type="password" id="pwConfirm" placeholder="Repeat the new password"
+                   autocomplete="new-password">
+
+            <button class="btn sm" id="pwSave" type="button">Change password</button>
+
+            <p class="pw-msg" id="pwMsg" hidden></p>
+          </div>
 
           <!-- Apagar a conta.
                Obrigação do RGPD e prometida na política de
@@ -1908,6 +1938,82 @@ async function bootVendo(codigo) {
 function qsa(sel) {
   return Array.prototype.slice.call(document.querySelectorAll(sel));
 }
+
+/**
+ * Mudar a palavra-passe.
+ *
+ * A verificação da antiga é feita no servidor. Aqui só se confirma
+ * que as duas novas são iguais — isso é um erro de digitação e não
+ * vale uma ida ao servidor.
+ */
+async function tokenDaSessao() {
+  var r = await supabaseClient.auth.getSession();
+  var t = r.data && r.data.session && r.data.session.access_token;
+  if (!t) throw new Error('Your session expired. Please sign in again.');
+  return t;
+}
+
+
+$('pwSave')?.addEventListener('click', async function () {
+  var btn = $('pwSave');
+  var msg = $('pwMsg');
+
+  var atual = $('pwCurrent').value;
+  var nova = $('pwNew').value;
+  var repete = $('pwConfirm').value;
+
+  msg.hidden = false;
+  msg.className = 'pw-msg bad';
+
+  if (!atual) { msg.textContent = 'Enter your current password.'; return; }
+
+  if (nova.length < 8) {
+    msg.textContent = 'The new password needs at least 8 characters.';
+    return;
+  }
+
+  if (nova !== repete) {
+    msg.textContent = 'The two new passwords do not match.';
+    return;
+  }
+
+  btn.disabled = true;
+  var antes = btn.textContent;
+  btn.textContent = 'Changing...';
+
+  try {
+    var res = await fetch(RENDER_URL + '/api/account/password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + (await tokenDaSessao())
+      },
+      body: JSON.stringify({ current_password: atual, new_password: nova })
+    });
+
+    var d = await res.json();
+
+    if (!res.ok) {
+      msg.className = 'pw-msg bad';
+      msg.textContent = d.error || 'Could not change it.';
+      return;
+    }
+
+    msg.className = 'pw-msg ok';
+    msg.textContent = d.message || 'Password changed.';
+
+    $('pwCurrent').value = '';
+    $('pwNew').value = '';
+    $('pwConfirm').value = '';
+  } catch (e) {
+    msg.className = 'pw-msg bad';
+    msg.textContent = e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = antes;
+  }
+});
+
 
 /**
  * Apagar a conta.
