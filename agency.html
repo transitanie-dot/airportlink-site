@@ -408,6 +408,16 @@ html[data-theme="dark"] .ag-book:hover{color:#141A28}
   .ag-top{flex-direction:column;align-items:stretch}
   .ag-book{justify-content:center}
 }
+
+/* Mudar a palavra-passe. */
+.pw-box input{display:block;width:100%;margin-bottom:8px;padding:9px 11px;
+  border-radius:9px;border:1px solid var(--line);font-family:inherit;
+  font-size:14px}
+.pw-box input:focus{outline:none;border-color:var(--teal)}
+.pw-msg{margin:10px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.pw-msg.bad{color:#B42318}
+.pw-msg.ok{color:#065F46}
+.pw-msg[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -642,7 +652,29 @@ html[data-theme="dark"] .ag-book:hover{color:#141A28}
           <div class="field"><label for="agEmail">Email</label><input id="agEmail" type="email" disabled></div>
           <button class="btn btn-secondary" id="agSignOut" type="button" style="width:100%">Sign out</button>
         </div>
-      </div>
+      
+        <!-- Mudar a palavra-passe.
+             A conta existia e não se geria: quem quisesse mudar
+             tinha de fingir que se tinha esquecido. -->
+        <div class="card full">
+          <h2>Password</h2>
+          <p class="sub">Changing it here does not sign you out of other devices.</p>
+
+          <div class="pw-box">
+            <input type="password" id="pwCurrent" placeholder="Current password"
+                   autocomplete="current-password">
+            <input type="password" id="pwNew" placeholder="New password — at least 8 characters"
+                   autocomplete="new-password">
+            <input type="password" id="pwConfirm" placeholder="Repeat the new password"
+                   autocomplete="new-password">
+
+            <button class="btn sm" id="pwSave" type="button">Change password</button>
+
+            <p class="pw-msg" id="pwMsg" hidden></p>
+          </div>
+        </div>
+
+</div>
     </div>
   </div>
 </main>
@@ -652,6 +684,14 @@ html[data-theme="dark"] .ag-book:hover{color:#141A28}
 'use strict';
 
 var SUPABASE_URL = 'https://ujpagsccfiledbtfeyuq.supabase.co';
+
+/**
+ * A API principal.
+ *
+ * Esta página só falava com o Supabase. A mudança de palavra-passe
+ * vive na API — é lá que se confirma a antiga antes de trocar.
+ */
+var RENDER_URL = 'https://airportlink.onrender.com';
 var SUPABASE_ANON_KEY = 'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ';
 
 // A mesma sessão do site. Uma agência entra em /login como toda a
@@ -1371,6 +1411,80 @@ $('agSignOut').addEventListener('click', async function () {
 });
 
 })();
+
+/**
+ * Mudar a palavra-passe.
+ *
+ * A verificação da antiga é feita no servidor. Aqui só se confirma
+ * que as duas novas são iguais — isso é um erro de digitação e não
+ * vale uma ida ao servidor.
+ */
+(function () {
+  var btn = document.getElementById('pwSave');
+  if (!btn) return;
+
+  btn.addEventListener('click', async function () {
+    var msg = document.getElementById('pwMsg');
+    var atual = document.getElementById('pwCurrent').value;
+    var nova = document.getElementById('pwNew').value;
+    var repete = document.getElementById('pwConfirm').value;
+
+    msg.hidden = false;
+    msg.className = 'pw-msg bad';
+
+    if (!atual) { msg.textContent = 'Enter your current password.'; return; }
+
+    if (nova.length < 8) {
+      msg.textContent = 'The new password needs at least 8 characters.';
+      return;
+    }
+
+    if (nova !== repete) {
+      msg.textContent = 'The two new passwords do not match.';
+      return;
+    }
+
+    btn.disabled = true;
+    var antes = btn.textContent;
+    btn.textContent = 'Changing...';
+
+    try {
+      var sess = await db.auth.getSession();
+      var token = sess.data && sess.data.session && sess.data.session.access_token;
+
+      if (!token) throw new Error('Your session expired. Please sign in again.');
+
+      var res = await fetch(RENDER_URL + '/api/account/password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ current_password: atual, new_password: nova })
+      });
+
+      var d = await res.json();
+
+      if (!res.ok) {
+        msg.textContent = d.error || 'Could not change it.';
+        return;
+      }
+
+      msg.className = 'pw-msg ok';
+      msg.textContent = d.message || 'Password changed.';
+
+      document.getElementById('pwCurrent').value = '';
+      document.getElementById('pwNew').value = '';
+      document.getElementById('pwConfirm').value = '';
+    } catch (e) {
+      msg.textContent = e.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = antes;
+    }
+  });
+})();
+
 </script>
 
 </body>
