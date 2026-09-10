@@ -658,9 +658,22 @@ html[data-viewas="on"] select:disabled{opacity:1;background:var(--surface-2);
           <input type="text" id="chDropoff">
         </div>
 
-        <div class="ch-f wide">
-          <label for="chPhone">Phone</label>
-          <input type="tel" id="chPhone">
+        <!-- ============ SÓ PARA AGÊNCIAS ============
+             Quem reserva para si próprio já tem o telefone no
+             perfil, e pedi-lo outra vez é um campo a mais para
+             preencher errado.
+
+             Uma agência é diferente: o passageiro não é ela, e o
+             motorista precisa do nome e do número de quem vai
+             viajar — não de quem fez a reserva. -->
+        <div class="ch-f" id="chPassengerWrap" hidden>
+          <label for="chPassengerName">Passenger name</label>
+          <input type="text" id="chPassengerName" placeholder="Who is travelling">
+        </div>
+
+        <div class="ch-f" id="chPhoneWrap" hidden>
+          <label for="chPhone">Passenger phone</label>
+          <input type="tel" id="chPhone" placeholder="The driver calls this number">
         </div>
       </div>
 
@@ -864,7 +877,22 @@ function openChange(key) {
   $('chFlight').value = trip.flight_number || '';
   $('chPickup').value = trip.pickup || '';
   $('chDropoff').value = trip.dropoff || '';
-  $('chPhone').value = trip.passenger_phone || trip.phone_number || '';
+  /**
+   * Os campos do passageiro só para agências.
+   *
+   * Quem reserva para si já tem o telefone no perfil. Uma agência
+   * não: o passageiro não é ela, e o motorista precisa do nome e
+   * do número de quem vai viajar.
+   */
+  var ehAgencia = Boolean(agentInfo && agentInfo.status === 'approved');
+
+  $('chPassengerWrap').hidden = !ehAgencia;
+  $('chPhoneWrap').hidden = !ehAgencia;
+
+  if (ehAgencia) {
+    $('chPassengerName').value = trip.passenger_name || trip.full_name || '';
+    $('chPhone').value = trip.passenger_phone || trip.phone_number || '';
+  }
 
   // Uma data no passado não faz sentido, e o browser recusa-a
   // sozinho.
@@ -900,9 +928,24 @@ async function saveChange() {
     ['chPax', 'passengers', String(trip.passengers || 1)],
     ['chFlight', 'flight_number', trip.flight_number || ''],
     ['chPickup', 'pickup', trip.pickup || ''],
-    ['chDropoff', 'dropoff', trip.dropoff || ''],
-    ['chPhone', 'passenger_phone', trip.passenger_phone || trip.phone_number || '']
+    ['chDropoff', 'dropoff', trip.dropoff || '']
   ];
+
+  /**
+   * E os do passageiro, só quando são visíveis.
+   *
+   * Um campo escondido tem valor vazio. Incluí-lo na lista fazia
+   * com que qualquer alteração apagasse o telefone da reserva —
+   * porque "vazio" é diferente do que lá estava.
+   */
+  if (!$('chPhoneWrap').hidden) {
+    campos.push(
+      ['chPassengerName', 'passenger_name',
+       trip.passenger_name || trip.full_name || ''],
+      ['chPhone', 'passenger_phone',
+       trip.passenger_phone || trip.phone_number || '']
+    );
+  }
 
   campos.forEach(function (c) {
     var novo = ($(c[0]).value || '').trim();
