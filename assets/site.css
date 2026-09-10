@@ -188,9 +188,19 @@ html[data-theme="dark"] .hbtn{background:#E9EDF3;color:#141A28}
   .header-right .hbtn:not(.line){display:none}
   .header-right #themeBtn{display:flex}
 
-  /* No telemóvel, o boneco em vez do texto. */
-  .header-right .acc-text{display:none}
-  .header-right .acc-icon{display:flex}
+  /**
+   * No telemóvel, o boneco em vez do texto.
+   *
+   * O !important é feio e é de propósito. O .acc-text tem também
+   * as classes .hbtn e .line, e há regras dessas espalhadas pelo
+   * ficheiro — uma delas ganhava por vir mais abaixo, e ficavam
+   * os dois.
+   *
+   * Sem isto, um admin via "Operations" E o boneco lado a lado,
+   * que é o dobro do espaço para o mesmo link.
+   */
+  .header-right .acc-text{display:none !important}
+  .header-right .acc-icon{display:flex !important}
 
   .header-right .hbtn.line{padding:0 10px;font-size:10.5px;letter-spacing:.04em}
   .header-inner{padding:0 14px;gap:10px}
