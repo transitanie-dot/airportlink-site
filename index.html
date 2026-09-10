@@ -2048,6 +2048,45 @@ function calcularRota() {
         if (cta2) cta2.disabled = false;
 
         updatePriceDisplay(Number(d.price_eur), Boolean(d.night_surcharge));
+
+        /**
+         * O resumo e as opções de pagamento DEPOIS do preço.
+         *
+         * Estavam fora do .then, a correr assim que o pedido saía
+         * — com o basePrice ainda vazio ou do cálculo anterior.
+         *
+         * Era isto que fazia o checkout mostrar outro número: ele
+         * lê o dataset.basePrice, e nessa altura ainda não tinha
+         * sido escrito.
+         */
+        updateCheckoutSummary();
+        refreshPaymentOptions();
+
+        /**
+         * Pediu um preço.
+         *
+         * É o primeiro sinal de intenção real, e o denominador de
+         * tudo o resto: sem ele, "dez reservas" não diz se foram
+         * dez de doze ou dez de mil.
+         *
+         * Aqui e não antes: o preço só existe depois de o servidor
+         * responder, e o priceEUR local deixou de existir quando o
+         * cálculo passou para o servidor.
+         */
+        if (window.alTrack) {
+          window.alTrack('quote_requested', {
+            value: Math.round(Number(d.price_eur)),
+            currency: 'EUR',
+            distance_km: Math.round(distanceKm),
+            passengers: passengers,
+            night: d.night_surcharge ? 'yes' : 'no',
+
+            // As moradas não vão: são dados pessoais, e o que
+            // interessa é o padrão, não quem.
+            route_country: country(from, to) || 'other'
+          });
+        }
+
         setStatus('Fare calculated. ' + passengers + ' passenger(s), ' +
                   getVehicleType(passengers) + '.');
       })
@@ -2064,28 +2103,11 @@ function calcularRota() {
       });
 
     /**
-     * Pediu um preço.
+     * O resumo e o estado ficaram dentro do .then.
      *
-     * É o primeiro sinal de intenção real, e o denominador de tudo
-     * o resto: sem ele, "dez reservas" não diz se foram dez de
-     * doze ou dez de mil.
+     * Aqui corriam antes de o servidor responder — e o resumo lia
+     * um preço que ainda não tinha sido escrito.
      */
-    if (window.alTrack) {
-      window.alTrack('quote_requested', {
-        value: Math.round(priceEUR),
-        currency: 'EUR',
-        distance_km: Math.round(distanceKm),
-        passengers: passengers,
-        night: deNoite ? 'yes' : 'no',
-
-        // As moradas não vão: são dados pessoais, e o que
-        // interessa é o padrão, não quem.
-        route_country: country(from, to) || 'other'
-      });
-    }
-    updateCheckoutSummary();
-    refreshPaymentOptions();
-    setStatus('Fare calculated. ' + passengers + ' passenger(s), ' + getVehicleType(passengers) + '.');
   });
 }
 
