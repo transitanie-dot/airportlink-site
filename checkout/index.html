@@ -799,7 +799,7 @@ function deNoite() {
 
 var trip = {
   from: '', to: '', date: '', time: '12:00', pax: 2,
-  vehicle: 'sedan', km: 0, isPT: true,
+  vehicle: 'sedan', km: 0, isPT: null,
   returnDate: '', returnTime: ''
 };
 
@@ -1022,6 +1022,29 @@ async function pagar() {
       return m ? m[1] : '351';
     })(),
     phone_number: $('phone').value.trim().replace(/^\+\d{1,4}\s*/, ''),
+
+    /**
+     * A distância que o cliente viu.
+     *
+     * Não era enviada. O servidor media a rota outra vez ao
+     * Google — o que custa uma chamada paga e pode devolver outro
+     * caminho, outro número, outro preço.
+     *
+     * A que conta é esta: é a que está no preço que ele aceitou.
+     */
+    distance_km: Number(trip.km) || 0,
+
+    /**
+     * E o preço que lhe foi mostrado.
+     *
+     * O servidor recalcula na mesma — o browser não decide
+     * preços. Mas com este número pode COMPARAR, e avisar quando
+     * os dois não batem.
+     *
+     * Sem ele, uma divergência só se descobre quando um cliente
+     * reclama.
+     */
+    price_eur: Number(($('sTotal').textContent || '').replace(/[^\d.]/g, '')) || 0,
 
     passenger_name: $('name').value.trim(),
     passenger_phone: $('phone').value.trim(),
