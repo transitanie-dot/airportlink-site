@@ -501,6 +501,25 @@ function fare(km, mult, isPT, vehId) {
   return Math.max(25, (20 + km * 3.5) * 1.3 * mult);
 }
 
+
+/**
+ * O suplemento noturno: 20% entre as 22h55 e as 6h.
+ *
+ * Faltava aqui. A calculadora aplicava-o, o servidor aplicava-o, e
+ * esta página não — o cliente via um preço mais baixo e o
+ * checkout cobrava mais.
+ */
+function deNoite() {
+  var m = String(trip.time || '').match(/^(\d{1,2}):(\d{2})/);
+  if (!m) return false;
+
+  var min = Number(m[1]) * 60 + Number(m[2]);
+
+  // A janela atravessa a meia-noite: das 22h55 às 23h59 E das
+  // 00h00 às 05h59.
+  return min >= (22 * 60 + 55) || min < (6 * 60);
+}
+
 /**
  * As quatro classes.
  *
@@ -657,6 +676,17 @@ var hasReturn = false;
   trip.km = Number(q.get('km')) || 0;
   trip.dur = q.get('dur') || '';
 
+  /**
+   * O que chegou no endereço, escrito na consola.
+   *
+   * Um preço errado não deixa rasto: sai um número e ninguém sabe
+   * de onde veio. Esta linha diz-o — e um preço de 27 euros com
+   * "km: 0" explica-se sozinho.
+   */
+  console.log('[booking]',
+    'km:', trip.km, '| pax:', trip.pax,
+    '| de:', trip.from, '| para:', trip.to);
+
   if (!trip.date) {
     // Três dias, não um: amanhã cai dentro das 48 horas e tira o
     // "pagar depois" antes de a pessoa sequer o ver.
@@ -798,8 +828,40 @@ function suggest(input, box) {
 
 // ---------- medir a rota ----------
 function measure(force) {
+  /**
+   * Uma distância absurda é o mesmo que nenhuma.
+   *
+   * O km vem no endereço, e se vier a zero ou a meio quilómetro
+   * é porque a homepage não o mediu ou não o passou. Confiar nele
+   * dava preços de 27 euros para viagens de 87.
+   *
+   * Meio quilómetro é o corte: nenhuma viagem de aeroporto é mais
+   * curta do que isso, e um transfer de 500 metros não existe.
+   */
+  if (trip.km > 0 && trip.km < 0.5) {
+    console.warn('[booking] distância suspeita no endereço:', trip.km);
+    trip.km = 0;
+  }
+
   // Já vem medida da homepage: desenhar as opções e ficar por aqui.
   if (!force && trip.km > 0) {
+    /**
+     * O país, que só era definido ao medir.
+     *
+     * Quando o km vem no endereço, esta função sai antes de
+     * chegar ao Google — e o trip.isPT ficava indefinido.
+     *
+     * Indefinido é falso, e falso significa "resto do mundo". Um
+     * Faro para Albufeira com o km no endereço usava a fórmula
+     * genérica em vez da portuguesa: 84 euros em vez de 47.
+     *
+     * O texto das moradas chega para decidir: o Google escreve o
+     * país no fim.
+     */
+    if (trip.isPT === undefined) {
+      trip.isPT = /portugal/i.test(trip.from) || /portugal/i.test(trip.to);
+    }
+
     paintRoute();
     paintOptions();
     return;
@@ -867,9 +929,34 @@ function bindOpts() {
 }
 
 function paintOptions() {
+  /**
+   * Sem distância, não se mostram preços.
+   *
+   * Com zero quilómetros, a fórmula devolve o mínimo: 26 euros
+   * para uma viagem de 80. E ninguém repara, porque o número sai
+   * bonito.
+   *
+   * Isto acontecia quando a homepage não conseguia passar o km no
+   * endereço, ou quando o Google falhava a medir aqui.
+   *
+   * Preferir uma mensagem a um preço errado: o cliente reserva
+   * com base no que vê, e descobre a diferença ao pagar.
+   */
+  if (!trip.km || trip.km <= 0) {
+    $('opts').innerHTML =
+      '<div class="state"><strong>' +
+      T('book.noRoute', 'We could not measure that route') + '</strong>' +
+      '<span>' +
+      T('book.noRouteHelp',
+        'Press Change above and pick both addresses from the suggestions.') +
+      '</span></div>';
+
+    return;
+  }
+
   var html = CLASSES.map(function (c, i) {
     var fits = trip.pax <= c.seats;
-    var price = Math.round(fare(trip.km, c.mult, trip.isPT, c.id));
+    var price = Math.round(fare(trip.km, c.mult, trip.isPT, c.id) * (deNoite() ? 1.2 : 1));
 
     // Qualquer veículo com lugares suficientes fica escolhível,
     // mesmo os grandes de mais para o grupo. Quatro pessoas com
@@ -929,7 +1016,7 @@ function firstFit() {
 
   CLASSES.forEach(function (c, i) {
     if (trip.pax > c.seats) return;
-    var p = fare(trip.km, c.mult, trip.isPT, c.id);
+    var p = fare(trip.km, c.mult, trip.isPT, c.id) * (deNoite() ? 1.2 : 1);
     if (p < bestPrice) { bestPrice = p; best = i; }
   });
 
@@ -949,13 +1036,34 @@ function paintSummary() {
       fmtDate(chargeAt, { day: 'numeric', month: 'long' })
     : T('book.chargedAtCheckout', 'Less than 48 hours away \u2014 charged at checkout');
 
-  if (chosen === null || !trip.km) {
+  /**
+   * O botão desliga-se sem escolha ou sem distância.
+   *
+   * Sem distância não há preço, e um checkout sem preço cobra o
+   * mínimo — 27 euros para uma viagem de 87.
+   *
+   * Mas o cliente merece saber PORQUÊ. Um botão cinzento sem
+   * explicação parece um site partido.
+   */
+  if (!trip.km) {
+    $('nextBtn').disabled = true;
+
+    var aviso = $('sWhen');
+    if (aviso) {
+      aviso.textContent = T('book.noRouteYet',
+        'Press Change above and pick both addresses from the suggestions.');
+    }
+
+    return;
+  }
+
+  if (chosen === null) {
     $('nextBtn').disabled = true;
     return;
   }
 
   var c = CLASSES[chosen];
-  var one = Math.round(fare(trip.km, c.mult, trip.isPT, c.id));
+  var one = Math.round(fare(trip.km, c.mult, trip.isPT, c.id) * (deNoite() ? 1.2 : 1));
   var total = hasReturn ? one * 2 : one;
 
   $('sVeh').textContent = c.name +
