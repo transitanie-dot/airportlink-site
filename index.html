@@ -1963,6 +1963,22 @@ function calculateRouteAndPrice() {
 
 
 function calcularRota() {
+  /**
+   * Os passageiros, lidos outra vez.
+   *
+   * Quando dividi esta função em duas — uma para perguntar a
+   * cobertura, outra para medir a rota — o "passengers" ficou na
+   * primeira metade.
+   *
+   * Aqui dentro, "passengers" passava a apanhar o ELEMENTO com
+   * esse id, porque o browser cria uma variável global por cada
+   * id do documento. Daí o "[object HTMLInputElement] passengers"
+   * na mensagem, e o preço que não mudava: o multiplicador recebia
+   * um elemento em vez de um número.
+   */
+  var passengers = Math.max(1, Math.min(16,
+    parseInt($('passengers').value, 10) || 1));
+
   directionsService.route({
     origin: { placeId: pickupPlace.placeId },
     destination: { placeId: dropoffPlace.placeId },
