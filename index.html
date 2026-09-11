@@ -1113,7 +1113,2041 @@ html[data-theme="dark"] .pay-promise{color:var(--amber);
 
 </main>
 
-<script src="/assets/home.js?v=1" defer></script>
+<script>
+/**
+ * A tradução, com o inglês como rede.
+ *
+ * No topo deste bloco de propósito: é usada logo nas primeiras
+ * funções, e uma var atribuída a função não sobe — declarada mais
+ * abaixo, a primeira chamada rebenta e leva o resto do script com
+ * ela, o mapa incluído.
+ */
+var T = function (k, en) { return (window.i18n ? window.i18n.t(k, en) : en); };
+
+(function () {
+'use strict';
+
+var SUPABASE_URL = 'https://ujpagsccfiledbtfeyuq.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ';
+var RENDER_URL = 'https://airportlink.onrender.com';
+var SITE_ORIGIN = 'https://www.airportlink.app';
+var THEME_KEY = 'airportlink-theme';
+
+var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+});
+
+var $ = function (id) { return document.getElementById(id); };
+var currentUser = null, authMode = 'signin', agentInfo = null;
+var payMode = 'now', payOptions = { pay_later: false, reason: null, charge_lead_hours: 48 };
+var phoneField = null;
+var guestMode = false;
+var returnOn = false, returnCustom = false;
+var returnPickupPlace = null, returnDropoffPlace = null;
+
+// ============================================================
+// ALTURA E TEMA
+// A altura vai para o Wix para o iframe nunca ter scroll próprio.
+// Fora do iframe estas chamadas não fazem nada, mas ficam para o
+// mesmo ficheiro poder ser usado nos dois sítios durante a
+// transição.
+// ============================================================
+function notifyParent(m) { try { window.parent.postMessage(m, '*'); } catch (e) {} }
+
+// Navegação real. Estava a ser chamada pelo botão dos agentes mas
+// nunca chegou a ser definida — o clique dava ReferenceError.
+function navigateTo(path) {
+  try { window.top.location.href = SITE_ORIGIN + path; }
+  catch (e) { window.location.href = path; }
+}
+
+var lastSent = 0;
+function reportHeight() {
+  var h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+  if (Math.abs(h - lastSent) < 12) return;
+  lastSent = h;
+  notifyParent({ type: 'resize', height: h });
+}
+if (window.ResizeObserver) new ResizeObserver(reportHeight).observe(document.body);
+window.addEventListener('load', reportHeight);
+[300, 900, 2000, 4000].forEach(function (ms) { setTimeout(reportHeight, ms); });
+
+/**
+ * O tema só muda quando alguém o muda.
+ *
+ * Isto ouvia mensagens de uma página-mãe — era do tempo em que a
+ * calculadora vivia num iframe no Wix. Qualquer mensagem que
+ * chegasse sem ser "dark" era convertida em "light" e guardada
+ * por cima da escolha do visitante.
+ *
+ * Extensões do browser mandam mensagens. O resultado: quem
+ * escolhia o modo escuro e voltava à homepage via tudo claro
+ * outra vez.
+ *
+ * Só aceita "dark" ou "light" explícitos, e só de mensagens que
+ * digam que são de tema. O resto é ignorado.
+ */
+function applyTheme(theme) {
+  if (theme !== 'dark' && theme !== 'light') return;
+
+  document.documentElement.setAttribute('data-theme', theme);
+  try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+}
+
+window.addEventListener('message', function (event) {
+  var d = event.data;
+  if (!d || typeof d !== 'object' || d.type !== 'theme') return;
+
+  applyTheme(d.value);
+});
+notifyParent('ready');
+
+// ============================================================
+// FAQ
+// ============================================================
+(function () {
+  var searchInput = $('faqSearch');
+  var filterButtons = Array.prototype.slice.call(document.querySelectorAll('.faq-filter'));
+  var faqItems = Array.prototype.slice.call(document.querySelectorAll('.faq-item'));
+  var activeFilter = 'all';
+
+  function updateFaq() {
+    var query = (searchInput.value || '').toLowerCase().trim();
+    var visible = 0;
+    faqItems.forEach(function (item) {
+      var cat = (item.getAttribute('data-category') || '').toLowerCase();
+      var hay = ((item.getAttribute('data-search') || '') + ' ' + item.innerText).toLowerCase();
+      var show = (activeFilter === 'all' || cat.indexOf(activeFilter) !== -1) &&
+                 (!query || hay.indexOf(query) !== -1);
+      item.style.display = show ? '' : 'none';
+      if (!show) {
+        item.classList.remove('open');
+        var a = item.querySelector('.faq-answer');
+        if (a) a.style.maxHeight = null;
+      } else visible++;
+    });
+    // Número e palavra em caixas separadas: a palavra tem a sua
+    // marca de tradução e é o i18n que a pinta, sem depender de o
+    // dicionário já ter chegado quando isto corre.
+    $('faqCount').textContent = visible;
+
+    var chave = visible === 1 ? 'h.faqAnswer' : 'h.faqAnswers';
+    $('faqWord').setAttribute('data-i18n', chave);
+    $('faqWord').textContent = T(chave, visible === 1 ? 'answer' : 'answers');
+
+    // Se o dicionário ainda não tinha chegado quando o T() correu,
+    // o apply() do i18n corrige aqui.
+    if (window.i18n && window.i18n.ready) window.i18n.apply($('faqWord').parentNode);
+    $('faqEmpty').style.display = visible === 0 ? 'block' : 'none';
+    reportHeight();
+  }
+
+  filterButtons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      filterButtons.forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      activeFilter = b.getAttribute('data-filter');
+      updateFaq();
+    });
+  });
+
+  faqItems.forEach(function (item) {
+    var trigger = item.querySelector('.faq-question');
+    var answer = item.querySelector('.faq-answer');
+    trigger.addEventListener('click', function () {
+      var isOpen = item.classList.contains('open');
+      faqItems.forEach(function (o) {
+        o.classList.remove('open');
+        var oa = o.querySelector('.faq-answer');
+        if (oa) oa.style.maxHeight = null;
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+      setTimeout(reportHeight, 280);
+    });
+  });
+
+  searchInput.addEventListener('input', updateFaq);
+  updateFaq();
+
+  // O contador diz "9 respostas", e o plural muda de língua para
+  // língua. Quando o dicionário chega, recontamos.
+  if (window.i18n) window.i18n.onReady(updateFaq);
+})();
+
+// ============================================================
+// CÂMBIOS — vindos da API, para o preço mostrado e o cobrado
+// virem sempre da mesma fonte. Os valores locais só existem
+// enquanto a resposta não chega.
+// ============================================================
+var EXCHANGE_RATES = {
+  EUR:1.0, USD:1.191, GBP:0.873, BRL:6.14, CAD:1.640, AUD:1.672, CHF:0.955,
+  JPY:189.4, NOK:11.17, SEK:11.26, DKK:7.61, NZD:1.992, MXN:20.16,
+  ZAR:19.18, AED:4.38, SAR:4.47
+};
+
+async function loadRates() {
+  try {
+    var res = await fetch(RENDER_URL + '/api/exchange-rates');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    var data = await res.json();
+    if (data && data.rates && data.rates.USD) {
+      EXCHANGE_RATES = data.rates;
+      $('ratesHint').textContent = data.source === 'ecb' ? 'Live rates' : 'Auto-selected';
+      updatePriceDisplayOnly();
+      updateCheckoutSummary();
+    }
+  } catch (e) {
+    console.log('exchange rates fallback:', e.message);
+  }
+}
+
+var COUNTRY_CURRENCY = { PT:'EUR',ES:'EUR',FR:'EUR',DE:'EUR',IE:'EUR',IT:'EUR',NL:'EUR',BE:'EUR',
+  AT:'EUR',LU:'EUR',GR:'EUR',FI:'EUR',MT:'EUR',CY:'EUR',US:'USD',GB:'GBP',BR:'BRL',CA:'CAD',
+  AU:'AUD',CH:'CHF',JP:'JPY',NO:'NOK',SE:'SEK',DK:'DKK',NZ:'NZD',MX:'MXN',ZA:'ZAR',AE:'AED',SA:'SAR' };
+var PHONE_CODES = { US:'1',GB:'44',PT:'351',BR:'55',IE:'353',ES:'34',FR:'33',DE:'49',IT:'39',
+  CA:'1',AU:'61',CH:'41',JP:'81',NO:'47',SE:'46',DK:'45',NZ:'64',MX:'52',ZA:'27',AE:'971',
+  SA:'966',NL:'31',BE:'32',AT:'43' };
+
+// ============================================================
+// AGENTES
+//
+// O desconto é sempre recalculado no servidor no momento do
+// checkout. Isto aqui é só para o agente ver o preço certo antes
+// de pagar — se alguém forçar este objeto no browser, o servidor
+// cobra o preço público na mesma.
+// ============================================================
+async function loadAgentInfo() {
+  agentInfo = null;
+  if (currentUser) {
+    try {
+      var s = await supabaseClient.auth.getSession();
+      var token = s.data && s.data.session && s.data.session.access_token;
+      if (token) {
+        var res = await fetch(RENDER_URL + '/api/agent/me', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        var info = await res.json();
+        if (res.ok && info && info.status === 'approved') agentInfo = info;
+      }
+    } catch (e) {
+      console.log('agent lookup skipped:', e.message);
+    }
+  }
+  applyAgentUI();
+}
+
+function isAgent() { return !!(agentInfo && agentInfo.status === 'approved'); }
+
+function applyAgentUI() {
+  var on = isAgent();
+
+  $('agentBanner').classList.toggle('hidden', !on);
+  $('publicCancelNote').classList.toggle('hidden', on);
+  $('passengerEmailField').classList.toggle('hidden', !on);
+  $('agentRefField').classList.toggle('hidden', !on);
+  $('travellerField').classList.toggle('hidden', !on);
+  $('saveTravellerRow').classList.toggle('hidden', !on);
+
+  if (on) loadTravellers();
+
+  if (on) {
+    $('agentBannerTitle').textContent =
+      (agentInfo.agency_name ? agentInfo.agency_name + ' \u00b7 ' : '') +
+      agentInfo.commission + '% partner rate applied';
+    $('agentBannerText').textContent =
+      'Prices below already include your trade rate. Enter your traveller\u2019s name and phone so the driver deals with them directly \u2014 the booking stays invoiced to your agency. Free cancellation until ' +
+      agentInfo.cancellation_hours + ' hours before pick-up.';
+
+    $('fullNameLabel').textContent = 'Passenger name';
+    $('fullName').placeholder = 'Who is travelling';
+    $('phoneLabel').textContent = 'Passenger phone';
+    $('emailLabel').textContent = 'Billing email';
+    $('emailHint').textContent = 'Your agency account';
+    $('checkoutCancelText').textContent =
+      'You can cancel this booking free of charge until ' + agentInfo.cancellation_hours +
+      ' hours before pick-up, straight from your partner dashboard. After that, contact support.';
+  } else {
+    $('fullNameLabel').textContent = 'Full name';
+    $('fullName').placeholder = 'Your full name';
+    $('phoneLabel').textContent = 'Phone';
+    $('emailLabel').textContent = 'Email';
+    $('emailHint').textContent = 'From your account';
+    $('checkoutCancelText').textContent =
+      'You can cancel this booking free of charge until 24 hours before pick-up, straight from your account. After that, contact support.';
+  }
+
+  updatePriceDisplayOnly();
+  updateCheckoutSummary();
+  reportHeight();
+}
+
+// ============================================================
+// PAGAR JÁ OU PAGAR DEPOIS
+//
+// A elegibilidade é decidida no servidor e repetida no checkout.
+// Isto aqui é só para a interface: forçar payMode a 'later' na
+// consola não muda nada, o servidor recusa e explica porquê.
+// ============================================================
+async function refreshPaymentOptions() {
+  var base = parseFloat($('priceValue').dataset.basePrice || 'NaN');
+
+  /**
+   * A promessa some quando a viagem é a menos de 48 horas.
+   *
+   * Nesses casos o pagamento é imediato, e prometer o contrário
+   * é uma surpresa desagradável no checkout.
+   *
+   * Sem data escolhida, fica: é a promessa geral do serviço, e a
+   * maioria das reservas é com antecedência.
+   */
+  var promessa = $('payPromise');
+
+  if (promessa && !promessa.__missing) {
+    var quando = $('travelDate').value;
+    var horas = $('travelTime').value || '12:00';
+
+    if (quando) {
+      var partida = new Date(quando + 'T' + horas);
+      var faltam = (partida - new Date()) / 36e5;
+
+      promessa.classList.toggle('hidden', !isNaN(faltam) && faltam < 48);
+    } else {
+      promessa.classList.remove('hidden');
+    }
+  }
+
+  if (!isFinite(base) || !$('travelDate').value) {
+    $('payChoice').classList.add('hidden');
+    $('payWhy').classList.add('hidden');
+    $('payMandate').classList.add('hidden');
+    return;
+  }
+
+  var body = {
+    booking: {
+      date: $('travelDate').value,
+      time: $('travelTime').value,
+      price_eur: base,
+      distance_km: Number(window.__km) || 0,
+      pickup: pickupPlace ? pickupPlace.fullDescription : '',
+      dropoff: dropoffPlace ? dropoffPlace.fullDescription : ''
+    }
+  };
+
+  var headers = { 'Content-Type': 'application/json' };
+  try {
+    var sess = await supabaseClient.auth.getSession();
+    var tk = sess.data && sess.data.session && sess.data.session.access_token;
+    if (tk) headers['Authorization'] = 'Bearer ' + tk;
+  } catch (e) {}
+
+  try {
+    var res = await fetch(RENDER_URL + '/api/payment-options', {
+      method: 'POST', headers: headers, body: JSON.stringify(body)
+    });
+    payOptions = await res.json();
+  } catch (e) {
+    // Perante a dúvida, só pagar já. Nunca o contrário.
+    payOptions = { pay_later: false, reason: null, charge_lead_hours: 48 };
+  }
+
+  applyPaymentUI();
+}
+
+function applyPaymentUI() {
+  var allowed = Boolean(payOptions.pay_later);
+
+  $('payChoice').classList.remove('hidden');
+  $('payLaterOpt').disabled = !allowed;
+
+  if (!allowed && payMode === 'later') payMode = 'now';
+
+  // O cartão desativado tem de dizer porquê. Deixá-lo a prometer
+  // "nada cobrado até 48 horas antes" enquanto está cinzento é
+  // contraditório, e a explicação numa linha por baixo passa
+  // despercebida.
+  var why = payOptions.reason ||
+    'This booking has to be paid at checkout.';
+
+  $('payLaterOff').classList.toggle('hidden', allowed);
+
+  // "Pay on 12 September, €112" diz mais do que um parágrafo sobre
+  // cartões guardados: a pessoa quer saber QUANDO e QUANTO.
+  var whenText = '';
+
+  if (allowed && $('travelDate').value) {
+    var pick = new Date($('travelDate').value + 'T' + ($('travelTime').value || '12:00'));
+    var at = new Date(pick.getTime() - (payOptions.charge_lead_hours || 48) * 36e5);
+
+    if (!isNaN(at.getTime())) {
+      /**
+       * A data na língua da página.
+       *
+       * Estava fixa em en-GB: um alemão via "Pay on 12 September"
+       * no meio de uma página alemã.
+       *
+       * O i18n sabe a língua escolhida e o formato de cada uma —
+       * em japonês a ordem é outra.
+       */
+      var quando = window.i18n && window.i18n.formatDate
+        ? window.i18n.formatDate(at, { day: 'numeric', month: 'long' })
+        : at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+
+      whenText = T('h.payOn', 'Pay on') + ' ' + quando +
+        ', ' + $('priceValue').textContent;
+    }
+  }
+
+  /**
+   * A razão, traduzida pelo código.
+   *
+   * O servidor manda um código — noDate, tooSoon, tooExpensive,
+   * tooLong — e a frase em inglês como recurso.
+   *
+   * Traduzir no servidor obrigava-o a saber a língua de cada
+   * visitante; o browser já sabe.
+   */
+  var porque = why;
+
+  if (payOptions && payOptions.code) {
+    var chaves = {
+      noDate: ['h.payWhyNoDate', 'Pick a date and time first.'],
+      tooSoon: ['h.payWhyTooSoon', 'Too close to the pick-up time.'],
+      tooExpensive: ['h.payWhyValue', 'Higher-value transfers are paid at booking.'],
+      tooLong: ['h.payWhyDistance', 'Long journeys are paid at booking.']
+    };
+
+    var k = chaves[payOptions.code];
+    if (k) porque = T(k[0], k[1]);
+  }
+
+  $('payLaterDesc').textContent = allowed
+    ? (whenText || T('h.payLaterDefault', 'Pay 48 hours before pick-up.'))
+    : porque;
+
+  // A razão fica NUM sítio só, dentro do cartão desativado. Estava
+  // também na faixa por baixo, e o resultado era o mesmo texto duas
+  // vezes seguidas no ecrã — que se lê como avaria.
+  //
+  // A faixa passa a dizer só o que ACRESCENTA: que a política de
+  // cancelamento não muda por causa disto.
+  if (allowed) {
+    $('payWhy').classList.add('hidden');
+  } else {
+    $('payWhyText').textContent =
+      'You can still cancel free of charge until 24 hours before pick-up.';
+    $('payWhy').classList.remove('hidden');
+  }
+
+  $('payNowOpt').classList.toggle('on', payMode === 'now');
+  $('payLaterOpt').classList.toggle('on', payMode === 'later');
+
+  // O mandato é uma exigência do Stripe: antes de guardar um cartão
+  // para uso futuro, o cliente tem de ver por escrito quanto, quando
+  // e como cancelar.
+  var showMandate = payMode === 'later' && allowed;
+  $('payMandate').classList.toggle('hidden', !showMandate);
+
+  if (showMandate) {
+    $('mandateAmount').textContent = $('priceValue').textContent;
+    var d = new Date($('travelDate').value + 'T' + ($('travelTime').value || '00:00'));
+    var chargeAt = new Date(d.getTime() - (payOptions.charge_lead_hours || 48) * 36e5);
+    $('mandateWhen').textContent = isNaN(chargeAt.getTime())
+      ? ((payOptions.charge_lead_hours || 48) + ' hours before pick-up')
+      : ('on ' + chargeAt.toLocaleDateString(undefined, { day: 'numeric', month: 'long' }));
+  }
+
+  updateCheckoutSummary();
+}
+
+Array.prototype.forEach.call(document.querySelectorAll('.pay-opt'), function (b) {
+  b.addEventListener('click', function () {
+    if (b.disabled) return;
+    payMode = b.getAttribute('data-mode');
+    applyPaymentUI();
+  });
+});
+
+// ============================================================
+// VIAJANTES GUARDADOS
+//
+// Pertencem à agência, não ao viajante — é a agência que os cria e
+// os apaga, e a RLS garante que só vê os seus. Ordenados pelos mais
+// usados, que é quase sempre quem se procura.
+// ============================================================
+var travellers = [];
+
+async function loadTravellers() {
+  if (!isAgent() || travellers.length) return;
+
+  var res = await supabaseClient.from('agency_travellers')
+    .select('id, full_name, phone, email, notes, times_booked')
+    .eq('archived', false)
+    .order('times_booked', { ascending: false })
+    .order('full_name');
+
+  if (res.error) {
+    console.log('travellers:', res.error.message);
+    return;
+  }
+
+  travellers = res.data || [];
+
+  var sel = $('travellerPick');
+  sel.innerHTML = '<option value="">New traveller</option>' +
+    travellers.map(function (t) {
+      var label = t.full_name + (t.times_booked ? '  \u00b7  ' + t.times_booked + '\u00d7' : '');
+      return '<option value="' + t.id + '">' +
+        label.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</option>';
+    }).join('');
+}
+
+$('travellerPick').addEventListener('change', function () {
+  var picked = travellers.find(function (t) { return t.id === $('travellerPick').value; });
+
+  if (!picked) {
+    // "New traveller": limpa em vez de deixar os dados do anterior,
+    // que é como se reserva uma viagem para a pessoa errada.
+    ['fullName', 'phoneNumber', 'passengerEmail'].forEach(function (id) { $(id).value = ''; });
+    $('saveTraveller').checked = false;
+    return;
+  }
+
+  $('fullName').value = picked.full_name || '';
+  $('passengerEmail').value = picked.email || '';
+
+  if (picked.phone) {
+    var digits = String(picked.phone).replace(/[^\d+]/g, '');
+    var codes = Array.prototype.map.call($('phoneCode').options, function (o) { return o.value; })
+      .sort(function (a, b) { return b.length - a.length; });
+
+    if (digits.charAt(0) === '+') {
+      var rest = digits.slice(1);
+      var code = codes.find(function (c) { return rest.indexOf(c) === 0; });
+      if (code) {
+        $('phoneCode').value = code;
+        $('phoneNumber').value = rest.slice(code.length);
+      } else {
+        $('phoneNumber').value = rest;
+      }
+    } else {
+      $('phoneNumber').value = digits;
+    }
+  }
+
+  if (picked.notes && !$('notes').value) $('notes').value = picked.notes;
+
+  // Já está guardado: voltar a guardar não faz nada de mal, mas a
+  // caixa marcada sugeriria que era preciso.
+  $('saveTraveller').checked = false;
+});
+
+async function persistTraveller() {
+  if (!isAgent() || !$('saveTraveller').checked) return;
+
+  var name = $('fullName').value.trim();
+  if (!name) return;
+
+  var phone = $('phoneNumber').value.trim()
+    ? ('+' + $('phoneCode').value + ' ' + $('phoneNumber').value.trim())
+    : null;
+
+  // onConflict com o índice único: guardar duas vezes a mesma pessoa
+  // atualiza em vez de criar uma segunda entrada igual.
+  var res = await supabaseClient.from('agency_travellers').upsert({
+    agent_id: currentUser.id,
+    full_name: name,
+    phone: phone,
+    email: $('passengerEmail').value.trim() || null,
+    notes: $('notes').value.trim() || null,
+    updated_at: new Date().toISOString()
+  }, { onConflict: 'agent_id,full_name,phone' });
+
+  if (res.error) console.log('save traveller:', res.error.message);
+  else travellers = [];
+}
+
+// ============================================================
+// MAPA E PREÇO
+// ============================================================
+var map, directionsService, directionsRenderer, autocompleteService;
+var pickupPlace = null, dropoffPlace = null, sessionToken;
+
+function setStatus(text, isError) {
+  var el = $('statusText');
+  el.textContent = text;
+  el.classList.toggle('error', !!isError);
+}
+
+function passengerMultiplier(count) {
+  var n = Math.max(1, Math.min(16, parseInt(count || '1', 10) || 1));
+  if (n <= 4) return 1.0;
+  if (n <= 8) return 1.5;
+  if (n <= 12) return 2.0;
+  return 2.5;
+}
+
+function getVehicleType(count) {
+  var n = Math.max(1, Math.min(16, parseInt(count || '1', 10) || 1));
+  if (n <= 4) return 'Sedan';
+  if (n <= 8) return 'Van';
+  if (n <= 13) return 'Van + Sedan';
+  return '2 Vans';
+}
+
+function isPortugalRoute() {
+  var p = ((pickupPlace && pickupPlace.fullDescription) || '').toLowerCase();
+  var d = ((dropoffPlace && dropoffPlace.fullDescription) || '').toLowerCase();
+  return p.indexOf('portugal') !== -1 && d.indexOf('portugal') !== -1;
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function setDateConstraints() {
+  var di = $('travelDate'), ti = $('travelTime');
+  var earliest = earliestPickup();
+  var day = earliest.getFullYear() + '-' +
+    pad(earliest.getMonth() + 1) + '-' + pad(earliest.getDate());
+
+  di.min = day;
+  if (!di.value || di.value < day) di.value = day;
+  if (!ti.value) ti.value = pad(earliest.getHours()) + ':' + pad(earliest.getMinutes());
+
+  updateTimeConstraint();
+}
+
+// Meia hora de folga: é o tempo mínimo para atribuir a viagem a um
+// parceiro e o motorista chegar. Aceitar uma recolha para daqui a
+// dez minutos era prometer o que não se cumpre.
+var BOOKING_BUFFER_MINUTES = 30;
+
+function earliestPickup() {
+  var d = new Date();
+  d.setMinutes(d.getMinutes() + BOOKING_BUFFER_MINUTES);
+  return d;
+}
+
+function updateTimeConstraint() {
+  var di = $('travelDate'), ti = $('travelTime');
+  var earliest = earliestPickup();
+  var earliestDay = earliest.getFullYear() + '-' +
+    pad(earliest.getMonth() + 1) + '-' + pad(earliest.getDate());
+
+  if (di.value === earliestDay) {
+    ti.min = pad(earliest.getHours()) + ':' + pad(earliest.getMinutes());
+    if (!ti.value || ti.value < ti.min) ti.value = ti.min;
+  } else {
+    ti.min = '';
+  }
+}
+
+async function initMap() {
+  setDateConstraints();
+  window.__country = (navigator.language || 'en-US').split('-')[1] || '';
+
+  var mapsLib = await google.maps.importLibrary('maps');
+  var routesLib = await google.maps.importLibrary('routes');
+  var placesLib = await google.maps.importLibrary('places');
+
+  map = new mapsLib.Map($('map'), {
+    center: { lat: 41.1579, lng: -8.6291 }, zoom: 11,
+    mapTypeControl: false, streetViewControl: false, fullscreenControl: false,
+    // Com um dedo o scroll passa à página; só dois dedos movem o mapa.
+    // Sem isto, o mapa rouba o gesto e a página não se mexe no telemóvel.
+    gestureHandling: 'cooperative'
+  });
+
+  directionsService = new routesLib.DirectionsService();
+  directionsRenderer = new routesLib.DirectionsRenderer({
+    map, suppressMarkers: false,
+    polylineOptions: { strokeColor: '#0f766e', strokeOpacity: .9, strokeWeight: 5 }
+  });
+
+  autocompleteService = new placesLib.AutocompleteService();
+  sessionToken = new placesLib.AutocompleteSessionToken();
+  window.placesService = new placesLib.PlacesService(map);
+
+  setupAutocomplete('pickup', 'pickupSuggestions', 'pickup');
+  setupAutocomplete('dropoff', 'dropoffSuggestions', 'dropoff');
+  setupAutocomplete('returnPickup', 'returnPickupSuggestions', 'returnPickup');
+  setupAutocomplete('returnDropoff', 'returnDropoffSuggestions', 'returnDropoff');
+
+  $('phoneCode').value = PHONE_CODES[window.__country] || '351';
+
+  // O campo de telefone com bandeira e verificação de dígitos. Monta
+  // por cima do select, que continua a ser o que o resto lê.
+  if (window.AirportlinkPhone) {
+    phoneField = window.AirportlinkPhone.mount({
+      select: 'phoneCode',
+      input: 'phoneNumber',
+      country: window.__country || 'PT'
+    });
+  }
+  $('currency').value = COUNTRY_CURRENCY[(window.__country || '').toUpperCase()] || 'EUR';
+
+  ['travelDate', 'travelTime', 'passengers'].forEach(function (id) {
+    ['input', 'change'].forEach(function (evt) {
+      $(id).addEventListener(evt, function () {
+        if (id === 'travelDate') updateTimeConstraint();
+        updateBookingSummary(); updateCheckoutSummary(); tryAutoCalculate();
+      });
+    });
+  });
+
+  $('currency').addEventListener('change', function () {
+    updatePriceDisplayOnly(); updateCheckoutSummary();
+  });
+
+  updateBookingSummary();
+  updateCheckoutSummary();
+  reportHeight();
+}
+window.initMap = initMap;
+
+function setupAutocomplete(inputId, boxId, type) {
+  var input = $(inputId), box = $(boxId);
+
+  // O Chrome ignora autocomplete="off" em campos soltos e oferece o
+  // email guardado. Mas não oferece nada num campo que estava
+  // readonly quando a página carregou — tirar o readonly ao primeiro
+  // toque dá-nos um campo normal sem o menu do autofill.
+  input.addEventListener('focus', function once() {
+    input.removeAttribute('readonly');
+    input.setAttribute('autocomplete', 'al-' + Math.random().toString(36).slice(2, 8));
+    input.removeEventListener('focus', once);
+  });
+
+  input.addEventListener('input', function () {
+    var value = input.value.trim();
+    if (value.length < 3) { box.innerHTML = ''; box.classList.remove('show'); return; }
+
+    autocompleteService.getPlacePredictions({ input: value, sessionToken }, function (preds, status) {
+      if (status !== google.maps.places.PlacesServiceStatus.OK || !preds || !preds.length) {
+        box.innerHTML = ''; box.classList.remove('show'); return;
+      }
+      box.innerHTML = preds.slice(0, 5).map(function (p) {
+        return '<div class="suggestion-item" data-placeid="' + p.place_id + '" data-description="' +
+          String(p.description).replace(/"/g, '&quot;') + '">' +
+          '<div class="suggestion-main">' + (p.structured_formatting.main_text || p.description) + '</div>' +
+          '<div class="suggestion-sub">' + (p.structured_formatting.secondary_text || '') + '</div></div>';
+      }).join('');
+      box.classList.add('show');
+    });
+  });
+
+  box.addEventListener('click', function (e) {
+    var item = e.target.closest('.suggestion-item');
+    if (!item) return;
+    selectPrediction(item.getAttribute('data-placeid'), item.getAttribute('data-description'), type);
+    box.classList.remove('show');
+  });
+}
+
+/**
+ * Um componente da morada, dito pelo Google.
+ *
+ * O address_components é uma lista de partes, cada uma com os
+ * seus tipos. Procurar pela ordem dos tipos pedidos devolve o
+ * mais preciso que existir.
+ *
+ * O "curto" pede o short_name — o país em duas letras, que é o
+ * que interessa para comparar.
+ */
+function componenteDe(place, tipos, curto) {
+  var partes = (place && place.address_components) || [];
+
+  for (var t = 0; t < tipos.length; t++) {
+    for (var i = 0; i < partes.length; i++) {
+      if ((partes[i].types || []).indexOf(tipos[t]) >= 0) {
+        return curto ? partes[i].short_name : partes[i].long_name;
+      }
+    }
+  }
+
+  return null;
+}
+
+
+function selectPrediction(placeId, description, type) {
+  window.placesService.getDetails({
+    /**
+     * Os TYPES vêm com o resto.
+     *
+     * O Google sabe o que cada sítio é — airport, lodging,
+     * train_station — e diz-nos aqui de graça, no momento em que
+     * há mais informação disponível.
+     *
+     * Guardar isso vale mais do que qualquer lista de aeroportos
+     * nossa: funciona no mundo inteiro desde o primeiro dia, e se
+     * um aeroporto abrir amanhã o Google já sabe.
+     *
+     * Sem isto, o sistema tinha de adivinhar o tipo comparando o
+     * texto da morada contra uma lista — e adivinhar mal significa
+     * dar 15 minutos de espera a quem devia ter 60.
+     */
+    placeId, /**
+     * Os componentes da morada vêm com o resto.
+     *
+     * O Google sabe a cidade e o país — locality,
+     * administrative_area, country — e diz-no-los no momento em
+     * que há mais informação disponível.
+     *
+     * Adivinhar a cidade pelo texto era frágil: "Carrer de
+     * Tarragona" em Ibiza levava a tarifa de Barcelona, e "Via
+     * Roma" existe em quase todas as cidades italianas.
+     *
+     * Um campo a mais não custa: o getDetails já está a ser feito.
+     */
+    fields: ['name', 'formatted_address', 'geometry', 'place_id', 'types',
+             'address_components']
+  }, function (place, status) {
+    if (status !== google.maps.places.PlacesServiceStatus.OK || !place || !place.geometry) return;
+
+    var data = {
+      fullDescription: description,
+      placeId: place.place_id || placeId,
+
+      /**
+       * O tipo, reduzido ao que nos interessa.
+       *
+       * O Google devolve uma lista — ["airport", "point_of_interest",
+       * "establishment"] — e só a primeira palavra importa. Guardar
+       * a lista inteira seria guardar ruído.
+       */
+      placeType: (place.types || []).indexOf('airport') >= 0
+        ? 'airport'
+        : (place.types || [])[0] || null,
+
+      /**
+       * A cidade e o país, ditos pelo Google.
+       *
+       * O locality é a cidade. Quando falta — acontece em sítios
+       * rurais — o administrative_area_level_2 é o concelho, que
+       * serve.
+       *
+       * O country vem em duas letras: ES, PT, IT. Sem ambiguidade
+       * nenhuma, ao contrário de procurar palavras no texto.
+       */
+      city: componenteDe(place, ['locality', 'postal_town',
+                                 'administrative_area_level_2']),
+      region: componenteDe(place, ['administrative_area_level_1']),
+      country: componenteDe(place, ['country'], true)
+    };
+
+    if (type === 'pickup') { pickupPlace = data; $('pickup').value = description; }
+    else if (type === 'dropoff') { dropoffPlace = data; $('dropoff').value = description; }
+    else if (type === 'returnPickup') {
+      returnPickupPlace = data; $('returnPickup').value = description; paintReturn();
+    } else if (type === 'returnDropoff') {
+      returnDropoffPlace = data; $('returnDropoff').value = description; paintReturn();
+    }
+
+    sessionToken = new google.maps.places.AutocompleteSessionToken();
+    updateBookingSummary(); updateCheckoutSummary(); paintReturn(); tryAutoCalculate();
+  });
+}
+
+
+/**
+ * O país da rota, dito pelo Google.
+ *
+ * Isto procurava palavras em cinco tabelas de zonas para
+ * adivinhar o país a partir do texto da morada — e só servia
+ * para uma etiqueta do Analytics.
+ *
+ * O address_components traz o país em duas letras. As tabelas
+ * saíram: eram 9 KB que toda a gente descarregava para
+ * classificar uma estatística.
+ */
+function country() {
+  var de = pickupPlace && pickupPlace.country;
+  var para = dropoffPlace && dropoffPlace.country;
+
+  if (de && para && de === para) return de;
+  return null;
+}
+
+
+/** A ultima rota medida, para seguir no endereco ate /booking/. */
+var lastRoute = null;
+
+function tryAutoCalculate() {
+  if (!pickupPlace || !dropoffPlace) return setStatus('Select pick-up and drop-off first.');
+  if (!$('travelDate').value || !$('travelTime').value) {
+    return setStatus('Select date and time to calculate.');
+  }
+  calculateRouteAndPrice();
+}
+
+function calculateRouteAndPrice() {
+  var passengers = Math.max(1, Math.min(16, parseInt($('passengers').value, 10) || 1));
+  var when = new Date($('travelDate').value + 'T' + $('travelTime').value + ':00');
+
+  if (when < earliestPickup()) {
+    return setStatus('We need at least ' + BOOKING_BUFFER_MINUTES +
+      ' minutes to arrange a driver. Please pick a later time.', true);
+  }
+
+  setStatus('Calculating route and fare...');
+
+  /**
+   * Este país está fora?
+   *
+   * A pergunta é ao contrário do que parece: o servidor só recusa
+   * países que estão EXPLICITAMENTE fora da lista. Tudo o resto
+   * passa.
+   *
+   * A versão anterior perguntava "servimos aqui?" e recusava
+   * quando não sabia — e como a maioria das moradas não tem o país
+   * escrito, recusava quase tudo.
+   *
+   * Uma reserva a mais num sítio onde não operamos resolve-se com
+   * um telefonema. Uma calculadora fechada perde os clientes
+   * todos.
+   */
+  fetch(RENDER_URL + '/api/coverage' +
+    '?from=' + encodeURIComponent(pickupPlace.fullDescription || '') +
+    '&to=' + encodeURIComponent(dropoffPlace.fullDescription || ''))
+    .then(function (r) { return r.json(); })
+    .then(function (c) {
+      if (c.covered === false) {
+        setStatus(c.message ||
+          'We are not operating here yet.', true);
+
+        $('distanceValue').textContent = '\u2014';
+        $('durationValue').textContent = '\u2014';
+        $('priceValue').textContent = '\u2014';
+
+        /**
+         * E o botão desaparece.
+         *
+         * Deixá-lo lá, desativado, convida a tentar — e falhar
+         * convida a escrever para o apoio a perguntar porquê.
+         */
+        var cta = $('book');
+        if (cta) cta.disabled = true;
+
+        return;
+      }
+
+      var cta2 = $('book');
+      if (cta2) cta2.disabled = false;
+
+      calcularRota();
+    })
+    .catch(function () {
+      /**
+       * Se a pergunta falhar, calcula-se na mesma.
+       *
+       * O Render adormece, a rede falha, o servidor demora. Nada
+       * disso é razão para não dar um preço a quem está a tentar
+       * reservar.
+       */
+      calcularRota();
+    });
+}
+
+
+function calcularRota() {
+  /**
+   * Os passageiros, lidos outra vez.
+   *
+   * Quando dividi esta função em duas — uma para perguntar a
+   * cobertura, outra para medir a rota — o "passengers" ficou na
+   * primeira metade.
+   *
+   * Aqui dentro, "passengers" passava a apanhar o ELEMENTO com
+   * esse id, porque o browser cria uma variável global por cada
+   * id do documento. Daí o "[object HTMLInputElement] passengers"
+   * na mensagem, e o preço que não mudava: o multiplicador recebia
+   * um elemento em vez de um número.
+   */
+  var passengers = Math.max(1, Math.min(16,
+    parseInt($('passengers').value, 10) || 1));
+
+  directionsService.route({
+    origin: { placeId: pickupPlace.placeId },
+    destination: { placeId: dropoffPlace.placeId },
+    travelMode: google.maps.TravelMode.DRIVING,
+    unitSystem: google.maps.UnitSystem.METRIC
+  }, function (response, status) {
+    if (status !== 'OK') {
+      setStatus('We could not find a driving route for those locations.', true);
+      $('distanceValue').textContent = '\u2014';
+      $('durationValue').textContent = '\u2014';
+      $('priceValue').textContent = '\u2014';
+      return;
+    }
+
+    directionsRenderer.setDirections(response);
+    var leg = response.routes[0].legs[0];
+    var distanceKm = leg.distance.value / 1000;
+
+    // Guardado para seguir no endereco ate /booking/, que assim nao
+    // mede outra vez: a rota e medida uma unica vez.
+    lastRoute = { km: distanceKm, dur: leg.duration.text };
+
+    var from = $('pickup').value, to = $('dropoff').value;
+    var mult = passengerMultiplier(passengers);
+    /**
+     * O preço vem do servidor, não daqui.
+     *
+     * O site tinha uma cópia da fórmula. Duas cópias são duas
+     * verdades: mudei a do servidor e esta ficou para trás, e um
+     * cliente viu 87 euros na calculadora e 30 no checkout.
+     *
+     * Custa um pedido de rede por cotação. Vale a pena — um preço
+     * errado custa a reserva inteira, e três fórmulas divergentes
+     * custam a confiança.
+     */
+    /**
+     * A distância guardada, não lida do ecrã.
+     *
+     * O checkout fazia parseFloat do texto do elemento. Enquanto
+     * o preço estava a ser pedido ao servidor, esse texto era
+     * "..." — e o parseFloat devolvia zero.
+     *
+     * Zero quilómetros dá o preço mínimo: 24 euros para uma
+     * viagem de 75.
+     *
+     * Um número guardado numa variável não tem este problema.
+     */
+    window.__km = distanceKm;
+
+    $('distanceValue').textContent = distanceKm.toFixed(1) + ' km';
+    $('durationValue').textContent = leg.duration.text;
+    $('priceValue').textContent = '...';
+
+    /**
+     * O botão desliga-se enquanto não há preço.
+     *
+     * Sem isto, quem carregasse durante o segundo em que o
+     * servidor calcula ia para o checkout com o preço por chegar
+     * — e era exatamente aí que a distância ia a zero.
+     */
+    var cta0 = $('book');
+    if (cta0) cta0.disabled = true;
+
+    fetch(RENDER_URL + '/api/price' +
+      '?km=' + distanceKm.toFixed(2) +
+      '&pax=' + passengers +
+      '&from=' + encodeURIComponent(pickupPlace.fullDescription || '') +
+      '&to=' + encodeURIComponent(dropoffPlace.fullDescription || '') +
+      '&time=' + encodeURIComponent($('travelTime').value || '') +
+
+      /**
+       * A cidade e o país, ditos pelo Google.
+       *
+       * Sem isto o servidor adivinha pelo texto — e "Carrer de
+       * Tarragona" em Ibiza levava a tarifa de Barcelona.
+       */
+      '&from_city=' + encodeURIComponent(pickupPlace.city || '') +
+      '&to_city=' + encodeURIComponent(dropoffPlace.city || '') +
+      '&from_country=' + encodeURIComponent(pickupPlace.country || '') +
+      '&to_country=' + encodeURIComponent(dropoffPlace.country || '') +
+      '&from_region=' + encodeURIComponent(pickupPlace.region || '') +
+      '&to_region=' + encodeURIComponent(dropoffPlace.region || ''))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.covered === false) {
+          setStatus(d.message || 'We are not operating here yet.', true);
+          window.__km = 0;
+          $('priceValue').textContent = '\u2014';
+
+          var cta = $('book');
+          if (cta) cta.disabled = true;
+          return;
+        }
+
+        var cta2 = $('book');
+        if (cta2) cta2.disabled = false;
+
+        updatePriceDisplay(Number(d.price_eur), Boolean(d.night_surcharge));
+
+        /**
+         * O resumo e as opções de pagamento DEPOIS do preço.
+         *
+         * Estavam fora do .then, a correr assim que o pedido saía
+         * — com o basePrice ainda vazio ou do cálculo anterior.
+         *
+         * Era isto que fazia o checkout mostrar outro número: ele
+         * lê o dataset.basePrice, e nessa altura ainda não tinha
+         * sido escrito.
+         */
+        updateCheckoutSummary();
+        refreshPaymentOptions();
+
+        /**
+         * Pediu um preço.
+         *
+         * É o primeiro sinal de intenção real, e o denominador de
+         * tudo o resto: sem ele, "dez reservas" não diz se foram
+         * dez de doze ou dez de mil.
+         *
+         * Aqui e não antes: o preço só existe depois de o servidor
+         * responder, e o priceEUR local deixou de existir quando o
+         * cálculo passou para o servidor.
+         */
+        if (window.alTrack) {
+          window.alTrack('quote_requested', {
+            value: Math.round(Number(d.price_eur)),
+            currency: 'EUR',
+            distance_km: Math.round(distanceKm),
+            passengers: passengers,
+            night: d.night_surcharge ? 'yes' : 'no',
+
+            // As moradas não vão: são dados pessoais, e o que
+            // interessa é o padrão, não quem.
+            route_country: country() || 'other'
+          });
+        }
+
+        setStatus('Fare calculated. ' + passengers + ' passenger(s), ' +
+                  getVehicleType(passengers) + '.');
+      })
+      .catch(function (e) {
+        /**
+         * Se o servidor não responder, não se inventa um preço.
+         *
+         * Mostrar um número errado é pior do que não mostrar
+         * nenhum: o cliente reserva com base nele e descobre a
+         * diferença no checkout.
+         */
+        setStatus('We could not get a price right now. Try again in a moment.', true);
+        $('priceValue').textContent = '\u2014';
+      });
+
+    /**
+     * O resumo e o estado ficaram dentro do .then.
+     *
+     * Aqui corriam antes de o servidor responder — e o resumo lia
+     * um preço que ainda não tinha sido escrito.
+     */
+  });
+}
+
+/**
+ * Um texto traduzido, com recurso em inglês.
+ *
+ * O i18n pode ainda não ter carregado — é assíncrono — e nesse
+ * caso mostra-se o inglês. Melhor do que uma chave crua a aparecer
+ * no ecrã.
+ */
+function T(chave, ingles) {
+  return (window.i18n && window.i18n.t)
+    ? window.i18n.t(chave, ingles)
+    : ingles;
+}
+
+
+function updatePriceDisplay(priceEUR, deNoite) {
+  var currency = $('currency').value || 'EUR';
+  var fmt = function (v, cur) {
+    return new Intl.NumberFormat('en-IE', {
+      style: 'currency', currency: cur || currency
+    }).format(v);
+  };
+
+  var publicPrice = priceEUR * (EXCHANGE_RATES[currency] || 1);
+  var payable = isAgent() ? publicPrice * (1 - agentInfo.commission / 100) : publicPrice;
+
+  $('priceValue').textContent = fmt(payable);
+  $('priceValue').dataset.basePrice = String(priceEUR);
+  $('priceValue').dataset.night = deNoite ? '1' : '0';
+
+  /**
+   * O suplemento noturno não aparece aqui.
+   *
+   * O cliente vê o preço e decide. Explicar a mecânica antes de
+   * comprar convida a discutir uma regra que não vai mudar — e
+   * quem reserva às três da manhã já espera pagar mais.
+   *
+   * No recibo é outra coisa: aí explica uma linha da conta, e é
+   * onde se procura quando se quer perceber um valor.
+   */
+  if (deNoite) {
+    $('priceValue').dataset.night = '1';
+  } else {
+    delete $('priceValue').dataset.night;
+  }
+
+  // O equivalente em euros, quando a moeda escolhida não é o euro.
+  // O cartão é debitado na moeda mostrada; este número existe para a
+  // pessoa reconhecer o valor e para não haver surpresa no extrato.
+  var payableEUR = isAgent() ? priceEUR * (1 - agentInfo.commission / 100) : priceEUR;
+
+  // A volta percorre a mesma distância, por isso custa o mesmo. Se
+  // houver desconto de ida e volta, é o servidor que o aplica — aqui
+  // mostramos o valor cheio para nunca prometermos menos do que se
+  // vai cobrar.
+  var legs = returnOn && $('returnDate').value ? 2 : 1;
+  var total = payable * legs;
+  var totalEUR = payableEUR * legs;
+
+  $('priceValue').textContent = fmt(total);
+
+  if (legs === 2) {
+    $('priceLegs').textContent =
+      T('h.twoTransfers', 'two transfers') +
+      ' · ' + fmt(payable) + ' ' +
+      T('h.each', 'each');
+    $('priceLegs').classList.remove('hidden');
+  } else {
+    $('priceLegs').classList.add('hidden');
+  }
+
+  if (currency !== 'EUR') {
+    $('priceEur').textContent =
+      T('h.about', 'about') +
+      ' ' + fmt(totalEUR, 'EUR');
+    $('priceEur').classList.remove('hidden');
+  } else {
+    $('priceEur').classList.add('hidden');
+  }
+
+  if (isAgent()) {
+    /**
+     * O desconto de agência, traduzido.
+     *
+     * Estava em inglês fixo. Uma agência espanhola via o resto da
+     * página em espanhol e esta linha em inglês — o que parece um
+     * pedaço por acabar.
+     */
+    $('publicPrice').innerHTML =
+      T('h.publicPrice', 'Public price') +
+      ' <s>' + fmt(publicPrice) + '</s> \u00b7 ' +
+      T('h.youSave', 'you save') +
+      ' ' + fmt(publicPrice - payable);
+    $('publicPrice').classList.remove('hidden');
+  } else {
+    $('publicPrice').classList.add('hidden');
+  }
+}
+
+function updatePriceDisplayOnly() {
+  var base = parseFloat($('priceValue').dataset.basePrice || 'NaN');
+
+  /**
+   * O suplemento noturno não se perde ao mudar de moeda.
+   *
+   * Esta função chamava o updatePriceDisplay sem o segundo
+   * argumento — e undefined é falso. Quem escolhesse uma viagem
+   * às 23h30 e depois mudasse para dólares via o aviso de
+   * suplemento desaparecer.
+   *
+   * O valor fica guardado no elemento, como o preço.
+   */
+  var noite = $('priceValue').dataset.night === '1';
+
+  if (isFinite(base)) updatePriceDisplay(base, noite);
+}
+
+
+// ============================================================
+// O VEÍCULO, ILUSTRADO
+//
+// Desenhado e não fotografado, de propósito. Os carros são dos
+// parceiros: uma fotografia de uma marca concreta prometia um
+// veículo que não controlamos, e quem chegasse e encontrasse outro
+// tinha razão em reclamar. Uma silhueta diz o tamanho sem prometer
+// o modelo.
+// ============================================================
+var VEHICLE_ART = {
+  // Perfil lateral. Tentei três quartos e não ficou ao nível: um
+  // carro em perspetiva escrito à mão em coordenadas SVG nota-se que
+  // foi escrito à mão. De lado, a silhueta é limpa e diz o que
+  // precisa de dizer — o tamanho do veículo.
+  //
+  // Se quiseres o ângulo de três quartos com qualidade, o caminho é
+  // comprar um conjunto de vetores e substituir estas strings.
+  sedan: '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<ellipse class="veh-shadow" cx="120" cy="92" rx="102" ry="6"/>' +
+    '<path class="veh-body" d="M12 74c-4 0-6-3-6-7l1-13c1-8 7-14 15-16l31-7 26-19c5-4 11-6 17-6h44c7 0 14 3 19 8l20 19 27 6c9 2 15 9 15 18v10c0 4-3 7-7 7H12Z"/>' +
+    '<path class="veh-glass" d="M84 15h26v25H57l21-21a9 9 0 0 1 6-4Zm34 0h22c5 0 9 2 12 5l17 20h-51V15Z"/>' +
+    '<path class="veh-pillar" d="M112 15h4v25h-4z"/>' +
+    '<path class="veh-line" d="M40 56h158"/>' +
+    '<path class="veh-lamp" d="M205 50h18a6 6 0 0 1 6 6v3h-24a4 4 0 0 1-4-4v-1a4 4 0 0 1 4-4Z"/>' +
+    '<path class="veh-tail" d="M10 52h13a4 4 0 0 1 4 4v4H10a5 5 0 0 1-5-5 3 3 0 0 1 5-3Z"/>' +
+    '<g><circle class="veh-tyre" cx="68" cy="74" r="18"/>' +
+    '<circle class="veh-rim" cx="68" cy="74" r="9"/>' +
+    '<path class="veh-spokes" d="M68 65v18M59 74h18M62 68l12 12M74 68L62 80"/></g>' +
+    '<g><circle class="veh-tyre" cx="180" cy="74" r="18"/>' +
+    '<circle class="veh-rim" cx="180" cy="74" r="9"/>' +
+    '<path class="veh-spokes" d="M180 65v18M171 74h18M174 68l12 12M186 68l-12 12"/></g>' +
+    '</svg>',
+
+  van: '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<ellipse class="veh-shadow" cx="120" cy="92" rx="104" ry="6"/>' +
+    '<path class="veh-body" d="M14 76c-5 0-8-3-8-8V30c0-11 9-20 20-20h132c6 0 12 2 17 6l32 25c6 5 9 12 9 19v8c0 5-3 8-8 8H14Z"/>' +
+    '<path class="veh-glass" d="M28 22h34v26H28V22Zm42 0h34v26H70V22Zm42 0h34v26h-34V22Zm42 0h13c3 0 6 1 9 3l21 17c2 2 3 4 3 6h-46V22Z"/>' +
+    '<path class="veh-line" d="M22 60h190"/>' +
+    '<path class="veh-line" d="M30 14h120"/>' +
+    '<path class="veh-lamp" d="M212 52h16a5 5 0 0 1 5 5v3h-21a4 4 0 0 1-4-4v0a4 4 0 0 1 4-4Z"/>' +
+    '<path class="veh-tail" d="M10 46h12a4 4 0 0 1 4 4v10H10a6 6 0 0 1-6-6v-3a5 5 0 0 1 6-5Z"/>' +
+    '<g><circle class="veh-tyre" cx="62" cy="76" r="18"/>' +
+    '<circle class="veh-rim" cx="62" cy="76" r="9"/>' +
+    '<path class="veh-spokes" d="M62 67v18M53 76h18M56 70l12 12M68 70L56 82"/></g>' +
+    '<g><circle class="veh-tyre" cx="182" cy="76" r="18"/>' +
+    '<circle class="veh-rim" cx="182" cy="76" r="9"/>' +
+    '<path class="veh-spokes" d="M182 67v18M173 76h18M176 70l12 12M188 70l-12 12"/></g>' +
+    '</svg>',
+
+  pair: '',
+  minibus: ''
+};
+
+// As combinações reaproveitam os desenhos acima em vez de os
+// repetirem: menos código para manter e sem risco de divergirem.
+VEHICLE_ART.pair =
+  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<g opacity=".32" transform="translate(4 2) scale(.62)">' +
+  VEHICLE_ART.sedan.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '<g transform="translate(46 30) scale(.78)">' +
+  VEHICLE_ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '</svg>';
+
+VEHICLE_ART.minibus =
+  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<g opacity=".32" transform="translate(2 0) scale(.62)">' +
+  VEHICLE_ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '<g transform="translate(46 30) scale(.78)">' +
+  VEHICLE_ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '</svg>';
+
+function vehicleProfile(count) {
+  var n = Math.max(1, Math.min(16, parseInt(count || '1', 10) || 1));
+
+  if (n <= 4) {
+    return { art: 'sedan', name: T('h.vehSedan', 'Sedan'),
+      note: T('h.sedanFull', 'One vehicle for up to 4 passengers, with room for a case each.') };
+  }
+  if (n <= 8) {
+    return { art: 'van', name: T('h.vehVan', 'Van'),
+      note: T('h.vanFull', 'One vehicle for up to 8 passengers, with luggage space behind the last row.') };
+  }
+  if (n <= 13) {
+    return { art: 'pair', name: T('h.vehPair', 'Van and sedan'),
+      note: T('h.pairFull', 'Two vehicles travelling together, so the whole group arrives at the same time.') };
+  }
+  return { art: 'minibus', name: T('h.vehTwoVans', 'Two vans'),
+    note: T('h.twoVansFull', 'Two vehicles travelling together for larger groups and their luggage.') };
+}
+
+function updateVehicleCard() {
+  var v = vehicleProfile($('passengers').value);
+  $('vehicleArt').innerHTML = VEHICLE_ART[v.art];
+  $('vehicleName').textContent = v.name;
+  $('vehicleNote').textContent = v.note;
+}
+
+/**
+ * Repintar quando o dicionário chegar.
+ *
+ * O T() é síncrono mas o dicionário vem por fetch: o cartão do
+ * veículo e o resumo são desenhados no arranque, quando a tradução
+ * ainda está a caminho, e ficavam em inglês para sempre. Este evento
+ * chega quando o dicionário está pronto, e refaz os dois.
+ */
+if (window.i18n) {
+  window.i18n.onReady(function () {
+    updateVehicleCard();
+    updateBookingSummary();
+  });
+}
+
+// Aqui e não mais acima: VEHICLE_ART é declarado com var, e chamar
+// isto antes da declaração dava um TypeError que matava o resto do
+// script — o cartão ficava vazio e nada mais reagia.
+updateVehicleCard();
+
+/**
+ * O resumo enche as caixas que já existem no HTML.
+ *
+ * Antes reescrevia o bloco inteiro com innerHTML, o que apagava as
+ * marcas de tradução e devolvia os rótulos ao inglês a cada mudança
+ * de campo. Agora os rótulos ficam quietos e só os valores mudam.
+ */
+function updateBookingSummary() {
+  updateVehicleCard();
+
+  var traco = '\u2014';
+  $('sumDate').textContent = $('travelDate').value || traco;
+  $('sumTime').textContent = $('travelTime').value || traco;
+  $('sumPax').textContent = $('passengers').value || traco;
+  $('sumVehicle').textContent = getVehicleType($('passengers').value);
+}
+
+function updateCheckoutSummary() {
+  $('summaryPickup').textContent = pickupPlace ? pickupPlace.fullDescription : ($('pickup').value || '\u2014');
+  $('summaryDropoff').textContent = dropoffPlace ? dropoffPlace.fullDescription : ($('dropoff').value || '\u2014');
+  $('summaryPassengers').textContent = $('passengers').value || '\u2014';
+  $('summaryDate').textContent = $('travelDate').value || '\u2014';
+  $('summaryTime').textContent = $('travelTime').value || '\u2014';
+  $('summaryDistance').textContent = $('distanceValue').textContent;
+  $('summaryDuration').textContent = $('durationValue').textContent;
+  $('summaryPrice').textContent = $('priceValue').textContent;
+
+  // Montado com textContent e não com innerHTML: não há nada aqui
+  // que precise de HTML, e assim não há como injetar nada.
+  var eurNote = $('priceEur');
+  var eurLine = $('summaryPriceEur');
+
+  if (eurNote && !eurNote.classList.contains('hidden')) {
+    eurLine.textContent = eurNote.textContent + ' \u00b7 charged in ' + $('currency').value;
+    eurLine.classList.remove('hidden');
+  } else {
+    eurLine.classList.add('hidden');
+  }
+  var back = returnLegPayload();
+  $('summaryReturnItem').classList.toggle('hidden', !back);
+
+  if (back) {
+    $('summaryReturn').textContent = back.date +
+      (back.time ? ' \u00b7 ' + back.time : '') + ' \u2014 ' + back.pickup + ' to ' + back.dropoff;
+  }
+
+  $('summaryPayment').textContent = payMode === 'later'
+    ? ('Pay later \u00b7 charged ' + (payOptions.charge_lead_hours || 48) + 'h before pick-up')
+    : 'Pay now';
+}
+
+// ============================================================
+// AUTENTICAÇÃO
+// ============================================================
+function showAuthMsg(el, other, text) {
+  el.textContent = text; el.style.display = 'block'; other.style.display = 'none';
+  reportHeight();
+}
+
+function setAuthMode(mode) {
+  authMode = mode;
+  $('tabSignIn').classList.toggle('active', mode === 'signin');
+  $('tabSignUp').classList.toggle('active', mode === 'signup');
+  $('signUpNameField').classList.toggle('hidden', mode !== 'signup');
+  $('authSubmitBtn').textContent = mode === 'signup' ? 'Create account and continue' : 'Sign in and continue';
+  $('authPassword').setAttribute('autocomplete', mode === 'signup' ? 'new-password' : 'current-password');
+  $('passwordHint').textContent = mode === 'signup' ? 'At least 8 characters' : '';
+  $('forgotBtn').classList.toggle('hidden', mode === 'signup');
+  $('authError').style.display = 'none';
+  $('authSuccess').style.display = 'none';
+  reportHeight();
+}
+
+$('tabSignIn').addEventListener('click', function () { setAuthMode('signin'); });
+$('tabSignUp').addEventListener('click', function () { setAuthMode('signup'); });
+
+$('authSubmitBtn').addEventListener('click', async function () {
+  var email = $('authEmail').value.trim(), password = $('authPassword').value, name = $('authName').value.trim();
+  var errEl = $('authError'), okEl = $('authSuccess');
+
+  if (!email || !password) return showAuthMsg(errEl, okEl, 'Please fill in email and password.');
+  if (authMode === 'signup' && !name) return showAuthMsg(errEl, okEl, 'Please enter your full name.');
+  if (authMode === 'signup' && password.length < 8) {
+    return showAuthMsg(errEl, okEl, 'Password must be at least 8 characters.');
+  }
+
+  $('authSubmitBtn').disabled = true;
+  var original = $('authSubmitBtn').textContent;
+  $('authSubmitBtn').textContent = 'Please wait...';
+
+  try {
+    if (authMode === 'signup') {
+      var reg = await fetch(RENDER_URL + '/register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      var regResult = await reg.json();
+      if (!regResult.success) return showAuthMsg(errEl, okEl, regResult.message || 'Could not create the account.');
+    }
+
+    var res = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (res.error) return showAuthMsg(errEl, okEl, res.error.message || 'Sign in failed.');
+    await onSignedIn(res.data.user);
+  } catch (e) {
+    console.error('auth error:', e);
+    showAuthMsg(errEl, okEl, 'Something went wrong. Please try again.');
+  } finally {
+    $('authSubmitBtn').disabled = false;
+    $('authSubmitBtn').textContent = original;
+  }
+});
+
+$('forgotBtn').addEventListener('click', async function () {
+  var email = $('authEmail').value.trim();
+  if (!email) return showAuthMsg($('authError'), $('authSuccess'), 'Enter your email first.');
+  try {
+    await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: SITE_ORIGIN + '/login' });
+  } catch (e) { console.error(e); }
+  // Resposta genérica: não revelamos que emails existem.
+  showAuthMsg($('authSuccess'), $('authError'), 'If an account exists for that email, a reset link has been sent.');
+});
+
+$('signOutBtn').addEventListener('click', async function () {
+  try { await supabaseClient.auth.signOut(); } catch (e) {}
+  currentUser = null;
+  agentInfo = null;
+  applyAgentUI();
+  notifyParent({ type: 'session-invalid' });
+  $('finalForm').classList.add('hidden');
+  $('authCard').classList.remove('hidden');
+  setAuthMode('signin');
+});
+
+async function onSignedIn(user) {
+  currentUser = user;
+  notifyParent({ type: 'login-success', email: user.email });
+
+  $('authCard').classList.add('hidden');
+  $('finalForm').classList.remove('hidden');
+  $('signedInEmail').textContent = user.email;
+  $('email').value = user.email;
+
+  var contact = await supabaseClient.from('contacts')
+    .select('full_name, phone_number').eq('email', user.email).maybeSingle();
+
+  if (!contact.error && contact.data) {
+    if (contact.data.full_name) $('fullName').value = contact.data.full_name;
+    if (contact.data.phone_number && !$('phoneNumber').value) {
+      // O componente sabe separar o prefixo do número, incluindo o
+      // caso dos prefixos de três dígitos.
+      if (phoneField) phoneField.setValue(contact.data.phone_number);
+      else $('phoneNumber').value = String(contact.data.phone_number).replace(/[^\d]/g, '');
+    }
+  }
+  if (!$('fullName').value && user.user_metadata && user.user_metadata.full_name) {
+    $('fullName').value = user.user_metadata.full_name;
+  }
+
+  await loadAgentInfo();
+  refreshPaymentOptions();
+  setStatus('Complete your booking details below.');
+  reportHeight();
+}
+
+// ============================================================
+// IDA E VOLTA
+//
+// Cada perna é uma RESERVA própria, ligada à outra por um
+// identificador comum. As duas podem ir para parceiros diferentes,
+// ter motoristas diferentes e ser canceladas em separado — nada
+// disso cabia numa linha só.
+//
+// Aqui do lado do cliente é uma compra só, com um pagamento só.
+// ============================================================
+function returnLegPayload() {
+  if (!returnOn || !$('returnDate').value) return null;
+
+  return {
+    date: $('returnDate').value,
+    time: $('returnTime').value,
+    // Por omissão a mesma rota ao contrário. Só muda se a pessoa o
+    // pedir — é o que acontece em nove de cada dez casos.
+    pickup: returnCustom && returnPickupPlace
+      ? returnPickupPlace.fullDescription
+      : (dropoffPlace ? dropoffPlace.fullDescription : ''),
+    dropoff: returnCustom && returnDropoffPlace
+      ? returnDropoffPlace.fullDescription
+      : (pickupPlace ? pickupPlace.fullDescription : '')
+  };
+}
+
+function paintReturn() {
+  $('returnBox').classList.toggle('hidden', !returnOn);
+  $('returnRow').classList.toggle('on', returnOn);
+  $('returnRow').setAttribute('aria-checked', returnOn ? 'true' : 'false');
+
+  if (!returnOn) {
+    // A linha fechada volta ao convite. Deixar lá a data escolhida
+    // faria pensar que a volta continua reservada.
+    $('returnSummary').textContent = 'Add the return trip and pay for both at once.';
+    updatePriceDisplayOnly();
+    updateCheckoutSummary();
+    return;
+  }
+
+  var leg = returnLegPayload() || {};
+  var from = leg.pickup || (dropoffPlace && dropoffPlace.fullDescription) || '—';
+  var to = leg.dropoff || (pickupPlace && pickupPlace.fullDescription) || '—';
+
+  // Montado com textContent: as moradas vêm do Google mas passam
+  // pelo campo do utilizador, e não há aqui nada que precise de HTML.
+  $('returnRoute').textContent = '';
+
+  var line1 = document.createElement('div');
+  line1.textContent = 'From ' + from;
+
+  var line2 = document.createElement('div');
+  line2.textContent = 'to ' + to;
+
+  $('returnRoute').appendChild(line1);
+  $('returnRoute').appendChild(line2);
+
+  // A linha fechada passa a mostrar o que foi escolhido, para não
+  // ser preciso abrir para confirmar.
+  $('returnSummary').textContent = leg.date
+    ? 'Returning ' + new Date(leg.date + 'T12:00:00')
+        .toLocaleDateString(undefined, { day: 'numeric', month: 'long' }) +
+      (leg.time ? ' at ' + leg.time : '')
+    : 'Choose the return date below.';
+
+  // A volta não pode ser antes da ida.
+  if ($('travelDate').value) {
+    $('returnDate').min = $('travelDate').value;
+    if ($('returnDate').value && $('returnDate').value < $('travelDate').value) {
+      $('returnDate').value = $('travelDate').value;
+    }
+  }
+
+  updatePriceDisplayOnly();
+  updateCheckoutSummary();
+}
+
+var RETURN_AFTER_DAYS = 7;
+var returnDateTouched = false;
+
+/**
+ * Uma semana depois da ida, à mesma hora.
+ *
+ * Só preenche enquanto a pessoa não tiver mexido no campo. A partir
+ * daí a escolha é dela, e sobrepor-nos a ela seria pior do que não
+ * sugerir nada.
+ */
+function suggestReturnDate() {
+  if (returnDateTouched || !$('travelDate').value) return;
+
+  var d = new Date($('travelDate').value + 'T12:00:00');
+  d.setDate(d.getDate() + RETURN_AFTER_DAYS);
+
+  $('returnDate').value = d.toISOString().slice(0, 10);
+  if (!$('returnTime').value) {
+    $('returnTime').value = $('travelTime').value || '10:00';
+  }
+}
+
+$('returnRow').addEventListener('click', function () {
+  returnOn = !returnOn;
+  if (returnOn) suggestReturnDate();
+  paintReturn();
+});
+
+// Se a data da ida for escolhida DEPOIS de abrir a linha, a volta
+// acerta-se sozinha. Sem isto, quem abrisse primeiro ficava com o
+// campo vazio e sem saber porquê.
+$('travelDate').addEventListener('change', function () {
+  if (returnOn) { suggestReturnDate(); paintReturn(); }
+});
+
+$('returnDate').addEventListener('input', function () {
+  returnDateTouched = true;
+});
+
+$('dropReturnBtn').addEventListener('click', function () {
+  returnOn = false;
+  returnDateTouched = false;
+  $('returnDate').value = '';
+  $('returnTime').value = '';
+  paintReturn();
+});
+
+$('swapReturnBtn').addEventListener('click', function () {
+  returnCustom = !returnCustom;
+  $('returnCustom').classList.toggle('hidden', !returnCustom);
+  $('swapReturnBtn').textContent = returnCustom
+    ? 'Use the same route reversed'
+    : 'Pick up somewhere else on the way back';
+
+  if (!returnCustom) {
+    returnPickupPlace = null;
+    returnDropoffPlace = null;
+    $('returnPickup').value = '';
+    $('returnDropoff').value = '';
+  }
+
+  paintReturn();
+});
+
+['returnDate', 'returnTime'].forEach(function (id) {
+  $(id).addEventListener('change', paintReturn);
+});
+
+// ============================================================
+// RESERVAR SEM CONTA
+//
+// Obrigar a registar a meio de uma compra é onde se perdem
+// clientes. A conta é criada na mesma, em silêncio, com o email da
+// reserva — e no email de confirmação vai um link para escolher
+// password. Quem voltar encontra o histórico à espera.
+// ============================================================
+function setGuestMode(on) {
+  guestMode = on;
+
+  $('authCard').classList.toggle('hidden', on);
+  $('finalForm').classList.toggle('hidden', !on && !currentUser);
+
+  $('guestChip').classList.toggle('hidden', !on);
+  $('signedInChip').classList.toggle('hidden', on);
+  $('guestEmailField').classList.toggle('hidden', !on);
+
+  // O campo do email da conta não faz sentido sem conta.
+  var accountEmail = $('email').closest('.field');
+  if (accountEmail) accountEmail.classList.toggle('hidden', on);
+
+  if (on) {
+    $('finalForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    setStatus('Fill in your details and we will email you everything.');
+  }
+}
+
+$('guestBtn').addEventListener('click', function () { setGuestMode(true); });
+
+$('guestBackBtn').addEventListener('click', function () {
+  setGuestMode(false);
+  $('finalForm').classList.add('hidden');
+  $('authCard').classList.remove('hidden');
+  setAuthMode('signin');
+});
+
+// ============================================================
+// FLUXO DE RESERVA
+// ============================================================
+/**
+ * A homepage passou a ser só pesquisa.
+ *
+ * O preço e os dados do passageiro vivem agora em /booking/ e
+ * /checkout/. Ter os dois caminhos a fazer o mesmo era o dobro dos
+ * sítios onde um erro se podia esconder — e obrigava a medir a rota
+ * duas vezes, o que é uma chamada paga ao Google por cada pesquisa.
+ */
+$('proceedBtn').addEventListener('click', function () {
+  var from = ($('pickup').value || '').trim();
+  var to = ($('dropoff').value || '').trim();
+
+  if (!from || !to) {
+    setStatus('Tell us where you are going first.');
+    ($('pickup').value ? $('dropoff') : $('pickup')).focus();
+    return;
+  }
+
+  var q = new URLSearchParams({
+    from: from,
+    to: to,
+    date: $('travelDate').value || '',
+    time: $('travelTime').value || '12:00',
+    pax: String(Math.max(1, Math.min(16, parseInt($('passengers').value, 10) || 1)))
+  });
+
+  /**
+   * O tipo do local de recolha segue.
+   *
+   * É o Google que sabe se aquilo é um aeroporto, e sabe-o agora.
+   * Adivinhá-lo depois, comparando o texto da morada contra uma
+   * lista, é adivinhação — e adivinhar mal significa dar 15 minutos
+   * de espera a quem devia ter 60.
+   */
+  if (pickupPlace && pickupPlace.placeType) {
+    q.set('ptype', pickupPlace.placeType);
+  }
+
+  // Os quilometros ja medidos seguem: /booking/ reaproveita-os em vez
+  // de pagar ao Google uma segunda medicao da mesma rota.
+  if (lastRoute && lastRoute.km > 0) {
+    q.set('km', lastRoute.km.toFixed(1));
+    if (lastRoute.dur) q.set('dur', lastRoute.dur);
+  }
+
+  /**
+   * A cidade e o país seguem no endereço.
+   *
+   * O /booking/ calcula os preços por classe, e sem isto adivinha
+   * pelo texto — que é o que dava a tarifa errada em Ibiza.
+   */
+  if (pickupPlace && pickupPlace.city) q.set('from_city', pickupPlace.city);
+  if (dropoffPlace && dropoffPlace.city) q.set('to_city', dropoffPlace.city);
+  if (pickupPlace && pickupPlace.country) q.set('from_country', pickupPlace.country);
+  if (dropoffPlace && dropoffPlace.country) q.set('to_country', dropoffPlace.country);
+
+  // A ida e volta, se estiver escolhida na pesquisa.
+  var rd = $('returnDate');
+  if (rd && rd.value) {
+    q.set('return_date', rd.value);
+    var rt = $('returnTime');
+    if (rt && rt.value) q.set('return_time', rt.value);
+  }
+
+  window.location.href = '/booking/?' + q.toString();
+});
+
+$('confirmBtn').addEventListener('click', function () {
+  if (!currentUser && !guestMode) return setStatus('Please sign in first.', true);
+
+  var fullName = $('fullName').value.trim();
+  var phoneCode = $('phoneCode').value.trim();
+  var phoneNumber = $('phoneNumber').value.trim();
+  if (!fullName || !phoneCode || !phoneNumber) {
+    $('formError').textContent = 'Please fill in your name and phone number — ' +
+      'the driver calls that number on the day.';
+    $('formError').classList.remove('hidden');
+    return;
+  }
+
+  // Sem conta, o email é o único caminho até à pessoa: sem ele não
+  // há confirmação, nem recibo, nem dados do motorista.
+  var email = guestMode ? $('guestEmail').value.trim() : currentUser.email;
+
+  var formError = $('formError');
+  formError.classList.add('hidden');
+
+  if (guestMode && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    formError.textContent = 'We need a valid email address — it is where the confirmation, ' +
+      'the receipt and the driver details are sent.';
+    formError.classList.remove('hidden');
+    $('guestEmail').focus();
+    return;
+  }
+
+  // O aviso do comprimento não bloqueia a reserva — um plano de
+  // numeração muda, e recusar um número válido custa mais do que
+  // aceitar um errado. Mas vale a pena dizer antes de pagar.
+  if (phoneField && !phoneField.validate()) {
+    setStatus('Check the phone number — the driver calls it on the day.');
+  }
+
+  // full_name e phone são sempre de quem VIAJA — é quem o motorista
+  // vai buscar. O email é o da conta que paga, que para um agente é
+  // a agência. Os campos passenger_* guardam o contacto do viajante
+  // de forma explícita, para o admin não ter de adivinhar.
+  var booking = {
+    user_id: currentUser ? currentUser.id : null,
+    full_name: fullName,
+    email: email,
+    phone_code: phoneCode, phone_number: phoneNumber,
+    passenger_name: fullName,
+    passenger_phone: '+' + phoneCode + ' ' + phoneNumber,
+    passenger_email: isAgent() ? $('passengerEmail').value.trim() : email,
+    agent_reference: isAgent() ? $('agentReference').value.trim() : '',
+    flight_number: $('flightNumber').value.trim(),
+    notes: $('notes').value.trim(),
+    currency: $('currency').value, passengers: $('passengers').value,
+    pickup: pickupPlace.fullDescription, dropoff: dropoffPlace.fullDescription,
+    date: $('travelDate').value, time: $('travelTime').value,
+    payment_mode: payMode,
+    return_leg: returnLegPayload()
+  };
+
+  $('summaryName').textContent = booking.full_name + (isAgent() ? ' (passenger)' : '');
+  $('summaryEmail').textContent = booking.email + (isAgent() ? ' (billing)' : '');
+  $('summaryPhone').textContent = '+' + booking.phone_code + ' ' + booking.phone_number;
+  $('summaryFlight').textContent = booking.flight_number || '\u2014';
+  $('summaryRefItem').classList.toggle('hidden', !booking.agent_reference);
+  $('summaryRef').textContent = booking.agent_reference || '\u2014';
+  $('summaryNotes').textContent = booking.notes || '\u2014';
+  updateCheckoutSummary();
+
+  $('checkoutSection').classList.remove('hidden');
+  $('checkoutSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  setStatus('Review your booking below and complete the payment.');
+  window.__latestBooking = booking;
+  persistTraveller();
+  reportHeight();
+});
+
+// ============================================================
+// PAGAMENTO
+// O servidor devolve session.url e navegamos com window.top. Não se
+// usa Stripe.js: o redirectToCheckout está depreciado e o Stripe
+// recusa ser carregado dentro de iframes — era por isso que o botão
+// não fazia nada (o Stripe.js nem sequer estava na página).
+// ============================================================
+$('payNowBtn').addEventListener('click', async function () {
+  if (payMode === 'later') $('payNowBtn').textContent = 'Save card and confirm';
+  if (!window.__latestBooking) {
+    $('payStatus').textContent = 'Please confirm the booking first.';
+    return;
+  }
+
+  var btn = $('payNowBtn'), original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  $('payStatus').textContent = 'Creating a secure payment session...';
+
+  try {
+    // O token vai no pedido para o servidor poder confirmar, do seu
+    // lado, se quem reserva é mesmo um agente aprovado.
+    var headers = { 'Content-Type': 'application/json' };
+    try {
+      var sess = await supabaseClient.auth.getSession();
+      var tk = sess.data && sess.data.session && sess.data.session.access_token;
+      if (tk) headers['Authorization'] = 'Bearer ' + tk;
+    } catch (e) {}
+
+    /**
+     * Chegou ao checkout.
+     *
+     * A distância entre isto e o "quote_requested" é onde se perde
+     * mais gente — e é a única parte do funil que se pode mudar
+     * sem gastar dinheiro em anúncios.
+     */
+    if (window.alTrack) {
+      var b = window.__latestBooking || {};
+
+      window.alTrack('checkout_started', {
+        value: Math.round(Number(b.price_eur || b.price || 0)),
+        currency: 'EUR',
+        payment_mode: b.payment_mode || 'now',
+        passengers: b.passengers || 1
+      });
+    }
+
+    var response = await fetch(RENDER_URL + '/api/create-checkout-session', {
+      method: 'POST', headers: headers,
+      body: JSON.stringify({ booking: window.__latestBooking })
+    });
+    var result = await response.json();
+
+    /**
+     * Demasiados pedidos.
+     *
+     * O servidor limita os pedidos por endereço, e o 429 diz
+     * quantos segundos faltam. Dizer "Error: HTTP 429" a um
+     * cliente que carregou duas vezes no botão é assustá-lo sem
+     * razão — ele não fez nada de errado.
+     */
+    if (response.status === 429) {
+      var espera = result.retry_after_seconds || 30;
+
+      $('payStatus').textContent =
+        'One moment — try again in ' + espera + ' seconds.';
+
+      btn.disabled = true;
+
+      setTimeout(function () {
+        btn.disabled = false;
+        btn.textContent = original;
+        $('payStatus').textContent = '';
+      }, espera * 1000);
+
+      return;
+    }
+
+    if (!response.ok || result.error) {
+      $('payStatus').textContent = 'Error: ' + (result.error || ('HTTP ' + response.status));
+      btn.disabled = false; btn.textContent = original;
+      return;
+    }
+    if (!result.url) {
+      $('payStatus').textContent = 'The server did not return a checkout URL. Please contact support.';
+      btn.disabled = false; btn.textContent = original;
+      return;
+    }
+
+    $('payStatus').textContent = payMode === 'later'
+      ? 'Taking you to Stripe to save your card. Nothing is charged today.'
+      : 'Redirecting to Stripe...';
+    try { window.top.location.href = result.url; }
+    catch (e) { window.open(result.url, '_blank'); }
+  } catch (error) {
+    console.error('Payment error:', error);
+    $('payStatus').textContent = 'Payment error: ' + error.message;
+    btn.disabled = false; btn.textContent = original;
+  }
+});
+
+document.addEventListener('click', function (e) {
+  if (!e.target.closest('.field') && !e.target.closest('.suggestions')) {
+    Array.prototype.forEach.call(document.querySelectorAll('.suggestions'), function (el) {
+      el.classList.remove('show');
+    });
+  }
+});
+
+// ============================================================
+// LIGAÇÕES E MOVIMENTO
+// ============================================================
+$('agentsCtaBtn').addEventListener('click', function () { navigateTo('/travelagents'); });
+
+// Um pulso curto quando o valor muda, para o olho notar que o
+// preço se atualizou sem ter de o procurar.
+(function () {
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced || !window.MutationObserver) return;
+
+  var target = $('priceValue');
+  new MutationObserver(function () {
+    target.classList.remove('priced');
+    void target.offsetWidth;
+    target.classList.add('priced');
+  }).observe(target, { childList: true, characterData: true, subtree: true });
+})();
+
+// ============================================================
+// ARRANQUE
+// ============================================================
+(async function boot() {
+  loadRates();
+  try {
+    var res = await supabaseClient.auth.getSession();
+    if (res.data && res.data.session) {
+      var userRes = await supabaseClient.auth.getUser();
+      if (!userRes.error && userRes.data && userRes.data.user) {
+        currentUser = userRes.data.user;
+        $('signedInEmail').textContent = currentUser.email;
+        $('email').value = currentUser.email;
+        notifyParent({ type: 'session-active', email: currentUser.email });
+        await loadAgentInfo();
+      }
+    }
+  } catch (e) { console.error('boot error:', e); }
+  setAuthMode('signin');
+
+  // ---------- vindo de uma página de rota ----------
+  //
+  // As páginas de /transfers/... mandam a rota no endereço. Aqui
+  // preenchem-se os campos e calcula-se logo, para quem já disse o
+  // que quer não ter de dizer outra vez.
+  try {
+    var q = new URLSearchParams(window.location.search);
+    var from = q.get('from');
+    var to = q.get('to');
+
+    if (from || to) {
+      if (from) $('pickup').value = from;
+      if (to) $('dropoff').value = to;
+
+      var pax = parseInt(q.get('pax'), 10);
+      if (Number.isFinite(pax) && pax >= 1 && pax <= 16) $('passengers').value = pax;
+
+      // Data e hora, vindas da barra das páginas de rota.
+      var date = q.get('date');
+      var time = q.get('time');
+      if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) $('travelDate').value = date;
+      if (time && /^\d{2}:\d{2}$/.test(time)) $('travelTime').value = time;
+
+      // Só calcula sozinho quando tem as duas pontas. Com uma só, o
+      // resultado seria um erro logo à chegada.
+      //
+      // O atraso é para o Google Maps já estar carregado: sem ele, a
+      // rota não se traça e o preço não sai.
+      if (from && to) {
+        setTimeout(function () {
+          try { calculateRouteAndPrice(); } catch (e) { console.error('prefill quote:', e); }
+        }, 900);
+      }
+
+      var book = document.getElementById('book');
+      if (book) setTimeout(function () {
+        book.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 120);
+    }
+  } catch (e) { console.error('prefill:', e); }
+
+  reportHeight();
+})();
+})();
+
+</script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWH1TXxWhFmFo7fMB8NXE4swU2idCc_0M&loading=async&libraries=places,routes&callback=initMap&language=en&region=IE"></script>
 
 <script>
