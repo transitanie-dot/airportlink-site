@@ -46,7 +46,7 @@
   "co.errDropoff": "Necesitamos un sitio donde dejarte.",
   "co.errEmail": "Ese correo no parece correcto.",
   "co.errName": "Necesitamos un nombre para que el conductor te busque.",
-  "co.errPhone": "Necesitamos un número al que el conductor pueda llamar.",
+  "co.errPhone": "Necesitamos un teléfono con el prefijo del país. El conductor llama a ese número.",
   "co.fixFields": "Hay un par de campos que corregir antes de continuar.",
   "co.flight": "Número de vuelo",
   "co.flightHint": "Lo seguimos. Si aterrizas tarde, el conductor espera y no pagas nada extra.",

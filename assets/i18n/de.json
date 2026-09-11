@@ -46,7 +46,7 @@
   "co.errDropoff": "Wir brauchen ein Ziel.",
   "co.errEmail": "Diese E-Mail sieht nicht richtig aus.",
   "co.errName": "Wir brauchen einen Namen, nach dem der Fahrer sucht.",
-  "co.errPhone": "Wir brauchen eine Nummer, unter der der Fahrer Sie erreicht.",
+  "co.errPhone": "Wir brauchen eine Telefonnummer mit Ländervorwahl. Der Fahrer ruft dort an.",
   "co.fixFields": "Ein paar Felder müssen noch korrigiert werden.",
   "co.flight": "Flugnummer",
   "co.flightHint": "Wir verfolgen ihn. Bei Verspätung wartet der Fahrer, ohne Aufpreis.",

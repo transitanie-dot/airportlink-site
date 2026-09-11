@@ -45,7 +45,7 @@
   "co.errDropoff": "Vi skal bruge et sted at sætte dig af.",
   "co.errEmail": "Den e-mail ser ikke rigtig ud.",
   "co.errName": "Vi skal bruge et navn, chaufføren kan lede efter.",
-  "co.errPhone": "Vi skal bruge et nummer, chaufføren kan nå dig på.",
+  "co.errPhone": "Vi skal bruge et telefonnummer med landekode. Chaufføren ringer til det.",
   "co.fixFields": "Et par felter skal rettes, før vi kan gå videre.",
   "co.flight": "Flynummer",
   "co.flightHint": "Vi følger det. Lander du sent, venter chaufføren, og du betaler intet ekstra.",

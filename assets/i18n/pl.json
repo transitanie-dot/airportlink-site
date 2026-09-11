@@ -45,7 +45,7 @@
   "co.errDropoff": "Potrzebujemy miejsca docelowego.",
   "co.errEmail": "Ten adres e-mail wygląda niepoprawnie.",
   "co.errName": "Potrzebujemy imienia, którego kierowca będzie szukał.",
-  "co.errPhone": "Potrzebujemy numeru, pod którym kierowca Cię zastanie.",
+  "co.errPhone": "Potrzebujemy numeru telefonu z kierunkowym. Kierowca dzwoni na ten numer.",
   "co.fixFields": "Kilka pól wymaga poprawy, zanim przejdziemy dalej.",
   "co.flight": "Numer lotu",
   "co.flightHint": "Śledzimy go. Jeśli wylądujesz później, kierowca czeka i nie dopłacasz nic.",

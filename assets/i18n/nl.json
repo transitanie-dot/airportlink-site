@@ -46,7 +46,7 @@
   "co.errDropoff": "We hebben een bestemming nodig.",
   "co.errEmail": "Dat e-mailadres ziet er niet goed uit.",
   "co.errName": "We hebben een naam nodig waar de chauffeur naar kan zoeken.",
-  "co.errPhone": "We hebben een nummer nodig waarop de chauffeur u kan bereiken.",
+  "co.errPhone": "We hebben een telefoonnummer met landcode nodig. De chauffeur belt dat nummer.",
   "co.fixFields": "Er zijn een paar velden die nog aangepast moeten worden.",
   "co.flight": "Vluchtnummer",
   "co.flightHint": "Wij volgen hem. Landt u laat, dan wacht de chauffeur en betaalt u niets extra.",

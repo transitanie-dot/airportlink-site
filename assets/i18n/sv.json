@@ -45,7 +45,7 @@
   "co.errDropoff": "Vi behöver en destination.",
   "co.errEmail": "Den e-postadressen ser inte rätt ut.",
   "co.errName": "Vi behöver ett namn som chauffören kan leta efter.",
-  "co.errPhone": "Vi behöver ett nummer där chauffören når dig på resdagen.",
+  "co.errPhone": "Vi behöver ett telefonnummer med landskod. Föraren ringer det numret.",
   "co.fixFields": "Ett par fält behöver rättas innan vi går vidare.",
   "co.flight": "Flightnummer",
   "co.flightHint": "Vi följer det. Landar du sent väntar chauffören och du betalar inget extra.",

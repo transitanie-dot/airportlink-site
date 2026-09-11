@@ -46,7 +46,7 @@
   "co.errDropoff": "Ci serve un posto dove lasciarti.",
   "co.errEmail": "Questa email non sembra corretta.",
   "co.errName": "Ci serve un nome che l'autista possa cercare.",
-  "co.errPhone": "Ci serve un numero raggiungibile il giorno del viaggio.",
+  "co.errPhone": "Serve un numero di telefono con il prefisso. L'autista chiama quel numero.",
   "co.fixFields": "Ci sono alcuni campi da correggere prima di continuare.",
   "co.flight": "Numero del volo",
   "co.flightHint": "Lo seguiamo. Se atterri in ritardo, l'autista aspetta e non paghi nulla in più.",

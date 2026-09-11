@@ -45,7 +45,7 @@
   "co.errDropoff": "需要填写送达地点。",
   "co.errEmail": "这个邮箱地址似乎不正确。",
   "co.errName": "需要填写姓名，方便司机寻找。",
-  "co.errPhone": "需要一个当天可联系到您的号码。",
+  "co.errPhone": "请填写含国际区号的电话号码，司机当天会拨打。",
   "co.fixFields": "继续之前还有几处需要修改。",
   "co.flight": "航班号",
   "co.flightHint": "我们会追踪航班。若延误抵达，司机会等候，不额外收费。",

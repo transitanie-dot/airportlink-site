@@ -45,7 +45,7 @@
   "co.errDropoff": "Sizi bırakacağımız bir yere ihtiyacımız var.",
   "co.errEmail": "Bu e-posta doğru görünmüyor.",
   "co.errName": "Şoförün arayacağı bir isme ihtiyacımız var.",
-  "co.errPhone": "Şoförün o gün size ulaşabileceği bir numaraya ihtiyacımız var.",
+  "co.errPhone": "Ülke kodlu bir telefon numarası gerekli. Sürücü o numarayı arar.",
   "co.fixFields": "Devam etmeden önce birkaç alanın düzeltilmesi gerekiyor.",
   "co.flight": "Uçuş numarası",
   "co.flightHint": "Biz takip ediyoruz. Geç inerseniz şoför bekler ve fazladan ödeme yapmazsınız.",
