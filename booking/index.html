@@ -395,7 +395,9 @@ var PT_ZONES = {
 };
 
 function ptZone(a, b) {
-  var texts = [String(a||'').toLowerCase(), String(b||'').toLowerCase()];
+  // Sem os nomes de rua: "Rua de Lisboa" no Porto não faz da rota
+  // uma rota de Lisboa.
+  var texts = [semNomesDeRua(a), semNomesDeRua(b)];
   for (var t = 0; t < 2; t++) {
     for (var k in PT_ZONES) {
       var ws = PT_ZONES[k].words;
@@ -445,6 +447,36 @@ var ES_FIXED = { 'sitges': { sedan: 128.56, premium: 175.57 } };
 
 
 
+/**
+ * Os nomes de rua não dizem a cidade.
+ *
+ * "Hotel Ibiza Playa, Carrer de Tarragona, Eivissa" tem a palavra
+ * "Tarragona" numa RUA — e isso fazia aplicar a tarifa de
+ * Barcelona: 56 euros em vez de 73.
+ *
+ * "Via Roma" existe em quase todas as cidades italianas, e o
+ * mesmo em Espanha e Portugal.
+ */
+var PREFIXOS_DE_RUA = [
+  'carrer', 'calle', 'avinguda', 'avenida', 'plaza', 'placa',
+  'rua', 'travessa', 'largo', 'praca', 'estrada', 'caminho',
+  'via', 'viale', 'piazza', 'corso', 'strada',
+  'rue', 'boulevard', 'passeig', 'paseo', 'ronda', 'camino'
+];
+
+function semNomesDeRua(texto) {
+  return String(texto || '').toLowerCase()
+    .split(',')
+    .filter(function (parte) {
+      var p = parte.trim();
+      return !PREFIXOS_DE_RUA.some(function (pre) {
+        return p.indexOf(pre + ' ') === 0;
+      });
+    })
+    .join(', ');
+}
+
+
 function hasWord(text, list) {
   var t = String(text || '').toLowerCase();
   for (var i = 0; i < list.length; i++) {
@@ -455,7 +487,20 @@ function hasWord(text, list) {
 
 /** Espanha, Portugal, ou nenhum dos dois. */
 function country(a, b) {
-  var t = (String(a||'') + ' ' + String(b||'')).toLowerCase();
+  /**
+   * O país dito pelo Google, quando o temos.
+   *
+   * Duas letras, sem ambiguidade. Os dois lados têm de concordar:
+   * uma rota de Espanha para França não é uma rota espanhola.
+   */
+  if (trip.fromCountry && trip.toCountry
+      && trip.fromCountry === trip.toCountry) {
+    if (trip.fromCountry === 'ES') return 'ES';
+    if (trip.fromCountry === 'PT') return 'PT';
+    return null;
+  }
+
+  var t = semNomesDeRua(String(a||'') + ', ' + String(b||''));
 
   if (/\b(spain|espa(n|ñ)a|espanha)\b/.test(t)) return 'ES';
   if (/\bportugal\b/.test(t)) return 'PT';
@@ -467,7 +512,10 @@ function country(a, b) {
 }
 
 function esZone(a, b) {
-  var t = (String(a||'') + ' ' + String(b||'')).toLowerCase();
+  // A cidade dita pelo Google ganha ao texto da morada.
+  var t = (trip.fromCity || trip.toCity)
+    ? [trip.fromCity, trip.toCity].filter(Boolean).join(', ').toLowerCase()
+    : semNomesDeRua(String(a||'') + ', ' + String(b||''));
   for (var k in ES_ZONES) if (hasWord(t, ES_ZONES[k].words)) return ES_ZONES[k];
   return ES_FALLBACK;
 }
@@ -684,6 +732,20 @@ var hasReturn = false;
   // A homepage já mediu a rota. Reaproveitamos: medir outra vez era
   // pagar duas chamadas ao Google pela mesma resposta.
   trip.km = Number(q.get('km')) || 0;
+
+  /**
+   * A cidade e o país, ditos pelo Google.
+   *
+   * Vêm da homepage, que os guarda do address_components quando a
+   * pessoa escolhe a morada.
+   *
+   * Sem eles, a zona é adivinhada pelo texto — e "Carrer de
+   * Tarragona" em Ibiza levava a tarifa de Barcelona.
+   */
+  trip.fromCity = q.get('from_city') || null;
+  trip.toCity = q.get('to_city') || null;
+  trip.fromCountry = q.get('from_country') || null;
+  trip.toCountry = q.get('to_country') || null;
   trip.dur = q.get('dur') || '';
 
   /**
@@ -1210,6 +1272,12 @@ $('nextBtn').addEventListener('click', function () {
     q.set('return_date', $('retDate').value);
     q.set('return_time', $('retTime').value);
   }
+
+  // A cidade e o país seguem: o checkout calcula outra vez.
+  if (trip.fromCity) q.set('from_city', trip.fromCity);
+  if (trip.toCity) q.set('to_city', trip.toCity);
+  if (trip.fromCountry) q.set('from_country', trip.fromCountry);
+  if (trip.toCountry) q.set('to_country', trip.toCountry);
 
   window.location.href = '/checkout/?' + q.toString();
 });
