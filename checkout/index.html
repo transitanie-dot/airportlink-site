@@ -85,17 +85,8 @@ html[data-theme="dark"] .step.now .n{background:#D8DEE8;color:#141A28}
  * O appearance:none tira o desenho do browser; a seta volta como
  * imagem de fundo.
  */
-/**
- * O indicativo e o número, lado a lado.
- *
- * O indicativo é estreito porque é uma escolha curta; o número
- * fica com o resto. Num telemóvel os dois cabem na mesma linha
- * — separá-los em duas linhas faria o formulário parecer maior
- * do que é.
- */
-.phone-row{display:flex;gap:8px}
-.phone-row select{flex:0 0 112px;padding-right:30px}
-.phone-row input{flex:1 1 auto;min-width:0}
+/* O .phone-field é criado e estilizado pelo assets/phone.js e
+   pelo site.css. Um wrapper meu por cima quebrava o alinhamento. */
 
 .f select{padding:0 38px 0 14px;height:48px;border-radius:13px;
   border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
@@ -418,24 +409,18 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
         <div class="f wide" id="phoneField">
           <label for="phone" data-i18n="co.phone">Phone</label>
 
-          <!-- O indicativo num campo próprio.
-               Era um campo só, e o servidor separava o que vinha
-               depois do "+". Quem escrevesse sem indicativo levava
-               com o 351 assumido — e um motorista em Espanha
-               marcava um número português que não existe. -->
-          <div class="phone-row">
-            <!-- O componente preenche isto.
-              O assets/phone.js tem a lista completa e sabe separar
-              o prefixo do número — o +351 tem de ganhar ao +35,
-              senão Portugal vira Chipre.
+          <!-- O indicativo e o número.
 
-              A mesma lista do myaccount: uma só, em vez de duas
-              a divergir. -->
-            <select id="phoneCode" aria-label="Country code"></select>
+               O assets/phone.js transforma este select num seletor
+               com bandeiras, e envolve os dois num .phone-field.
 
-            <input id="phone" type="tel" autocomplete="tel"
-                   inputmode="tel" placeholder="912 345 678">
-          </div>
+               Sem wrapper meu: o componente cria o dele, e dois
+               wrappers a competir quebravam o alinhamento — era
+               por isso que o dropdown não abria. -->
+          <select id="phoneCode" aria-label="Country code" required></select>
+
+          <input id="phone" type="tel" autocomplete="tel"
+                 inputmode="tel" required placeholder="912 345 678">
           <span class="hint">The driver calls or messages this number on the day.</span>
           <span class="err" data-i18n="co.errPhone">We need a number the driver can reach on the day.</span>
         </div>
@@ -509,8 +494,7 @@ html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
 
         <div class="f wide">
           <label for="notes">Anything we should know <span class="opt">optional</span></label>
-          <textarea id="notes" maxlength="600" data-i18n-ph="co.notesPlaceholder" placeholder="Child seats, extra luggage, a wheelchair, a second stop &mdash; tell us here and we arrange it."></textarea>
-          <span class="hint">Child seats are free. Just say the ages.</span>
+          <textarea id="notes" maxlength="600"></textarea>
         </div>
       </div>
     </section>
@@ -1066,6 +1050,25 @@ function deNoite() {
 
 var campoTelefone = null;
 
+
+/**
+ * O seletor de indicativo, montado para toda a gente.
+ *
+ * Estava dentro do fillFrom(), que só corre com sessão iniciada —
+ * e quem reserva como convidado nunca via o dropdown. Ficava um
+ * select escondido pelo componente e nada no lugar dele.
+ *
+ * Era por isso que não funcionava.
+ */
+function montarTelefone() {
+  if (campoTelefone || !window.AirportlinkPhone) return;
+
+  campoTelefone = window.AirportlinkPhone.mount({
+    select: 'phoneCode',
+    input: 'phone'
+  });
+}
+
 var trip = {
   from: '', to: '', date: '', time: '12:00', pax: 2,
   vehicle: 'sedan', km: 0, isPT: null,
@@ -1235,7 +1238,20 @@ $('payNow').addEventListener('click', function () { setPay('now'); });
 
 // ---------- validação ----------
 function bad(id, is) {
-  $(id).closest('.f').classList.toggle('bad', is);
+  var campo = $(id);
+  if (!campo || campo.__missing) return !is;
+
+  /**
+   * O .f, ou o .phone-field.
+   *
+   * O componente do telefone envolve o select e o input num
+   * .phone-field próprio, dentro do .f. Marcar o .f pintava o
+   * campo todo; marcar o .phone-field pinta só o que está
+   * errado.
+   */
+  var caixa = campo.closest('.phone-field') || campo.closest('.f');
+  if (caixa) caixa.classList.toggle('bad', is);
+
   return !is;
 }
 
@@ -1244,8 +1260,24 @@ function check() {
 
   ok = bad('name', $('name').value.trim().length < 2) && ok;
   ok = bad('email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('email').value.trim())) && ok;
+  /**
+   * O telefone e o indicativo, os dois obrigatórios.
+   *
+   * O número vai no SMS de "o seu motorista está a caminho" e é
+   * por onde o motorista liga no dia. Um número sem indicativo é
+   * um número que não marca — e uma pessoa sozinha num aeroporto
+   * à noite sem forma de perguntar por ninguém.
+   */
   ok = bad('phone', $('phone').value.replace(/\D/g, '').length < 6) && ok;
-  ok = bad('dropoff', !$('dropoff').value.trim()) && ok;
+  ok = bad('phoneCode', !$('phoneCode').value) && ok;
+
+  /**
+   * A morada de destino já não se edita aqui.
+   *
+   * O campo "dropoff" passou a ser o detalhe — andar, número da
+   * porta — e é opcional. A morada vem escolhida do mapa e não
+   * pode faltar.
+   */
 
   return ok;
 }
@@ -1522,23 +1554,6 @@ function fillFrom(user) {
    * número deixava o indicativo a 351 e o 34 dentro do número — e
    * o que saía era um número que não existe.
    */
-  /**
-   * O componente do telefone.
-   *
-   * O assets/phone.js tem a lista de países e sabe separar o
-   * prefixo do número — os prefixos mais longos primeiro, senão
-   * o +351 é lido como +35 e Portugal vira Chipre.
-   *
-   * É o mesmo do myaccount: uma lista só, em vez de duas a
-   * divergir.
-   */
-  if (!campoTelefone && window.AirportlinkPhone) {
-    campoTelefone = window.AirportlinkPhone.mount({
-      select: 'phoneCode',
-      input: 'phone'
-    });
-  }
-
   if (!$('phone').value && meta.phone) {
     /**
      * O componente separa o prefixo do número.
@@ -1619,6 +1634,15 @@ $('acctGo').addEventListener('click', async function () {
 
 // Já com sessão aberta noutra altura: não voltar a pedir nada.
 (async function () {
+  /**
+   * O telefone primeiro, antes de qualquer coisa assíncrona.
+   *
+   * Esperar pela sessão para montar o seletor deixava o campo
+   * sem dropdown durante o tempo que o Supabase demorasse — e
+   * para sempre, para quem reserva como convidado.
+   */
+  montarTelefone();
+
   var client = supa();
   if (!client) return;
   try {
