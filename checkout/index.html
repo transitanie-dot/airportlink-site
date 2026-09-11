@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Your transfer | Airportlink</title>
-<meta name="description" content="Choose your vehicle and confirm your airport transfer. Fixed price, free cancellation up to 24 hours before.">
-<meta name="robots" content="noindex, follow">
-<link rel="canonical" href="https://www.airportlink.app/booking">
+<title>Confirm your transfer | Airportlink</title>
+<meta name="description" content="Your details and payment. Free cancellation up to 24 hours before pick-up.">
+<link rel="canonical" href="https://www.airportlink.app/checkout/">
+<meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
 <script>
@@ -22,333 +22,574 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/i18n.js"></script>
-<script src="/assets/layout.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-.bk{max-width:1080px;margin:0 auto;padding:32px 20px 40px}
-.page-h1{font-family:var(--display);font-weight:800;font-size:clamp(24px,3.4vw,32px);
-  letter-spacing:-.032em;margin:0 0 18px}
+/* ---------- a barra do topo ----------
+   Sem navegação. A partir daqui só há um caminho, e cada link para
+   fora é uma hipótese de a pessoa não voltar. */
+/* Escuro, não branco. Marca a saída do site e a entrada no
+   pagamento — e nos dois temas fica igual, o que dá a esta parte a
+   estabilidade que uma página de pagamento deve ter. */
+.co-bar{background:var(--ink);border-bottom:1px solid rgba(255,255,255,.08)}
+.co-bar-in{max-width:1000px;margin:0 auto;padding:16px 20px;display:flex;
+  align-items:center;justify-content:space-between;gap:20px}
+.co-logo{display:inline-flex;align-items:center;font-family:var(--display);font-weight:800;
+  font-size:18px;letter-spacing:-.03em;color:#FBFBF8;text-decoration:none}
+.co-logo b{color:#17A398;font-weight:800}
+.co-logo .dot{width:5px;height:5px;border-radius:999px;background:#fd8a2b;margin-left:3px}
+.co-secure{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10.5px;
+  font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8C97A8}
+.co-secure svg{width:14px;height:14px;color:#6EE7B7}
 
-/* ---------- o cabeçalho da rota ----------
-   O que foi pedido, à vista e editável. Uma página de resultados que
-   esconde a pesquisa obriga a voltar atrás para mudar uma data. */
-.route{background:var(--surface);border:1px solid var(--rule);border-radius:20px;
-  padding:18px 22px;margin-bottom:18px}
-.route-top{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.leg{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
-.leg-dot{width:9px;height:9px;border-radius:999px;flex:0 0 auto}
-.leg-dot.a{background:var(--teal)}
-.leg-dot.b{background:#fd8a2b}
-html[data-theme="dark"] .leg-dot.a{background:var(--amber)}
-.leg-txt{min-width:0}
-.leg-txt .k{display:block;font-family:var(--mono);font-size:8.5px;font-weight:600;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
-.leg-txt .v{display:block;font-size:15px;font-weight:600;overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap}
-.leg-arrow{color:var(--muted);flex:0 0 auto}
-.leg-arrow svg{width:18px;height:18px;display:block}
-.route-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
-.mchip{background:var(--surface-2);border:1px solid var(--rule);border-radius:999px;
-  padding:6px 13px;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted)}
-/* Os dois botões juntos, empurrados para a direita como um par: o
-   margin-left estava no Change e separava-os. */
-.route-meta .edit:first-of-type{margin-left:auto}
-.edit{background:transparent;border:1px solid var(--rule-strong);
-  border-radius:10px;padding:7px 14px;font-family:inherit;font-size:12.5px;font-weight:600;
-  color:var(--text);cursor:pointer}
-.edit:hover{border-color:var(--teal)}
+/* ---------- os passos ---------- */
+.steps{max-width:1000px;margin:0 auto;padding:22px 20px 0;display:flex;align-items:center;
+  gap:10px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.step .n{width:22px;height:22px;border-radius:999px;display:flex;align-items:center;
+  justify-content:center;background:var(--surface-2);color:var(--muted);
+  font-family:var(--mono);font-size:11px;font-weight:600}
+.step.done .n{background:var(--teal);color:#fff}
+.step.now .n{background:var(--ink);color:#fff}
+.step.now{color:var(--text);font-weight:600}
+html[data-theme="dark"] .step.done .n{background:var(--amber);color:#141A28}
+html[data-theme="dark"] .step.now .n{background:#D8DEE8;color:#141A28}
+.step-line{flex:1;height:1px;background:var(--rule);min-width:16px;max-width:40px}
 
-/* O painel de edição, escondido até fazer falta. */
-.edit-box{display:none;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px;
-  padding-top:16px;border-top:1px solid var(--rule)}
-.edit-box.on{display:grid}
-.ef{display:flex;flex-direction:column;min-width:0;grid-column:span 2}
-.ef.wide{grid-column:span 3}
-/* Sem botão de confirmar: um aviso discreto de que já está a
-   recalcular, para a mudança não parecer ter-se perdido. */
-.saving{grid-column:1/-1;display:none;align-items:center;gap:8px;color:var(--muted);
-  font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;
-  text-transform:uppercase}
-.saving.on{display:flex}
-.saving i{width:7px;height:7px;border-radius:999px;background:var(--teal);
-  animation:pulse 1s ease-in-out infinite}
-html[data-theme="dark"] .saving i{background:var(--amber)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.ef label{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-/* As sugestões, iguais às da página inicial: a mesma caixa, o mesmo
-   nome principal a negrito e a morada por baixo. */
-.ac{position:relative}
-.suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);
-  border:1px solid var(--rule-strong);border-radius:16px;
-  box-shadow:0 18px 40px rgba(20,26,40,.16);z-index:50;overflow:hidden;display:none}
-.suggestions.show{display:block}
-.suggestion-item{padding:12px 15px;cursor:pointer;border-bottom:1px solid var(--rule)}
-.suggestion-item:last-child{border-bottom:0}
-.suggestion-item:hover{background:var(--surface-2)}
-.suggestion-main{font-size:14px;font-weight:600}
-.suggestion-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.co{max-width:1000px;margin:0 auto;padding:20px 20px 50px;
+  display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
 
-.ef input,.ef select{height:44px;padding:0 13px;border-radius:12px;
+/* ---------- o formulário ---------- */
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:20px;
+  padding:22px;margin-bottom:14px}
+.card h2{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:-.022em;
+  margin:0 0 3px}
+.card .sub{margin:0 0 18px;color:var(--muted);font-size:13px;line-height:1.55}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f{display:flex;flex-direction:column;min-width:0}
+.f.wide{grid-column:span 2}
+.f label{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.f label .opt{font-family:var(--body);font-size:10px;font-weight:400;letter-spacing:0;
+  text-transform:none;opacity:.65;margin-left:5px}
+/**
+ * O select com o mesmo aspeto dos campos de texto.
+ *
+ * Sem isto, o browser desenha o dele: quadrado, com outra altura
+ * e outro tipo de letra. Num formulário de oito campos, um
+ * diferente dos outros parece um erro.
+ *
+ * O appearance:none tira o desenho do browser; a seta volta como
+ * imagem de fundo.
+ */
+/**
+ * O indicativo e o número, lado a lado.
+ *
+ * O indicativo é estreito porque é uma escolha curta; o número
+ * fica com o resto. Num telemóvel os dois cabem na mesma linha
+ * — separá-los em duas linhas faria o formulário parecer maior
+ * do que é.
+ */
+.phone-row{display:flex;gap:8px}
+.phone-row select{flex:0 0 112px;padding-right:30px}
+.phone-row input{flex:1 1 auto;min-width:0}
+
+.f select{padding:0 38px 0 14px;height:48px;border-radius:13px;
   border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
-  font-family:inherit;font-size:14.5px;font-weight:500;outline:none;width:100%}
-.ef input:focus,.ef select:focus{border-color:var(--teal)}
-.ef .go{height:44px;border:0;border-radius:12px;background:var(--ink);color:#fff;
-  cursor:pointer;font-family:var(--mono);font-size:11.5px;font-weight:600;
-  letter-spacing:.08em;text-transform:uppercase;margin-top:19px}
+  font-family:inherit;font-size:14.5px;outline:none;width:100%;cursor:pointer;
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23606A7B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+  transition:border-color .14s ease,box-shadow .14s ease}
 
-/* ---------- as opções ---------- */
-.cols{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start}
+.f select:focus{border-color:var(--teal);
+  box-shadow:0 0 0 3px var(--teal-soft)}
 
-.opts{display:flex;flex-direction:column;gap:10px}
-.opt{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;
-  background:var(--surface);border:1px solid var(--rule);border-radius:18px;
-  padding:18px 20px;cursor:pointer;text-align:left;width:100%;
-  transition:border-color .15s ease,box-shadow .15s ease}
-.opt:hover{border-color:var(--rule-strong)}
-.opt.on{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
-html[data-theme="dark"] .opt.on{border-color:var(--amber);
-  box-shadow:0 0 0 3px rgba(232,163,61,.14)}
-.opt.out{opacity:.42;cursor:not-allowed}
-/* Nada dentro do botão apanha o clique. Sem isto, tocar no desenho
-   ou no preço tem o SVG como alvo e o botão nunca sabe que foi
-   clicado. */
-.opt *{pointer-events:none}
-/* Os mesmos desenhos da página inicial: sombra, vidros, jantes e
-   faróis. As combinações já vêm com as duas viaturas dentro do
-   mesmo SVG, por isso não precisam de mais largura. */
-/* O desenho pequeno. Era o que estava largo de mais e obrigava o
-   bloco a crescer em altura para acompanhar. */
-.opt-art{width:74px;flex:0 0 auto}
-.opt-art svg{width:100%;height:auto;display:block}
+.f input,.f textarea{padding:0 14px;height:48px;border-radius:13px;
+  border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
+  font-family:inherit;font-size:14.5px;outline:none;width:100%;
+  transition:border-color .14s ease,box-shadow .14s ease}
+.f textarea{height:auto;min-height:86px;padding:13px 14px;resize:vertical;line-height:1.55}
+.f input:focus,.f textarea:focus{border-color:var(--teal);
+  box-shadow:0 0 0 3px rgba(15,118,110,.13)}
+html[data-theme="dark"] .f input:focus,html[data-theme="dark"] .f textarea:focus{
+  border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,163,61,.15)}
+.f .hint{margin-top:6px;color:var(--muted);font-size:11.5px;line-height:1.45}
+.f.bad input,.f.bad textarea{border-color:var(--err-rule);background:var(--err-bg)}
+.f .err{display:none;margin-top:6px;color:var(--err-text);font-size:11.5px}
+.f.bad .err{display:block}
+
+/* Entrar ou continuar sem conta. */
+.acct{padding:16px 20px}
+.acct-row{display:flex;align-items:center;justify-content:space-between;gap:18px;
+  flex-wrap:wrap}
+.acct-row strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.015em;margin-bottom:3px}
+.acct-row span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5}
+.acct-btns{display:flex;gap:8px;flex-wrap:wrap}
+.acct-b{border:1px solid var(--rule-strong);background:var(--surface-2);border-radius:11px;
+  padding:10px 16px;font-family:inherit;font-size:13px;font-weight:600;color:var(--text);
+  cursor:pointer}
+.acct-b:hover{border-color:var(--teal)}
+.acct-b.ghost{background:transparent;color:var(--muted)}
+.acct-b.ghost:hover{color:var(--text)}
+
+/* O formulário e o resumo, escondidos até fazerem falta. */
+.acct-form,.acct-done{display:none}
+.acct.mode-form .acct-form{display:block}
+.acct.mode-form .acct-row{display:none}
+.acct.mode-done .acct-done{display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap}
+.acct.mode-done .acct-row{display:none}
+.acct.mode-done{background:var(--ok-bg);border-color:var(--ok-rule)}
+.acct.mode-done .acct-done strong{color:var(--ok-text)}
+
+.acct-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  margin-bottom:14px}
+.acct-head strong{font-family:var(--display);font-weight:700;font-size:15px;
+  letter-spacing:-.018em}
+.acct-back{background:transparent;border:0;padding:0;color:var(--muted);cursor:pointer;
+  font-family:inherit;font-size:12.5px}
+.acct-back:hover{color:var(--text);text-decoration:underline}
+
+.acct-msg{display:none;margin:12px 0 0;font-size:12.5px;line-height:1.5}
+.acct-msg.on{display:block}
+.acct-msg.bad{color:var(--err-text)}
+.acct-msg.good{color:var(--ok-text)}
+
+.acct-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}
+.acct-go{height:46px;padding:0 24px;border:0;border-radius:12px;background:var(--teal);
+  color:#fff;cursor:pointer;font-family:inherit;font-size:14.5px;font-weight:600}
+html[data-theme="dark"] .acct-go{background:var(--amber);color:#141A28}
+.acct-go:disabled{opacity:.55;cursor:not-allowed}
+.acct-swap{background:transparent;border:0;padding:0;color:var(--teal);cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:600}
+html[data-theme="dark"] .acct-swap{color:var(--amber)}
+.acct-swap:hover{text-decoration:underline}
+
+.acct-done strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.015em;margin-bottom:3px}
+.acct-done span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5}
+
+/* ---------- pagamento ---------- */
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.pay-opt{text-align:left;background:var(--surface-2);border:1px solid var(--rule-strong);
+  border-radius:15px;padding:15px 17px;cursor:pointer;
+  transition:border-color .14s ease,box-shadow .14s ease}
+.pay-opt:hover{border-color:var(--muted)}
+.pay-opt.on{border-color:var(--teal);background:var(--teal-soft);
+  box-shadow:0 0 0 2px var(--teal-soft)}
+html[data-theme="dark"] .pay-opt.on{border-color:var(--amber);
+  background:rgba(232,163,61,.1);box-shadow:0 0 0 2px rgba(232,163,61,.12)}
+.pay-opt.off{opacity:.45;cursor:not-allowed}
+.pay-opt strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.015em;margin-bottom:4px}
+.pay-opt span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+
+/* ---------- o resumo ----------
+   Colado ao topo, com a rota desenhada como trajeto e o veículo
+   escolhido à vista. É o que a pessoa confirma antes de pagar. */
+.side{position:sticky;top:20px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.side-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.side h2{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.022em;
+  margin:0}
+.side-edit{background:transparent;border:0;padding:0;color:var(--teal);cursor:pointer;
+  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase}
+html[data-theme="dark"] .side-edit{color:var(--amber)}
+.side-edit:hover{text-decoration:underline}
+
+/* O trajeto, com a linha a ligar as duas pontas. */
+.path{position:relative;padding-left:2px}
+.path-line{position:absolute;left:6px;top:14px;bottom:14px;width:2px;
+  background:linear-gradient(var(--teal),#fd8a2b);opacity:.35;border-radius:2px}
+html[data-theme="dark"] .path-line{background:linear-gradient(var(--amber),#fd8a2b)}
+.stop{display:flex;gap:14px;align-items:flex-start;position:relative}
+.stop + .stop{margin-top:18px}
+.pin{width:11px;height:11px;border-radius:999px;flex:0 0 auto;margin-top:4px;
+  border:2.5px solid var(--surface);box-shadow:0 0 0 1.5px currentColor}
+.pin.a{background:var(--teal);color:var(--teal)}
+.pin.b{background:#fd8a2b;color:#fd8a2b}
+html[data-theme="dark"] .pin.a{background:var(--amber);color:var(--amber)}
+.stop div{min-width:0;flex:1}
+.stop .k{display:block;font-family:var(--mono);font-size:8px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.stop .v{display:block;font-size:13.5px;font-weight:600;line-height:1.4}
+.stop .t{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);
+  margin-top:4px}
+
+/* O veículo escolhido. */
+.side-veh{display:flex;align-items:center;gap:12px;background:var(--surface-2);
+  border-radius:14px;padding:12px 14px}
+.side-art{width:62px;flex:0 0 auto}
+.side-art svg{width:100%;height:auto;display:block}
+.side-veh strong{display:block;font-family:var(--display);font-weight:700;font-size:14px;
+  letter-spacing:-.018em;margin-bottom:2px}
+.side-veh span{display:block;color:var(--muted);font-size:11.5px}
+
+.lines{display:flex;flex-direction:column}
+.row{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:8px 0;
+  border-bottom:1px solid var(--rule)}
+.row:last-child{border-bottom:0}
+.row span:first-child{color:var(--muted)}
+.row span:last-child{font-weight:600;text-align:right}
+.row .inc{color:var(--teal);font-weight:600}
+html[data-theme="dark"] .row .inc{color:var(--amber)}
+
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding-top:15px;border-top:1px solid var(--rule-strong)}
+.total span{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted)}
+.total b{font-family:var(--mono);font-size:32px;font-weight:600;letter-spacing:-.035em;
+  color:var(--teal);line-height:1}
+html[data-theme="dark"] .total b{color:var(--amber)}
+.when{margin:-6px 0 0;font-size:12.5px;font-weight:600;color:var(--teal)}
+html[data-theme="dark"] .when{color:var(--amber)}
+.go{display:flex;align-items:center;justify-content:center;height:52px;border:0;
+  border-radius:14px;background:var(--teal);color:#fff;cursor:pointer;
+  font-family:var(--body);font-size:16px;font-weight:600;
+  box-shadow:0 6px 18px rgba(15,118,110,.26);transition:transform .14s ease}
+.go:hover{transform:translateY(-2px)}
+html[data-theme="dark"] .go{background:var(--amber);color:#141A28;
+  box-shadow:0 6px 18px rgba(232,163,61,.24)}
+.go:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.fine{margin:0;color:var(--muted);font-size:11.5px;line-height:1.5}
+.fine a{color:var(--teal)}
+html[data-theme="dark"] .fine a{color:var(--amber)}
+
+/* Os desenhos, iguais aos das outras páginas. */
 .veh-shadow{fill:var(--ink);opacity:.07}
 html[data-theme="dark"] .veh-shadow{fill:#000;opacity:.35}
 .veh-body{fill:var(--ink)}
 html[data-theme="dark"] .veh-body{fill:#D8DEE8}
 .veh-glass{fill:#7FB8B2;opacity:.55}
 html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
-/* Os vidros do Premium são escurecidos: é o que se vê de fora num
-   carro executivo, e distingue-o do Sedan sem uma palavra. */
 .veh-glass.dark{fill:#3A4A55;opacity:.8}
-html[data-theme="dark"] .veh-glass.dark{fill:#2A3A48;opacity:.9}
 .veh-pillar{fill:var(--surface);opacity:.5}
 .veh-line{stroke:var(--surface);stroke-width:1.6;opacity:.28;fill:none;stroke-linecap:round}
-/* Um friso cromado, só no Premium. */
 .veh-chrome{stroke:#C9B896;stroke-width:1.4;opacity:.55;fill:none;stroke-linecap:round}
 .veh-lamp{fill:#F4E3B8}
 .veh-tail{fill:#D9534F}
 .veh-tyre{fill:#0B0F16}
-html[data-theme="dark"] .veh-tyre{fill:#05080D}
 .veh-rim{fill:var(--surface);stroke:var(--rule-strong);stroke-width:1}
 .veh-spokes{stroke:var(--muted);stroke-width:1.5;fill:none;stroke-linecap:round;opacity:.6}
-html[data-theme="dark"] .opt-art{color:#8C97A8}
-.opt-art svg{width:100%;height:auto;fill:currentColor}
-.opt-art svg .w{fill:var(--surface)}
-.opt-txt{min-width:0}
-.opt-txt strong{display:block;font-family:var(--display);font-weight:700;font-size:17px;
-  letter-spacing:-.022em;margin-bottom:4px}
-.opt-txt .cap{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12.5px;
-  margin-bottom:6px}
-.opt-txt .cap b{color:var(--text);font-weight:600}
-.opt-txt .note{display:block;color:var(--muted);font-size:12px;line-height:1.5}
-.opt-price{text-align:right;flex:0 0 auto}
-.opt-price .v{display:block;font-family:var(--mono);font-size:24px;font-weight:600;
-  letter-spacing:-.03em;line-height:1}
-.opt-price .s{display:block;font-size:10.5px;color:var(--muted);margin-top:5px}
-.opt-price .tag{display:inline-block;margin-top:7px;background:var(--teal);color:#fff;
-  border-radius:999px;padding:3px 9px;font-family:var(--mono);font-size:8.5px;
-  font-weight:600;letter-spacing:.1em;text-transform:uppercase}
-html[data-theme="dark"] .opt-price .tag{background:var(--amber);color:#141A28}
 
-/* ---------- o resumo, colado ---------- */
-.side{position:sticky;top:90px;background:var(--surface);border:1px solid var(--rule);
-  border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px}
-.side h2{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.022em;
-  margin:0}
-.sum{display:flex;justify-content:space-between;gap:12px;font-size:13.5px;
-  padding:7px 0;border-bottom:1px solid var(--rule)}
-.sum:last-of-type{border-bottom:0}
-.sum span:first-child{color:var(--muted)}
-.sum span:last-child{font-weight:600;text-align:right;min-width:0;overflow:hidden;
-  text-overflow:ellipsis}
-.total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
-  padding-top:14px;border-top:1px solid var(--rule-strong)}
-.total span{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--muted)}
-.total b{font-family:var(--mono);font-size:30px;font-weight:600;letter-spacing:-.035em;
-  color:var(--teal)}
-html[data-theme="dark"] .total b{color:var(--amber)}
-.pay-when{font-size:12.5px;font-weight:600;color:var(--teal);margin:0}
-html[data-theme="dark"] .pay-when{color:var(--amber)}
-.next{display:flex;align-items:center;justify-content:center;height:50px;border:0;
-  border-radius:14px;background:var(--teal);color:#fff;text-decoration:none;cursor:pointer;
-  font-family:var(--body);font-size:15.5px;font-weight:600;
-  box-shadow:0 6px 18px rgba(15,118,110,.26);transition:transform .14s ease}
-.next:hover{transform:translateY(-2px)}
-html[data-theme="dark"] .next{background:var(--amber);color:#141A28;
-  box-shadow:0 6px 18px rgba(232,163,61,.24)}
-.next:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.warn{display:none;background:var(--err-bg);border:1px solid var(--err-rule);
+  border-radius:13px;padding:13px 15px;color:var(--err-text);font-size:13px;line-height:1.55}
+.warn.on{display:block}
 
-.trust{display:flex;flex-direction:column;gap:9px;margin-top:2px}
-.tr{display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.5;
-  color:var(--muted)}
-.tr svg{width:15px;height:15px;flex:0 0 auto;margin-top:1px;color:var(--teal)}
-html[data-theme="dark"] .tr svg{color:var(--amber)}
-.tr b{color:var(--text);font-weight:600}
+@media (max-width:940px){
+  .co{grid-template-columns:1fr}
 
-.state{text-align:center;padding:50px 20px;color:var(--muted)}
-.state strong{display:block;font-family:var(--display);font-weight:700;font-size:18px;
-  color:var(--text);margin-bottom:8px}
-.state a{color:var(--teal)}
-
-/* Ida e volta, ao lado do Change. */
-.ret-btn{display:inline-flex;align-items:center;gap:7px}
-.ret-btn svg{width:14px;height:14px}
-.ret-btn.on{background:var(--teal);border-color:transparent;color:#fff}
-html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
-.ret-when{display:none;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;
-  padding-top:16px;border-top:1px solid var(--rule)}
-.ret-when.on{display:grid}
-.ret-note{grid-column:1/-1;margin:0;color:var(--muted);font-size:12.5px;line-height:1.55}
-
-@media (max-width:960px){
-  .cols{grid-template-columns:1fr}
-  .side{position:static}
-  .edit-box{grid-template-columns:repeat(4,1fr)}
-  .ef.wide{grid-column:span 4}
-  .ef{grid-column:span 2}
+  /**
+   * O resumo e o botão DEPOIS do formulário.
+   *
+   * Estavam em order:-1, ou seja, por cima. No telemóvel isso
+   * punha o total e o "Continue" antes de haver dados para
+   * continuar — e o botão estava desativado, o que parece um site
+   * partido.
+   *
+   * A ordem natural é: preenche, vê o total, paga. É a mesma de
+   * qualquer loja.
+   */
+  .side{position:static;order:1}
 }
-@media (max-width:600px){
-  .opt{grid-template-columns:1fr auto;gap:12px}
-  .opt-art{display:none}
-  .edit-box,.ret-when{grid-template-columns:1fr}
-  .ef,.ef.wide{grid-column:span 1}
+@media (max-width:560px){
+  .grid,.pay{grid-template-columns:1fr}
+  .f.wide{grid-column:span 1}
 }
 </style>
 </head>
 <body>
 
-<main id="main">
-<div class="bk">
-
-  <h1 class="page-h1" data-i18n="book.title">Choose your vehicle</h1>
-
-  <!-- ---------- a rota, editável ---------- -->
-  <section class="route">
-    <div class="route-top">
-      <div class="leg">
-        <span class="leg-dot a"></span>
-        <div class="leg-txt"><span class="k" data-i18n="common.pickup">Pick-up</span><span class="v" id="rFrom">&mdash;</span></div>
-      </div>
-      <span class="leg-arrow">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </span>
-      <div class="leg">
-        <span class="leg-dot b"></span>
-        <div class="leg-txt"><span class="k" data-i18n="common.dropoff">Drop-off</span><span class="v" id="rTo">&mdash;</span></div>
-      </div>
-    </div>
-
-    <div class="route-meta">
-      <span class="mchip" id="rWhen">&mdash;</span>
-      <span class="mchip" id="rPax">&mdash;</span>
-      <span class="mchip" id="rKm">&mdash;</span>
-      <span class="mchip" id="rDur">&mdash;</span>
-      <button class="edit" id="editBtn" type="button" data-i18n="common.change">Change</button>
-
-      <!-- A ida e volta vive aqui, ao lado do Change: as duas coisas
-           são alterações à viagem, e estavam em sítios diferentes. -->
-      <button class="edit ret-btn" id="retBtn" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M7 4v16M7 20l-3-3M17 20V4M17 4l3 3"/></svg>
-        <span id="retLabel" data-i18n="book.addReturn">Add return</span>
-      </button>
-    </div>
-
-    <div class="ret-when" id="retWhen">
-      <div class="ef"><label for="retDate" data-i18n="book.returnDate">Return date</label>
-        <input id="retDate" type="date"></div>
-      <div class="ef"><label for="retTime" data-i18n="book.returnTime">Return time</label>
-        <input id="retTime" type="time" value="10:00"></div>
-      <p class="ret-note" data-i18n="book.returnNote">Same vehicle, same price. Each leg can be cancelled on its own.</p>
-    </div>
-
-    <div class="edit-box" id="editBox">
-      <div class="ef wide"><label for="eFrom" data-i18n="common.pickup">Pick-up</label>
-        <div class="ac"><input id="eFrom" type="text" autocomplete="off">
-          <div class="suggestions" id="acFrom"></div></div></div>
-      <div class="ef wide"><label for="eTo" data-i18n="common.dropoff">Drop-off</label>
-        <div class="ac"><input id="eTo" type="text" autocomplete="off">
-          <div class="suggestions" id="acTo"></div></div></div>
-      <div class="ef"><label for="eDate" data-i18n="common.date">Date</label><input id="eDate" type="date"></div>
-      <div class="ef"><label for="eTime" data-i18n="common.time">Time</label><input id="eTime" type="time"></div>
-      <div class="ef"><label for="ePax" data-i18n="common.passengers">Passengers</label>
-        <input id="ePax" type="number" min="1" max="16" step="1"></div>
-
-      <div class="saving" id="saving"><i></i><span data-i18n="book.updating">Updating your price</span></div>
-    </div>
-  </section>
-
-  <div class="cols">
-    <div>
-      <!-- ---------- as opções ---------- -->
-      <div class="opts" id="opts">
-        <div class="state"><strong>Working out your options</strong>
-        <span>One moment.</span></div>
-      </div>
-
-    </div>
-
-    <!-- ---------- o resumo ---------- -->
-    <aside class="side">
-      <h2 data-i18n="book.yourBooking">Your booking</h2>
-
-      <div>
-        <div class="sum"><span data-i18n="book.vehicle">Vehicle</span><span id="sVeh">&mdash;</span></div>
-        <div class="sum"><span data-i18n="common.passengers">Passengers</span><span id="sPax">&mdash;</span></div>
-        <div class="sum"><span data-i18n="book.outbound">Outbound</span><span id="sOut">&mdash;</span></div>
-        <div class="sum" id="sRetRow" style="display:none">
-          <span data-i18n="book.return">Return</span><span id="sRet">&mdash;</span></div>
-      </div>
-
-      <div class="total"><span data-i18n="common.total">Total</span><b id="sTotal">&mdash;</b></div>
-      <!-- "Book now, pay later" é a promessa que vende.
-           Fica escrita desde o início e o paintSummary substitui-a
-           quando a viagem é a menos de 48 horas — que é a exceção,
-           não a regra. -->
-      <p class="pay-when" id="sWhen" data-i18n="book.payLaterShort">Book now, pay later</p>
-
-      <button class="next" id="nextBtn" disabled data-i18n="common.continue">Continue</button>
-
-      <div class="trust">
-        <div class="tr">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-               stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l2 2 4-5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-          <span><b data-i18n="trust.freeCancel">Free cancellation</b> <span data-i18n="trust.freeCancelText">up to 24 hours before pick-up, refunded in full.</span></span>
-        </div>
-        <div class="tr">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-               stroke-linecap="round" stroke-linejoin="round"><path d="M2 9h20M2 9V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2M2 9v8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9"/></svg>
-          <span><b data-i18n="trust.noCharge">Nothing charged today</b> <span data-i18n="trust.noChargeText">on most routes. We take it 48 hours before.</span></span>
-        </div>
-        <div class="tr">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-               stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l3.9 4.4-2.1 2.1-2.4-.6a.5.5 0 0 0-.5.8L5 16l1.3 2.2a.5.5 0 0 0 .8-.1l.6-2.4 2.1-2.1 4.4 3.9a.5.5 0 0 0 .8-.5Z"/></svg>
-          <span><b data-i18n="trust.flight">We track your flight.</b> <span data-i18n="trust.flightText">Land late and the driver is there anyway, at no extra cost.</span></span>
-        </div>
-        <div class="tr">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-               stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V6l-8-4Z"/></svg>
-          <span><b data-i18n="trust.licensed">Licensed local companies.</b> <span data-i18n="trust.licensedText">We check the licence and the insurance.</span></span>
-        </div>
-      </div>
-    </aside>
+<!-- Sem cabeçalho de navegação: a partir daqui só há um caminho. -->
+<div class="co-bar">
+  <div class="co-bar-in">
+    <a class="co-logo" href="/">AIRPORT<b>LINK</b><span class="dot"></span></a>
+    <span class="co-secure">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <span data-i18n="co.secure">Secure checkout</span>
+    </span>
   </div>
+</div>
+
+<div class="steps">
+  <span class="step done"><span class="n">&#10003;</span><span data-i18n="co.stepRoute">Route</span></span>
+  <span class="step-line"></span>
+  <span class="step done"><span class="n">&#10003;</span><span data-i18n="co.stepVehicle">Vehicle</span></span>
+  <span class="step-line"></span>
+  <span class="step now"><span class="n">3</span><span data-i18n="co.stepDetails">Your details</span></span>
+  <span class="step-line"></span>
+  <span class="step"><span class="n">4</span><span data-i18n="co.stepPayment">Payment</span></span>
+</div>
+
+<main id="main">
+<div class="co">
+
+  <div>
+    <div class="warn" id="warn"></div>
+
+    <!-- Entrar é opcional e está em cima, não escondido a meio. Quem
+         já reservou antes poupa três campos; quem nunca cá veio não
+         é obrigado a criar conta para comprar. -->
+    <section class="card acct" id="acct">
+      <div class="acct-row" id="acctIntro">
+        <div>
+          <strong data-i18n="co.bookedBefore">Booked with us before?</strong>
+          <span data-i18n="co.bookedBeforeText">Sign in and your details fill themselves in.</span>
+        </div>
+        <div class="acct-btns">
+          <button class="acct-b" id="signInBtn" type="button">Sign in</button>
+          <button class="acct-b" id="createBtn" type="button">Create account</button>
+          <button class="acct-b ghost" id="guestBtn" type="button">Continue as guest</button>
+        </div>
+      </div>
+
+      <!-- Entrar e registar acontecem AQUI. Mandar a pessoa para
+           outra página a meio de uma reserva é o momento em que mais
+           se desiste — e ao voltar já ninguém se lembra do que tinha
+           escolhido. -->
+      <div class="acct-form" id="acctForm">
+        <div class="acct-head">
+          <strong id="acctTitle">Sign in</strong>
+          <button class="acct-back" id="acctBack" type="button">&larr; <span data-i18n="common.back">Back</span></button>
+        </div>
+
+        <div class="grid">
+          <div class="f wide" id="acctNameField" style="display:none">
+            <label for="acctName" data-i18n="co.fullName">Full name</label>
+            <input id="acctName" type="text" autocomplete="name">
+          </div>
+          <div class="f wide">
+            <label for="acctEmail" data-i18n="co.email">Email</label>
+            <input id="acctEmail" type="email" autocomplete="email" inputmode="email">
+          </div>
+          <div class="f wide">
+            <label for="acctPass" data-i18n="co.password">Password</label>
+            <input id="acctPass" type="password" autocomplete="current-password">
+          </div>
+        </div>
+
+        <p class="acct-msg" id="acctMsg"></p>
+
+        <div class="acct-actions">
+          <button class="acct-go" id="acctGo" type="button">Sign in</button>
+          <button class="acct-swap" id="acctSwap" type="button">Create an account instead</button>
+        </div>
+      </div>
+
+      <!-- Depois de escolher, um resumo com forma de voltar atrás. -->
+      <div class="acct-done" id="acctDone">
+        <div>
+          <strong id="acctDoneTitle">Continuing as a guest</strong>
+          <span id="acctDoneText">We create your account after the booking, so you can see
+          the trip later. No password needed now.</span>
+        </div>
+        <button class="acct-b ghost" id="acctChange" type="button" data-i18n="common.change">Change</button>
+      </div>
+    </section>
+
+    <!-- ---------- quem viaja ---------- -->
+    <section class="card">
+      <h2 data-i18n="co.who">Who is travelling</h2>
+      <p class="sub">The driver gets the name and phone number the day before, and nothing
+      else.</p>
+
+      <div class="grid">
+        <div class="f wide">
+          <label for="name" data-i18n="co.fullName">Full name</label>
+          <input id="name" type="text" autocomplete="name">
+          <span class="err" data-i18n="co.errName">We need a name for the driver to look for.</span>
+        </div>
+
+        <div class="f wide">
+          <label for="email" data-i18n="co.email">Email</label>
+          <input id="email" type="email" autocomplete="email" inputmode="email">
+          <span class="hint">Your confirmation and the driver's details go here.</span>
+          <span class="err" data-i18n="co.errEmail">That email does not look right.</span>
+        </div>
+
+        <div class="f wide" id="phoneField">
+          <label for="phone" data-i18n="co.phone">Phone</label>
+
+          <!-- O indicativo num campo próprio.
+               Era um campo só, e o servidor separava o que vinha
+               depois do "+". Quem escrevesse sem indicativo levava
+               com o 351 assumido — e um motorista em Espanha
+               marcava um número português que não existe. -->
+          <div class="phone-row">
+            <!-- O componente preenche isto.
+              O assets/phone.js tem a lista completa e sabe separar
+              o prefixo do número — o +351 tem de ganhar ao +35,
+              senão Portugal vira Chipre.
+
+              A mesma lista do myaccount: uma só, em vez de duas
+              a divergir. -->
+            <select id="phoneCode" aria-label="Country code"></select>
+
+            <input id="phone" type="tel" autocomplete="tel"
+                   inputmode="tel" placeholder="912 345 678">
+          </div>
+          <span class="hint">The driver calls or messages this number on the day.</span>
+          <span class="err" data-i18n="co.errPhone">We need a number the driver can reach on the day.</span>
+        </div>
+
+        <!-- O idioma, opcional.
+             É o melhor sinal que existe para escolher o motorista:
+             uma viagem com alguém que fala a nossa língua é outra
+             viagem. Opcional porque cada campo obrigatório a mais
+             perde vendas — e quem não responder recebe um motorista
+             na mesma. -->
+        <div class="f wide" id="langField">
+          <label for="prefLang">Preferred language <span class="opt">optional</span></label>
+          <select id="prefLang">
+            <option value="">No preference</option>
+            <option value="en">English</option>
+            <option value="pt">Português</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="nl">Nederlands</option>
+            <option value="pl">Polski</option>
+            <option value="ru">Русский</option>
+            <option value="ar">العربية</option>
+            <option value="zh">中文</option>
+          </select>
+          <span class="hint">We send a driver who speaks it when there is one.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- a viagem ---------- -->
+    <section class="card">
+      <h2 data-i18n="co.journey">The journey</h2>
+      <p class="sub">The more exact the address, the fewer phone calls on the day.</p>
+
+      <div class="grid">
+        <div class="f wide">
+          <label for="flight">Flight number <span class="opt">optional</span></label>
+          <input id="flight" type="text" style="text-transform:uppercase">
+          <span class="hint">We track it. If you land late, the driver waits and you pay
+          nothing extra.</span>
+        </div>
+
+        <!-- As moradas não se editam aqui.
+             O preço foi calculado para ESTA rota. Mudar a morada
+             sem recalcular dava um preço de uma viagem e uma
+             viagem diferente — e o motorista ia para o sítio
+             errado ou a conta ficava mal.
+
+             Quem se enganou volta atrás e corrige onde escolheu.
+             Aqui só se acrescenta o detalhe: terminal, número da
+             porta, andar. -->
+        <div class="f wide">
+          <label for="pickup" data-i18n="co.pickupDetail">Pick-up details
+            <span class="opt" data-i18n="common.optional">optional</span></label>
+          <input id="pickup" type="text"
+                 placeholder="Terminal 1, door 4, or a note for the driver">
+          <span class="hint" id="pickupHint">Where exactly to meet you. The address
+          itself is already set.</span>
+        </div>
+
+        <div class="f wide">
+          <label for="dropoff" data-i18n="co.dropoffDetail">Drop-off details
+            <span class="opt" data-i18n="common.optional">optional</span></label>
+          <input id="dropoff" type="text"
+                 placeholder="Apartment number, floor, or a note for the driver">
+          <span class="hint">Hotel name and street. Not just the town.</span>
+          <span class="err" data-i18n="co.errDropoff">We need somewhere to drop you.</span>
+        </div>
+
+        <div class="f wide">
+          <label for="notes">Anything we should know <span class="opt">optional</span></label>
+          <textarea id="notes" maxlength="600" data-i18n-ph="co.notesPlaceholder" placeholder="Child seats, extra luggage, a wheelchair, a second stop &mdash; tell us here and we arrange it."></textarea>
+          <span class="hint">Child seats are free. Just say the ages.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- pagamento ---------- -->
+    <section class="card">
+      <h2 data-i18n="co.howPay">How you want to pay</h2>
+      <p class="sub">Either way, cancellation is free until 24 hours before pick-up.</p>
+
+      <div class="pay">
+        <button class="pay-opt on" id="payLater" data-mode="later" type="button">
+          <strong data-i18n="co.payLater">Pay later</strong>
+          <span id="payLaterDesc">Card saved now, charged 48 hours before you travel.</span>
+        </button>
+        <button class="pay-opt" id="payNow" data-mode="now" type="button">
+          <strong data-i18n="co.payNow">Pay now</strong>
+          <span data-i18n="co.payNowDesc">Settle it today and forget about it.</span>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ---------- o resumo ---------- -->
+  <aside class="side">
+    <div class="side-top">
+      <h2 data-i18n="co.yourTransfer">Your transfer</h2>
+      <button class="side-edit" id="backBtn" type="button">Edit</button>
+    </div>
+
+    <!-- A rota como um trajeto, com a linha a ligar as duas pontas:
+         lê-se de relance que é de um sítio para outro. -->
+    <div class="path">
+      <div class="path-line"></div>
+      <div class="stop">
+        <span class="pin a"></span>
+        <div><span class="k" data-i18n="common.pickup">Pick-up</span><span class="v" id="sFrom">&mdash;</span>
+        <span class="t" id="sWhen">&mdash;</span></div>
+      </div>
+      <div class="stop">
+        <span class="pin b"></span>
+        <div><span class="k" data-i18n="common.dropoff">Drop-off</span><span class="v" id="sTo">&mdash;</span>
+        <span class="t" id="sDur">&mdash;</span></div>
+      </div>
+    </div>
+
+    <div class="side-veh">
+      <div class="side-art" id="sArt"></div>
+      <div>
+        <strong id="sVeh">&mdash;</strong>
+        <span id="sPax">&mdash;</span>
+      </div>
+    </div>
+
+    <div class="lines">
+      <div class="row"><span data-i18n="co.transfer">Transfer</span><span id="sOne">&mdash;</span></div>
+      <div class="row" id="sRetRow" style="display:none">
+        <span id="sRetLabel">Return</span><span id="sRet">&mdash;</span></div>
+      <div class="row"><span data-i18n="co.tolls">Tolls and taxes</span><span class="inc" data-i18n="common.included">Included</span></div>
+      <div class="row"><span data-i18n="co.waiting">Waiting time</span><span class="inc">60 min</span></div>
+    </div>
+
+    <div class="total"><span data-i18n="common.total">Total</span><b id="sTotal">&mdash;</b></div>
+    <p class="when" id="sPayWhen"></p>
+
+    <button class="go" id="goBtn" data-i18n="co.confirm">Confirm booking</button>
+
+    <p class="fine">By confirming you accept our <a href="/terms">terms</a> and
+    <a href="/privacypolicy">privacy policy</a>. The price is recalculated on our servers
+    before payment, so what you see is what you are charged.</p>
+
+    <!-- O cartão fica guardado para o tempo de espera.
+         Dito com clareza e sem letra pequena a esconder: o cliente
+         que descobre isto no extrato reclama, o que o leu aqui
+         não. E a segunda frase é a que importa — nada é cobrado
+         sem ele concordar no momento. -->
+    <p class="fine" data-i18n="co.cardOnFile">We keep your card on file for
+    charges related to this trip, such as waiting time beyond the free
+    period. Nothing is charged without your agreement at the time.</p>
+  </aside>
 
 </div>
 </main>
@@ -357,28 +598,138 @@ html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
 (function () {
 'use strict';
 
-var MAPS_KEY = 'AIzaSyBWH1TXxWhFmFo7fMB8NXE4swU2idCc_0M';
-
 var $ = function (id) { return document.getElementById(id); };
-/** A tradução, com o inglês como rede. */
-var T = function (k, en) { return (window.i18n ? window.i18n.t(k, en) : en); };
 
-/** A data no formato da língua escolhida. */
+/** A traducao, com o ingles como rede. */
+var T = function (k, en) { return (window.i18n ? window.i18n.t(k, en) : en); };
 var fmtDate = function (d, o) {
   return window.i18n ? window.i18n.formatDate(d, o) : d.toLocaleDateString('en-GB', o);
 };
 
-var esc = function (v) {
-  return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+/**
+ * As mesmas classes da página de reserva.
+ *
+ * Só os números que o resumo precisa: nome, lugares e multiplicador.
+ * Os desenhos ficam lá, que é onde se escolhe.
+ */
+var ART = {
+  // Perfil lateral. Tentei três quartos e não ficou ao nível: um
+  // carro em perspetiva escrito à mão em coordenadas SVG nota-se que
+  // foi escrito à mão. De lado, a silhueta é limpa e diz o que
+  // precisa de dizer — o tamanho do veículo.
+  //
+  // Se quiseres o ângulo de três quartos com qualidade, o caminho é
+  // comprar um conjunto de vetores e substituir estas strings.
+  sedan: '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<ellipse class="veh-shadow" cx="120" cy="92" rx="102" ry="6"/>' +
+    '<path class="veh-body" d="M12 74c-4 0-6-3-6-7l1-13c1-8 7-14 15-16l31-7 26-19c5-4 11-6 17-6h44c7 0 14 3 19 8l20 19 27 6c9 2 15 9 15 18v10c0 4-3 7-7 7H12Z"/>' +
+    '<path class="veh-glass" d="M84 15h26v25H57l21-21a9 9 0 0 1 6-4Zm34 0h22c5 0 9 2 12 5l17 20h-51V15Z"/>' +
+    '<path class="veh-pillar" d="M112 15h4v25h-4z"/>' +
+    '<path class="veh-line" d="M40 56h158"/>' +
+    '<path class="veh-lamp" d="M205 50h18a6 6 0 0 1 6 6v3h-24a4 4 0 0 1-4-4v-1a4 4 0 0 1 4-4Z"/>' +
+    '<path class="veh-tail" d="M10 52h13a4 4 0 0 1 4 4v4H10a5 5 0 0 1-5-5 3 3 0 0 1 5-3Z"/>' +
+    '<g><circle class="veh-tyre" cx="68" cy="74" r="18"/>' +
+    '<circle class="veh-rim" cx="68" cy="74" r="9"/>' +
+    '<path class="veh-spokes" d="M68 65v18M59 74h18M62 68l12 12M74 68L62 80"/></g>' +
+    '<g><circle class="veh-tyre" cx="180" cy="74" r="18"/>' +
+    '<circle class="veh-rim" cx="180" cy="74" r="9"/>' +
+    '<path class="veh-spokes" d="M180 65v18M171 74h18M174 68l12 12M186 68l-12 12"/></g>' +
+    '</svg>',
+
+  van: '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<ellipse class="veh-shadow" cx="120" cy="92" rx="104" ry="6"/>' +
+    '<path class="veh-body" d="M14 76c-5 0-8-3-8-8V30c0-11 9-20 20-20h132c6 0 12 2 17 6l32 25c6 5 9 12 9 19v8c0 5-3 8-8 8H14Z"/>' +
+    '<path class="veh-glass" d="M28 22h34v26H28V22Zm42 0h34v26H70V22Zm42 0h34v26h-34V22Zm42 0h13c3 0 6 1 9 3l21 17c2 2 3 4 3 6h-46V22Z"/>' +
+    '<path class="veh-line" d="M22 60h190"/>' +
+    '<path class="veh-line" d="M30 14h120"/>' +
+    '<path class="veh-lamp" d="M212 52h16a5 5 0 0 1 5 5v3h-21a4 4 0 0 1-4-4v0a4 4 0 0 1 4-4Z"/>' +
+    '<path class="veh-tail" d="M10 46h12a4 4 0 0 1 4 4v10H10a6 6 0 0 1-6-6v-3a5 5 0 0 1 6-5Z"/>' +
+    '<g><circle class="veh-tyre" cx="62" cy="76" r="18"/>' +
+    '<circle class="veh-rim" cx="62" cy="76" r="9"/>' +
+    '<path class="veh-spokes" d="M62 67v18M53 76h18M56 70l12 12M68 70L56 82"/></g>' +
+    '<g><circle class="veh-tyre" cx="182" cy="76" r="18"/>' +
+    '<circle class="veh-rim" cx="182" cy="76" r="9"/>' +
+    '<path class="veh-spokes" d="M182 67v18M173 76h18M176 70l12 12M188 70l-12 12"/></g>' +
+    '</svg>',
+
+  pair: '',
+  minibus: ''
+};
+
+// As combinações reaproveitam os desenhos acima em vez de os
+// repetirem: menos código para manter e sem risco de divergirem.
+ART.pair =
+  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<g opacity=".32" transform="translate(4 2) scale(.62)">' +
+  ART.sedan.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '<g transform="translate(46 30) scale(.78)">' +
+  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '</svg>';
+
+ART.minibus =
+  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<g opacity=".32" transform="translate(2 0) scale(.62)">' +
+  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '<g transform="translate(46 30) scale(.78)">' +
+  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '</svg>';
+
+/**
+ * O Premium tem desenho próprio.
+ *
+ * Não é o Sedan com outra cor: é outro carro. Mais baixo, mais
+ * comprido, com o tejadilho a descer para trás — a silhueta de um
+ * executivo em vez de um familiar.
+ *
+ * Uma classe superior tem de PARECER diferente. Se o desenho fosse
+ * o mesmo, a pessoa perguntava-se pelo que paga a mais.
+ */
+ART.premium =
+  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<ellipse class="veh-shadow" cx="120" cy="93" rx="112" ry="5"/>' +
+  // Mais baixo e mais longo, com a traseira a descer em coupé.
+  '<path class="veh-body" d="M6 78c-3 0-5-3-5-7l1-11c1-9 8-15 17-17l26-6 30-20c7-5 15-7 23-7h39c9 0 17 4 23 10l19 20 30 5c11 2 18 10 18 20v6c0 4-3 7-8 7H6Z"/>' +
+  // Vidros escurecidos, numa linha contínua e mais deitada.
+  '<path class="veh-glass dark" d="M78 22h32v22H53l19-18a10 10 0 0 1 6-4Zm40 0h22c6 0 11 2 15 6l16 16h-53V22Z"/>' +
+  '<path class="veh-pillar" d="M112 22h4v22h-4z"/>' +
+  // Dois frisos: um no vidro, outro na carroçaria.
+  '<path class="veh-chrome" d="M52 46h122"/>' +
+  '<path class="veh-chrome" d="M28 62h180"/>' +
+  '<path class="veh-line" d="M30 70h176"/>' +
+  // Faróis mais estreitos, como nos carros altos de gama.
+  '<path class="veh-lamp" d="M212 54h20a6 6 0 0 1 6 6v2h-26a4 4 0 0 1-4-4v0a4 4 0 0 1 4-4Z"/>' +
+  '<path class="veh-tail" d="M3 56h16a3 3 0 0 1 3 3v4H3a4 4 0 0 1-3-4 3 3 0 0 1 3-3Z"/>' +
+  // Rodas maiores e mais recuadas.
+  '<g><circle class="veh-tyre" cx="62" cy="78" r="19"/>' +
+  '<circle class="veh-rim" cx="62" cy="78" r="10.5"/>' +
+  '<path class="veh-spokes" d="M62 67v22M51 78h22M54 70l16 16M70 70L54 86M56 73l12 10M68 73l-12 10"/></g>' +
+  '<g><circle class="veh-tyre" cx="186" cy="78" r="19"/>' +
+  '<circle class="veh-rim" cx="186" cy="78" r="10.5"/>' +
+  '<path class="veh-spokes" d="M186 67v22M175 78h22M178 70l16 16M194 70l-16 16M180 73l12 10M192 73l-12 10"/></g>' +
+  '</svg>';
+
+/** Duas carrinhas: a mesma técnica das outras combinações. */
+ART.twoVans =
+  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<g opacity=".32" transform="translate(2 0) scale(.62)">' +
+  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '<g transform="translate(44 30) scale(.78)">' +
+  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
+  '</svg>';
+
+var CLASSES = {
+  sedan:     { name: 'Sedan',         seats: 4,  mult: 1,    art: ART.sedan },
+  premium:   { name: 'Premium Sedan', seats: 4,  mult: 1.47, art: ART.premium },
+  van:       { name: 'Van',           seats: 8,  mult: 1.7,  art: ART.van },
+  van_sedan: { name: 'Van + Sedan',   seats: 12, mult: 2.85,  art: ART.pair, cars: 2 },
+  two_vans:  { name: 'Two Vans',      seats: 16, mult: 3.6,  art: ART.twoVans, cars: 2 }
 };
 
 /**
- * A mesma fórmula do servidor e da página inicial.
+ * A mesma fórmula do servidor.
  *
- * Se mudares os valores no server.js, muda aqui e no index.html.
- * O servidor recalcula tudo antes do pagamento — este número é para
- * a pessoa decidir, não para cobrar.
+ * Este número é para a pessoa ver. O servidor recalcula tudo antes
+ * de falar com o Stripe — se divergirem, é o do servidor que vale.
  */
 /**
  * A fórmula por zona — a mesma do server.js (estudo de 28/08/2026).
@@ -699,9 +1050,9 @@ function fare(km, mult, isPT, vehId) {
 /**
  * O suplemento noturno: 20% entre as 22h55 e as 6h.
  *
- * Faltava aqui. A calculadora aplicava-o, o servidor aplicava-o, e
- * esta página não — o cliente via um preço mais baixo e o
- * checkout cobrava mais.
+ * Faltava aqui. A calculadora aplicava-o, o servidor aplicava-o,
+ * e esta página não — o cliente via um preço e o Stripe cobrava
+ * outro.
  */
 function deNoite() {
   var m = String(trip.time || '').match(/^(\d{1,2}):(\d{2})/);
@@ -709,174 +1060,30 @@ function deNoite() {
 
   var min = Number(m[1]) * 60 + Number(m[2]);
 
-  // A janela atravessa a meia-noite: das 22h55 às 23h59 E das
-  // 00h00 às 05h59.
+  // A janela atravessa a meia-noite.
   return min >= (22 * 60 + 55) || min < (6 * 60);
 }
 
-/**
- * As quatro classes.
- *
- * Mostramos TODAS, mesmo as que não servem para o número de
- * passageiros — esbatidas e com a razão escrita. Esconder as opções
- * grandes faz o preço parecer mais alto do que a alternativa, e
- * quem viaja em seis quer perceber porque paga mais.
- */
-var ART = {
-  // Perfil lateral. Tentei três quartos e não ficou ao nível: um
-  // carro em perspetiva escrito à mão em coordenadas SVG nota-se que
-  // foi escrito à mão. De lado, a silhueta é limpa e diz o que
-  // precisa de dizer — o tamanho do veículo.
-  //
-  // Se quiseres o ângulo de três quartos com qualidade, o caminho é
-  // comprar um conjunto de vetores e substituir estas strings.
-  sedan: '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-    '<ellipse class="veh-shadow" cx="120" cy="92" rx="102" ry="6"/>' +
-    '<path class="veh-body" d="M12 74c-4 0-6-3-6-7l1-13c1-8 7-14 15-16l31-7 26-19c5-4 11-6 17-6h44c7 0 14 3 19 8l20 19 27 6c9 2 15 9 15 18v10c0 4-3 7-7 7H12Z"/>' +
-    '<path class="veh-glass" d="M84 15h26v25H57l21-21a9 9 0 0 1 6-4Zm34 0h22c5 0 9 2 12 5l17 20h-51V15Z"/>' +
-    '<path class="veh-pillar" d="M112 15h4v25h-4z"/>' +
-    '<path class="veh-line" d="M40 56h158"/>' +
-    '<path class="veh-lamp" d="M205 50h18a6 6 0 0 1 6 6v3h-24a4 4 0 0 1-4-4v-1a4 4 0 0 1 4-4Z"/>' +
-    '<path class="veh-tail" d="M10 52h13a4 4 0 0 1 4 4v4H10a5 5 0 0 1-5-5 3 3 0 0 1 5-3Z"/>' +
-    '<g><circle class="veh-tyre" cx="68" cy="74" r="18"/>' +
-    '<circle class="veh-rim" cx="68" cy="74" r="9"/>' +
-    '<path class="veh-spokes" d="M68 65v18M59 74h18M62 68l12 12M74 68L62 80"/></g>' +
-    '<g><circle class="veh-tyre" cx="180" cy="74" r="18"/>' +
-    '<circle class="veh-rim" cx="180" cy="74" r="9"/>' +
-    '<path class="veh-spokes" d="M180 65v18M171 74h18M174 68l12 12M186 68l-12 12"/></g>' +
-    '</svg>',
+var campoTelefone = null;
 
-  van: '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-    '<ellipse class="veh-shadow" cx="120" cy="92" rx="104" ry="6"/>' +
-    '<path class="veh-body" d="M14 76c-5 0-8-3-8-8V30c0-11 9-20 20-20h132c6 0 12 2 17 6l32 25c6 5 9 12 9 19v8c0 5-3 8-8 8H14Z"/>' +
-    '<path class="veh-glass" d="M28 22h34v26H28V22Zm42 0h34v26H70V22Zm42 0h34v26h-34V22Zm42 0h13c3 0 6 1 9 3l21 17c2 2 3 4 3 6h-46V22Z"/>' +
-    '<path class="veh-line" d="M22 60h190"/>' +
-    '<path class="veh-line" d="M30 14h120"/>' +
-    '<path class="veh-lamp" d="M212 52h16a5 5 0 0 1 5 5v3h-21a4 4 0 0 1-4-4v0a4 4 0 0 1 4-4Z"/>' +
-    '<path class="veh-tail" d="M10 46h12a4 4 0 0 1 4 4v10H10a6 6 0 0 1-6-6v-3a5 5 0 0 1 6-5Z"/>' +
-    '<g><circle class="veh-tyre" cx="62" cy="76" r="18"/>' +
-    '<circle class="veh-rim" cx="62" cy="76" r="9"/>' +
-    '<path class="veh-spokes" d="M62 67v18M53 76h18M56 70l12 12M68 70L56 82"/></g>' +
-    '<g><circle class="veh-tyre" cx="182" cy="76" r="18"/>' +
-    '<circle class="veh-rim" cx="182" cy="76" r="9"/>' +
-    '<path class="veh-spokes" d="M182 67v18M173 76h18M176 70l12 12M188 70l-12 12"/></g>' +
-    '</svg>',
-
-  pair: '',
-  minibus: ''
+var trip = {
+  from: '', to: '', date: '', time: '12:00', pax: 2,
+  vehicle: 'sedan', km: 0, isPT: null,
+  returnDate: '', returnTime: ''
 };
 
-// As combinações reaproveitam os desenhos acima em vez de os
-// repetirem: menos código para manter e sem risco de divergirem.
-ART.pair =
-  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-  '<g opacity=".32" transform="translate(4 2) scale(.62)">' +
-  ART.sedan.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
-  '<g transform="translate(46 30) scale(.78)">' +
-  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
-  '</svg>';
+var payMode = 'later';
 
-ART.minibus =
-  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-  '<g opacity=".32" transform="translate(2 0) scale(.62)">' +
-  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
-  '<g transform="translate(46 30) scale(.78)">' +
-  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
-  '</svg>';
-
-/**
- * O Premium tem desenho próprio.
- *
- * Não é o Sedan com outra cor: é outro carro. Mais baixo, mais
- * comprido, com o tejadilho a descer para trás — a silhueta de um
- * executivo em vez de um familiar.
- *
- * Uma classe superior tem de PARECER diferente. Se o desenho fosse
- * o mesmo, a pessoa perguntava-se pelo que paga a mais.
- */
-ART.premium =
-  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-  '<ellipse class="veh-shadow" cx="120" cy="93" rx="112" ry="5"/>' +
-  // Mais baixo e mais longo, com a traseira a descer em coupé.
-  '<path class="veh-body" d="M6 78c-3 0-5-3-5-7l1-11c1-9 8-15 17-17l26-6 30-20c7-5 15-7 23-7h39c9 0 17 4 23 10l19 20 30 5c11 2 18 10 18 20v6c0 4-3 7-8 7H6Z"/>' +
-  // Vidros escurecidos, numa linha contínua e mais deitada.
-  '<path class="veh-glass dark" d="M78 22h32v22H53l19-18a10 10 0 0 1 6-4Zm40 0h22c6 0 11 2 15 6l16 16h-53V22Z"/>' +
-  '<path class="veh-pillar" d="M112 22h4v22h-4z"/>' +
-  // Dois frisos: um no vidro, outro na carroçaria.
-  '<path class="veh-chrome" d="M52 46h122"/>' +
-  '<path class="veh-chrome" d="M28 62h180"/>' +
-  '<path class="veh-line" d="M30 70h176"/>' +
-  // Faróis mais estreitos, como nos carros altos de gama.
-  '<path class="veh-lamp" d="M212 54h20a6 6 0 0 1 6 6v2h-26a4 4 0 0 1-4-4v0a4 4 0 0 1 4-4Z"/>' +
-  '<path class="veh-tail" d="M3 56h16a3 3 0 0 1 3 3v4H3a4 4 0 0 1-3-4 3 3 0 0 1 3-3Z"/>' +
-  // Rodas maiores e mais recuadas.
-  '<g><circle class="veh-tyre" cx="62" cy="78" r="19"/>' +
-  '<circle class="veh-rim" cx="62" cy="78" r="10.5"/>' +
-  '<path class="veh-spokes" d="M62 67v22M51 78h22M54 70l16 16M70 70L54 86M56 73l12 10M68 73l-12 10"/></g>' +
-  '<g><circle class="veh-tyre" cx="186" cy="78" r="19"/>' +
-  '<circle class="veh-rim" cx="186" cy="78" r="10.5"/>' +
-  '<path class="veh-spokes" d="M186 67v22M175 78h22M178 70l16 16M194 70l-16 16M180 73l12 10M192 73l-12 10"/></g>' +
-  '</svg>';
-
-/** Duas carrinhas: a mesma técnica das outras combinações. */
-ART.twoVans =
-  '<svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-  '<g opacity=".32" transform="translate(2 0) scale(.62)">' +
-  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
-  '<g transform="translate(44 30) scale(.78)">' +
-  ART.van.replace(/^<svg[^>]*>/, '').replace('</svg>', '') + '</g>' +
-  '</svg>';
-
-var CLASSES = [
-  { id: 'sedan', name: T('veh.sedan', 'Sedan'), seats: 3, bags: 3, mult: 1, cars: 1,
-    note: T('veh.sedan.note', 'A comfortable saloon. What most people book.'),
-    art: ART.sedan },
-
-  { id: 'premium', name: T('veh.premium', 'Premium Sedan'), seats: 4, bags: 4, mult: 1.47, cars: 1,
-    note: T('veh.premium.note', 'A larger executive saloon \u2014 more legroom, more boot space.'),
-    art: ART.premium },
-
-  { id: 'van', name: T('veh.van', 'Van'), seats: 8, bags: 8, mult: 1.7, cars: 1,
-    note: T('veh.van.note', 'A minivan. Also the right choice for four people with a lot of luggage.'),
-    art: ART.van },
-
-  // Acima de oito passageiros nao ha um veiculo so: mandamos dois.
-  // Dize-lo e mais honesto do que chamar-lhe "minibus" e a pessoa
-  // descobrir no aeroporto que sao duas viaturas.
-  { id: 'van_sedan', name: T('veh.van_sedan', 'Van + Sedan'), seats: 12, bags: 12, mult: 2.85, cars: 2,
-    note: T('veh.van_sedan.note', 'Two vehicles, two drivers. They travel together and arrive together.'),
-    art: ART.pair },
-
-  { id: 'two_vans', name: T('veh.two_vans', 'Two Vans'), seats: 16, bags: 16, mult: 3.6, cars: 2,
-    note: T('veh.two_vans.note', 'Two minivans for a large group. One booking, one price.'),
-    art: ART.twoVans }
-];
-
-/**
- * O país começa por decidir, não por Portugal.
- *
- * Nascia com isPT: true. Uma rota em Dublin era cobrada pela
- * tabela de Faro — 27 euros em vez de 87.
- *
- * O valor por omissão de uma coisa que se vai calcular é null,
- * não um palpite. Um palpite errado dá um preço errado em
- * silêncio.
- */
-var trip = { from: '', to: '', date: '', time: '', pax: 2, km: 0, dur: '', isPT: null };
-var chosen = null;
-var hasReturn = false;
-
-// ---------- ler o que veio no endereço ----------
+// ---------- ler o que veio da página anterior ----------
 (function read() {
   var q = new URLSearchParams(window.location.search);
+
   trip.from = q.get('from') || '';
   trip.to = q.get('to') || '';
   trip.date = q.get('date') || '';
   trip.time = q.get('time') || '12:00';
   trip.pax = Math.min(16, Math.max(1, Number(q.get('pax')) || 2));
-
-  // A homepage já mediu a rota. Reaproveitamos: medir outra vez era
-  // pagar duas chamadas ao Google pela mesma resposta.
+  trip.vehicle = CLASSES[q.get('vehicle')] ? q.get('vehicle') : 'sedan';
   trip.km = Number(q.get('km')) || 0;
 
   /**
@@ -892,25 +1099,47 @@ var hasReturn = false;
   trip.toCity = q.get('to_city') || null;
   trip.fromCountry = q.get('from_country') || null;
   trip.toCountry = q.get('to_country') || null;
-  trip.dur = q.get('dur') || '';
 
   /**
-   * O que chegou no endereço, escrito na consola.
+   * O país, que nunca era definido.
    *
-   * Um preço errado não deixa rasto: sai um número e ninguém sabe
-   * de onde veio. Esta linha diz-o — e um preço de 27 euros com
-   * "km: 0" explica-se sozinho.
+   * O fare() recebia trip.isPT e essa propriedade não existia em
+   * lado nenhum desta página — undefined, que é falso, que
+   * significa "resto do mundo".
+   *
+   * Um Faro para Albufeira dava 199 euros em vez de 47.
+   *
+   * O texto das moradas chega: o Google escreve o país no fim da
+   * morada formatada.
    */
-  console.log('[booking]',
-    'km:', trip.km, '| pax:', trip.pax,
-    '| de:', trip.from, '| para:', trip.to);
+  trip.isPT = /portugal/i.test(trip.from) || /portugal/i.test(trip.to);
 
-  if (!trip.date) {
-    // Três dias, não um: amanhã cai dentro das 48 horas e tira o
-    // "pagar depois" antes de a pessoa sequer o ver.
-    var d = new Date(); d.setDate(d.getDate() + 3);
-    trip.date = d.toISOString().slice(0, 10);
+  /**
+   * E uma distância absurda é o mesmo que nenhuma.
+   *
+   * Meio quilómetro é o corte: nenhuma viagem de aeroporto é mais
+   * curta, e um transfer de 500 metros não existe.
+   */
+  if (trip.km > 0 && trip.km < 0.5) {
+    console.warn('[checkout] distância suspeita:', trip.km);
+    trip.km = 0;
   }
+
+  console.log('[checkout]',
+    'km:', trip.km, '| pax:', trip.pax, '| veículo:', trip.vehicle,
+    '| pt:', trip.isPT, '| de:', trip.from, '| para:', trip.to);
+
+  /**
+   * O tipo do local de recolha, dito pelo Google.
+   *
+   * Decide o tempo de espera grátis: 60 minutos num aeroporto, 15
+   * numa morada. Guardado na reserva em vez de adivinhado depois —
+   * comparar texto de moradas contra uma lista de aeroportos é
+   * adivinhação, e funciona mal fora dos países que já lançámos.
+   */
+  trip.pickupType = q.get('ptype') || null;
+  trip.returnDate = q.get('return_date') || '';
+  trip.returnTime = q.get('return_time') || '';
 })();
 
 function whenText(date, time) {
@@ -921,519 +1150,488 @@ function whenText(date, time) {
     (time ? ' \u00b7 ' + time : '');
 }
 
-function paintRoute() {
-  $('rFrom').textContent = trip.from || 'Not set';
-  $('rTo').textContent = trip.to || 'Not set';
-  $('rWhen').textContent = whenText(trip.date, trip.time);
-  $('rPax').textContent = trip.pax + ' ' +
-    T(trip.pax === 1 ? 'common.passenger' : 'common.passengersPlural',
-      trip.pax === 1 ? 'passenger' : 'passengers');
-  $('rKm').textContent = trip.km ? Math.round(trip.km) + ' km' : '\u2014';
-  $('rDur').textContent = trip.dur || '\u2014';
+function paint() {
+  var c = CLASSES[trip.vehicle];
 
-  $('eFrom').value = trip.from;
-  $('eTo').value = trip.to;
-  $('eDate').value = trip.date;
-  $('eTime').value = trip.time;
-  $('ePax').value = trip.pax;
+  $('sFrom').textContent = trip.from || 'Not set';
+  $('sTo').textContent = trip.to || 'Not set';
+  $('sWhen').textContent = whenText(trip.date, trip.time);
+  $('sDur').textContent = trip.km ? Math.round(trip.km) + ' km' : '';
+
+  $('sVeh').textContent = c.name +
+    (c.cars ? ' (' + c.cars + ' ' + T('common.vehicles', 'vehicles') + ')' : '');
+  $('sPax').textContent = trip.pax + ' ' +
+    T(trip.pax === 1 ? 'common.passenger' : 'common.passengersPlural',
+      trip.pax === 1 ? 'passenger' : 'passengers') +
+    ' \u00b7 ' + c.seats + ' ' + T('common.seats', 'seats');
+  $('sArt').innerHTML = c.art || '';
+
+  var hasReturn = Boolean(trip.returnDate);
+  var one = trip.km
+    ? Math.round(fare(trip.km, c.mult, trip.isPT, c.id) * (deNoite() ? 1.2 : 1))
+    : 0;
+  var total = hasReturn ? one * 2 : one;
+
+  $('sOne').textContent = one ? '\u20ac' + one : '\u2014';
+  $('sRetRow').style.display = hasReturn ? 'flex' : 'none';
+  $('sRetLabel').textContent = T('book.return', 'Return') + ' \u00b7 ' +
+    whenText(trip.returnDate, trip.returnTime).split(' \u00b7 ')[0];
+  $('sRet').textContent = one ? '\u20ac' + one : '\u2014';
+  $('sTotal').textContent = total ? '\u20ac' + total : '\u2014';
+
+  // Quando o cartão é debitado. Menos de 48 horas, é logo — e nesse
+  // caso o "pagar depois" nem sequer é oferecido.
+  var pick = new Date(trip.date + 'T' + (trip.time || '12:00'));
+  var at = new Date(pick.getTime() - 48 * 36e5);
+  var canLater = !isNaN(at.getTime()) && at > new Date();
+
+  if (canLater) {
+    var d = fmtDate(at, { day: 'numeric', month: 'long' });
+    $('payLaterDesc').textContent = T('co.payLaterDesc', 'Card saved now, charged on') +
+      ' ' + d + ' ' + T('co.payLaterDesc2', '\u2014 48 hours before you travel.');
+    $('sPayWhen').textContent = payMode === 'later'
+      ? T('book.payLater', 'Book now, pay later') + ' ' + d
+      : T('co.charged', 'Charged today');
+  } else {
+    // Dizer PORQUE não está disponível. "Not available" sozinho
+    // parece uma avaria, e a razão é simples de perceber.
+    $('payLater').classList.add('off');
+    $('payLater').disabled = true;
+    $('payLaterDesc').textContent = T('co.payLaterNo',
+      'Your transfer is less than 48 hours away, so there is no later to wait for.');
+
+    // Mudar o modo AQUI, sem chamar o setPay: ele volta a chamar o
+    // paint, e o paint volta a cair neste ramo — ciclo infinito e
+    // página bloqueada.
+    payMode = 'now';
+    $('payLater').classList.remove('on');
+    $('payNow').classList.add('on');
+
+    $('sPayWhen').textContent = T('co.charged', 'Charged today');
+  }
+
+  // Os campos de morada começam com o que já foi dito.
+  if (!$('pickup').value) $('pickup').value = trip.from;
+  if (!$('dropoff').value) $('dropoff').value = trip.to;
+
+  $('pickupHint').textContent = /airport/i.test(trip.from)
+    ? 'Terminal number if you know it. The driver meets you in arrivals.'
+    : 'The exact street and number.';
 }
 
-// ---------- o Google ----------
-var mapsReady = false, mapsLoading = false, queue = null;
+// ---------- pagamento ----------
+function setPay(mode) {
+  payMode = mode;
+  $('payLater').classList.toggle('on', mode === 'later');
+  $('payNow').classList.toggle('on', mode === 'now');
+  paint();
+}
 
-function maps(then) {
-  if (mapsReady) return then && then();
-  if (then) queue = then;
-  if (mapsLoading) return;
+$('payLater').addEventListener('click', function () {
+  if (this.disabled) return;
+  setPay('later');
+});
+$('payNow').addEventListener('click', function () { setPay('now'); });
 
-  mapsLoading = true;
+// ---------- validação ----------
+function bad(id, is) {
+  $(id).closest('.f').classList.toggle('bad', is);
+  return !is;
+}
 
-  window.alBookingReady = function () {
-    mapsReady = true;
+function check() {
+  var ok = true;
 
-    // A fila PRIMEIRO. É ela que mede a rota e desenha os preços —
-    // se um erro nas sugestões rebentasse antes, a página ficava a
-    // tracejado para sempre e sem explicação.
-    if (queue) {
-      var f = queue;
-      queue = null;
-      try { f(); } catch (e) { console.error('[booking] route:', e); }
-    }
+  ok = bad('name', $('name').value.trim().length < 2) && ok;
+  ok = bad('email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('email').value.trim())) && ok;
+  ok = bad('phone', $('phone').value.replace(/\D/g, '').length < 6) && ok;
+  ok = bad('dropoff', !$('dropoff').value.trim()) && ok;
 
-    // O mesmo serviço da página inicial, com a lista desenhada por
-    // nós. O Autocomplete do Google traz caixa própria, com outro
-    // tipo de letra e outro espaçamento — duas listas diferentes no
-    // mesmo site notam-se.
-    try {
-      acService = new google.maps.places.AutocompleteService();
-      placesService = new google.maps.places.PlacesService(document.createElement('div'));
-      acToken = new google.maps.places.AutocompleteSessionToken();
+  return ok;
+}
 
-      suggest($('eFrom'), $('acFrom'));
-      suggest($('eTo'), $('acTo'));
-    } catch (e) {
-      console.error('[booking] suggestions:', e);
-    }
+// Ao corrigir um campo, o vermelho sai logo — esperar pelo botão
+// para dizer que já está certo é irritante.
+['name', 'email', 'phone', 'dropoff'].forEach(function (id) {
+  $(id).addEventListener('input', function () {
+    if ($(id).closest('.f').classList.contains('bad')) check();
+  });
+});
+
+// ---------- confirmar ----------
+$('goBtn').addEventListener('click', function () {
+  $('warn').classList.remove('on');
+
+  if (!check()) {
+    $('warn').textContent = T('co.fixFields', 'A couple of fields need fixing before we can go on.');
+    $('warn').classList.add('on');
+    document.querySelector('.f.bad input').focus();
+    return;
+  }
+
+  pagar();
+});
+
+/**
+ * O pagamento.
+ *
+ * O servidor recalcula a rota e o preço antes de falar com o
+ * Stripe — a classe de veículo, os quilómetros e a zona, tudo. O
+ * que vai daqui é o pedido, não o valor: um preço vindo do browser
+ * seria um preço que qualquer pessoa podia editar.
+ */
+var API = 'https://airportlink.onrender.com';
+
+async function pagar() {
+  var btn = $('goBtn');
+  var original = btn.textContent;
+
+  btn.disabled = true;
+  btn.textContent = T('co.working', 'One moment...');
+
+  var reserva = {
+    full_name: $('name').value.trim(),
+    email: $('email').value.trim(),
+    /**
+     * O telefone é um campo só, com o indicativo lá dentro.
+     *
+     * O servidor espera código e número separados, por isso
+     * separam-se aqui: o que vem depois de um + até ao primeiro
+     * espaço é o indicativo. Sem +, assume-se Portugal — é onde
+     * estão quase todas as reservas de hoje.
+     */
+    /**
+     * O indicativo vem do campo próprio.
+     *
+     * Antes era adivinhado: o que vinha depois do "+" no campo do
+     * número, e 351 quando não havia "+". Quem escrevesse
+     * "612345678" em Espanha levava com um número português que
+     * não existe — e o motorista não conseguia contactá-lo.
+     */
+    phone_code: $('phoneCode').value,
+    phone_number: $('phone').value.trim().replace(/\D/g, ''),
+
+    /**
+     * A distância que o cliente viu.
+     *
+     * Não era enviada. O servidor media a rota outra vez ao
+     * Google — o que custa uma chamada paga e pode devolver outro
+     * caminho, outro número, outro preço.
+     *
+     * A que conta é esta: é a que está no preço que ele aceitou.
+     */
+    distance_km: Number(trip.km) || 0,
+
+    /**
+     * A cidade e o país, para o servidor não adivinhar.
+     *
+     * Ele recalcula o preço — o browser não decide preços. Mas com
+     * estes campos calcula a partir da mesma informação, e os dois
+     * lados chegam ao mesmo número.
+     */
+    pickup_city: trip.fromCity || null,
+    dropoff_city: trip.toCity || null,
+    pickup_country: trip.fromCountry || null,
+    dropoff_country: trip.toCountry || null,
+
+    /**
+     * E o preço que lhe foi mostrado.
+     *
+     * O servidor recalcula na mesma — o browser não decide
+     * preços. Mas com este número pode COMPARAR, e avisar quando
+     * os dois não batem.
+     *
+     * Sem ele, uma divergência só se descobre quando um cliente
+     * reclama.
+     */
+    price_eur: Number(($('sTotal').textContent || '').replace(/[^\d.]/g, '')) || 0,
+
+    passenger_name: $('name').value.trim(),
+    passenger_phone: '+' + $('phoneCode').value + ' ' +
+                     $('phone').value.trim().replace(/\D/g, ''),
+    passenger_email: $('email').value.trim(),
+
+    /**
+     * A morada é a que foi escolhida. O detalhe junta-se.
+     *
+     * O dropoff substituía a morada pelo que estivesse no campo —
+     * e o preço tinha sido calculado para a original. Alguém que
+     * escrevesse outra morada pagava uma viagem e recebia outra.
+     *
+     * Agora o campo é um acrescento: "Terminal 1", "porta 4",
+     * "3.º andar". A rota não muda.
+     */
+    pickup: trip.from +
+      ($('pickup').value.trim() ? ' (' + $('pickup').value.trim() + ')' : ''),
+
+    dropoff: trip.to +
+      ($('dropoff').value.trim() ? ' (' + $('dropoff').value.trim() + ')' : ''),
+    date: trip.date,
+    time: trip.time,
+    passengers: trip.pax,
+
+    // A classe escolhida. O servidor aplica o multiplicador dela —
+    // sem isto, o Premium Sedan era cobrado ao preço do Sedan.
+    vehicle_class: trip.vehicle,
+
+    // O idioma preferido, se o disseram. É o critério que mais
+    // pesa na escolha do motorista.
+    preferred_language: ($('prefLang') && $('prefLang').value) || null,
+    pickup_type: trip.pickupType,
+
+    flight_number: ($('flight') && $('flight').value.trim()) || '',
+    notes: ($('notes') && $('notes').value.trim()) || '',
+    currency: trip.currency || 'EUR',
+    payment_mode: payMode,
+
+    return_leg: trip.returnDate ? {
+      date: trip.returnDate,
+      time: trip.returnTime || trip.time,
+      pickup: $('dropoff').value.trim() || trip.to,
+      dropoff: trip.from
+    } : null
   };
 
-  // Se o Google não responder, dizê-lo em vez de deixar a tracejado.
-  setTimeout(function () {
-    if (mapsReady) return;
-    document.getElementById('opts').innerHTML =
-      '<div class="state"><strong>' + T('book.noService', 'We could not reach the map service') +
-      '</strong><span>' + T('book.noServiceHelp', 'Reload the page or use the home page calculator.') +
-      '</span></div>';
-  }, 12000);
+  try {
+    var headers = { 'Content-Type': 'application/json' };
 
-  var sc = document.createElement('script');
-  sc.src = 'https://maps.googleapis.com/maps/api/js?key=' + MAPS_KEY +
-    '&loading=async&libraries=places&callback=alBookingReady&language=en&region=PT';
-  sc.async = true;
-  document.head.appendChild(sc);
+    // O token, se houver sessão. É com ele que o servidor sabe se
+    // quem reserva é uma agência com desconto.
+    try {
+      var cli = supa();
+      if (cli) {
+        var ses = await cli.auth.getSession();
+        var tk = ses.data && ses.data.session && ses.data.session.access_token;
+        if (tk) headers.Authorization = 'Bearer ' + tk;
+      }
+    } catch (e) {}
+
+    var res = await fetch(API + '/api/create-checkout-session', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ booking: reserva })
+    });
+
+    var out = await res.json();
+
+    if (!res.ok || out.error) {
+      throw new Error(out.error || ('HTTP ' + res.status));
+    }
+
+    if (!out.url) {
+      throw new Error('The server did not return a checkout link.');
+    }
+
+    window.location.href = out.url;
+    return;
+  } catch (e) {
+    $('warn').textContent = e.message;
+    $('warn').classList.add('on');
+    btn.disabled = false;
+    btn.textContent = original;
+  }
 }
 
 /**
- * As sugestões, como na página inicial.
+ * Entrar e registar sem sair da página.
  *
- * O nome principal a negrito e a morada por baixo — em vez da linha
- * corrida que o Autocomplete do Google devolve.
+ * Mandar a pessoa para /login a meio de uma reserva é o momento em
+ * que mais se desiste: ao voltar, já ninguém se lembra do que tinha
+ * escolhido. Aqui a sessão abre-se por baixo e o resto fica intacto.
  */
-var acService = null, placesService = null, acToken = null;
+var sb = null;
 
-function suggest(input, box) {
-  input.addEventListener('input', function () {
-    var v = input.value.trim();
+function supa() {
+  if (sb) return sb;
+  if (!window.supabase) return null;
 
-    // Menos de três letras não vale uma chamada paga.
-    if (v.length < 3) { box.innerHTML = ''; box.classList.remove('show'); return; }
-
-    acService.getPlacePredictions({ input: v, sessionToken: acToken }, function (preds, st) {
-      if (st !== google.maps.places.PlacesServiceStatus.OK || !preds || !preds.length) {
-        box.innerHTML = ''; box.classList.remove('show'); return;
-      }
-
-      box.innerHTML = preds.slice(0, 5).map(function (p) {
-        return '<div class="suggestion-item" data-d="' +
-          String(p.description).replace(/"/g, '&quot;') + '">' +
-          '<div class="suggestion-main">' +
-          esc(p.structured_formatting.main_text || p.description) + '</div>' +
-          '<div class="suggestion-sub">' +
-          esc(p.structured_formatting.secondary_text || '') + '</div></div>';
-      }).join('');
-
-      box.classList.add('show');
-    });
-  });
-
-  box.addEventListener('click', function (e) {
-    var item = e.target.closest ? e.target.closest('.suggestion-item') : null;
-    if (!item) return;
-
-    input.value = item.getAttribute('data-d');
-    box.classList.remove('show');
-    apply(true);
-
-    // Sessão nova depois de cada escolha: é assim que o Google
-    // agrupa as teclas numa só cobrança.
-    acToken = new google.maps.places.AutocompleteSessionToken();
-  });
-
-  // Clicar fora fecha a lista.
-  document.addEventListener('click', function (e) {
-    if (e.target !== input && !box.contains(e.target)) box.classList.remove('show');
-  });
+  sb = window.supabase.createClient(
+    'https://ujpagsccfiledbtfeyuq.supabase.co',
+    'sb_publishable_1Oc8DziBDPMs0MAxhrGGxw_qhTPIYOZ',
+    { auth: { persistSession: true, autoRefreshToken: true } }
+  );
+  return sb;
 }
 
-// ---------- medir a rota ----------
-function measure(force) {
+var acctMode = 'signin';
+
+function showAcct(view) {
+  var el = $('acct');
+  el.classList.toggle('mode-form', view === 'form');
+  el.classList.toggle('mode-done', view === 'done');
+  msg('');
+}
+
+function msg(text, kind) {
+  var m = $('acctMsg');
+  m.textContent = text || '';
+  m.className = 'acct-msg' + (text ? ' on ' + (kind || 'bad') : '');
+}
+
+function setMode(mode) {
+  acctMode = mode;
+  var creating = mode === 'signup';
+
+  $('acctTitle').textContent = creating
+    ? T('co.createAccount', 'Create account') : T('co.signIn', 'Sign in');
+  $('acctGo').textContent = creating
+    ? T('co.createAccount', 'Create account') : T('co.signIn', 'Sign in');
+  $('acctSwap').textContent = creating
+    ? T('co.swapToSignin', 'I already have an account')
+    : T('co.swapToSignup', 'Create an account instead');
+  $('acctNameField').style.display = creating ? 'flex' : 'none';
+  $('acctPass').setAttribute('autocomplete', creating ? 'new-password' : 'current-password');
+  msg('');
+}
+
+$('signInBtn').addEventListener('click', function () {
+  setMode('signin'); showAcct('form'); $('acctEmail').focus();
+});
+
+$('createBtn').addEventListener('click', function () {
+  setMode('signup'); showAcct('form'); $('acctName').focus();
+});
+
+$('acctSwap').addEventListener('click', function () {
+  setMode(acctMode === 'signup' ? 'signin' : 'signup');
+});
+
+// Voltar atrás, de qualquer um dos dois estados.
+$('acctBack').addEventListener('click', function () { showAcct('intro'); });
+$('acctChange').addEventListener('click', function () { showAcct('intro'); });
+
+$('guestBtn').addEventListener('click', function () {
+  $('acctDoneTitle').textContent = T('co.guestTitle', 'Continuing as a guest');
+  $('acctDoneText').textContent = T('co.guestText',
+    'We create your account after the booking. No password needed now.');
+  showAcct('done');
+  $('name').focus();
+});
+
+/** Preencher o formulário com quem entrou, para não repetir. */
+function fillFrom(user) {
+  if (!user) return;
+
+  var meta = user.user_metadata || {};
+  if (!$('name').value) $('name').value = meta.full_name || meta.name || '';
+  if (!$('email').value) $('email').value = user.email || '';
   /**
-   * Uma distância absurda é o mesmo que nenhuma.
+   * O telefone guardado, separado nos dois campos.
    *
-   * O km vem no endereço, e se vier a zero ou a meio quilómetro
-   * é porque a homepage não o mediu ou não o passou. Confiar nele
-   * dava preços de 27 euros para viagens de 87.
-   *
-   * Meio quilómetro é o corte: nenhuma viagem de aeroporto é mais
-   * curta do que isso, e um transfer de 500 metros não existe.
+   * Na conta está como "+34 612345678". Pôr isso todo no campo do
+   * número deixava o indicativo a 351 e o 34 dentro do número — e
+   * o que saía era um número que não existe.
    */
-  if (trip.km > 0 && trip.km < 0.5) {
-    console.warn('[booking] distância suspeita no endereço:', trip.km);
-    trip.km = 0;
+  /**
+   * O componente do telefone.
+   *
+   * O assets/phone.js tem a lista de países e sabe separar o
+   * prefixo do número — os prefixos mais longos primeiro, senão
+   * o +351 é lido como +35 e Portugal vira Chipre.
+   *
+   * É o mesmo do myaccount: uma lista só, em vez de duas a
+   * divergir.
+   */
+  if (!campoTelefone && window.AirportlinkPhone) {
+    campoTelefone = window.AirportlinkPhone.mount({
+      select: 'phoneCode',
+      input: 'phone'
+    });
   }
 
-  // Já vem medida da homepage: desenhar as opções e ficar por aqui.
-  if (!force && trip.km > 0) {
+  if (!$('phone').value && meta.phone) {
     /**
-     * O país, que só era definido ao medir.
+     * O componente separa o prefixo do número.
      *
-     * Quando o km vem no endereço, esta função sai antes de
-     * chegar ao Google — e o trip.isPT ficava indefinido.
-     *
-     * Indefinido é falso, e falso significa "resto do mundo". Um
-     * Faro para Albufeira com o km no endereço usava a fórmula
-     * genérica em vez da portuguesa: 84 euros em vez de 47.
-     *
-     * O texto das moradas chega para decidir: o Google escreve o
-     * país no fim.
+     * Na conta está como "+34 612345678". Sem separar, o número
+     * ficava com o 34 lá dentro e o indicativo a 351 — e o que
+     * saía era um número que não existe.
      */
-    /**
-     * O país, decidido pelo texto das moradas.
-     *
-     * O Google escreve-o no fim: "Rua X, Albufeira, Portugal".
-     * Quando o km vem no endereço, esta função sai antes de
-     * chegar ao Google — e sem isto o isPT ficava com o valor
-     * inicial.
-     */
-    if (trip.isPT === null) {
-      trip.isPT = /portugal/i.test(trip.from) || /portugal/i.test(trip.to);
+    if (campoTelefone) {
+      campoTelefone.setValue(meta.phone);
+    } else {
+      $('phone').value = String(meta.phone).replace(/\D/g, '');
     }
-
-    paintRoute();
-    paintOptions();
-    return;
   }
 
-  if (!trip.from || !trip.to) {
-    $('opts').innerHTML = '<div class="state"><strong>' + T('book.needBoth', 'We need both ends of the trip') + '</strong>' +
-      '<span>' + T('book.needBothHelp', 'Press Change above and tell us where you are going.') +
-      '</span></div>';
-    return;
-  }
+  $('acctDoneTitle').textContent = T('co.signedInAs', 'Signed in as') + ' ' +
+    (user.email || '');
+  $('acctDoneText').textContent = T('co.signedInText',
+    'Your details are filled in below. This booking will show up in your account.');
+  showAcct('done');
+}
 
-  $('opts').innerHTML = '<div class="state"><strong>' + T('book.working', 'Working out your options') + '</strong>' +
-    '<span>' + T('book.measuring', 'Measuring the route.') + '</span></div>';
+$('acctGo').addEventListener('click', async function () {
+  var client = supa();
+  if (!client) return msg('We could not reach the sign-in service. Continue as a guest ' +
+    'and everything still works.');
 
-  maps(function () {
-    new google.maps.DirectionsService().route({
-      origin: trip.from, destination: trip.to,
-      travelMode: google.maps.TravelMode.DRIVING
-    }, function (res, status) {
-      if (status !== 'OK' || !res.routes.length) {
-        $('opts').innerHTML = '<div class="state"><strong>' + T('book.noRoute', 'We could not find that route') + '</strong>' +
-          '<span>' + T('book.noRouteHelp', 'Check the spelling of both addresses.') +
-          '</span></div>';
+  var email = $('acctEmail').value.trim();
+  var pass = $('acctPass').value;
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return msg('That email does not look right.');
+  if (pass.length < 8) return msg('The password needs at least 8 characters.');
+
+  var name = $('acctName').value.trim();
+  if (acctMode === 'signup' && name.length < 2) return msg('We need a name for the driver.');
+
+  $('acctGo').disabled = true;
+  msg('One moment.', 'good');
+
+  try {
+    if (acctMode === 'signup') {
+      var reg = await client.auth.signUp({
+        email: email, password: pass,
+        options: { data: { full_name: name } }
+      });
+
+      if (reg.error) throw reg.error;
+
+      // Sem sessão imediata, o projeto pede confirmação por email.
+      if (!reg.data.session) {
+        msg('Check your inbox to confirm the account. You can carry on with this ' +
+          'booking as a guest in the meantime.', 'good');
+        $('acctGo').disabled = false;
         return;
       }
 
-      var leg = res.routes[0].legs[0];
-      trip.km = leg.distance.value / 1000;
-      trip.dur = leg.duration.text;
-
-      // Portugal tem tabela própria. O país vem do país de destino
-      // da rota, não do que a pessoa escreveu.
-      var comp = res.routes[0].legs[0].end_address || '';
-      trip.isPT = /portugal/i.test(comp) || /portugal/i.test(trip.from);
-
-      paintRoute();
-      paintOptions();
-    });
-  });
-}
-
-// ---------- as opções ----------
-/**
- * O clique nas opções.
- *
- * Ligado uma vez ao contentor, no arranque, e não a cada botão: o
- * innerHTML apaga os ouvintes dos filhos a cada redesenho, e ligá-los
- * outra vez somava-os até um clique disparar cinco vezes.
- */
-function bindOpts() {
-  document.getElementById('opts').addEventListener('click', function (e) {
-    var b = null, n = e.target;
-
-    // Subir até ao botão: um clique dentro do SVG tem o próprio
-    // desenho como alvo, e ligar a cada botão deixava-o morto.
-    while (n && n !== this) {
-      if (n.classList && n.classList.contains('opt')) { b = n; break; }
-      n = n.parentNode;
+      if (!$('name').value) $('name').value = name;
+      fillFrom(reg.data.user);
+      return;
     }
 
-    if (!b || b.disabled) return;
-    choose(Number(b.getAttribute('data-i')));
+    var res = await client.auth.signInWithPassword({ email: email, password: pass });
+    if (res.error) throw res.error;
+    fillFrom(res.data.user);
+  } catch (e) {
+    msg(e && e.message ? e.message : 'That did not work. Try again.');
+  } finally {
+    $('acctGo').disabled = false;
+  }
+});
+
+// Entrar com o Enter, que é o que toda a gente faz.
+['acctEmail', 'acctPass', 'acctName'].forEach(function (id) {
+  $(id).addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); $('acctGo').click(); }
   });
-}
-
-function paintOptions() {
-  /**
-   * Sem distância, não se mostram preços.
-   *
-   * Com zero quilómetros, a fórmula devolve o mínimo: 26 euros
-   * para uma viagem de 80. E ninguém repara, porque o número sai
-   * bonito.
-   *
-   * Isto acontecia quando a homepage não conseguia passar o km no
-   * endereço, ou quando o Google falhava a medir aqui.
-   *
-   * Preferir uma mensagem a um preço errado: o cliente reserva
-   * com base no que vê, e descobre a diferença ao pagar.
-   */
-  if (!trip.km || trip.km <= 0) {
-    $('opts').innerHTML =
-      '<div class="state"><strong>' +
-      T('book.noRoute', 'We could not measure that route') + '</strong>' +
-      '<span>' +
-      T('book.noRouteHelp',
-        'Press Change above and pick both addresses from the suggestions.') +
-      '</span></div>';
-
-    return;
-  }
-
-  var html = CLASSES.map(function (c, i) {
-    var fits = trip.pax <= c.seats;
-    var price = Math.round(fare(trip.km, c.mult, trip.isPT, c.id) * (deNoite() ? 1.2 : 1));
-
-    // Qualquer veículo com lugares suficientes fica escolhível,
-    // mesmo os grandes de mais para o grupo. Quatro pessoas com
-    // seis malas querem uma carrinha, e recusar-lha porque "cabem
-    // num carro" é decidir por elas.
-    var why = fits ? c.note
-      : T('book.notEnoughSeats', 'Not enough seats for') + ' ' + trip.pax + '.';
-
-    // Uma dica quando a classe maior faz sentido por bagagem.
-    var extra = '';
-    if (fits && c.id === 'van' && trip.pax <= 4) {
-      extra = ' Worth it if you have more than one case each.';
-    }
-    if (fits && c.id === 'business' && trip.pax <= 3) {
-      extra = ' The same car class an airline would send.';
-    }
-
-    return '<button class="opt' + (fits ? '' : ' out') + '" data-i="' + i + '"' +
-      (fits ? '' : ' disabled') + ' type="button">' +
-      '<span class="opt-art">' + c.art + '</span>' +
-      '<span class="opt-txt"><strong>' + esc(c.name) + '</strong>' +
-      '<span class="cap"><span><b>' + c.seats + '</b> ' + T('common.seats', 'seats') + '</span>' +
-      '<span><b>' + c.bags + '</b> ' + T('common.suitcases', 'suitcases') + '</span></span>' +
-      '<span class="note">' + esc(why + extra) + '</span></span>' +
-      '<span class="opt-price"><span class="v">\u20ac' + price + '</span>' +
-      '<span class="s">' + T('book.wholeVehicle', 'whole vehicle') + '</span>' +
-      (fits && i === firstFit() ? '<span class="tag">' + T('book.bestFit', 'Best fit') + '</span>' : '') +
-      '</span></button>';
-  }).join('');
-
-  $('opts').innerHTML = html;
-
-
-  choose(firstFit());
-}
-
-/**
- * Escolher uma opção.
- *
- * Desapareceu numa edição minha e nada funcionava por causa disso:
- * sem ela, clicar não fazia nada, o resumo ficava vazio e o botão
- * nunca era ativado. Três sintomas, uma função em falta.
- */
-function choose(i) {
-  chosen = i;
-
-  document.querySelectorAll('.opt').forEach(function (b) {
-    b.classList.toggle('on', Number(b.getAttribute('data-i')) === i);
-  });
-
-  paintSummary();
-}
-
-/** A mais barata que serve. É a que fica escolhida de início. */
-function firstFit() {
-  var best = -1, bestPrice = Infinity;
-
-  CLASSES.forEach(function (c, i) {
-    if (trip.pax > c.seats) return;
-    var p = fare(trip.km, c.mult, trip.isPT, c.id) * (deNoite() ? 1.2 : 1);
-    if (p < bestPrice) { bestPrice = p; best = i; }
-  });
-
-  return best === -1 ? CLASSES.length - 1 : best;
-}
-
-function paintSummary() {
-  // A data do pagamento aparece SEMPRE, com ou sem rota medida: é
-  // uma condição da reserva, não um resultado do cálculo. Estava
-  // atrás do return e por isso nunca se via.
-  var pickAt = new Date(trip.date + 'T' + (trip.time || '12:00'));
-  var chargeAt = new Date(pickAt.getTime() - 48 * 36e5);
-  var canLater = !isNaN(chargeAt.getTime()) && chargeAt > new Date();
-
-  $('sWhen').textContent = canLater
-    ? T('book.payLater', 'Book now, pay later') + ' ' +
-      fmtDate(chargeAt, { day: 'numeric', month: 'long' })
-    : T('book.chargedNow',
-        'Less than 48 hours away \u2014 payment is taken now');
-
-  /**
-   * O botão desliga-se sem escolha ou sem distância.
-   *
-   * Sem distância não há preço, e um checkout sem preço cobra o
-   * mínimo — 27 euros para uma viagem de 87.
-   *
-   * Mas o cliente merece saber PORQUÊ. Um botão cinzento sem
-   * explicação parece um site partido.
-   */
-  if (!trip.km) {
-    $('nextBtn').disabled = true;
-
-    var aviso = $('sWhen');
-    if (aviso) {
-      aviso.textContent = T('book.noRouteYet',
-        'Press Change above and pick both addresses from the suggestions.');
-    }
-
-    return;
-  }
-
-  if (chosen === null) {
-    $('nextBtn').disabled = true;
-    return;
-  }
-
-  var c = CLASSES[chosen];
-  var one = Math.round(fare(trip.km, c.mult, trip.isPT, c.id) * (deNoite() ? 1.2 : 1));
-  var total = hasReturn ? one * 2 : one;
-
-  $('sVeh').textContent = c.name +
-    (c.cars > 1 ? ' (' + c.cars + ' ' + T('common.vehicles', 'vehicles') + ')' : '');
-  $('sPax').textContent = trip.pax + ' ' +
-    T(trip.pax === 1 ? 'common.passenger' : 'common.passengersPlural',
-      trip.pax === 1 ? 'passenger' : 'passengers');
-  $('sOut').textContent = whenText(trip.date, trip.time);
-
-  $('sRetRow').style.display = hasReturn ? 'flex' : 'none';
-  $('sRet').textContent = whenText($('retDate').value, $('retTime').value);
-
-  $('sTotal').textContent = '\u20ac' + total;
-
-  // Quando o cartão é debitado. Menos de 48 horas, é logo.
-  $('nextBtn').disabled = false;
-}
-
-// ---------- editar ----------
-$('editBtn').addEventListener('click', function () {
-  var box = $('editBox');
-  var open = box.classList.toggle('on');
-
-  // "Done" e não "Close": não há nada por guardar, e "close" faria
-  // pensar que fechar sem confirmar perde a alteração.
-  $('editBtn').textContent = open ? T('common.done', 'Done') : T('common.change', 'Change');
-  if (open) maps();
 });
 
-/**
- * Cada alteração recalcula sozinha.
- *
- * Um botão de confirmar obriga a um gesto que a pessoa não pediu, e
- * quem se esquece dele fica a ver um preço que já não corresponde ao
- * que escolheu — que é pior do que não ter preço nenhum.
- */
-var applyTimer = null;
+// Já com sessão aberta noutra altura: não voltar a pedir nada.
+(async function () {
+  var client = supa();
+  if (!client) return;
+  try {
+    var r = await client.auth.getSession();
+    if (r.data && r.data.session) fillFrom(r.data.session.user);
+  } catch (e) {}
+})();
 
-function apply(now) {
-  clearTimeout(applyTimer);
-
-  var wait = now ? 0 : 700;
-
-  $('saving').classList.add('on');
-
-  applyTimer = setTimeout(function () {
-    var from = $('eFrom').value.trim();
-    var to = $('eTo').value.trim();
-
-    // Só as moradas exigem medir a rota outra vez. Mudar a data, a
-    // hora ou os passageiros não muda a distância — e cada medição
-    // é uma chamada paga ao Google.
-    var moved = from !== trip.from || to !== trip.to;
-
-    trip.from = from;
-    trip.to = to;
-    trip.date = $('eDate').value;
-    trip.time = $('eTime').value;
-    trip.pax = Math.min(16, Math.max(1, Number($('ePax').value) || 1));
-
-    paintRoute();
-
-    if (moved) {
-      trip.km = 0;
-      measure(true);
-    } else if (trip.km) {
-      paintOptions();
-      paintSummary();
-    }
-
-    $('saving').classList.remove('on');
-  }, wait);
-}
-
-// A escrever, esperamos que pare. Nos outros campos, é imediato: já
-// houve uma decisão.
-['eFrom', 'eTo'].forEach(function (id) {
-  $(id).addEventListener('input', function () { apply(false); });
+$('backBtn').addEventListener('click', function () {
+  history.length > 1 ? history.back() : (window.location.href = '/booking/');
 });
 
-['eDate', 'eTime', 'ePax'].forEach(function (id) {
-  $(id).addEventListener('change', function () { apply(true); });
-});
-
-// ---------- ida e volta ----------
-$('retBtn').addEventListener('click', function () {
-  hasReturn = !hasReturn;
-
-  $('retBtn').classList.toggle('on', hasReturn);
-  $('retWhen').classList.toggle('on', hasReturn);
-  $('retLabel').textContent = hasReturn
-    ? T('book.returnAdded', 'Return added') : T('book.addReturn', 'Add return');
-
-  if (hasReturn && !$('retDate').value) {
-    // Uma semana depois: e o intervalo mais comum, e e mais facil
-    // corrigir uma data errada do que escolher uma em branco.
-    var d = new Date(trip.date || Date.now());
-    d.setDate(d.getDate() + 7);
-    $('retDate').value = d.toISOString().slice(0, 10);
-    $('retDate').min = trip.date;
-  }
-
-  paintSummary();
-});
-
-['retDate', 'retTime'].forEach(function (id) {
-  $(id).addEventListener('change', paintSummary);
-});
-
-// ---------- avançar ----------
-$('nextBtn').addEventListener('click', function () {
-  var c = CLASSES[chosen];
-
-  // Os detalhes do passageiro são pedidos na página inicial, que já
-  // os tem, valida o telefone e fala com o Stripe. Duplicar esse
-  // formulário aqui seria manter dois caminhos para a mesma coisa.
-  // Os quilómetros seguem: sem eles o checkout teria de medir a
-  // rota outra vez, e isso é uma chamada paga ao Google por cada
-  // pessoa que avança.
-  var q = new URLSearchParams({
-    from: trip.from, to: trip.to, date: trip.date, time: trip.time,
-    pax: String(trip.pax), vehicle: c.id, km: trip.km.toFixed(1)
-  });
-
-  if (hasReturn) {
-    q.set('return_date', $('retDate').value);
-    q.set('return_time', $('retTime').value);
-  }
-
-  // A cidade e o país seguem: o checkout calcula outra vez.
-  if (trip.fromCity) q.set('from_city', trip.fromCity);
-  if (trip.toCity) q.set('to_city', trip.toCity);
-  if (trip.fromCountry) q.set('from_country', trip.fromCountry);
-  if (trip.toCountry) q.set('to_country', trip.toCountry);
-
-  window.location.href = '/checkout/?' + q.toString();
-});
-
-// ---------- arranque ----------
-bindOpts();
-paintRoute();
-paintSummary();
-measure();
+paint();
 
 })();
 </script>
