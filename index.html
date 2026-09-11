@@ -504,6 +504,19 @@ html[data-theme="dark"] .pay-promise{color:var(--amber);
 <link rel="alternate" hreflang="pt" href="https://www.airportlink.app/pt/">
 <link rel="alternate" hreflang="de" href="https://www.airportlink.app/de/">
 <link rel="alternate" hreflang="fr" href="https://www.airportlink.app/fr/">
+<link rel="alternate" hreflang="it" href="https://www.airportlink.app/it/">
+<link rel="alternate" hreflang="nl" href="https://www.airportlink.app/nl/">
+<link rel="alternate" hreflang="pl" href="https://www.airportlink.app/pl/">
+<link rel="alternate" hreflang="da" href="https://www.airportlink.app/da/">
+<link rel="alternate" hreflang="ru" href="https://www.airportlink.app/ru/">
+<link rel="alternate" hreflang="ar" href="https://www.airportlink.app/ar/">
+<link rel="alternate" hreflang="zh" href="https://www.airportlink.app/zh/">
+<link rel="alternate" hreflang="ja" href="https://www.airportlink.app/ja/">
+<link rel="alternate" hreflang="th" href="https://www.airportlink.app/th/">
+<link rel="alternate" hreflang="ko" href="https://www.airportlink.app/ko/">
+<link rel="alternate" hreflang="tr" href="https://www.airportlink.app/tr/">
+<link rel="alternate" hreflang="sv" href="https://www.airportlink.app/sv/">
+<link rel="alternate" hreflang="no" href="https://www.airportlink.app/no/">
 <link rel="alternate" hreflang="x-default" href="https://www.airportlink.app/">
 </head>
 <body data-cta-href="#book" data-cta-label="Get a price">
@@ -1470,15 +1483,50 @@ function applyPaymentUI() {
     var at = new Date(pick.getTime() - (payOptions.charge_lead_hours || 48) * 36e5);
 
     if (!isNaN(at.getTime())) {
-      whenText = 'Pay on ' +
-        at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) +
+      /**
+       * A data na língua da página.
+       *
+       * Estava fixa em en-GB: um alemão via "Pay on 12 September"
+       * no meio de uma página alemã.
+       *
+       * O i18n sabe a língua escolhida e o formato de cada uma —
+       * em japonês a ordem é outra.
+       */
+      var quando = window.i18n && window.i18n.formatDate
+        ? window.i18n.formatDate(at, { day: 'numeric', month: 'long' })
+        : at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+
+      whenText = T('h.payOn', 'Pay on') + ' ' + quando +
         ', ' + $('priceValue').textContent;
     }
   }
 
+  /**
+   * A razão, traduzida pelo código.
+   *
+   * O servidor manda um código — noDate, tooSoon, tooExpensive,
+   * tooLong — e a frase em inglês como recurso.
+   *
+   * Traduzir no servidor obrigava-o a saber a língua de cada
+   * visitante; o browser já sabe.
+   */
+  var porque = why;
+
+  if (payOptions && payOptions.code) {
+    var chaves = {
+      noDate: ['h.payWhyNoDate', 'Pick a date and time first.'],
+      tooSoon: ['h.payWhyTooSoon', 'Too close to the pick-up time.'],
+      tooExpensive: ['h.payWhyValue', 'Higher-value transfers are paid at booking.'],
+      tooLong: ['h.payWhyDistance', 'Long journeys are paid at booking.']
+    };
+
+    var k = chaves[payOptions.code];
+    if (k) porque = T(k[0], k[1]);
+  }
+
   $('payLaterDesc').textContent = allowed
-    ? (whenText || 'Pay 48 hours before pick-up.')
-    : why;
+    ? (whenText || T('h.payLaterDefault', 'Pay 48 hours before pick-up.'))
+    : porque;
 
   // A razão fica NUM sítio só, dentro do cartão desativado. Estava
   // também na faixa por baixo, e o resultado era o mesmo texto duas
@@ -2388,6 +2436,20 @@ function calcularRota() {
   });
 }
 
+/**
+ * Um texto traduzido, com recurso em inglês.
+ *
+ * O i18n pode ainda não ter carregado — é assíncrono — e nesse
+ * caso mostra-se o inglês. Melhor do que uma chave crua a aparecer
+ * no ecrã.
+ */
+function T(chave, ingles) {
+  return (window.i18n && window.i18n.t)
+    ? window.i18n.t(chave, ingles)
+    : ingles;
+}
+
+
 function updatePriceDisplay(priceEUR, deNoite) {
   var currency = $('currency').value || 'EUR';
   var fmt = function (v, cur) {
@@ -2401,6 +2463,7 @@ function updatePriceDisplay(priceEUR, deNoite) {
 
   $('priceValue').textContent = fmt(payable);
   $('priceValue').dataset.basePrice = String(priceEUR);
+  $('priceValue').dataset.night = deNoite ? '1' : '0';
 
   /**
    * O suplemento noturno não aparece aqui.
@@ -2434,22 +2497,37 @@ function updatePriceDisplay(priceEUR, deNoite) {
   $('priceValue').textContent = fmt(total);
 
   if (legs === 2) {
-    $('priceLegs').textContent = 'two transfers · ' + fmt(payable) + ' each';
+    $('priceLegs').textContent =
+      T('h.twoTransfers', 'two transfers') +
+      ' · ' + fmt(payable) + ' ' +
+      T('h.each', 'each');
     $('priceLegs').classList.remove('hidden');
   } else {
     $('priceLegs').classList.add('hidden');
   }
 
   if (currency !== 'EUR') {
-    $('priceEur').textContent = 'about ' + fmt(totalEUR, 'EUR');
+    $('priceEur').textContent =
+      T('h.about', 'about') +
+      ' ' + fmt(totalEUR, 'EUR');
     $('priceEur').classList.remove('hidden');
   } else {
     $('priceEur').classList.add('hidden');
   }
 
   if (isAgent()) {
-    $('publicPrice').innerHTML = 'Public price <s>' + fmt(publicPrice) + '</s> \u00b7 you save ' +
-      fmt(publicPrice - payable);
+    /**
+     * O desconto de agência, traduzido.
+     *
+     * Estava em inglês fixo. Uma agência espanhola via o resto da
+     * página em espanhol e esta linha em inglês — o que parece um
+     * pedaço por acabar.
+     */
+    $('publicPrice').innerHTML =
+      T('h.publicPrice', 'Public price') +
+      ' <s>' + fmt(publicPrice) + '</s> \u00b7 ' +
+      T('h.youSave', 'you save') +
+      ' ' + fmt(publicPrice - payable);
     $('publicPrice').classList.remove('hidden');
   } else {
     $('publicPrice').classList.add('hidden');
@@ -2458,7 +2536,20 @@ function updatePriceDisplay(priceEUR, deNoite) {
 
 function updatePriceDisplayOnly() {
   var base = parseFloat($('priceValue').dataset.basePrice || 'NaN');
-  if (isFinite(base)) updatePriceDisplay(base);
+
+  /**
+   * O suplemento noturno não se perde ao mudar de moeda.
+   *
+   * Esta função chamava o updatePriceDisplay sem o segundo
+   * argumento — e undefined é falso. Quem escolhesse uma viagem
+   * às 23h30 e depois mudasse para dólares via o aviso de
+   * suplemento desaparecer.
+   *
+   * O valor fica guardado no elemento, como o preço.
+   */
+  var noite = $('priceValue').dataset.night === '1';
+
+  if (isFinite(base)) updatePriceDisplay(base, noite);
 }
 
 
