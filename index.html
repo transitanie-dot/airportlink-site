@@ -1731,6 +1731,31 @@ function setupAutocomplete(inputId, boxId, type) {
   });
 }
 
+/**
+ * Um componente da morada, dito pelo Google.
+ *
+ * O address_components é uma lista de partes, cada uma com os
+ * seus tipos. Procurar pela ordem dos tipos pedidos devolve o
+ * mais preciso que existir.
+ *
+ * O "curto" pede o short_name — o país em duas letras, que é o
+ * que interessa para comparar.
+ */
+function componenteDe(place, tipos, curto) {
+  var partes = (place && place.address_components) || [];
+
+  for (var t = 0; t < tipos.length; t++) {
+    for (var i = 0; i < partes.length; i++) {
+      if ((partes[i].types || []).indexOf(tipos[t]) >= 0) {
+        return curto ? partes[i].short_name : partes[i].long_name;
+      }
+    }
+  }
+
+  return null;
+}
+
+
 function selectPrediction(placeId, description, type) {
   window.placesService.getDetails({
     /**
@@ -1748,7 +1773,21 @@ function selectPrediction(placeId, description, type) {
      * texto da morada contra uma lista — e adivinhar mal significa
      * dar 15 minutos de espera a quem devia ter 60.
      */
-    placeId, fields: ['name', 'formatted_address', 'geometry', 'place_id', 'types']
+    placeId, /**
+     * Os componentes da morada vêm com o resto.
+     *
+     * O Google sabe a cidade e o país — locality,
+     * administrative_area, country — e diz-no-los no momento em
+     * que há mais informação disponível.
+     *
+     * Adivinhar a cidade pelo texto era frágil: "Carrer de
+     * Tarragona" em Ibiza levava a tarifa de Barcelona, e "Via
+     * Roma" existe em quase todas as cidades italianas.
+     *
+     * Um campo a mais não custa: o getDetails já está a ser feito.
+     */
+    fields: ['name', 'formatted_address', 'geometry', 'place_id', 'types',
+             'address_components']
   }, function (place, status) {
     if (status !== google.maps.places.PlacesServiceStatus.OK || !place || !place.geometry) return;
 
@@ -1765,7 +1804,22 @@ function selectPrediction(placeId, description, type) {
        */
       placeType: (place.types || []).indexOf('airport') >= 0
         ? 'airport'
-        : (place.types || [])[0] || null
+        : (place.types || [])[0] || null,
+
+      /**
+       * A cidade e o país, ditos pelo Google.
+       *
+       * O locality é a cidade. Quando falta — acontece em sítios
+       * rurais — o administrative_area_level_2 é o concelho, que
+       * serve.
+       *
+       * O country vem em duas letras: ES, PT, IT. Sem ambiguidade
+       * nenhuma, ao contrário de procurar palavras no texto.
+       */
+      city: componenteDe(place, ['locality', 'postal_town',
+                                 'administrative_area_level_2']),
+      region: componenteDe(place, ['administrative_area_level_1']),
+      country: componenteDe(place, ['country'], true)
     };
 
     if (type === 'pickup') { pickupPlace = data; $('pickup').value = description; }
@@ -1808,7 +1862,9 @@ var PT_ZONES = {
 };
 
 function ptZone(a, b) {
-  var texts = [String(a||'').toLowerCase(), String(b||'').toLowerCase()];
+  // Sem os nomes de rua: "Rua de Lisboa" no Porto não faz da rota
+  // uma rota de Lisboa.
+  var texts = [semNomesDeRua(a), semNomesDeRua(b)];
   for (var t = 0; t < 2; t++) {
     for (var k in PT_ZONES) {
       var ws = PT_ZONES[k].words;
@@ -1855,6 +1911,36 @@ var ES_FIXED = { 'sitges': { sedan: 128.56, premium: 175.57 } };
 
 
 
+/**
+ * Os nomes de rua não dizem a cidade.
+ *
+ * "Hotel Ibiza Playa, Carrer de Tarragona, Eivissa" tem a palavra
+ * "Tarragona" numa RUA — e isso fazia aplicar a tarifa de
+ * Barcelona: 56 euros em vez de 73.
+ *
+ * "Via Roma" existe em quase todas as cidades italianas, e o
+ * mesmo em Espanha e Portugal.
+ */
+var PREFIXOS_DE_RUA = [
+  'carrer', 'calle', 'avinguda', 'avenida', 'plaza', 'placa',
+  'rua', 'travessa', 'largo', 'praca', 'estrada', 'caminho',
+  'via', 'viale', 'piazza', 'corso', 'strada',
+  'rue', 'boulevard', 'passeig', 'paseo', 'ronda', 'camino'
+];
+
+function semNomesDeRua(texto) {
+  return String(texto || '').toLowerCase()
+    .split(',')
+    .filter(function (parte) {
+      var p = parte.trim();
+      return !PREFIXOS_DE_RUA.some(function (pre) {
+        return p.indexOf(pre + ' ') === 0;
+      });
+    })
+    .join(', ');
+}
+
+
 function hasWord(text, list) {
   var t = String(text || '').toLowerCase();
   for (var i = 0; i < list.length; i++) {
@@ -1865,7 +1951,7 @@ function hasWord(text, list) {
 
 /** Espanha, Portugal, ou nenhum dos dois. */
 function country(a, b) {
-  var t = (String(a||'') + ' ' + String(b||'')).toLowerCase();
+  var t = semNomesDeRua(String(a||'') + ', ' + String(b||''));
 
   if (/\b(spain|espa(n|ñ)a|espanha)\b/.test(t)) return 'ES';
   if (/\bportugal\b/.test(t)) return 'PT';
@@ -1877,7 +1963,7 @@ function country(a, b) {
 }
 
 function esZone(a, b) {
-  var t = (String(a||'') + ' ' + String(b||'')).toLowerCase();
+  var t = semNomesDeRua(String(a||'') + ', ' + String(b||''));
   for (var k in ES_ZONES) if (hasWord(t, ES_ZONES[k].words)) return ES_ZONES[k];
   return ES_FALLBACK;
 }
@@ -2047,7 +2133,20 @@ function calcularRota() {
       '&pax=' + passengers +
       '&from=' + encodeURIComponent(pickupPlace.fullDescription || '') +
       '&to=' + encodeURIComponent(dropoffPlace.fullDescription || '') +
-      '&time=' + encodeURIComponent($('travelTime').value || ''))
+      '&time=' + encodeURIComponent($('travelTime').value || '') +
+
+      /**
+       * A cidade e o país, ditos pelo Google.
+       *
+       * Sem isto o servidor adivinha pelo texto — e "Carrer de
+       * Tarragona" em Ibiza levava a tarifa de Barcelona.
+       */
+      '&from_city=' + encodeURIComponent(pickupPlace.city || '') +
+      '&to_city=' + encodeURIComponent(dropoffPlace.city || '') +
+      '&from_country=' + encodeURIComponent(pickupPlace.country || '') +
+      '&to_country=' + encodeURIComponent(dropoffPlace.country || '') +
+      '&from_region=' + encodeURIComponent(pickupPlace.region || '') +
+      '&to_region=' + encodeURIComponent(dropoffPlace.region || ''))
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (d.covered === false) {
@@ -2712,6 +2811,17 @@ $('proceedBtn').addEventListener('click', function () {
     q.set('km', lastRoute.km.toFixed(1));
     if (lastRoute.dur) q.set('dur', lastRoute.dur);
   }
+
+  /**
+   * A cidade e o país seguem no endereço.
+   *
+   * O /booking/ calcula os preços por classe, e sem isto adivinha
+   * pelo texto — que é o que dava a tarifa errada em Ibiza.
+   */
+  if (pickupPlace && pickupPlace.city) q.set('from_city', pickupPlace.city);
+  if (dropoffPlace && dropoffPlace.city) q.set('to_city', dropoffPlace.city);
+  if (pickupPlace && pickupPlace.country) q.set('from_country', pickupPlace.country);
+  if (dropoffPlace && dropoffPlace.country) q.set('to_country', dropoffPlace.country);
 
   // A ida e volta, se estiver escolhida na pesquisa.
   var rd = $('returnDate');
