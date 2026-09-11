@@ -394,6 +394,29 @@ var PT_ZONES = {
       'almancil','quinta do lago'] }
 };
 
+function itZone(a, b) {
+  // A cidade dita pelo Google ganha ao texto — "Via Roma" existe
+  // em quase todas as cidades italianas.
+  var t = (trip.fromCity || trip.toCity)
+    ? [trip.fromCity, trip.toCity].filter(Boolean).join(', ').toLowerCase()
+    : semNomesDeRua(String(a||'') + ', ' + String(b||''));
+
+  for (var k in IT_ZONES) if (hasWord(t, IT_ZONES[k].words)) return IT_ZONES[k];
+  return IT_FALLBACK;
+}
+
+
+/**
+ * A média das três zonas portuguesas.
+ *
+ * Serve Madeira e Açores até serem medidos. Nomeada em vez de
+ * escrita em linha para o verificar.py a poder comparar com o
+ * precos.js — foi assim que se descobriu que as páginas não
+ * tinham as tarifas italianas.
+ */
+var PT_FALLBACK = { base: 11.61, perKm: 1.142 };
+
+
 function ptZone(a, b) {
   // Sem os nomes de rua: "Rua de Lisboa" no Porto não faz da rota
   // uma rota de Lisboa.
@@ -408,7 +431,7 @@ function ptZone(a, b) {
     }
   }
   // A média das três: serve Madeira e Açores até serem medidos.
-  return { base: 11.61, perKm: 1.142 };
+  return PT_FALLBACK;
 }
 
 
@@ -485,6 +508,98 @@ function hasWord(text, list) {
   return false;
 }
 
+/**
+ * Itália, que faltava nesta página.
+ *
+ * O servidor tinha tarifas italianas e as páginas não — uma rota
+ * em Roma mostrava 172 euros e era cobrada a 94.
+ *
+ * Uma cópia a mais é uma que pode divergir, e por isso estas são
+ * verificadas pelo verificar.py contra o precos.js.
+ */
+var IT_ZONES = {
+  /**
+   * Roma: 46,25 + 1,51/km, e não os 53,65 + 1,49 da regressão.
+   *
+   * A tabela deles em Roma NÃO é uma reta: o preço por km vai de
+   * 7,99 aos 8 km a 1,80 aos 234. Uma reta por mínimos quadrados
+   * ficava 2,7% ACIMA deles nas curtas, que é o oposto do que se
+   * quer.
+   *
+   * Esta é escolhida para nunca passar de -5%, custe o que custar
+   * nas médias — aos 34 km chega a -15%. É o preço de garantir que
+   * não somos mais caros em rota nenhuma.
+   */
+  rome: { base: 46.25, perKm: 1.5100,
+    premiumBase: 76.75, premiumKm: 1.9500,
+    van: 1.304, van_sedan: 3.462, two_vans: 3.846,
+    words: ['rome', 'roma', 'fiumicino', 'ciampino', 'ostia', 'civitavecchia',
+            'frascati', 'tivoli', 'anzio', 'castel gandolfo', 'orvieto',
+            'viterbo', 'latina'] },
+
+  bologna: { base: 65.03, perKm: 1.6083,
+    premiumBase: 85.25, premiumKm: 2.1050,
+    van: 1.304, van_sedan: 3.462, two_vans: 3.846,
+    words: ['bologna', 'bolonha', 'modena', 'ferrara', 'rimini', 'parma',
+            'ravenna', 'riccione', 'cesena', 'forli', 'forlì'] },
+
+  naples: { base: 58.96, perKm: 1.5028,
+    premiumBase: 81.25, premiumKm: 2.1300,
+    van: 1.304, van_sedan: 3.462, two_vans: 3.846,
+    words: ['naples', 'napoli', 'nápoles', 'pompeii', 'pompei', 'sorrento',
+            'salerno', 'amalfi', 'positano', 'ravello', 'caserta',
+            'herculaneum', 'ercolano', 'vesuvio'] },
+
+  palermo: { base: 43.24, perKm: 1.2041,
+    premiumBase: 71.75, premiumKm: 1.9800,
+    van: 1.586, van_sedan: 3.462, two_vans: 3.978,
+    words: ['palermo', 'cefalu', 'cefalù', 'trapani', 'agrigento', 'mondello',
+            'monreale', 'marsala', 'erice', 'sciacca'] },
+
+  // ---------- as quatro sem sedan do lado deles ----------
+
+  venice: { base: 58.93, perKm: 1.5475,
+    premiumBase: 71.50, premiumKm: 1.8550,
+    van: 1.304, van_sedan: 3.462, two_vans: 3.846,
+    words: ['venice', 'venezia', 'veneza', 'mestre', 'piazzale roma', 'padua',
+            'padova', 'verona', 'treviso', 'vicenza', 'lido di jesolo',
+            'jesolo'] },
+
+  florence: { base: 114.54, perKm: 2.3303,
+    premiumBase: 138.25, premiumKm: 2.7900,
+    van: 1.304, van_sedan: 3.462, two_vans: 3.846,
+    words: ['florence', 'firenze', 'florença', 'fiesole', 'siena', 'pisa',
+            'lucca', 'san gimignano', 'arezzo', 'chianti', 'montepulciano',
+            'cortona', 'volterra'] },
+
+  milan: { base: 64.86, perKm: 1.5628,
+    premiumBase: 89.25, premiumKm: 1.8150,
+    van: 1.304, van_sedan: 3.462, two_vans: 3.846,
+    words: ['milan', 'milano', 'milão', 'malpensa', 'linate', 'bergamo',
+            'como', 'lake como', 'lago di como', 'turin', 'torino', 'brescia',
+            'monza', 'varese', 'stresa', 'maggiore'] },
+
+  cagliari: { base: 38.97, perKm: 1.6212,
+    premiumBase: 46.75, premiumKm: 1.9500,
+    van: 1.304, van_sedan: 3.462, two_vans: 3.846,
+    words: ['cagliari', 'villasimius', 'chia', 'oristano', 'pula', 'costa rei',
+            'sardinia', 'sardegna', 'olbia', 'alghero', 'costa smeralda'] }
+};
+
+var IT_FALLBACK = { base: 46.25, perKm: 1.5100,
+  premiumBase: 76.75, premiumKm: 1.9500,
+  van: 1.304, van_sedan: 3.462, two_vans: 3.846 };
+
+var IT_WORDS = [
+  'italy', 'italia', 'itália', 'genoa', 'genova', 'bari', 'catania',
+  'taormina', 'siracusa', 'syracuse', 'lamezia', 'tropea', 'brindisi',
+  'lecce', 'alberobello', 'matera', 'perugia', 'assisi', 'ancona',
+  'trieste', 'udine', 'bolzano', 'trento', 'garda', 'sirmione',
+  'cinque terre', 'la spezia', 'portofino', 'sanremo', 'capri', 'ischia',
+  'elba', 'livorno', 'grosseto', 'pescara'
+];
+
+
 /** Espanha, Portugal, ou nenhum dos dois. */
 function country(a, b) {
   /**
@@ -497,6 +612,7 @@ function country(a, b) {
       && trip.fromCountry === trip.toCountry) {
     if (trip.fromCountry === 'ES') return 'ES';
     if (trip.fromCountry === 'PT') return 'PT';
+    if (trip.fromCountry === 'IT') return 'IT';
     return null;
   }
 
@@ -504,10 +620,13 @@ function country(a, b) {
 
   if (/\b(spain|espa(n|ñ)a|espanha)\b/.test(t)) return 'ES';
   if (/\bportugal\b/.test(t)) return 'PT';
+  if (/\b(italy|italia|itália)\b/.test(t)) return 'IT';
 
   for (var k in ES_ZONES) if (hasWord(t, ES_ZONES[k].words)) return 'ES';
   if (hasWord(t, ES_WORDS)) return 'ES';
   for (var p in PT_ZONES) if (hasWord(t, PT_ZONES[p].words)) return 'PT';
+  for (var q in IT_ZONES) if (hasWord(t, IT_ZONES[q].words)) return 'IT';
+  if (hasWord(t, IT_WORDS)) return 'IT';
   return null;
 }
 
@@ -544,6 +663,29 @@ function fare(km, mult, isPT, vehId) {
   if (c === 'PT') {
     var z = ptZone(trip.from, trip.to);
     return Math.max(24, (z.base + km * z.perKm) * mult);
+  }
+
+  /**
+   * Itália, que faltava aqui.
+   *
+   * O servidor tinha estas tarifas e a página não — uma rota em
+   * Roma mostrava 172 euros e era cobrada a 94.
+   *
+   * O premium tem reta própria: o sedan e o premium deles não
+   * crescem ao mesmo ritmo, e um multiplicador falharia nas
+   * pontas.
+   */
+  if (c === 'IT') {
+    var zi = itZone(trip.from, trip.to);
+    var sedan = zi.base + km * zi.perKm;
+
+    if (vehId === 'premium') {
+      return Math.max(24, zi.premiumBase + km * zi.premiumKm);
+    }
+
+    if (vehId === 'sedan') return Math.max(24, sedan);
+
+    return Math.max(24, sedan * (zi[vehId] || mult));
   }
 
   return Math.max(25, (20 + km * 3.5) * 1.3 * mult);
