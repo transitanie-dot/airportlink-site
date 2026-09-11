@@ -317,7 +317,11 @@ html[data-theme="dark"] .ret-btn.on{background:var(--amber);color:#141A28}
       </div>
 
       <div class="total"><span data-i18n="common.total">Total</span><b id="sTotal">&mdash;</b></div>
-      <p class="pay-when" id="sWhen">Book now, pay later</p>
+      <!-- "Book now, pay later" é a promessa que vende.
+           Fica escrita desde o início e o paintSummary substitui-a
+           quando a viagem é a menos de 48 horas — que é a exceção,
+           não a regra. -->
+      <p class="pay-when" id="sWhen" data-i18n="book.payLaterShort">Book now, pay later</p>
 
       <button class="next" id="nextBtn" disabled data-i18n="common.continue">Continue</button>
 
@@ -1256,7 +1260,8 @@ function paintSummary() {
   $('sWhen').textContent = canLater
     ? T('book.payLater', 'Book now, pay later') + ' ' +
       fmtDate(chargeAt, { day: 'numeric', month: 'long' })
-    : T('book.chargedAtCheckout', 'Less than 48 hours away \u2014 charged at checkout');
+    : T('book.chargedNow',
+        'Less than 48 hours away \u2014 payment is taken now');
 
   /**
    * O botão desliga-se sem escolha ou sem distância.
