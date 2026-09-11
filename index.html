@@ -474,6 +474,30 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
   .map-panel{height:300px}
   .band{padding:44px 0}
 }
+
+/**
+ * A promessa de pagar depois, por baixo do preço.
+ *
+ * É o argumento que mais converte numa página de cotação: o
+ * cliente compara preços sem ter de decidir hoje.
+ *
+ * Discreta de propósito — em caixa alta e a cores berrantes
+ * pareceria publicidade e seria ignorada.
+ */
+.pay-promise{display:flex;align-items:flex-start;gap:9px;
+  margin:14px 0 0;padding:11px 13px;border-radius:12px;
+  background:var(--teal-soft);
+  font-size:13px;line-height:1.5;color:var(--teal);font-weight:500}
+
+.pay-promise svg{width:16px;height:16px;flex:0 0 auto;margin-top:1px}
+.pay-promise.hidden{display:none}
+
+html[data-theme="dark"] .pay-promise{color:var(--amber);
+  background:rgba(232,163,61,.10)}
+
+@media (max-width:560px){
+  .pay-promise{font-size:12.5px;padding:10px 12px}
+}
 </style>
 <link rel="alternate" hreflang="en" href="https://www.airportlink.app/">
 <link rel="alternate" hreflang="es" href="https://www.airportlink.app/es/">
@@ -610,6 +634,23 @@ html[data-theme="dark"] .agents-cta .btn{background:var(--amber);color:#141A28}
             <div class="mini-card"><div class="mini-label" data-i18n="h.duration">Duration</div><div class="mini-value" id="durationValue">&mdash;</div></div>
             <div class="mini-card"><div class="mini-label" data-i18n="h.price">Price</div><div class="mini-value price" id="priceValue">&mdash;</div><div class="price-eur hidden" id="priceEur"></div><div class="price-eur hidden" id="priceLegs"></div><div class="public-price hidden" id="publicPrice"></div></div>
           </div>
+
+          <!-- A promessa que vende, visível desde o início.
+               "Reserva agora, paga depois" é o que separa uma
+               cotação de uma reserva — e estava escondida até ao
+               checkout, três páginas à frente.
+
+               Some quando a viagem é a menos de 48 horas, que é a
+               exceção. -->
+          <p class="pay-promise" id="payPromise">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="4" width="22" height="16" rx="3"></rect>
+              <line x1="1" y1="10" x2="23" y2="10"></line>
+            </svg>
+            <span data-i18n="h.payLater">Book now, pay later &mdash; nothing is
+            charged until 48 hours before your trip</span>
+          </p>
 
           <div class="pay-choice hidden" id="payChoice">
             <button class="pay-opt on" id="payNowOpt" data-mode="now" type="button">
@@ -1339,6 +1380,32 @@ function applyAgentUI() {
 // ============================================================
 async function refreshPaymentOptions() {
   var base = parseFloat($('priceValue').dataset.basePrice || 'NaN');
+
+  /**
+   * A promessa some quando a viagem é a menos de 48 horas.
+   *
+   * Nesses casos o pagamento é imediato, e prometer o contrário
+   * é uma surpresa desagradável no checkout.
+   *
+   * Sem data escolhida, fica: é a promessa geral do serviço, e a
+   * maioria das reservas é com antecedência.
+   */
+  var promessa = $('payPromise');
+
+  if (promessa && !promessa.__missing) {
+    var quando = $('travelDate').value;
+    var horas = $('travelTime').value || '12:00';
+
+    if (quando) {
+      var partida = new Date(quando + 'T' + horas);
+      var faltam = (partida - new Date()) / 36e5;
+
+      promessa.classList.toggle('hidden', !isNaN(faltam) && faltam < 48);
+    } else {
+      promessa.classList.remove('hidden');
+    }
+  }
+
   if (!isFinite(base) || !$('travelDate').value) {
     $('payChoice').classList.add('hidden');
     $('payWhy').classList.add('hidden');
