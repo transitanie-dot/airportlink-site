@@ -36,11 +36,36 @@ const SITE = 'https://www.airportlink.app';
  * manter — e as outras doze línguas não têm rotas para onde
  * apontar.
  */
+/**
+ * As dezassete línguas do seletor.
+ *
+ * Eram quatro. O seletor oferecia dezoito, e carregar em japonês
+ * mandava para /ja/ — que não existia. Um 404 por cada língua que
+ * não fosse gerada.
+ *
+ * Gerar todas custa tempo de build e multiplica as páginas, mas é
+ * a única forma de o seletor não mentir. E cada uma é uma página
+ * indexável a mais: é assim que se aparece numa pesquisa em
+ * japonês.
+ */
 const LANGS = [
   { code: 'es', prefix: '/es' },
   { code: 'pt', prefix: '/pt' },
   { code: 'de', prefix: '/de' },
-  { code: 'fr', prefix: '/fr' }
+  { code: 'fr', prefix: '/fr' },
+  { code: 'it', prefix: '/it' },
+  { code: 'nl', prefix: '/nl' },
+  { code: 'pl', prefix: '/pl' },
+  { code: 'da', prefix: '/da' },
+  { code: 'ru', prefix: '/ru' },
+  { code: 'ar', prefix: '/ar' },
+  { code: 'zh', prefix: '/zh' },
+  { code: 'ja', prefix: '/ja' },
+  { code: 'th', prefix: '/th' },
+  { code: 'ko', prefix: '/ko' },
+  { code: 'tr', prefix: '/tr' },
+  { code: 'sv', prefix: '/sv' },
+  { code: 'no', prefix: '/no' }
 ];
 
 /**
@@ -139,8 +164,19 @@ function traduzir(html, dict) {
 function cabecalho(html, lang, url) {
   let out = html;
 
-  // A língua do documento.
-  out = out.replace(/<html lang="[^"]*"/, `<html lang="${lang}"`);
+  /**
+   * A língua e a direção do documento.
+   *
+   * O árabe escreve-se da direita para a esquerda. O JavaScript
+   * põe o dir, mas só depois de a página desenhar — e o visitante
+   * vê meio segundo de texto ao contrário.
+   *
+   * Escrito no HTML, está certo desde o primeiro pixel.
+   */
+  const RTL = ['ar', 'he', 'fa', 'ur'];
+  const dir = RTL.indexOf(lang) !== -1 ? ' dir="rtl"' : '';
+
+  out = out.replace(/<html[^>]*>/, `<html lang="${lang}"${dir}>`);
 
   const prefixo = lang === 'en'
     ? ''
