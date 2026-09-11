@@ -176,11 +176,61 @@
      * /es/login daria um 404, e um seletor que parte a navegação
      * é pior do que um que não muda nada.
      */
+    /**
+     * A língua tem páginas geradas?
+     *
+     * O seletor oferece dezoito línguas, mas o site só gera cinco:
+     * inglês, espanhol, português, alemão e francês. Carregar em
+     * japonês mandava para /ja/, que não existe — e o visitante
+     * via um 404.
+     *
+     * Traduzir a interface é uma coisa (os ficheiros das dezoito
+     * existem); gerar as páginas é outra, e é o que o build faz.
+     *
+     * Enquanto as outras não forem geradas, a língua muda sem
+     * mudar de endereço: o dicionário é carregado e a página é
+     * repintada onde está.
+     */
+    /**
+     * Onde é que esta língua tem página?
+     *
+     * As três páginas fixas — homepage, drivers, travelagents —
+     * são geradas nas dezassete línguas.
+     *
+     * As de rota e do blogue só em cinco: são 512 rotas, e
+     * multiplicá-las por dezassete dava nove mil páginas e um
+     * build de vinte minutos.
+     *
+     * Nas outras, a língua muda sem mudar de endereço: o
+     * dicionário é carregado e a página repintada onde está.
+     * Melhor do que um 404.
+     */
+    var CINCO = ['en', 'es', 'pt', 'de', 'fr'];
+
     var temVersao = TRADUZIDAS.indexOf(limpo) !== -1
-      || /^\/(transfers|airports|blog)\//.test(limpo);
+      || (CINCO.indexOf(next) !== -1
+          && /^\/(transfers|airports|blog)\//.test(limpo));
 
     if (!temVersao) {
-      window.location.reload();
+      /**
+       * Troca sem recarregar.
+       *
+       * Recarregar não servia: numa página /es/ o __PAGE_LANG
+       * volta a forçar espanhol, e a escolha perde-se sem
+       * explicação.
+       *
+       * O info vai junto: guarda a direção do texto, e mudar só o
+       * lang deixava o árabe a escrever da esquerda para a
+       * direita.
+       */
+      lang = next;
+      info = LANGS.filter(function (l) { return l.code === next; })[0] || info;
+
+      load(function () {
+        apply();
+        setDirection();
+      });
+
       return;
     }
 
