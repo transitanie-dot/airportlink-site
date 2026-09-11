@@ -1,13 +1,706 @@
-/**
- * O código da página de checkout.
- *
- * Estava em linha, e era descarregado por inteiro a cada visita.
- * Num ficheiro à parte, o browser guarda-o em cache.
- *
- * Gerado a partir do checkout/index.html: não editar aqui sem
- * editar lá.
- */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confirm your transfer | Airportlink</title>
+<meta name="description" content="Your details and payment. Free cancellation up to 24 hours before pick-up.">
+<link rel="canonical" href="https://www.airportlink.app/checkout/">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#E8EBE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1219" media="(prefers-color-scheme: dark)">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('airportlink-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/i18n.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 
+<style>
+/* ---------- a barra do topo ----------
+   Sem navegação. A partir daqui só há um caminho, e cada link para
+   fora é uma hipótese de a pessoa não voltar. */
+/* Escuro, não branco. Marca a saída do site e a entrada no
+   pagamento — e nos dois temas fica igual, o que dá a esta parte a
+   estabilidade que uma página de pagamento deve ter. */
+.co-bar{background:var(--ink);border-bottom:1px solid rgba(255,255,255,.08)}
+.co-bar-in{max-width:1000px;margin:0 auto;padding:16px 20px;display:flex;
+  align-items:center;justify-content:space-between;gap:20px}
+.co-logo{display:inline-flex;align-items:center;font-family:var(--display);font-weight:800;
+  font-size:18px;letter-spacing:-.03em;color:#FBFBF8;text-decoration:none}
+.co-logo b{color:#17A398;font-weight:800}
+.co-logo .dot{width:5px;height:5px;border-radius:999px;background:#fd8a2b;margin-left:3px}
+.co-secure{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10.5px;
+  font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8C97A8}
+.co-secure svg{width:14px;height:14px;color:#6EE7B7}
+
+/* ---------- os passos ---------- */
+.steps{max-width:1000px;margin:0 auto;padding:22px 20px 0;display:flex;align-items:center;
+  gap:10px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.step .n{width:22px;height:22px;border-radius:999px;display:flex;align-items:center;
+  justify-content:center;background:var(--surface-2);color:var(--muted);
+  font-family:var(--mono);font-size:11px;font-weight:600}
+.step.done .n{background:var(--teal);color:#fff}
+.step.now .n{background:var(--ink);color:#fff}
+.step.now{color:var(--text);font-weight:600}
+html[data-theme="dark"] .step.done .n{background:var(--amber);color:#141A28}
+html[data-theme="dark"] .step.now .n{background:#D8DEE8;color:#141A28}
+.step-line{flex:1;height:1px;background:var(--rule);min-width:16px;max-width:40px}
+
+.co{max-width:1000px;margin:0 auto;padding:20px 20px 50px;
+  display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+
+/* ---------- o formulário ---------- */
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:20px;
+  padding:22px;margin-bottom:14px}
+.card h2{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:-.022em;
+  margin:0 0 3px}
+.card .sub{margin:0 0 18px;color:var(--muted);font-size:13px;line-height:1.55}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f{display:flex;flex-direction:column;min-width:0}
+.f.wide{grid-column:span 2}
+.f label{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.f label .opt{font-family:var(--body);font-size:10px;font-weight:400;letter-spacing:0;
+  text-transform:none;opacity:.65;margin-left:5px}
+/**
+ * O select com o mesmo aspeto dos campos de texto.
+ *
+ * Sem isto, o browser desenha o dele: quadrado, com outra altura
+ * e outro tipo de letra. Num formulário de oito campos, um
+ * diferente dos outros parece um erro.
+ *
+ * O appearance:none tira o desenho do browser; a seta volta como
+ * imagem de fundo.
+ */
+/* O .phone-field é criado e estilizado pelo assets/phone.js e
+   pelo site.css. Um wrapper meu por cima quebrava o alinhamento. */
+
+.f select{padding:0 38px 0 14px;height:48px;border-radius:13px;
+  border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
+  font-family:inherit;font-size:14.5px;outline:none;width:100%;cursor:pointer;
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23606A7B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+  transition:border-color .14s ease,box-shadow .14s ease}
+
+.f select:focus{border-color:var(--teal);
+  box-shadow:0 0 0 3px var(--teal-soft)}
+
+.f input,.f textarea{padding:0 14px;height:48px;border-radius:13px;
+  border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
+  font-family:inherit;font-size:14.5px;outline:none;width:100%;
+  transition:border-color .14s ease,box-shadow .14s ease}
+.f textarea{height:auto;min-height:86px;padding:13px 14px;resize:vertical;line-height:1.55}
+.f input:focus,.f textarea:focus{border-color:var(--teal);
+  box-shadow:0 0 0 3px rgba(15,118,110,.13)}
+html[data-theme="dark"] .f input:focus,html[data-theme="dark"] .f textarea:focus{
+  border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,163,61,.15)}
+.f .hint{margin-top:6px;color:var(--muted);font-size:11.5px;line-height:1.45}
+.f.bad input,.f.bad textarea{border-color:var(--err-rule);background:var(--err-bg)}
+.f .err{display:none;margin-top:6px;color:var(--err-text);font-size:11.5px}
+.f.bad .err{display:block}
+
+/* Entrar ou continuar sem conta. */
+.acct{padding:16px 20px}
+.acct-row{display:flex;align-items:center;justify-content:space-between;gap:18px;
+  flex-wrap:wrap}
+.acct-row strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.015em;margin-bottom:3px}
+.acct-row span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5}
+.acct-btns{display:flex;gap:8px;flex-wrap:wrap}
+.acct-b{border:1px solid var(--rule-strong);background:var(--surface-2);border-radius:11px;
+  padding:10px 16px;font-family:inherit;font-size:13px;font-weight:600;color:var(--text);
+  cursor:pointer}
+.acct-b:hover{border-color:var(--teal)}
+.acct-b.ghost{background:transparent;color:var(--muted)}
+.acct-b.ghost:hover{color:var(--text)}
+
+/* O formulário e o resumo, escondidos até fazerem falta. */
+.acct-form,.acct-done{display:none}
+.acct.mode-form .acct-form{display:block}
+.acct.mode-form .acct-row{display:none}
+.acct.mode-done .acct-done{display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap}
+.acct.mode-done .acct-row{display:none}
+.acct.mode-done{background:var(--ok-bg);border-color:var(--ok-rule)}
+.acct.mode-done .acct-done strong{color:var(--ok-text)}
+
+.acct-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  margin-bottom:14px}
+.acct-head strong{font-family:var(--display);font-weight:700;font-size:15px;
+  letter-spacing:-.018em}
+.acct-back{background:transparent;border:0;padding:0;color:var(--muted);cursor:pointer;
+  font-family:inherit;font-size:12.5px}
+.acct-back:hover{color:var(--text);text-decoration:underline}
+
+.acct-msg{display:none;margin:12px 0 0;font-size:12.5px;line-height:1.5}
+.acct-msg.on{display:block}
+.acct-msg.bad{color:var(--err-text)}
+.acct-msg.good{color:var(--ok-text)}
+
+.acct-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}
+.acct-go{height:46px;padding:0 24px;border:0;border-radius:12px;background:var(--teal);
+  color:#fff;cursor:pointer;font-family:inherit;font-size:14.5px;font-weight:600}
+html[data-theme="dark"] .acct-go{background:var(--amber);color:#141A28}
+.acct-go:disabled{opacity:.55;cursor:not-allowed}
+.acct-swap{background:transparent;border:0;padding:0;color:var(--teal);cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:600}
+html[data-theme="dark"] .acct-swap{color:var(--amber)}
+.acct-swap:hover{text-decoration:underline}
+
+.acct-done strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.015em;margin-bottom:3px}
+.acct-done span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5}
+
+/* ---------- pagamento ---------- */
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.pay-opt{text-align:left;background:var(--surface-2);border:1px solid var(--rule-strong);
+  border-radius:15px;padding:15px 17px;cursor:pointer;
+  transition:border-color .14s ease,box-shadow .14s ease}
+.pay-opt:hover{border-color:var(--muted)}
+.pay-opt.on{border-color:var(--teal);background:var(--teal-soft);
+  box-shadow:0 0 0 2px var(--teal-soft)}
+html[data-theme="dark"] .pay-opt.on{border-color:var(--amber);
+  background:rgba(232,163,61,.1);box-shadow:0 0 0 2px rgba(232,163,61,.12)}
+.pay-opt.off{opacity:.45;cursor:not-allowed}
+.pay-opt strong{display:block;font-family:var(--display);font-weight:700;font-size:14.5px;
+  letter-spacing:-.015em;margin-bottom:4px}
+.pay-opt span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+
+/* ---------- o resumo ----------
+   Colado ao topo, com a rota desenhada como trajeto e o veículo
+   escolhido à vista. É o que a pessoa confirma antes de pagar. */
+.side{position:sticky;top:20px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.side-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.side h2{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.022em;
+  margin:0}
+.side-edit{background:transparent;border:0;padding:0;color:var(--teal);cursor:pointer;
+  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase}
+html[data-theme="dark"] .side-edit{color:var(--amber)}
+.side-edit:hover{text-decoration:underline}
+
+/* O trajeto, com a linha a ligar as duas pontas. */
+.path{position:relative;padding-left:2px}
+.path-line{position:absolute;left:6px;top:14px;bottom:14px;width:2px;
+  background:linear-gradient(var(--teal),#fd8a2b);opacity:.35;border-radius:2px}
+html[data-theme="dark"] .path-line{background:linear-gradient(var(--amber),#fd8a2b)}
+.stop{display:flex;gap:14px;align-items:flex-start;position:relative}
+.stop + .stop{margin-top:18px}
+.pin{width:11px;height:11px;border-radius:999px;flex:0 0 auto;margin-top:4px;
+  border:2.5px solid var(--surface);box-shadow:0 0 0 1.5px currentColor}
+.pin.a{background:var(--teal);color:var(--teal)}
+.pin.b{background:#fd8a2b;color:#fd8a2b}
+html[data-theme="dark"] .pin.a{background:var(--amber);color:var(--amber)}
+.stop div{min-width:0;flex:1}
+.stop .k{display:block;font-family:var(--mono);font-size:8px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.stop .v{display:block;font-size:13.5px;font-weight:600;line-height:1.4}
+.stop .t{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);
+  margin-top:4px}
+
+/* O veículo escolhido. */
+.side-veh{display:flex;align-items:center;gap:12px;background:var(--surface-2);
+  border-radius:14px;padding:12px 14px}
+.side-art{width:62px;flex:0 0 auto}
+.side-art svg{width:100%;height:auto;display:block}
+.side-veh strong{display:block;font-family:var(--display);font-weight:700;font-size:14px;
+  letter-spacing:-.018em;margin-bottom:2px}
+.side-veh span{display:block;color:var(--muted);font-size:11.5px}
+
+.lines{display:flex;flex-direction:column}
+.row{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:8px 0;
+  border-bottom:1px solid var(--rule)}
+.row:last-child{border-bottom:0}
+.row span:first-child{color:var(--muted)}
+.row span:last-child{font-weight:600;text-align:right}
+.row .inc{color:var(--teal);font-weight:600}
+html[data-theme="dark"] .row .inc{color:var(--amber)}
+
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding-top:15px;border-top:1px solid var(--rule-strong)}
+.total span{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted)}
+.total b{font-family:var(--mono);font-size:32px;font-weight:600;letter-spacing:-.035em;
+  color:var(--teal);line-height:1}
+html[data-theme="dark"] .total b{color:var(--amber)}
+.when{margin:-6px 0 0;font-size:12.5px;font-weight:600;color:var(--teal)}
+html[data-theme="dark"] .when{color:var(--amber)}
+.go{display:flex;align-items:center;justify-content:center;height:52px;border:0;
+  border-radius:14px;background:var(--teal);color:#fff;cursor:pointer;
+  font-family:var(--body);font-size:16px;font-weight:600;
+  box-shadow:0 6px 18px rgba(15,118,110,.26);transition:transform .14s ease}
+.go:hover{transform:translateY(-2px)}
+html[data-theme="dark"] .go{background:var(--amber);color:#141A28;
+  box-shadow:0 6px 18px rgba(232,163,61,.24)}
+.go:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.fine{margin:0;color:var(--muted);font-size:11.5px;line-height:1.5}
+.fine a{color:var(--teal)}
+html[data-theme="dark"] .fine a{color:var(--amber)}
+
+/* Os desenhos, iguais aos das outras páginas. */
+.veh-shadow{fill:var(--ink);opacity:.07}
+html[data-theme="dark"] .veh-shadow{fill:#000;opacity:.35}
+.veh-body{fill:var(--ink)}
+html[data-theme="dark"] .veh-body{fill:#D8DEE8}
+.veh-glass{fill:#7FB8B2;opacity:.55}
+html[data-theme="dark"] .veh-glass{fill:#4A6B78;opacity:.75}
+.veh-glass.dark{fill:#3A4A55;opacity:.8}
+.veh-pillar{fill:var(--surface);opacity:.5}
+.veh-line{stroke:var(--surface);stroke-width:1.6;opacity:.28;fill:none;stroke-linecap:round}
+.veh-chrome{stroke:#C9B896;stroke-width:1.4;opacity:.55;fill:none;stroke-linecap:round}
+.veh-lamp{fill:#F4E3B8}
+.veh-tail{fill:#D9534F}
+.veh-tyre{fill:#0B0F16}
+.veh-rim{fill:var(--surface);stroke:var(--rule-strong);stroke-width:1}
+.veh-spokes{stroke:var(--muted);stroke-width:1.5;fill:none;stroke-linecap:round;opacity:.6}
+
+.warn{display:none;background:var(--err-bg);border:1px solid var(--err-rule);
+  border-radius:13px;padding:13px 15px;color:var(--err-text);font-size:13px;line-height:1.55}
+.warn.on{display:block}
+
+@media (max-width:940px){
+  .co{grid-template-columns:1fr}
+
+  /**
+   * O resumo e o botão DEPOIS do formulário.
+   *
+   * Estavam em order:-1, ou seja, por cima. No telemóvel isso
+   * punha o total e o "Continue" antes de haver dados para
+   * continuar — e o botão estava desativado, o que parece um site
+   * partido.
+   *
+   * A ordem natural é: preenche, vê o total, paga. É a mesma de
+   * qualquer loja.
+   */
+  .side{position:static;order:1}
+}
+@media (max-width:560px){
+  .grid,.pay{grid-template-columns:1fr}
+  .f.wide{grid-column:span 1}
+}
+
+/**
+ * A estrela dos obrigatórios.
+ *
+ * Discreta: em vermelho vivo ao lado de três campos parece um
+ * formulário com três erros. O cinzento-escuro diz o que precisa
+ * de dizer sem alarmar.
+ *
+ * Os opcionais já têm a etiqueta "optional"; os obrigatórios não
+ * tinham marca nenhuma, e a pessoa só descobria ao carregar em
+ * continuar.
+ */
+.req{color:var(--err,#B91C1C);margin-left:3px;font-weight:600}
+
+/**
+ * Uma morada que não se edita.
+ *
+ * Parecida com um campo, mas sem borda de foco e sem cursor de
+ * texto — a diferença é a mensagem: isto não se muda aqui.
+ *
+ * O fundo mais escuro e a ausência de moldura dizem-no sem
+ * precisar de um cadeado desenhado.
+ */
+.locked{min-height:48px;display:flex;align-items:center;
+  padding:11px 14px;border-radius:13px;
+  background:var(--card-2,#F3F4F0);
+  border:1px solid transparent;
+  font-size:14.5px;line-height:1.4;color:var(--text);
+  word-break:break-word}
+
+html[data-theme="dark"] .locked{background:rgba(255,255,255,.04)}
+</style>
+</head>
+<body>
+
+<!-- Sem cabeçalho de navegação: a partir daqui só há um caminho. -->
+<div class="co-bar">
+  <div class="co-bar-in">
+    <a class="co-logo" href="/">AIRPORT<b>LINK</b><span class="dot"></span></a>
+    <span class="co-secure">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <span data-i18n="co.secure">Secure checkout</span>
+    </span>
+  </div>
+</div>
+
+<div class="steps">
+  <span class="step done"><span class="n">&#10003;</span><span data-i18n="co.stepRoute">Route</span></span>
+  <span class="step-line"></span>
+  <span class="step done"><span class="n">&#10003;</span><span data-i18n="co.stepVehicle">Vehicle</span></span>
+  <span class="step-line"></span>
+  <span class="step now"><span class="n">3</span><span data-i18n="co.stepDetails">Your details</span></span>
+  <span class="step-line"></span>
+  <span class="step"><span class="n">4</span><span data-i18n="co.stepPayment">Payment</span></span>
+</div>
+
+<main id="main">
+<div class="co">
+
+  <div>
+    <div class="warn" id="warn"></div>
+
+    <!-- Entrar é opcional e está em cima, não escondido a meio. Quem
+         já reservou antes poupa três campos; quem nunca cá veio não
+         é obrigado a criar conta para comprar. -->
+    <section class="card acct" id="acct">
+      <div class="acct-row" id="acctIntro">
+        <div>
+          <strong data-i18n="co.bookedBefore">Booked with us before?</strong>
+          <span data-i18n="co.bookedBeforeText">Sign in and your details fill themselves in.</span>
+        </div>
+        <div class="acct-btns">
+          <button class="acct-b" id="signInBtn" type="button">Sign in</button>
+          <button class="acct-b" id="createBtn" type="button">Create account</button>
+          <button class="acct-b ghost" id="guestBtn" type="button">Continue as guest</button>
+        </div>
+      </div>
+
+      <!-- Entrar e registar acontecem AQUI. Mandar a pessoa para
+           outra página a meio de uma reserva é o momento em que mais
+           se desiste — e ao voltar já ninguém se lembra do que tinha
+           escolhido. -->
+      <div class="acct-form" id="acctForm">
+        <div class="acct-head">
+          <strong id="acctTitle">Sign in</strong>
+          <button class="acct-back" id="acctBack" type="button">&larr; <span data-i18n="common.back">Back</span></button>
+        </div>
+
+        <div class="grid">
+          <div class="f wide" id="acctNameField" style="display:none">
+            <label for="acctName" data-i18n="co.fullName">Full name</label>
+            <input id="acctName" type="text" autocomplete="name">
+          </div>
+          <div class="f wide">
+            <label for="acctEmail" data-i18n="co.email">Email</label>
+            <input id="acctEmail" type="email" autocomplete="email" inputmode="email">
+          </div>
+          <div class="f wide">
+            <label for="acctPass" data-i18n="co.password">Password</label>
+            <input id="acctPass" type="password" autocomplete="current-password">
+          </div>
+        </div>
+
+        <p class="acct-msg" id="acctMsg"></p>
+
+        <div class="acct-actions">
+          <button class="acct-go" id="acctGo" type="button">Sign in</button>
+          <button class="acct-swap" id="acctSwap" type="button">Create an account instead</button>
+        </div>
+      </div>
+
+      <!-- Depois de escolher, um resumo com forma de voltar atrás. -->
+      <div class="acct-done" id="acctDone">
+        <div>
+          <strong id="acctDoneTitle">Continuing as a guest</strong>
+          <span id="acctDoneText">We create your account after the booking, so you can see
+          the trip later. No password needed now.</span>
+        </div>
+        <button class="acct-b ghost" id="acctChange" type="button" data-i18n="common.change">Change</button>
+      </div>
+    </section>
+
+    <!-- ---------- quem viaja ---------- -->
+    <section class="card">
+      <h2 data-i18n="co.who">Who is travelling</h2>
+      <p class="sub">The driver gets the name and phone number the day before, and nothing
+      else.</p>
+
+      <div class="grid">
+        <div class="f wide">
+          <label for="name" data-i18n="co.fullName">Full name<span class="req" aria-hidden="true">*</span></label>
+          <input id="name" type="text" autocomplete="name">
+          <span class="err" data-i18n="co.errName">We need a name for the driver to look for.</span>
+        </div>
+
+        <div class="f wide">
+          <label for="email" data-i18n="co.email">Email<span class="req" aria-hidden="true">*</span></label>
+          <input id="email" type="email" autocomplete="email" inputmode="email">
+          <span class="hint">Your confirmation and the driver's details go here.</span>
+          <span class="err" data-i18n="co.errEmail">That email does not look right.</span>
+        </div>
+
+        <div class="f wide" id="phoneField">
+          <label for="phone" data-i18n="co.phone">Phone<span class="req" aria-hidden="true">*</span></label>
+
+          <!-- O indicativo e o número.
+
+               O assets/phone.js transforma este select num seletor
+               com bandeiras, e envolve os dois num .phone-field.
+
+               Sem wrapper meu: o componente cria o dele, e dois
+               wrappers a competir quebravam o alinhamento — era
+               por isso que o dropdown não abria. -->
+          <!-- O data-phone-mount é o que o componente procura.
+               Sem ele e sem opções, o select ficava vazio e o
+               dropdown não tinha nada para mostrar.
+
+               As opções aqui são o recurso: se o phone.js não
+               carregar, o select do browser funciona na mesma. O
+               componente tem 161 países e substitui esta lista
+               quando arranca. -->
+          <div data-phone-mount>
+            <select id="phoneCode" aria-label="Country dialling code" required>
+              <option value="213">Algeria +213</option>
+              <option value="54">Argentina +54</option>
+              <option value="61">Australia +61</option>
+              <option value="43">Austria +43</option>
+              <option value="973">Bahrain +973</option>
+              <option value="32">Belgium +32</option>
+              <option value="55">Brazil +55</option>
+              <option value="359">Bulgaria +359</option>
+              <option value="1">Canada +1</option>
+              <option value="238">Cape Verde +238</option>
+              <option value="56">Chile +56</option>
+              <option value="86">China +86</option>
+              <option value="57">Colombia +57</option>
+              <option value="506">Costa Rica +506</option>
+              <option value="385">Croatia +385</option>
+              <option value="357">Cyprus +357</option>
+              <option value="420">Czechia +420</option>
+              <option value="45">Denmark +45</option>
+              <option value="1">Dominican Republic +1</option>
+              <option value="20">Egypt +20</option>
+              <option value="372">Estonia +372</option>
+              <option value="358">Finland +358</option>
+              <option value="33">France +33</option>
+              <option value="49">Germany +49</option>
+              <option value="30">Greece +30</option>
+              <option value="852">Hong Kong +852</option>
+              <option value="36">Hungary +36</option>
+              <option value="354">Iceland +354</option>
+              <option value="91">India +91</option>
+              <option value="62">Indonesia +62</option>
+              <option value="353">Ireland +353</option>
+              <option value="972">Israel +972</option>
+              <option value="39">Italy +39</option>
+              <option value="81">Japan +81</option>
+              <option value="962">Jordan +962</option>
+              <option value="254">Kenya +254</option>
+              <option value="965">Kuwait +965</option>
+              <option value="371">Latvia +371</option>
+              <option value="370">Lithuania +370</option>
+              <option value="352">Luxembourg +352</option>
+              <option value="60">Malaysia +60</option>
+              <option value="960">Maldives +960</option>
+              <option value="356">Malta +356</option>
+              <option value="52">Mexico +52</option>
+              <option value="212">Morocco +212</option>
+              <option value="31">Netherlands +31</option>
+              <option value="64">New Zealand +64</option>
+              <option value="234">Nigeria +234</option>
+              <option value="47">Norway +47</option>
+              <option value="968">Oman +968</option>
+              <option value="92">Pakistan +92</option>
+              <option value="507">Panama +507</option>
+              <option value="51">Peru +51</option>
+              <option value="63">Philippines +63</option>
+              <option value="48">Poland +48</option>
+              <option value="351">Portugal +351</option>
+              <option value="974">Qatar +974</option>
+              <option value="40">Romania +40</option>
+              <option value="7">Russia +7</option>
+              <option value="966">Saudi Arabia +966</option>
+              <option value="381">Serbia +381</option>
+              <option value="65">Singapore +65</option>
+              <option value="421">Slovakia +421</option>
+              <option value="386">Slovenia +386</option>
+              <option value="27">South Africa +27</option>
+              <option value="82">South Korea +82</option>
+              <option value="34">Spain +34</option>
+              <option value="94">Sri Lanka +94</option>
+              <option value="46">Sweden +46</option>
+              <option value="41">Switzerland +41</option>
+              <option value="886">Taiwan +886</option>
+              <option value="66">Thailand +66</option>
+              <option value="216">Tunisia +216</option>
+              <option value="90">Turkey +90</option>
+              <option value="380">Ukraine +380</option>
+              <option value="971">United Arab Emirates +971</option>
+              <option value="44">United Kingdom +44</option>
+              <option value="1">United States +1</option>
+              <option value="598">Uruguay +598</option>
+              <option value="84">Vietnam +84</option>
+            </select>
+
+            <input id="phone" type="tel" autocomplete="tel"
+                   inputmode="tel" required placeholder="912 345 678">
+          </div>
+          <span class="hint">The driver calls or messages this number on the day.</span>
+          <span class="err" data-i18n="co.errPhone">We need a number the driver can reach on the day.</span>
+        </div>
+
+        <!-- O idioma, opcional.
+             É o melhor sinal que existe para escolher o motorista:
+             uma viagem com alguém que fala a nossa língua é outra
+             viagem. Opcional porque cada campo obrigatório a mais
+             perde vendas — e quem não responder recebe um motorista
+             na mesma. -->
+        <div class="f wide" id="langField">
+          <label for="prefLang">Preferred language <span class="opt">optional</span></label>
+          <select id="prefLang">
+            <option value="">No preference</option>
+            <option value="en">English</option>
+            <option value="pt">Português</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="nl">Nederlands</option>
+            <option value="pl">Polski</option>
+            <option value="ru">Русский</option>
+            <option value="ar">العربية</option>
+            <option value="zh">中文</option>
+          </select>
+          <span class="hint">We send a driver who speaks it when there is one.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- a viagem ---------- -->
+    <section class="card">
+      <h2 data-i18n="co.journey">The journey</h2>
+      <p class="sub">The more exact the address, the fewer phone calls on the day.</p>
+
+      <div class="grid">
+        <div class="f wide">
+          <label for="flight">Flight number <span class="opt">optional</span></label>
+          <input id="flight" type="text" style="text-transform:uppercase">
+          <span class="hint">We track it. If you land late, the driver waits and you pay
+          nothing extra.</span>
+        </div>
+
+        <!-- As moradas não se editam aqui.
+             O preço foi calculado para ESTA rota. Mudar a morada
+             sem recalcular dava um preço de uma viagem e uma
+             viagem diferente — e o motorista ia para o sítio
+             errado ou a conta ficava mal.
+
+             Quem se enganou volta atrás e corrige onde escolheu.
+             Aqui só se acrescenta o detalhe: terminal, número da
+             porta, andar. -->
+        <!-- As moradas, fechadas.
+
+             O preço foi calculado para ESTA rota. Um campo aberto
+             convida a mudar a morada, e mudá-la sem recalcular dá
+             um preço de uma viagem e uma viagem diferente.
+
+             Quem se enganou volta atrás e corrige onde escolheu.
+             Aqui só se lê. -->
+        <div class="f wide">
+          <label data-i18n="common.pickup">Pick-up</label>
+          <div class="locked" id="pickupLocked">&mdash;</div>
+        </div>
+
+        <div class="f wide">
+          <label data-i18n="common.dropoff">Drop-off</label>
+          <div class="locked" id="dropoffLocked">&mdash;</div>
+        </div>
+
+        <div class="f wide">
+          <label for="notes">Anything we should know <span class="opt">optional</span></label>
+          <textarea id="notes" maxlength="600"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- pagamento ---------- -->
+    <section class="card">
+      <h2 data-i18n="co.howPay">How you want to pay</h2>
+      <p class="sub">Either way, cancellation is free until 24 hours before pick-up.</p>
+
+      <div class="pay">
+        <button class="pay-opt on" id="payLater" data-mode="later" type="button">
+          <strong data-i18n="co.payLater">Pay later</strong>
+          <span id="payLaterDesc">Card saved now, charged 48 hours before you travel.</span>
+        </button>
+        <button class="pay-opt" id="payNow" data-mode="now" type="button">
+          <strong data-i18n="co.payNow">Pay now</strong>
+          <span data-i18n="co.payNowDesc">Settle it today and forget about it.</span>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ---------- o resumo ---------- -->
+  <aside class="side">
+    <div class="side-top">
+      <h2 data-i18n="co.yourTransfer">Your transfer</h2>
+      <button class="side-edit" id="backBtn" type="button">Edit</button>
+    </div>
+
+    <!-- A rota como um trajeto, com a linha a ligar as duas pontas:
+         lê-se de relance que é de um sítio para outro. -->
+    <div class="path">
+      <div class="path-line"></div>
+      <div class="stop">
+        <span class="pin a"></span>
+        <div><span class="k" data-i18n="common.pickup">Pick-up</span><span class="v" id="sFrom">&mdash;</span>
+        <span class="t" id="sWhen">&mdash;</span></div>
+      </div>
+      <div class="stop">
+        <span class="pin b"></span>
+        <div><span class="k" data-i18n="common.dropoff">Drop-off</span><span class="v" id="sTo">&mdash;</span>
+        <span class="t" id="sDur">&mdash;</span></div>
+      </div>
+    </div>
+
+    <div class="side-veh">
+      <div class="side-art" id="sArt"></div>
+      <div>
+        <strong id="sVeh">&mdash;</strong>
+        <span id="sPax">&mdash;</span>
+      </div>
+    </div>
+
+    <div class="lines">
+      <div class="row"><span data-i18n="co.transfer">Transfer</span><span id="sOne">&mdash;</span></div>
+      <div class="row" id="sRetRow" style="display:none">
+        <span id="sRetLabel">Return</span><span id="sRet">&mdash;</span></div>
+      <div class="row"><span data-i18n="co.tolls">Tolls and taxes</span><span class="inc" data-i18n="common.included">Included</span></div>
+      <div class="row"><span data-i18n="co.waiting">Waiting time</span><span class="inc">60 min</span></div>
+    </div>
+
+    <div class="total"><span data-i18n="common.total">Total</span><b id="sTotal">&mdash;</b></div>
+    <p class="when" id="sPayWhen"></p>
+
+    <button class="go" id="goBtn" data-i18n="co.confirm">Confirm booking</button>
+
+    <p class="fine">By confirming you accept our <a href="/terms">terms</a> and
+    <a href="/privacypolicy">privacy policy</a>. The price is recalculated on our servers
+    before payment, so what you see is what you are charged.</p>
+
+    <!-- O cartão fica guardado para o tempo de espera.
+         Dito com clareza e sem letra pequena a esconder: o cliente
+         que descobre isto no extrato reclama, o que o leu aqui
+         não. E a segunda frase é a que importa — nada é cobrado
+         sem ele concordar no momento. -->
+    <p class="fine" data-i18n="co.cardOnFile">We keep your card on file for
+    charges related to this trip, such as waiting time beyond the free
+    period. Nothing is charged without your agreement at the time.</p>
+  </aside>
+
+</div>
+</main>
+
+<script>
 (function () {
 'use strict';
 
@@ -1167,3 +1860,7 @@ $('backBtn').addEventListener('click', function () {
 paint();
 
 })();
+
+</script>
+</body>
+</html>
