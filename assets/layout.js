@@ -87,7 +87,17 @@
    * O que interessa saber é quando o NOSSO código parte.
    */
   var ALHEIOS = [
-    /could not load ["']?places/i,
+    /**
+     * Qualquer biblioteca do Google, não só a "places".
+     *
+     * O Google carrega várias — places, util, marker, geometry —
+     * e um bloqueador ou uma rede com filtro impede-as todas da
+     * mesma forma.
+     *
+     * O padrão antigo só apanhava "places", e um "Could not load
+     * util" chegava ao canal na mesma.
+     */
+    /could not load ["']\w+["']/i,
     /google is not defined/i,
     /gtag is not defined/i,
     /Script error/i,
