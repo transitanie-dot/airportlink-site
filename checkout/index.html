@@ -110,7 +110,23 @@ html[data-theme="dark"] .step.now .n{background:#D8DEE8;color:#141A28}
 html[data-theme="dark"] .f input:focus,html[data-theme="dark"] .f textarea:focus{
   border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,163,61,.15)}
 .f .hint{margin-top:6px;color:var(--muted);font-size:11.5px;line-height:1.45}
-.f.bad input,.f.bad textarea{border-color:var(--err-rule);background:var(--err-bg)}
+/**
+ * O vermelho no campo errado.
+ *
+ * Pintava input e textarea. O select do idioma e o do indicativo
+ * ficavam de fora — e o cliente via a mensagem geral sem saber
+ * onde estava o problema.
+ */
+.f.bad input,.f.bad textarea,.f.bad select{border-color:var(--err-rule);
+  background:var(--err-bg)}
+
+/* O componente do telefone tem caixa própria. */
+.phone-field.bad > input,
+.phone-field.bad .phone-pick{border-color:var(--err-rule);
+  background:var(--err-bg)}
+
+/* E a mensagem aparece quando a caixa do telefone está marcada. */
+.f:has(.phone-field.bad) > .err{display:block}
 .f .err{display:none;margin-top:6px;color:var(--err-text);font-size:11.5px}
 .f.bad .err{display:block}
 
@@ -544,6 +560,12 @@ html[data-theme="dark"] .locked{background:rgba(255,255,255,.04)}
                    inputmode="tel" required placeholder="912 345 678">
           </div>
           <span class="hint">The driver calls or messages this number on the day.</span>
+          <!-- A mensagem, que se perdeu ao trocar o campo.
+               Sem ela, o cliente via "alguns campos precisam de
+               correcao" e nenhum campo marcado — e ficava a
+               adivinhar qual. -->
+          <span class="err" data-i18n="co.errPhone">We need a phone number
+          with the country code. The driver calls it on the day.</span>
           <span class="err" data-i18n="co.errPhone">We need a number the driver can reach on the day.</span>
         </div>
 
@@ -1422,8 +1444,21 @@ function bad(id, is) {
    * campo todo; marcar o .phone-field pinta só o que está
    * errado.
    */
-  var caixa = campo.closest('.phone-field') || campo.closest('.f');
-  if (caixa) caixa.classList.toggle('bad', is);
+  /**
+   * O .phone-field E o .f.
+   *
+   * Marcar so o .phone-field pintava a caixa mas nao mostrava a
+   * mensagem, que vive no .f. E se o componente do telefone nao
+   * tiver montado, o .phone-field nem existe — e nada ficava
+   * marcado.
+   *
+   * Marcar os dois resolve os dois casos.
+   */
+  var caixaFone = campo.closest('.phone-field');
+  var caixaCampo = campo.closest('.f');
+
+  if (caixaFone) caixaFone.classList.toggle('bad', is);
+  if (caixaCampo) caixaCampo.classList.toggle('bad', is);
 
   return !is;
 }
@@ -1441,8 +1476,20 @@ function check() {
    * um número que não marca — e uma pessoa sozinha num aeroporto
    * à noite sem forma de perguntar por ninguém.
    */
-  ok = bad('phone', $('phone').value.replace(/\D/g, '').length < 6) && ok;
-  ok = bad('phoneCode', !$('phoneCode').value) && ok;
+  /**
+   * O telefone e o indicativo, numa validacao so.
+   *
+   * Estavam em duas: bad('phone') marcava o campo e
+   * bad('phoneCode') limpava-o logo a seguir, porque o select tem
+   * sempre um valor valido e os dois vivem no MESMO .f.
+   *
+   * O cliente via "alguns campos precisam de correcao" e nenhum
+   * campo marcado.
+   */
+  var telefoneMau = $('phone').value.replace(/\D/g, '').length < 6
+                    || !$('phoneCode').value;
+
+  ok = bad('phone', telefoneMau) && ok;
 
   /**
    * A morada de destino já não se edita aqui.
@@ -1483,7 +1530,8 @@ function check() {
   if (!codigo) return;
 
   codigo.addEventListener('change', function () {
-    var caixa = codigo.closest('.phone-field') || codigo.closest('.f');
+    // O check() reavalia os dois: o numero e o indicativo.
+    var caixa = codigo.closest('.f');
     if (caixa && caixa.classList.contains('bad')) check();
   });
 })();
@@ -1493,9 +1541,35 @@ $('goBtn').addEventListener('click', function () {
   $('warn').classList.remove('on');
 
   if (!check()) {
-    $('warn').textContent = T('co.fixFields', 'A couple of fields need fixing before we can go on.');
+    $('warn').textContent = T('co.fixFields',
+      'A couple of fields need fixing before we can go on.');
     $('warn').classList.add('on');
-    document.querySelector('.f.bad input').focus();
+
+    /**
+     * Levar a pessoa ao primeiro campo errado.
+     *
+     * O selector era '.f.bad input' — e o telefone vive num
+     * .phone-field, que esse selector nao apanha. Quando o erro
+     * era so no telefone, o querySelector devolvia null e o
+     * .focus() rebentava: a mensagem geral ficava no ecra e mais
+     * nada acontecia.
+     *
+     * E o scrollIntoView: num telemovel o campo errado pode estar
+     * fora do ecra, e um vermelho que nao se ve nao ajuda
+     * ninguem.
+     */
+    var primeiro = document.querySelector(
+      '.f.bad input, .f.bad select, .f.bad textarea, .phone-field.bad input'
+    );
+
+    if (primeiro) {
+      primeiro.focus();
+
+      if (primeiro.scrollIntoView) {
+        primeiro.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
     return;
   }
 
