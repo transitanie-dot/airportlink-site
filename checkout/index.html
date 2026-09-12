@@ -359,33 +359,72 @@ html[data-theme="dark"] .locked{background:rgba(255,255,255,.04)}
  * Aqui o botao aperta-se: menos espaco a volta, a seta mais
  * pequena. O numero fica com o resto.
  */
+/**
+ * O botao do indicativo: bandeira e seta, mais nada.
+ *
+ * O "+55" ao lado da bandeira ocupava trinta pixels a dizer o que
+ * a bandeira ja diz — e a linha de ajuda por baixo escreve o nome
+ * do pais por extenso: "Brazil numbers have 10 or 11 digits".
+ *
+ * Sao tres sitios a dizer a mesma coisa. Fica o mais pequeno.
+ *
+ * No menu o indicativo fica: la e o que se procura.
+ */
+.f .phone-pick{padding:0 7px;gap:4px;margin-left:5px}
+.f .phone-pick .phone-dial{display:none}
+.f .phone-pick svg{width:11px;height:11px;margin-left:0}
+
+/* O numero fica com o resto da largura. */
+.f .phone-field > input,
+.f .phone-field > input[type="tel"]{padding:0 13px;margin-left:5px}
+
 @media (max-width:560px){
-  .f .phone-pick{padding:0 5px;gap:3px;margin-left:3px}
-  .f .phone-pick .phone-dial{font-size:11.5px}
-  .f .phone-pick svg{width:10px;height:10px;margin-left:0}
-
-  /**
-   * A bandeira sai no telemovel.
-   *
-   * Sao dezassete pixels a dizer o que o "+55" ja diz, e num ecra
-   * de 360 esses dezassete fazem falta ao numero. No Windows a
-   * bandeira nem sequer aparece — sao as duas letras do pais, que
-   * repetem o indicativo.
-   *
-   * No menu ela fica: la e o que se procura com os olhos.
-   */
-  .f .phone-pick .phone-flag{display:none}
-
+  .f .phone-pick{padding:0 6px;gap:3px;margin-left:4px}
   .f .phone-field > input,
-  .f .phone-field > input[type="tel"]{padding:0 10px;margin-left:3px}
+  .f .phone-field > input[type="tel"]{padding:0 11px;margin-left:4px}
+}
+
+/**
+ * ---------------------------------------------------------------
+ * A DICA DO TELEFONE
+ *
+ * O phone.js poe-na em input.closest('.field'). Nesta pagina a
+ * classe e ".f", nao ".field" — o closest devolve null e a dica
+ * acaba DENTRO do .phone-field, que tem altura fixa de 48px.
+ *
+ * Resultado: transborda e cai por cima do campo seguinte.
+ *
+ * Tirar-lhe o lugar no fluxo e poe-la logo abaixo da caixa
+ * resolve sem tocar no ficheiro partilhado — que e usado por
+ * outras paginas onde a classe e mesmo ".field".
+ * ---------------------------------------------------------------
+ */
+.f .phone-field{position:relative;overflow:visible}
+
+.f .phone-field .phone-hint{position:absolute;top:calc(100% + 6px);
+  left:0;right:0;margin:0;white-space:normal}
+
+/* E o campo do telefone ganha espaco por baixo para ela caber.
+   Por id, e nao com :has() — que o Safari so tem desde 2023 e
+   falharia em silencio nos browsers mais antigos. */
+#phoneField{padding-bottom:22px}
+
+/**
+ * Num ecra estreito a frase parte em duas linhas.
+ *
+ * "Brazil numbers have 10 or 11 digits" cabe numa linha em 400px
+ * e parte em 320 — e uma segunda linha sem espaco reservado volta
+ * a cair por cima do campo seguinte.
+ */
+@media (max-width:480px){
+  #phoneField{padding-bottom:36px}
 }
 
 /**
  * A mensagem de erro e a dica nao se empilham.
  *
- * O phone.js escreve a dele no .field; a mensagem de erro so
- * aparece quando ha erro. Quando aparece, a dica sai — senao sao
- * tres linhas por baixo de um campo.
+ * Quando ha erro, a dica sai — senao sao duas linhas a dizer
+ * coisas diferentes no mesmo sitio.
  */
 .f.bad .phone-hint{display:none}
 </style>
