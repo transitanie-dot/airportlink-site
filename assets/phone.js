@@ -298,9 +298,17 @@ var COUNTRIES = [
     // para os dois se comportarem como um só controlo.
     wrap.appendChild(input);
 
+    /**
+     * A linha de ajuda, fora da caixa do campo.
+     *
+     * O .field é a classe das páginas de conta; o .f é a do
+     * checkout. Sem a segunda, o closest devolvia null e a dica
+     * acabava DENTRO do .phone-field — que tem altura fixa. Ela
+     * transbordava e caía por cima do campo seguinte.
+     */
     var hint = document.createElement('div');
     hint.className = 'phone-hint';
-    (input.closest('.field') || wrap).appendChild(hint);
+    (input.closest('.field') || input.closest('.f') || wrap).appendChild(hint);
 
     /**
      * O botão, agora só com a bandeira e o indicativo.
@@ -332,12 +340,29 @@ var COUNTRIES = [
 
       list.innerHTML = rows.length
         ? rows.map(function (c) {
+            /**
+             * Quantos dígitos tem o número deste país.
+             *
+             * Quem escolhe o Brasil vê "10/11" ANTES de escrever, e
+             * não depois de errar. A mesma informação está na linha
+             * de ajuda por baixo do campo, mas essa só aparece
+             * depois de fechar o menu — e quem está a escolher o
+             * país já está a pensar no número.
+             *
+             * O aria-label leva a frase por extenso: a barra entre
+             * os dois números lê-se mal em voz alta.
+             */
+            var lens = c[3].join('/');
+
             return '<button class="phone-row' + (c === chosen ? ' on' : '') +
               '" type="button" role="option" data-iso="' + esc(c[0]) +
-              '" data-dial="' + esc(c[2]) + '">' +
+              '" data-dial="' + esc(c[2]) + '"' +
+              ' aria-label="' + esc(c[1]) + ', +' + esc(c[2]) + ', ' +
+              esc(c[3].join(' or ')) + ' digits">' +
               '<span class="phone-flag">' + flag(c[0]) + '</span>' +
               '<span class="phone-name">' + esc(c[1]) + '</span>' +
-              '<span class="phone-dial">+' + esc(c[2]) + '</span></button>';
+              '<span class="phone-dial">+' + esc(c[2]) + '</span>' +
+              '<span class="phone-len">' + esc(lens) + '</span></button>';
           }).join('')
         : '<div class="phone-empty">No country matches that.</div>';
 
