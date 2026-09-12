@@ -1,369 +1,538 @@
-/**
- * assets/phone.js — campo de telefone com bandeira e validação
- * ---------------------------------------------------------------
- * Substitui o <select> de prefixos por um seletor com bandeira,
- * pesquisa e verificação do número de dígitos esperado.
- *
- * O <select> original continua no DOM, escondido. Todo o código que
- * já lê $('phoneCode').value continua a funcionar sem saber que isto
- * existe — é o que permite acrescentar isto sem tocar no resto.
- *
- * Sobre as bandeiras: são emoji. Renderizam em Android, iOS, macOS e
- * ChromeOS, mas o Windows mostra as duas letras do país. Não é um
- * defeito a corrigir — é o Windows a não trazer a fonte. Por isso o
- * nome do país aparece sempre ao lado, e a linha lê-se bem nos dois
- * casos.
- * ---------------------------------------------------------------
- */
-(function (global) {
+/* ============================================================
+   AIRPORTLINK — estilos partilhados
+   Carregado por TODAS as páginas, antes do <style> de cada uma.
+   Aqui vive o que se repete: variáveis, base, cabeçalho, rodapé,
+   botões, animações e as secções comuns.
+   O que for específico de uma página fica no <style> dela.
+   ============================================================ */
 
-  /** A tradução, com o inglês como rede. */
-  var T = function (k, en) { return (window.i18n ? window.i18n.t(k, en) : en); };
-  'use strict';
+:root{
+  --ink:#141A28;--slate:#333B50;--sage:#E8EBE7;--paper:#FBFBF8;
+  --amber:#E8A33D;--amber-ink:#8A5A12;--teal:#0F766E;--teal-soft:rgba(15,118,110,.10);
+
+  --bg:var(--sage);--surface:var(--paper);--surface-2:#F3F4F0;
+  --text:#141A28;--muted:#606A7B;
+  --rule:rgba(20,26,40,.12);--rule-strong:rgba(20,26,40,.22);
+  --field:#ffffff;--map-bg:#ECE7DF;
+
+  --ok-bg:#ECFDF5;--ok-text:#065F46;--ok-rule:#A7F3D0;
+  --warn-bg:#FDF6E7;--warn-text:#8A5A12;--warn-rule:#F0D9A8;
+  --err-bg:#FFF1F2;--err-text:#B42318;--err-rule:#FDA29B;
+
+  --display:'Bricolage Grotesque','Inter',system-ui,sans-serif;
+  --body:'Inter',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+
+  --header-h:70px;
+}
+html[data-theme="dark"]{
+  --bg:#0E1219;--surface:#161C27;--surface-2:#1C2431;
+  --text:#E9EDF3;--muted:#98A2B3;
+  --rule:rgba(255,255,255,.12);--rule-strong:rgba(255,255,255,.22);
+  --field:#0F141D;--map-bg:#121720;--amber-ink:#F0B95C;--teal-soft:rgba(79,179,159,.14);
+  --ok-bg:#052E22;--ok-text:#6EE7B7;--ok-rule:#14532D;
+  --warn-bg:#2A1F0F;--warn-text:#F0B95C;--warn-rule:#6B4F1D;
+  --err-bg:#2B1114;--err-text:#FDA4AF;--err-rule:#7F1D1D;
+}
+
+html{color-scheme:light;scroll-behavior:smooth}
+html[data-theme="dark"]{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+  font-family:var(--body);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+img{max-width:100%;display:block}
+.hidden{display:none!important}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.tag{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:#fff;
+  padding:12px 18px;border-radius:0 0 12px 0;z-index:200}
+.skip:focus{left:0}
+
+/* ---------- movimento ---------- */
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes drawLine{to{stroke-dashoffset:0}}
+@keyframes rollIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+@keyframes pricePop{0%{transform:scale(1)}38%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes growLine{to{transform:scaleY(1)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.rise{opacity:0;animation:riseIn .62s cubic-bezier(.22,.68,.35,1) forwards}
+.rise.d1{animation-delay:.06s}.rise.d2{animation-delay:.14s}
+.rise.d3{animation-delay:.22s}.rise.d4{animation-delay:.32s}
+.draw{stroke-dasharray:6 6;stroke-dashoffset:200;animation:drawLine 1.5s .45s ease-out forwards}
+.roll{opacity:0;animation:rollIn .7s .9s cubic-bezier(.22,.68,.35,1) forwards}
+.priced{animation:pricePop .45s ease-out}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rise,.roll{opacity:1;animation:none}
+  .draw{stroke-dashoffset:0;animation:none}
+  .priced{animation:none}
+}
+
+/* ============================================================
+   CABEÇALHO
+   ============================================================ */
+.site-header{position:sticky;top:0;z-index:100;background:var(--bg);
+  border-bottom:1px solid transparent;transition:border-color .2s ease}
+.site-header.stuck{border-bottom-color:var(--rule)}
+.header-inner{height:var(--header-h);display:flex;align-items:center;gap:20px;
+  max-width:1180px;margin:0 auto;padding:0 20px}
+.logo{display:inline-flex;align-items:center;gap:1px;font-family:var(--display);font-weight:800;
+  font-size:19px;letter-spacing:-.03em;text-decoration:none;color:var(--text);white-space:nowrap}
+.logo b{color:var(--teal);font-weight:800}
+/* No tema escuro o LINK continua verde, não âmbar: são as mesmas
+   cores do logótipo oficial. Só o tom clareia — o #0F766E tem
+   contraste 3.2:1 sobre o fundo escuro e ficaria a desaparecer. */
+html[data-theme="dark"] .logo b{color:#17A398}
+.logo .dot{width:6px;height:6px;border-radius:999px;background:#fd8a2b;
+  margin-left:3px;align-self:center;flex:0 0 auto}
+.site-nav{display:flex;align-items:center;gap:4px;margin-left:14px}
+/* Numa língua com palavras longas — "Reservar transferência",
+   "Conduce con nosotros" — o rótulo parte em duas linhas e o menu
+   fica desalinhado. Numa barra de navegação, cada entrada é uma
+   coisa só: fica numa linha, e se o espaço acabar, encolhe. */
+.site-nav a{display:inline-flex;align-items:center;justify-content:center;
+  padding:9px 13px;border-radius:11px;text-decoration:none;color:var(--muted);
+  font-size:14.5px;font-weight:500;line-height:1.2;white-space:nowrap;
+  transition:color .15s ease,background .15s ease}
+
+/* Entre 1000 e 1180px o menu aperta-se em vez de partir. */
+@media (max-width:1180px){
+  .site-nav{gap:1px;margin-left:8px}
+  .site-nav a{padding:9px 9px;font-size:13.5px}
+}
+
+/* Os botões do canto seguem a mesma regra. */
+.hbtn{white-space:nowrap}
+.site-nav a:hover{color:var(--text);background:var(--surface)}
+.site-nav a.on{color:var(--text);font-weight:600}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--rule-strong);
+  background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.icon-btn svg{width:17px;height:17px}
+/**
+ * O boneco só existe no telemóvel.
+ *
+ * Num ecrã largo há espaço para "My account", e um rótulo é
+ * sempre mais claro do que um ícone — ninguém aprende um símbolo
+ * novo se puder ler.
+ */
+.acc-icon{display:none}
+
+.account-btn{text-decoration:none;color:var(--text)}
+.account-btn:hover{border-color:var(--teal);color:var(--teal)}
+.icon-btn:hover{border-color:var(--teal)}
+.burger{display:none}
+.hbtn{display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 20px;
+  border:0;border-radius:13px;background:var(--ink);color:#fff;font-family:var(--mono);font-size:11.5px;
+  font-weight:600;letter-spacing:.09em;text-transform:uppercase;cursor:pointer;text-decoration:none;
+  transition:transform .12s ease;white-space:nowrap}
+.hbtn:hover{transform:translateY(-1px)}
+.hbtn.line{background:transparent;color:var(--text);border:1px solid var(--rule-strong)}
+.hbtn.amber{background:var(--amber);color:#141A28}
+html[data-theme="dark"] .hbtn{background:#E9EDF3;color:#141A28}
+.mobile-menu{position:fixed;inset:var(--header-h) 0 0;background:var(--bg);z-index:99;
+  padding:24px 20px;display:none;flex-direction:column;gap:6px;overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-menu a{padding:15px 14px;border-radius:14px;text-decoration:none;color:var(--text);
+  font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.02em;
+  border-bottom:1px solid var(--rule)}
+.mobile-menu .hbtn{margin-top:18px;height:52px}
+@media (max-width:900px){
+  .site-nav{display:none}
+  .burger{display:flex}
 
   /**
-   * País, prefixo e comprimentos nacionais aceites.
+   * O botão de conta FICA no cabeçalho.
    *
-   * Os comprimentos vêm dos planos de numeração de cada país. Servem
-   * para avisar, nunca para bloquear: um plano muda, e um campo que
-   * recusa um número válido é pior do que um que aceita um inválido.
+   * Saía abaixo dos 900px e passava para dentro do menu, a dois
+   * toques. Mas entrar na conta é das coisas que mais se faz — e
+   * quem já reservou volta para ver a viagem, não para ler as
+   * páginas do menu.
+   *
+   * Fica mais estreito, sem o texto completo, mas fica.
+   */
+  .header-right .hbtn.line{display:inline-flex;padding:0 12px;font-size:11px}
+  /* O botão principal pode ser curto ("Get a price") ou longo
+     ("Become a partner"). Sem limite, o longo empurrava o
+     hambúrguer para fora da margem. */
+  .header-right .hbtn{max-width:44vw;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;padding:0 14px}
+}
+@media (max-width:560px){
+  /**
+   * Num ecrã de 380px o canto leva quatro coisas: língua, tema,
+   * conta e menu. Somadas ao logótipo dão 368 dos 380 pixels — doze
+   * de folga, que é pouco para um ecrã de 360.
+   *
+   * Por isso o botão do tema sai: mudar de tema faz-se uma vez e
+   * fica guardado, entrar na conta faz-se sempre. Ele continua no
+   * menu, a dois toques.
    */
   /**
- * Os países, por ordem alfabética.
+   * O botão secundário sai; o do tema fica.
+   *
+   * As contas antigas assumiam um botão de texto. São dois — "Sign
+   * in" e "Get a price" — e o segundo empurrava o menu para fora do
+   * ecrã.
+   *
+   * Tirar o botão do tema resolvia a largura, mas tirava uma coisa
+   * que se usa: quem lê no escuro quer mudar onde está, não a dois
+   * toques dentro do menu.
+   *
+   * O de texto é que sai. Ocupa quatro vezes mais espaço e o mesmo
+   * link está no menu e na página.
+   */
+  .header-right .hbtn:not(.line){display:none}
+  .header-right #themeBtn{display:flex}
+
+  /**
+   * No telemóvel, o boneco em vez do texto.
+   *
+   * O !important é feio e é de propósito. O .acc-text tem também
+   * as classes .hbtn e .line, e há regras dessas espalhadas pelo
+   * ficheiro — uma delas ganhava por vir mais abaixo, e ficavam
+   * os dois.
+   *
+   * Sem isto, um admin via "Operations" E o boneco lado a lado,
+   * que é o dobro do espaço para o mesmo link.
+   */
+  .header-right .acc-text{display:none !important}
+  .header-right .acc-icon{display:flex !important}
+
+  .header-right .hbtn.line{padding:0 10px;font-size:10.5px;letter-spacing:.04em}
+  .header-inner{padding:0 14px;gap:10px}
+
+  /* O código da língua ao lado do globo é o que sobra. */
+  .lang-code{display:none}
+  .icon-btn{width:38px;height:38px}
+}
+
+/* ============================================================
+   RODAPÉ
+   ============================================================ */
+.site-footer{background:var(--ink);color:#B9C2D2;padding:56px 0 30px;margin-top:20px}
+.footer-grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:36px}
+.footer-grid h3{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:#6C7889;margin:0 0 16px}
+.footer-grid a{display:block;color:#B9C2D2;text-decoration:none;font-size:14.5px;
+  padding:6px 0;transition:color .15s ease}
+.footer-grid a:hover{color:#fff}
+/* O rodapé é sempre escuro, por isso o LINK fica âmbar como no tema
+   escuro do cabeçalho — não é uma inconsistência, é a mesma regra
+   aplicada ao fundo que ali existe. */
+/* span e não <a>: sem cursor de mão nem sublinhado ao passar. */
+.footer-brand .logo{color:#fff;font-size:21px;margin-bottom:14px;cursor:default}
+/* O LINK do rodapé segue a mesma regra do tema escuro. */
+.footer-brand .logo b{color:#17A398}
+.footer-brand p{margin:0;color:#8C97A8;font-size:14px;line-height:1.7;max-width:38ch}
+.footer-bottom{margin-top:40px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:#6C7889}
+@media (max-width:900px){
+  .footer-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .footer-brand{grid-column:1/-1}
+}
+@media (max-width:560px){.footer-grid{grid-template-columns:1fr}}
+
+/* ============================================================
+   SECÇÕES COMUNS
+   ============================================================ */
+.band{padding:62px 0}
+.band.alt{background:var(--surface)}
+.band-head{max-width:54ch;margin-bottom:34px}
+.band-head .tag{color:var(--teal);display:block;margin-bottom:12px}
+html[data-theme="dark"] .band-head .tag{color:var(--amber)}
+.band-head h2{font-family:var(--display);font-weight:700;letter-spacing:-.035em;
+  font-size:clamp(25px,3.3vw,36px);line-height:1.08;margin:0 0 12px}
+.band-head p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.68}
+
+.hero{padding:40px 0 20px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:
+  radial-gradient(720px 360px at 84% 6%, rgba(232,163,61,.20), transparent 64%),
+  radial-gradient(520px 320px at 2% 88%, rgba(15,118,110,.12), transparent 62%)}
+html[data-theme="dark"] .hero::after{background:
+  radial-gradient(720px 360px at 84% 6%, rgba(232,163,61,.10), transparent 64%),
+  radial-gradient(520px 320px at 2% 88%, rgba(15,118,110,.16), transparent 62%)}
+.hero-inner{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 20px}
+/* O ::after do hero é uma camada de cor por cima. Sem isto, qualquer
+   página que use .wrap em vez de .hero-inner fica com o conteúdo
+   por baixo do gradiente e parece desbotada. */
+.hero > .wrap{position:relative;z-index:1}
+.hero-grid{position:relative;z-index:1}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.kicker{display:inline-flex;align-items:center;gap:9px;color:var(--amber-ink);margin-bottom:14px}
+.kicker .bar{width:26px;height:2px;background:var(--amber)}
+.hero h1{font-family:var(--display);font-weight:800;letter-spacing:-.04em;line-height:1.02;
+  font-size:clamp(29px,3.9vw,44px);margin:0 0 14px;max-width:18ch}
+.hero h1 em{font-style:normal;color:var(--teal)}
+html[data-theme="dark"] .hero h1 em{color:var(--amber)}
+.hero .lead{margin:0 0 20px;font-size:15.5px;line-height:1.62;color:var(--muted);max-width:48ch}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-note{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:16px;letter-spacing:.03em}
+
+.flow{background:var(--surface);border:1px solid var(--rule);border-radius:24px;padding:20px 22px}
+.flow .tag{color:var(--muted);display:block;margin-bottom:16px}
+.flow-list{list-style:none;margin:0;padding:0;position:relative}
+.flow-list::before{content:"";position:absolute;left:19px;top:26px;bottom:26px;
+  border-left:2px dashed var(--rule-strong);transform:scaleY(0);transform-origin:top;
+  animation:growLine .9s .5s cubic-bezier(.22,.68,.35,1) forwards}
+.flow-step{display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:start;position:relative;z-index:1}
+.flow-step + .flow-step{margin-top:16px}
+.flow-dot{width:40px;height:40px;border-radius:999px;background:var(--teal-soft);
+  border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.flow-dot svg{width:19px;height:19px;color:var(--teal)}
+html[data-theme="dark"] .flow-dot svg{color:var(--amber)}
+.flow-step strong{display:block;font-family:var(--display);font-weight:700;font-size:15px;
+  letter-spacing:-.01em;margin-bottom:3px;padding-top:2px}
+.flow-step span{color:var(--muted);font-size:13.5px;line-height:1.55}
+@media (prefers-reduced-motion:reduce){.flow-list::before{transform:scaleY(1);animation:none}}
+
+.proofs{display:flex;gap:8px;flex-wrap:wrap;margin-top:0}
+.proof{display:inline-flex;align-items:center;gap:8px;background:var(--surface);
+  border:1px solid var(--rule);border-radius:999px;padding:8px 13px;font-size:12.5px;font-weight:600}
+.proof svg{width:15px;height:15px;color:var(--teal);flex:0 0 auto}
+html[data-theme="dark"] .proof svg{color:var(--amber)}
+
+.rail{position:relative;padding-left:34px}
+.rail::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;border-left:2px dashed var(--rule-strong)}
+.stop{position:relative;padding-bottom:32px}
+.stop:last-child{padding-bottom:0}
+.stop::before{content:"";position:absolute;left:-34px;top:3px;width:18px;height:18px;
+  border-radius:999px;background:var(--bg);border:2px solid var(--teal)}
+.stop:last-child::before{background:var(--teal)}
+.stop .tag{color:var(--muted);display:block;margin-bottom:6px}
+.stop h3{font-family:var(--display);font-weight:700;font-size:18px;margin:0 0 6px;letter-spacing:-.02em}
+.stop p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.65;max-width:56ch}
+
+.qa{border-top:1px solid var(--rule)}
+.qa-item{padding:20px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:32px 1fr;gap:15px}
+.qa-item .n{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--amber-ink);padding-top:2px}
+.qa-item h3{font-family:var(--display);font-weight:700;font-size:16px;margin:0 0 7px;letter-spacing:-.015em}
+.qa-item p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.68}
+
+.cta-band{border:1px solid var(--rule);border-radius:26px;padding:34px;background:var(--surface);
+  display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.cta-band h2{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.03em;margin:0 0 8px}
+.cta-band p{margin:0;color:var(--muted);font-size:15px;line-height:1.62;max-width:56ch}
+
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;gap:26px}
+  .cta-band{grid-template-columns:1fr}
+  .cta-band .hbtn{width:100%}
+}
+@media (max-width:600px){
+  .wrap,.hero-inner{padding:0 14px}
+  .hero{padding:36px 0 20px}
+  .band{padding:44px 0}
+}
+
+
+/* ============================================================
+   BARRA LATERAL DAS PÁGINAS DE CONTA
+   Usada pelo /myaccount e pelo /support. Era um bloco azul-escuro
+   que agora choca com o cabeçalho e o rodapé; passa a ser um cartão
+   do sistema, com as mesmas etiquetas em monoespaçado.
+   ============================================================ */
+.side{width:250px;flex:0 0 250px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:24px;padding:20px 16px;display:flex;flex-direction:column;gap:4px;
+  position:sticky;top:calc(var(--header-h) + 20px)}
+.side-title{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);padding:4px 12px 12px}
+.side-item{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  padding:11px 13px;border:0;border-radius:13px;background:transparent;color:var(--text);
+  font-size:14.5px;font-weight:500;cursor:pointer;transition:background .15s ease,color .15s ease}
+.side-item:hover{background:var(--surface-2)}
+.side-item.active{background:var(--teal-soft);color:var(--teal);font-weight:700}
+html[data-theme="dark"] .side-item.active{color:var(--amber)}
+.side-item svg{width:17px;height:17px;flex:0 0 auto;opacity:.9}
+.side-actions{margin-top:18px;padding-top:18px;border-top:1px solid var(--rule);
+  display:flex;flex-direction:column;gap:9px}
+.side-btn{display:inline-flex;align-items:center;justify-content:center;height:46px;
+  border:0;border-radius:14px;background:var(--ink);color:#fff;font-family:var(--mono);
+  font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  cursor:pointer;transition:transform .12s ease}
+.side-btn:hover:not(:disabled){transform:translateY(-1px)}
+.side-btn:disabled{opacity:.55;cursor:not-allowed}
+.side-btn.teal{background:var(--teal);color:#fff}
+.side-btn.line{background:transparent;color:var(--text);border:1px solid var(--rule-strong)}
+html[data-theme="dark"] .side-btn{background:#E9EDF3;color:#141A28}
+html[data-theme="dark"] .side-btn.teal{background:var(--teal);color:#fff}
+html[data-theme="dark"] .side-btn.line{background:transparent;color:var(--text)}
+@media (max-width:860px){
+  .side{width:100%;flex:0 0 auto;position:static;flex-direction:row;flex-wrap:wrap;
+    align-items:center;gap:8px;padding:14px}
+  .side-title{display:none}
+  .side-item{width:auto;flex:1 1 auto;justify-content:center;min-width:120px}
+  .side-actions{width:100%;margin-top:10px;padding-top:14px;
+    flex-direction:row;flex-wrap:wrap}
+  .side-actions .side-btn{flex:1 1 140px}
+}
+
+/* ============================================================
+   CAMPO DE TELEFONE
+   O <select> original fica escondido e continua a ser a fonte da
+   verdade; isto é a camada visível por cima.
+
+   UMA CAIXA, NÃO DUAS
+   Eram dois controlos lado a lado, com a mesma altura, a mesma
+   moldura e um espaço entre eles — e liam-se como dois campos
+   diferentes, quando são um número de telefone só.
+
+   Agora o indicativo vive DENTRO do campo, pequeno e à esquerda,
+   separado por um risco. É a mesma forma que o cartão de crédito
+   tem: o essencial em tamanho normal, o acessório em corpo menor.
+   ============================================================ */
+/* Antes do JS correr, o contentor mantém a linha de pé: sem isto o
+   campo saltava de posição ao carregar a página. */
+[data-phone-mount]{position:relative}
+[data-phone-mount] > select{width:100%}
+.phone-field{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);
+  align-items:center;height:52px;border-radius:15px;
+  border:1px solid var(--rule-strong);background:var(--field);
+  transition:border-color .15s ease,box-shadow .15s ease}
+/* A moldura reage ao foco do campo inteiro, não de cada peça: para
+   quem está a escrever, isto é um controlo só. */
+.phone-field:focus-within{border-color:var(--teal);box-shadow:0 0 0 4px rgba(15,118,110,.14)}
+.phone-pick{display:inline-flex;align-items:center;gap:6px;height:38px;
+  margin:0 0 0 6px;padding:0 9px;border:0;border-radius:10px;
+  background:transparent;cursor:pointer;white-space:nowrap;
+  transition:background .15s ease}
+.phone-pick:hover{background:var(--surface-2)}
+.phone-pick:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+.phone-pick svg{width:13px;height:13px;color:var(--muted);margin-left:1px}
+.phone-flag{font-size:17px;line-height:1}
+/* O Windows não traz a fonte das bandeiras e mostra as duas letras.
+   Escondemos o nosso ISO aí, para não ficar escrito duas vezes. */
+.phone-iso{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted);
+  letter-spacing:.04em}
+/* Pequeno e discreto no botão: é uma referência, não o conteúdo. Na
+   lista do menu volta ao tamanho normal, porque lá é o que se
+   procura. */
+.phone-dial{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--muted)}
+
+/**
+ * O campo do número, sem moldura própria.
  *
- * Estavam por relevância: Portugal, Espanha, França primeiro, e o
- * resto sem ordem nenhuma. Numa lista de oitenta, procurar
- * "Norway" a olho entre "Hong Kong" e "Taiwan" é procurar às
- * cegas.
- *
- * Alfabético é o que toda a gente espera, e é o que permite
- * saltar com o teclado.
+ * O seletor tem de ser específico: as regras de cada página dão
+ * altura, moldura e cantos a todos os input[type="tel"], e ganham
+ * a uma regra de classe simples.
  */
-var COUNTRIES = [
-    ['DZ', 'Algeria',             '213',   [9]],
-    ['AR', 'Argentina',           '54',    [10]],
-    ['AU', 'Australia',           '61',    [9]],
-    ['AT', 'Austria',             '43',    [10, 11]],
-    ['BH', 'Bahrain',             '973',   [8]],
-    ['BE', 'Belgium',             '32',    [9]],
-    ['BR', 'Brazil',              '55',    [10, 11]],
-    ['BG', 'Bulgaria',            '359',   [9]],
-    ['CA', 'Canada',              '1',     [10]],
-    ['CV', 'Cape Verde',          '238',   [7]],
-    ['CL', 'Chile',               '56',    [9]],
-    ['CN', 'China',               '86',    [11]],
-    ['CO', 'Colombia',            '57',    [10]],
-    ['CR', 'Costa Rica',          '506',   [8]],
-    ['HR', 'Croatia',             '385',   [9]],
-    ['CY', 'Cyprus',              '357',   [8]],
-    ['CZ', 'Czechia',             '420',   [9]],
-    ['DK', 'Denmark',             '45',    [8]],
-    ['DO', 'Dominican Republic',  '1',     [10]],
-    ['EG', 'Egypt',               '20',    [10]],
-    ['EE', 'Estonia',             '372',   [7, 8]],
-    ['FI', 'Finland',             '358',   [9, 10]],
-    ['FR', 'France',              '33',    [9]],
-    ['DE', 'Germany',             '49',    [10, 11]],
-    ['GR', 'Greece',              '30',    [10]],
-    ['HK', 'Hong Kong',           '852',   [8]],
-    ['HU', 'Hungary',             '36',    [9]],
-    ['IS', 'Iceland',             '354',   [7]],
-    ['IN', 'India',               '91',    [10]],
-    ['ID', 'Indonesia',           '62',    [9, 10, 11]],
-    ['IE', 'Ireland',             '353',   [9]],
-    ['IL', 'Israel',              '972',   [9]],
-    ['IT', 'Italy',               '39',    [9, 10]],
-    ['JP', 'Japan',               '81',    [10]],
-    ['JO', 'Jordan',              '962',   [9]],
-    ['KE', 'Kenya',               '254',   [9]],
-    ['KW', 'Kuwait',              '965',   [8]],
-    ['LV', 'Latvia',              '371',   [8]],
-    ['LT', 'Lithuania',           '370',   [8]],
-    ['LU', 'Luxembourg',          '352',   [9]],
-    ['MY', 'Malaysia',            '60',    [9, 10]],
-    ['MV', 'Maldives',            '960',   [7]],
-    ['MT', 'Malta',               '356',   [8]],
-    ['MX', 'Mexico',              '52',    [10]],
-    ['MA', 'Morocco',             '212',   [9]],
-    ['NL', 'Netherlands',         '31',    [9]],
-    ['NZ', 'New Zealand',         '64',    [8, 9]],
-    ['NG', 'Nigeria',             '234',   [10]],
-    ['NO', 'Norway',              '47',    [8]],
-    ['OM', 'Oman',                '968',   [8]],
-    ['PK', 'Pakistan',            '92',    [10]],
-    ['PA', 'Panama',              '507',   [8]],
-    ['PE', 'Peru',                '51',    [9]],
-    ['PH', 'Philippines',         '63',    [10]],
-    ['PL', 'Poland',              '48',    [9]],
-    ['PT', 'Portugal',            '351',   [9]],
-    ['QA', 'Qatar',               '974',   [8]],
-    ['RO', 'Romania',             '40',    [9]],
-    ['RU', 'Russia',              '7',     [10]],
-    ['SA', 'Saudi Arabia',        '966',   [9]],
-    ['RS', 'Serbia',              '381',   [9]],
-    ['SG', 'Singapore',           '65',    [8]],
-    ['SK', 'Slovakia',            '421',   [9]],
-    ['SI', 'Slovenia',            '386',   [8]],
-    ['ZA', 'South Africa',        '27',    [9]],
-    ['KR', 'South Korea',         '82',    [9, 10]],
-    ['ES', 'Spain',               '34',    [9]],
-    ['LK', 'Sri Lanka',           '94',    [9]],
-    ['SE', 'Sweden',              '46',    [9]],
-    ['CH', 'Switzerland',         '41',    [9]],
-    ['TW', 'Taiwan',              '886',   [9]],
-    ['TH', 'Thailand',            '66',    [9]],
-    ['TN', 'Tunisia',             '216',   [8]],
-    ['TR', 'Turkey',              '90',    [10]],
-    ['UA', 'Ukraine',             '380',   [9]],
-    ['AE', 'United Arab Emirates','971',   [9]],
-    ['GB', 'United Kingdom',      '44',    [10]],
-    ['US', 'United States',       '1',     [10]],
-    ['UY', 'Uruguay',             '598',   [8]],
-    ['VN', 'Vietnam',             '84',    [9]]
-  ];
+.phone-field > input,
+.phone-field > input[type="tel"]{
+  height:50px;width:100%;border:0;border-left:1px solid var(--rule);
+  border-radius:0 15px 15px 0;background:transparent;
+  padding:0 15px;margin-left:6px;font-size:15px;outline:none;box-shadow:none}
+.phone-field > input:focus,
+.phone-field > input[type="tel"]:focus{border-color:var(--rule);box-shadow:none;outline:none}
+/* Os avisos pintam a caixa toda. */
+.phone-field.bad{border-color:var(--err-rule)}
+.phone-field.good{border-color:var(--teal)}
 
-  /** A bandeira a partir do código ISO, usando os símbolos regionais. */
-  function flag(iso) {
-    return String.fromCodePoint.apply(null, iso.toUpperCase().split('')
-      .map(function (c) { return 0x1F1E6 + c.charCodeAt(0) - 65; }));
-  }
+.phone-menu{position:absolute;top:calc(100% + 6px);left:0;width:min(340px,100%);
+  background:var(--surface);border:1px solid var(--rule-strong);border-radius:18px;
+  box-shadow:0 18px 44px rgba(20,26,40,.18);z-index:60;display:none;overflow:hidden}
+html[data-theme="dark"] .phone-menu{box-shadow:0 18px 44px rgba(0,0,0,.5)}
+.phone-menu.show{display:block}
+.phone-search{width:100%;height:46px;border:0;border-bottom:1px solid var(--rule);
+  background:var(--surface-2);padding:0 16px;font-size:14px;outline:none;border-radius:0}
+.phone-list{max-height:268px;overflow-y:auto;padding:6px}
+.phone-row{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  padding:10px 12px;border:0;border-radius:11px;background:transparent;cursor:pointer;
+  color:var(--text);font-size:14px}
+.phone-row:hover{background:var(--surface-2)}
+.phone-row.on{background:var(--teal-soft)}
+.phone-row .phone-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.phone-row .phone-dial{color:var(--muted);font-size:12.5px}
+.phone-empty{padding:22px;text-align:center;color:var(--muted);font-size:13.5px}
 
-  function esc(v) {
-    return String(v === null || v === undefined ? '' : v)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
+.phone-hint{margin-top:7px;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.phone-hint.good{color:var(--ok-text)}
+.phone-hint.bad{color:var(--err-text)}
 
-  function digitsOf(value) {
-    return String(value || '').replace(/\D/g, '');
-  }
+/**
+ * No telemóvel continua numa linha.
+ *
+ * Empilhava, e num ecrã estreito isso dava duas caixas do tamanho
+ * todo para um campo só. Com o indicativo pequeno, a linha inteira
+ * cabe à vontade em 320 pixels.
+ */
+@media (max-width:560px){
+  .phone-pick{padding:0 7px;gap:5px}
+  .phone-field > input,
+  .phone-field > input[type="tel"]{padding:0 12px}
+  .phone-menu{width:100%}
+}
 
-  function mount(options) {
-    var select = document.getElementById(options.select);
-    var input = document.getElementById(options.input);
-    if (!select || !input) return null;
+/* ---------- o seletor de língua, no cabeçalho ----------
+   Um menu e não uma fila de botões: com mais línguas a caminho, os
+   botões deixariam de caber ao lado do logótipo no telemóvel. */
+.lang-wrap{position:relative}
+.lang-btn{display:inline-flex;align-items:center;gap:5px;width:auto;padding:0 10px}
+.lang-btn svg{width:17px;height:17px}
+.lang-code{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase}
+.lang-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;z-index:120;
+  min-width:186px;max-height:min(420px,70vh);overflow-y:auto;background:var(--surface);
+  border:1px solid var(--rule-strong);border-radius:14px;padding:5px;
+  box-shadow:0 18px 40px rgba(20,26,40,.18)}
+.lang-menu.on{display:block}
+.lang-menu button{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  width:100%;border:0;background:transparent;cursor:pointer;border-radius:10px;
+  padding:9px 12px;font-family:var(--body);font-size:13.5px;font-weight:500;color:var(--text);
+  text-align:left}
+.lang-menu button:hover{background:var(--surface-2)}
+.lang-menu button[aria-current="true"]{background:var(--ink);color:#fff}
+html[data-theme="dark"] .lang-menu button[aria-current="true"]{background:#D8DEE8;color:#141A28}
+.lang-tag{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;opacity:.6}
+/**
+ * O código da língua fica visível.
+ *
+ * Escondia-se abaixo dos 520px e restava um globo de 40 pixels —
+ * pequeno para o polegar, e sem dizer que língua está escolhida.
+ * "EN" ao lado do globo custa doze pixels e responde à pergunta.
+ */
+@media (max-width:520px){
+  .lang-btn .lang-code{display:inline}
+  /* Com o código de volta, o botão precisa de largura para ele.
+     O padding:0 que aqui estava era o que o fazia parecer
+     esmagado — e um alvo de 40 pixels é o mínimo para um polegar,
+     não uma meta. */
+  .lang-btn{width:auto;padding:0 11px;min-width:56px}
+}
 
-    var chosen = COUNTRIES[0];
+/* ---------- árabe: da direita para a esquerda ----------
+   O dir="rtl" espelha o texto e a ordem das colunas sozinho. Só as
+   setas e o menu de língua, que estão presos a um lado, precisam de
+   ser virados à mão. */
+html[dir="rtl"] .lang-menu{right:auto;left:0}
+html[dir="rtl"] .dest-nav.prev{left:auto;right:-14px;transform:translateY(-50%) scaleX(-1)}
+html[dir="rtl"] .dest-nav.next{right:auto;left:-14px;transform:translateY(-50%) scaleX(-1)}
+html[dir="rtl"] .leg-arrow svg,
+html[dir="rtl"] .acct-back{transform:scaleX(-1)}
+html[dir="rtl"] .path-line{left:auto;right:6px}
+/* O campo de telefone espelha-se com o resto: o indicativo passa
+   para a direita e o risco muda de lado com ele. */
+html[dir="rtl"] .phone-field > input,
+html[dir="rtl"] .phone-field > input[type="tel"]{
+  border-left:0;border-right:1px solid var(--rule);
+  border-radius:15px 0 0 15px;margin-left:0;margin-right:6px}
+html[dir="rtl"] .phone-pick{margin:0 6px 0 0}
+html[dir="rtl"] .phone-menu{left:auto;right:0}
+@media (max-width:1100px){
+  html[dir="rtl"] .dest-nav.prev{right:4px}
+  html[dir="rtl"] .dest-nav.next{left:4px}
+}
 
-    // O select fica no DOM e continua a ser a fonte da verdade: é
-    // ele que o resto do código lê.
-    select.style.display = 'none';
-    select.setAttribute('aria-hidden', 'true');
-    select.tabIndex = -1;
-
-    var wrap = document.createElement('div');
-    wrap.className = 'phone-field';
-    select.parentNode.insertBefore(wrap, select);
-    wrap.appendChild(select);
-
-    var button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'phone-pick';
-    button.setAttribute('aria-haspopup', 'listbox');
-    button.setAttribute('aria-expanded', 'false');
-    wrap.appendChild(button);
-
-    var menu = document.createElement('div');
-    menu.className = 'phone-menu';
-    menu.innerHTML =
-      '<input class="phone-search" type="text" placeholder="Search country or code" ' +
-      'autocomplete="off" spellcheck="false">' +
-      '<div class="phone-list" role="listbox"></div>';
-    wrap.appendChild(menu);
-
-    var search = menu.querySelector('.phone-search');
-    var list = menu.querySelector('.phone-list');
-
-    // O campo do número passa a viver dentro do mesmo invólucro,
-    // para os dois se comportarem como um só controlo.
-    wrap.appendChild(input);
-
-    var hint = document.createElement('div');
-    hint.className = 'phone-hint';
-    (input.closest('.field') || wrap).appendChild(hint);
-
-    function paintButton() {
-      button.innerHTML = '<span class="phone-flag">' + flag(chosen[0]) + '</span>' +
-        '<span class="phone-iso">' + esc(chosen[0]) + '</span>' +
-        '<span class="phone-dial">+' + esc(chosen[2]) + '</span>' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
-        'stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>';
-      button.setAttribute('aria-label', chosen[1] + ', +' + chosen[2]);
-    }
-
-    function renderList() {
-      var q = (search.value || '').toLowerCase().trim();
-
-      var rows = COUNTRIES.filter(function (c) {
-        if (!q) return true;
-        return c[1].toLowerCase().indexOf(q) !== -1 ||
-               c[0].toLowerCase().indexOf(q) === 0 ||
-               c[2].indexOf(q.replace('+', '')) === 0;
-      });
-
-      list.innerHTML = rows.length
-        ? rows.map(function (c) {
-            return '<button class="phone-row' + (c === chosen ? ' on' : '') +
-              '" type="button" role="option" data-iso="' + esc(c[0]) +
-              '" data-dial="' + esc(c[2]) + '">' +
-              '<span class="phone-flag">' + flag(c[0]) + '</span>' +
-              '<span class="phone-name">' + esc(c[1]) + '</span>' +
-              '<span class="phone-dial">+' + esc(c[2]) + '</span></button>';
-          }).join('')
-        : '<div class="phone-empty">No country matches that.</div>';
-
-      Array.prototype.forEach.call(list.querySelectorAll('.phone-row'), function (row) {
-        row.addEventListener('click', function () {
-          pick(row.getAttribute('data-iso'), row.getAttribute('data-dial'));
-          close();
-          input.focus();
-        });
-      });
-    }
-
-    function pick(iso, dial) {
-      var found = COUNTRIES.find(function (c) { return c[0] === iso && c[2] === dial; });
-      if (!found) return;
-
-      chosen = found;
-      select.value = dial;
-      // Um evento a sério, para quem estiver a ouvir o select saber
-      // que mudou.
-      select.dispatchEvent(new Event('change', { bubbles: true }));
-      paintButton();
-      validate();
-    }
-
-    function open() {
-      menu.classList.add('show');
-      button.setAttribute('aria-expanded', 'true');
-      search.value = '';
-      renderList();
-      setTimeout(function () { search.focus(); }, 30);
-    }
-
-    function close() {
-      menu.classList.remove('show');
-      button.setAttribute('aria-expanded', 'false');
-    }
-
-    button.addEventListener('click', function () {
-      menu.classList.contains('show') ? close() : open();
-    });
-
-    search.addEventListener('input', renderList);
-
-    search.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') { close(); button.focus(); }
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        var first = list.querySelector('.phone-row');
-        if (first) first.click();
-      }
-    });
-
-    document.addEventListener('click', function (e) {
-      if (!wrap.contains(e.target)) close();
-    });
-
-    /**
-     * Avisa, não bloqueia.
-     *
-     * Um plano de numeração muda e um campo que recusa um número
-     * válido é pior do que um que aceita um inválido: o primeiro
-     * impede a reserva, o segundo dá um telefonema.
-     */
-    function validate() {
-      var digits = digitsOf(input.value);
-      var expected = chosen[3];
-
-      if (!digits) {
-        hint.textContent = expected.length === 1
-          ? chosen[1] + ' numbers have ' + expected[0] + ' digits.'
-          : chosen[1] + ' numbers have ' + expected.join(' or ') + ' digits.';
-        hint.className = 'phone-hint';
-        wrap.classList.remove('bad', 'good');
-        return true;
-      }
-
-      var ok = expected.indexOf(digits.length) !== -1;
-
-      if (ok) {
-        hint.textContent = T('ph.looksRight', 'Looks right.');
-        hint.className = 'phone-hint good';
-        wrap.classList.remove('bad');
-        wrap.classList.add('good');
-      } else {
-        // Com marcadores, e não texto colado: a ordem das palavras
-        // muda de língua para língua, e em alemão o país vem antes.
-        hint.textContent = T('ph.wrongLength',
-            '{n} digits entered. {pais} numbers usually have {esperado}.')
-          .replace('{n}', digits.length)
-          .replace('{pais}', chosen[1])
-          .replace('{esperado}', expected.join(' ' + T('ph.or', 'or') + ' '));
-        hint.className = 'phone-hint bad';
-        wrap.classList.remove('good');
-        wrap.classList.add('bad');
-      }
-
-      return ok;
-    }
-
-    input.addEventListener('input', function () {
-      // O zero inicial é o prefixo nacional e não se marca do
-      // estrangeiro. Tirá-lo em silêncio evita a chamada falhada.
-      var digits = digitsOf(input.value);
-      if (digits.length > 1 && digits.charAt(0) === '0') {
-        digits = digits.replace(/^0+/, '');
-      }
-      if (digits !== digitsOf(input.value)) input.value = digits;
-      validate();
-    });
-
-    input.addEventListener('blur', validate);
-
-    /** Aceita "+351 912345678" ou "912345678" e distribui pelos dois. */
-    function setValue(full) {
-      var raw = String(full || '').trim();
-      if (!raw) { input.value = ''; validate(); return; }
-
-      if (raw.charAt(0) === '+') {
-        var digits = digitsOf(raw);
-        var byLength = COUNTRIES.slice().sort(function (a, b) {
-          return b[2].length - a[2].length;
-        });
-        // Os prefixos mais longos primeiro: +351 tem de ganhar ao
-        // +35, senão Portugal vira Chipre.
-        var match = byLength.find(function (c) { return digits.indexOf(c[2]) === 0; });
-        if (match) {
-          pick(match[0], match[2]);
-          input.value = digits.slice(match[2].length);
-          validate();
-          return;
-        }
-      }
-
-      input.value = digitsOf(raw);
-      validate();
-    }
-
-    function full() {
-      var digits = digitsOf(input.value);
-      return digits ? '+' + chosen[2] + ' ' + digits : '';
-    }
-
-    // Arranque: respeita o que já lá estava.
-    var initial = COUNTRIES.find(function (c) { return c[2] === select.value; })
-      || COUNTRIES.find(function (c) { return c[0] === (options.country || 'PT'); })
-      || COUNTRIES[0];
-
-    chosen = initial;
-    select.value = initial[2];
-    paintButton();
-    validate();
-
-    return { setValue: setValue, full: full, validate: validate, country: function () { return chosen; } };
-  }
-
-  global.AirportlinkPhone = { mount: mount, countries: COUNTRIES, flag: flag };
-})(window);
+/* No rodapé os rótulos podem ocupar duas linhas em línguas de
+   palavras longas. Cada link é um bloco com entrelinha própria, para
+   as colunas ficarem alinhadas entre si. */
+.footer-grid a{display:block;line-height:1.45}
+@media (max-width:640px){
+  .footer-grid{text-align:center}
+  .footer-brand{text-align:center}
+  .footer-bottom{text-align:center}
+}
