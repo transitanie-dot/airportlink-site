@@ -24,6 +24,17 @@
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/i18n.js"></script>
+<!-- O campo de telefone: bandeira, pesquisa, e o pais detetado
+     do browser.
+
+     Faltava aqui. Sem ele via-se o <select> cru do browser, com
+     a lista alfabetica a comecar em "Algeria +213" — e o pais do
+     cliente nunca era detetado.
+
+     Sem defer: o codigo desta pagina corre em linha e chama o
+     AirportlinkPhone.mount() logo no arranque. Com defer, o
+     phone.js so carregaria depois e o mount nao encontrava nada. -->
+<script src="/assets/phone.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
