@@ -88,7 +88,7 @@ html[data-theme="dark"] .step.now .n{background:#D8DEE8;color:#141A28}
 /* O .phone-field é criado e estilizado pelo assets/phone.js e
    pelo site.css. Um wrapper meu por cima quebrava o alinhamento. */
 
-.f select{padding:0 38px 0 14px;height:48px;border-radius:13px;
+.f select:not(#phoneCode){padding:0 38px 0 14px;height:48px;border-radius:13px;
   border:1px solid var(--rule-strong);background:var(--field);color:var(--text);
   font-family:inherit;font-size:14.5px;outline:none;width:100%;cursor:pointer;
   -webkit-appearance:none;-moz-appearance:none;appearance:none;
@@ -97,7 +97,7 @@ html[data-theme="dark"] .step.now .n{background:#D8DEE8;color:#141A28}
   background-position:right 14px center;
   transition:border-color .14s ease,box-shadow .14s ease}
 
-.f select:focus{border-color:var(--teal);
+.f select:not(#phoneCode):focus{border-color:var(--teal);
   box-shadow:0 0 0 3px var(--teal-soft)}
 
 .f input,.f textarea{padding:0 14px;height:48px;border-radius:13px;
@@ -117,12 +117,8 @@ html[data-theme="dark"] .f input:focus,html[data-theme="dark"] .f textarea:focus
  * ficavam de fora — e o cliente via a mensagem geral sem saber
  * onde estava o problema.
  */
-.f.bad input,.f.bad textarea,.f.bad select{border-color:var(--err-rule);
-  background:var(--err-bg)}
-
-/* O componente do telefone tem caixa própria. */
-.phone-field.bad > input,
-.phone-field.bad .phone-pick{border-color:var(--err-rule);
+.f.bad input,.f.bad textarea,
+.f.bad select:not(#phoneCode){border-color:var(--err-rule);
   background:var(--err-bg)}
 
 /* E a mensagem aparece quando a caixa do telefone está marcada. */
@@ -556,8 +552,17 @@ html[data-theme="dark"] .locked{background:rgba(255,255,255,.04)}
               <option value="84">Vietnam +84</option>
             </select>
 
-            <input id="phone" type="tel" autocomplete="tel"
-                   inputmode="tel" required placeholder="912 345 678">
+            <!-- Sem placeholder.
+
+               O "912 345 678" era portugues e ficava la para toda
+               a gente. Um exemplo de outro pais e pior do que
+               nenhum: da a entender que e esse o formato.
+
+               O que faz falta — quantos digitos tem o numero deste
+               pais — aparece na linha de ajuda por baixo, que o
+               assets/phone.js escreve conforme o pais escolhido. -->
+          <input id="phone" type="tel" autocomplete="tel"
+                   inputmode="tel" required>
           </div>
           <span class="hint">The driver calls or messages this number on the day.</span>
           <!-- A mensagem, que se perdeu ao trocar o campo.
@@ -1246,6 +1251,18 @@ function montarTelefone() {
   campoTelefone = window.AirportlinkPhone.mount({
     select: 'phoneCode',
     input: 'phone'
+
+    /**
+     * Sem passar country: o componente deteta.
+     *
+     * Ele olha para a regiao da lingua do browser e, se nao houver,
+     * para o fuso horario. Um noruegues a reservar de Oslo abre em
+     * +47 sem fazer nada.
+     *
+     * Passar-lhe o pais da RECOLHA seria errado: quem reserva um
+     * transfer em Faro pode estar em Londres com um telemovel
+     * ingles, e o numero que vai dar ao motorista e o ingles.
+     */
   });
 }
 
