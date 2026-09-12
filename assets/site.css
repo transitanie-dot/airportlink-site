@@ -453,6 +453,42 @@ html[data-theme="dark"] .phone-menu{box-shadow:0 18px 44px rgba(0,0,0,.5)}
 .phone-hint.bad{color:var(--err-text)}
 
 /**
+ * ---------------------------------------------------------------
+ * A PÁGINA DE CHECKOUT TEM CSS PRÓPRIO
+ *
+ * O <style> dela vive no <head> e carrega DEPOIS deste ficheiro,
+ * por isso ganha sempre que a especificidade for igual. Lá os
+ * campos têm 48px e não 52, e há uma regra que pinta o botão do
+ * indicativo de vermelho quando o número está errado.
+ *
+ * Estas regras são mais específicas de propósito. É feio e é o
+ * que evita ter de mexer numa página de mil e quinhentas linhas
+ * por causa de dois valores.
+ * ---------------------------------------------------------------
+ */
+
+/* Os campos do checkout são de 48px. A caixa do telefone acompanha,
+   senão fica um campo mais alto do que os outros sete. */
+.f .phone-field{height:48px;border-radius:13px}
+.f .phone-field > input,
+.f .phone-field > input[type="tel"]{height:46px;border-radius:0 13px 13px 0}
+.f .phone-pick{height:36px}
+
+/**
+ * O erro pinta a moldura, não o botão.
+ *
+ * A regra da página punha fundo vermelho no seletor do indicativo,
+ * que agora não tem moldura nenhuma — ficava uma mancha de cor
+ * dentro do campo, sem dizer o que estava errado.
+ *
+ * O que diz é a moldura à volta de tudo, que é onde o problema
+ * está: o número.
+ */
+.f .phone-field.bad button.phone-pick{background:transparent;border:0}
+.f .phone-field.bad > input,
+.f .phone-field.bad > input[type="tel"]{border-color:var(--rule)}
+
+/**
  * No telemóvel continua numa linha.
  *
  * Empilhava, e num ecrã estreito isso dava duas caixas do tamanho
