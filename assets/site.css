@@ -375,26 +375,61 @@ html[data-theme="dark"] .side-btn.line{background:transparent;color:var(--text)}
    CAMPO DE TELEFONE
    O <select> original fica escondido e continua a ser a fonte da
    verdade; isto é a camada visível por cima.
+
+   UMA CAIXA, NÃO DUAS
+   Eram dois controlos lado a lado, com a mesma altura, a mesma
+   moldura e um espaço entre eles — e liam-se como dois campos
+   diferentes, quando são um número de telefone só.
+
+   Agora o indicativo vive DENTRO do campo, pequeno e à esquerda,
+   separado por um risco. É a mesma forma que o cartão de crédito
+   tem: o essencial em tamanho normal, o acessório em corpo menor.
    ============================================================ */
 /* Antes do JS correr, o contentor mantém a linha de pé: sem isto o
    campo saltava de posição ao carregar a página. */
 [data-phone-mount]{position:relative}
 [data-phone-mount] > select{width:100%}
-.phone-field{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px}
-.phone-pick{display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 14px;
-  border:1px solid var(--rule-strong);border-radius:15px;background:var(--field);
-  cursor:pointer;white-space:nowrap;transition:border-color .15s ease}
-.phone-pick:hover{border-color:var(--teal)}
-.phone-pick svg{width:15px;height:15px;color:var(--muted);margin-left:2px}
-.phone-flag{font-size:19px;line-height:1}
+.phone-field{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);
+  align-items:center;height:52px;border-radius:15px;
+  border:1px solid var(--rule-strong);background:var(--field);
+  transition:border-color .15s ease,box-shadow .15s ease}
+/* A moldura reage ao foco do campo inteiro, não de cada peça: para
+   quem está a escrever, isto é um controlo só. */
+.phone-field:focus-within{border-color:var(--teal);box-shadow:0 0 0 4px rgba(15,118,110,.14)}
+.phone-pick{display:inline-flex;align-items:center;gap:6px;height:38px;
+  margin:0 0 0 6px;padding:0 9px;border:0;border-radius:10px;
+  background:transparent;cursor:pointer;white-space:nowrap;
+  transition:background .15s ease}
+.phone-pick:hover{background:var(--surface-2)}
+.phone-pick:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+.phone-pick svg{width:13px;height:13px;color:var(--muted);margin-left:1px}
+.phone-flag{font-size:17px;line-height:1}
 /* O Windows não traz a fonte das bandeiras e mostra as duas letras.
    Escondemos o nosso ISO aí, para não ficar escrito duas vezes. */
 .phone-iso{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted);
   letter-spacing:.04em}
-.phone-dial{font-family:var(--mono);font-size:14px;font-weight:600}
-.phone-field > input{border-radius:15px}
-.phone-field.bad > input{border-color:var(--err-rule)}
-.phone-field.good > input{border-color:var(--teal)}
+/* Pequeno e discreto no botão: é uma referência, não o conteúdo. Na
+   lista do menu volta ao tamanho normal, porque lá é o que se
+   procura. */
+.phone-dial{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--muted)}
+
+/**
+ * O campo do número, sem moldura própria.
+ *
+ * O seletor tem de ser específico: as regras de cada página dão
+ * altura, moldura e cantos a todos os input[type="tel"], e ganham
+ * a uma regra de classe simples.
+ */
+.phone-field > input,
+.phone-field > input[type="tel"]{
+  height:50px;width:100%;border:0;border-left:1px solid var(--rule);
+  border-radius:0 15px 15px 0;background:transparent;
+  padding:0 15px;margin-left:6px;font-size:15px;outline:none;box-shadow:none}
+.phone-field > input:focus,
+.phone-field > input[type="tel"]:focus{border-color:var(--rule);box-shadow:none;outline:none}
+/* Os avisos pintam a caixa toda. */
+.phone-field.bad{border-color:var(--err-rule)}
+.phone-field.good{border-color:var(--teal)}
 
 .phone-menu{position:absolute;top:calc(100% + 6px);left:0;width:min(340px,100%);
   background:var(--surface);border:1px solid var(--rule-strong);border-radius:18px;
@@ -417,8 +452,17 @@ html[data-theme="dark"] .phone-menu{box-shadow:0 18px 44px rgba(0,0,0,.5)}
 .phone-hint.good{color:var(--ok-text)}
 .phone-hint.bad{color:var(--err-text)}
 
+/**
+ * No telemóvel continua numa linha.
+ *
+ * Empilhava, e num ecrã estreito isso dava duas caixas do tamanho
+ * todo para um campo só. Com o indicativo pequeno, a linha inteira
+ * cabe à vontade em 320 pixels.
+ */
 @media (max-width:560px){
-  .phone-field{grid-template-columns:1fr}
+  .phone-pick{padding:0 7px;gap:5px}
+  .phone-field > input,
+  .phone-field > input[type="tel"]{padding:0 12px}
   .phone-menu{width:100%}
 }
 
@@ -470,6 +514,14 @@ html[dir="rtl"] .dest-nav.next{right:auto;left:-14px;transform:translateY(-50%) 
 html[dir="rtl"] .leg-arrow svg,
 html[dir="rtl"] .acct-back{transform:scaleX(-1)}
 html[dir="rtl"] .path-line{left:auto;right:6px}
+/* O campo de telefone espelha-se com o resto: o indicativo passa
+   para a direita e o risco muda de lado com ele. */
+html[dir="rtl"] .phone-field > input,
+html[dir="rtl"] .phone-field > input[type="tel"]{
+  border-left:0;border-right:1px solid var(--rule);
+  border-radius:15px 0 0 15px;margin-left:0;margin-right:6px}
+html[dir="rtl"] .phone-pick{margin:0 6px 0 0}
+html[dir="rtl"] .phone-menu{left:auto;right:0}
 @media (max-width:1100px){
   html[dir="rtl"] .dest-nav.prev{right:4px}
   html[dir="rtl"] .dest-nav.next{left:4px}
