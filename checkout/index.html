@@ -385,24 +385,15 @@ html[data-theme="dark"] .locked{background:rgba(255,255,255,.04)}
 }
 
 /**
- * ---------------------------------------------------------------
- * A DICA DO TELEFONE
+ * A dica do telefone.
  *
- * O phone.js poe-na em input.closest('.field'). Nesta pagina a
- * classe e ".f", nao ".field" — o closest devolve null e a dica
- * acaba DENTRO do .phone-field, que tem altura fixa de 48px.
+ * O phone.js poe-na agora no .f — antes procurava so por .field,
+ * nao encontrava, e acabava dentro da caixa de altura fixa, a
+ * transbordar por cima do campo seguinte.
  *
- * Resultado: transborda e cai por cima do campo seguinte.
- *
- * Tirar-lhe o lugar no fluxo e poe-la logo abaixo da caixa
- * resolve sem tocar no ficheiro partilhado — que e usado por
- * outras paginas onde a classe e mesmo ".field".
- * ---------------------------------------------------------------
+ * Fica no fluxo normal, debaixo da caixa, como nas outras
+ * paginas.
  */
-.f .phone-field{position:relative;overflow:visible}
-
-.f .phone-field .phone-hint{position:absolute;top:calc(100% + 6px);
-  left:0;right:0;margin:0;white-space:normal}
 
 /* E o campo do telefone ganha espaco por baixo para ela caber.
    Por id, e nao com :has() — que o Safari so tem desde 2023 e
@@ -741,7 +732,8 @@ html[data-theme="dark"] .locked{background:rgba(255,255,255,.04)}
         </div>
 
         <div class="f wide">
-          <label for="notes">Anything we should know <span class="opt">optional</span></label>
+          <label for="notes" data-i18n="co.notesLabel">Notes for your driver
+            <span class="opt" data-i18n="common.optional">optional</span></label>
           <textarea id="notes" maxlength="600"></textarea>
         </div>
       </div>
