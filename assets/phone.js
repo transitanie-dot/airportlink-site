@@ -341,28 +341,23 @@ var COUNTRIES = [
       list.innerHTML = rows.length
         ? rows.map(function (c) {
             /**
-             * Quantos dígitos tem o número deste país.
+             * Só a bandeira, o país e o indicativo.
              *
-             * Quem escolhe o Brasil vê "10/11" ANTES de escrever, e
-             * não depois de errar. A mesma informação está na linha
-             * de ajuda por baixo do campo, mas essa só aparece
-             * depois de fechar o menu — e quem está a escolher o
-             * país já está a pensar no número.
+             * Os dígitos esperados saíram: numa lista de oitenta
+             * linhas, uma coluna de números pequenos ao lado de
+             * outra de números maiores lê-se mal — e a pergunta
+             * aqui é "que país", não "quantos dígitos".
              *
-             * O aria-label leva a frase por extenso: a barra entre
-             * os dois números lê-se mal em voz alta.
+             * Essa resposta está na linha de ajuda por baixo do
+             * campo, logo depois de escolher.
              */
-            var lens = c[3].join('/');
-
             return '<button class="phone-row' + (c === chosen ? ' on' : '') +
               '" type="button" role="option" data-iso="' + esc(c[0]) +
               '" data-dial="' + esc(c[2]) + '"' +
-              ' aria-label="' + esc(c[1]) + ', +' + esc(c[2]) + ', ' +
-              esc(c[3].join(' or ')) + ' digits">' +
+              ' aria-label="' + esc(c[1]) + ', +' + esc(c[2]) + '">' +
               '<span class="phone-flag">' + flag(c[0]) + '</span>' +
               '<span class="phone-name">' + esc(c[1]) + '</span>' +
-              '<span class="phone-dial">+' + esc(c[2]) + '</span>' +
-              '<span class="phone-len">' + esc(lens) + '</span></button>';
+              '<span class="phone-dial">+' + esc(c[2]) + '</span></button>';
           }).join('')
         : '<div class="phone-empty">No country matches that.</div>';
 
