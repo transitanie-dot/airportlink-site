@@ -419,6 +419,22 @@ html[data-theme="dark"] .locked{background:rgba(255,255,255,.04)}
  * coisas diferentes no mesmo sitio.
  */
 .f.bad .phone-hint{display:none}
+
+/**
+ * A nota ao lado da etiqueta.
+ *
+ * Igual ao "optional" na forma — corpo pequeno, cor apagada — mas
+ * diz outra coisa: nao que o campo se possa saltar, mas o que se
+ * prefere receber.
+ *
+ * Em teal e nao em cinzento: e uma preferencia nossa, e vale a
+ * pena que se leia.
+ */
+.f .pref{margin-left:7px;font-family:var(--mono);font-size:9.5px;
+  font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--teal);white-space:nowrap}
+
+html[data-theme="dark"] .f .pref{color:var(--amber)}
 </style>
 </head>
 <body>
@@ -532,7 +548,14 @@ html[data-theme="dark"] .locked{background:rgba(255,255,255,.04)}
         </div>
 
         <div class="f wide" id="phoneField">
-          <label for="phone" data-i18n="co.phone">Phone<span class="req" aria-hidden="true">*</span></label>
+          <label for="phone" data-i18n="co.phone">Phone<span class="req" aria-hidden="true">*</span>
+            <!-- O WhatsApp em vez de uma chamada.
+
+                 Um motorista que chega a um aeroporto estrangeiro
+                 paga roaming para ligar; uma mensagem nao custa
+                 nada e fica escrita. Pedir a preferencia aqui
+                 poupa uma chamada que nao se atende. -->
+            <span class="pref" data-i18n="co.whatsappPref">WhatsApp preferred</span></label>
 
           <!-- O indicativo e o número.
 
@@ -659,7 +682,7 @@ html[data-theme="dark"] .locked{background:rgba(255,255,255,.04)}
           <!-- A mensagem de erro e a que ja existia, logo abaixo.
                Acrescentei uma segunda por engano e apareciam as
                duas coladas, a dizer o mesmo por outras palavras. -->
-          <span class="err" data-i18n="co.errPhone">We need a phone number with the country code. The driver calls it on the day.</span>
+          <span class="err" data-i18n="co.errPhone">We need a phone number.</span>
         </div>
 
         <!-- O idioma, opcional.
