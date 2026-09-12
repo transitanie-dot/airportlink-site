@@ -504,7 +504,93 @@ html[data-theme="dark"] .ag-book:hover{color:#141A28}
             <div class="field"><label for="tvName">Full name</label>
               <input id="tvName" type="text" placeholder="As it appears on their passport"></div>
             <div class="field"><label for="tvPhone">Phone</label>
-              <input id="tvPhone" type="tel" placeholder="+351 ..."></div>
+              <!-- O indicativo num seletor com bandeira.
+                   O assets/phone.js esconde este select e desenha o dele. -->
+              <div data-phone-mount>
+                <select id="tvPhoneCode" aria-label="Country dialling code">
+                  <option value="213">Algeria +213</option>
+                  <option value="54">Argentina +54</option>
+                  <option value="61">Australia +61</option>
+                  <option value="43">Austria +43</option>
+                  <option value="973">Bahrain +973</option>
+                  <option value="32">Belgium +32</option>
+                  <option value="55">Brazil +55</option>
+                  <option value="359">Bulgaria +359</option>
+                  <option value="1">Canada +1</option>
+                  <option value="238">Cape Verde +238</option>
+                  <option value="56">Chile +56</option>
+                  <option value="86">China +86</option>
+                  <option value="57">Colombia +57</option>
+                  <option value="506">Costa Rica +506</option>
+                  <option value="385">Croatia +385</option>
+                  <option value="357">Cyprus +357</option>
+                  <option value="420">Czechia +420</option>
+                  <option value="45">Denmark +45</option>
+                  <option value="1">Dominican Republic +1</option>
+                  <option value="20">Egypt +20</option>
+                  <option value="372">Estonia +372</option>
+                  <option value="358">Finland +358</option>
+                  <option value="33">France +33</option>
+                  <option value="49">Germany +49</option>
+                  <option value="30">Greece +30</option>
+                  <option value="852">Hong Kong +852</option>
+                  <option value="36">Hungary +36</option>
+                  <option value="354">Iceland +354</option>
+                  <option value="91">India +91</option>
+                  <option value="62">Indonesia +62</option>
+                  <option value="353">Ireland +353</option>
+                  <option value="972">Israel +972</option>
+                  <option value="39">Italy +39</option>
+                  <option value="81">Japan +81</option>
+                  <option value="962">Jordan +962</option>
+                  <option value="254">Kenya +254</option>
+                  <option value="965">Kuwait +965</option>
+                  <option value="371">Latvia +371</option>
+                  <option value="370">Lithuania +370</option>
+                  <option value="352">Luxembourg +352</option>
+                  <option value="60">Malaysia +60</option>
+                  <option value="960">Maldives +960</option>
+                  <option value="356">Malta +356</option>
+                  <option value="52">Mexico +52</option>
+                  <option value="212">Morocco +212</option>
+                  <option value="31">Netherlands +31</option>
+                  <option value="64">New Zealand +64</option>
+                  <option value="234">Nigeria +234</option>
+                  <option value="47">Norway +47</option>
+                  <option value="968">Oman +968</option>
+                  <option value="92">Pakistan +92</option>
+                  <option value="507">Panama +507</option>
+                  <option value="51">Peru +51</option>
+                  <option value="63">Philippines +63</option>
+                  <option value="48">Poland +48</option>
+                  <option value="351">Portugal +351</option>
+                  <option value="974">Qatar +974</option>
+                  <option value="40">Romania +40</option>
+                  <option value="7">Russia +7</option>
+                  <option value="966">Saudi Arabia +966</option>
+                  <option value="381">Serbia +381</option>
+                  <option value="65">Singapore +65</option>
+                  <option value="421">Slovakia +421</option>
+                  <option value="386">Slovenia +386</option>
+                  <option value="27">South Africa +27</option>
+                  <option value="82">South Korea +82</option>
+                  <option value="34">Spain +34</option>
+                  <option value="94">Sri Lanka +94</option>
+                  <option value="46">Sweden +46</option>
+                  <option value="41">Switzerland +41</option>
+                  <option value="886">Taiwan +886</option>
+                  <option value="66">Thailand +66</option>
+                  <option value="216">Tunisia +216</option>
+                  <option value="90">Turkey +90</option>
+                  <option value="380">Ukraine +380</option>
+                  <option value="971">United Arab Emirates +971</option>
+                  <option value="44">United Kingdom +44</option>
+                  <option value="1">United States +1</option>
+                  <option value="598">Uruguay +598</option>
+                  <option value="84">Vietnam +84</option>
+                </select>
+                <input id="tvPhone" type="tel" inputmode="tel" autocomplete="tel">
+              </div></div>
             <div class="field"><label for="tvEmail">Email <span style="opacity:.6">optional</span></label>
               <input id="tvEmail" type="email"></div>
             <div class="field"><label for="tvNotes">Notes <span style="opacity:.6">optional</span></label>
@@ -637,7 +723,94 @@ html[data-theme="dark"] .ag-book:hover{color:#141A28}
             <div class="field"><label for="agLegal">Registered name</label><input id="agLegal" type="text"></div>
             <div class="field"><label for="agTrading">Agency name</label><input id="agTrading" type="text"></div>
             <div class="field"><label for="agVat">VAT number</label><input id="agVat" type="text"></div>
-            <div class="field"><label for="agPhone">Phone</label><input id="agPhone" type="tel"></div>
+            <div class="field"><label for="agPhone">Phone</label>
+              <!-- O indicativo num seletor com bandeira.
+                   O assets/phone.js esconde este select e desenha o dele. -->
+              <div data-phone-mount>
+                <select id="agPhoneCode" aria-label="Country dialling code">
+                  <option value="213">Algeria +213</option>
+                  <option value="54">Argentina +54</option>
+                  <option value="61">Australia +61</option>
+                  <option value="43">Austria +43</option>
+                  <option value="973">Bahrain +973</option>
+                  <option value="32">Belgium +32</option>
+                  <option value="55">Brazil +55</option>
+                  <option value="359">Bulgaria +359</option>
+                  <option value="1">Canada +1</option>
+                  <option value="238">Cape Verde +238</option>
+                  <option value="56">Chile +56</option>
+                  <option value="86">China +86</option>
+                  <option value="57">Colombia +57</option>
+                  <option value="506">Costa Rica +506</option>
+                  <option value="385">Croatia +385</option>
+                  <option value="357">Cyprus +357</option>
+                  <option value="420">Czechia +420</option>
+                  <option value="45">Denmark +45</option>
+                  <option value="1">Dominican Republic +1</option>
+                  <option value="20">Egypt +20</option>
+                  <option value="372">Estonia +372</option>
+                  <option value="358">Finland +358</option>
+                  <option value="33">France +33</option>
+                  <option value="49">Germany +49</option>
+                  <option value="30">Greece +30</option>
+                  <option value="852">Hong Kong +852</option>
+                  <option value="36">Hungary +36</option>
+                  <option value="354">Iceland +354</option>
+                  <option value="91">India +91</option>
+                  <option value="62">Indonesia +62</option>
+                  <option value="353">Ireland +353</option>
+                  <option value="972">Israel +972</option>
+                  <option value="39">Italy +39</option>
+                  <option value="81">Japan +81</option>
+                  <option value="962">Jordan +962</option>
+                  <option value="254">Kenya +254</option>
+                  <option value="965">Kuwait +965</option>
+                  <option value="371">Latvia +371</option>
+                  <option value="370">Lithuania +370</option>
+                  <option value="352">Luxembourg +352</option>
+                  <option value="60">Malaysia +60</option>
+                  <option value="960">Maldives +960</option>
+                  <option value="356">Malta +356</option>
+                  <option value="52">Mexico +52</option>
+                  <option value="212">Morocco +212</option>
+                  <option value="31">Netherlands +31</option>
+                  <option value="64">New Zealand +64</option>
+                  <option value="234">Nigeria +234</option>
+                  <option value="47">Norway +47</option>
+                  <option value="968">Oman +968</option>
+                  <option value="92">Pakistan +92</option>
+                  <option value="507">Panama +507</option>
+                  <option value="51">Peru +51</option>
+                  <option value="63">Philippines +63</option>
+                  <option value="48">Poland +48</option>
+                  <option value="351">Portugal +351</option>
+                  <option value="974">Qatar +974</option>
+                  <option value="40">Romania +40</option>
+                  <option value="7">Russia +7</option>
+                  <option value="966">Saudi Arabia +966</option>
+                  <option value="381">Serbia +381</option>
+                  <option value="65">Singapore +65</option>
+                  <option value="421">Slovakia +421</option>
+                  <option value="386">Slovenia +386</option>
+                  <option value="27">South Africa +27</option>
+                  <option value="82">South Korea +82</option>
+                  <option value="34">Spain +34</option>
+                  <option value="94">Sri Lanka +94</option>
+                  <option value="46">Sweden +46</option>
+                  <option value="41">Switzerland +41</option>
+                  <option value="886">Taiwan +886</option>
+                  <option value="66">Thailand +66</option>
+                  <option value="216">Tunisia +216</option>
+                  <option value="90">Turkey +90</option>
+                  <option value="380">Ukraine +380</option>
+                  <option value="971">United Arab Emirates +971</option>
+                  <option value="44">United Kingdom +44</option>
+                  <option value="1">United States +1</option>
+                  <option value="598">Uruguay +598</option>
+                  <option value="84">Vietnam +84</option>
+                </select>
+                <input id="agPhone" type="tel" inputmode="tel" autocomplete="tel">
+              </div></div>
             <div class="field"><label for="agRep">Contact name</label><input id="agRep" type="text"></div>
             <div class="field"><label for="agRole">Role</label><input id="agRole" type="text"></div>
           </div>
@@ -1485,6 +1658,24 @@ $('agSignOut').addEventListener('click', async function () {
   });
 })();
 
+
+
+/**
+ * Os campos de telefone da pagina de agencia.
+ *
+ * Sem isto ficava o select cru e o placeholder "+351 ..." — que
+ * diz a uma agencia espanhola que o formato e portugues.
+ */
+(function () {
+  if (!window.AirportlinkPhone) return;
+
+  [['tvPhoneCode', 'tvPhone'],
+   ['agPhoneCode', 'agPhone']].forEach(function (par) {
+    if (document.getElementById(par[1])) {
+      window.AirportlinkPhone.mount({ select: par[0], input: par[1] });
+    }
+  });
+})();
 </script>
 
 </body>
